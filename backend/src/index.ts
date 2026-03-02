@@ -19,22 +19,23 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.use(cors({
+app.use(
+  cors({
     origin: IS_PRODUCTION ? 'https://yourdomain.com' : 'http://localhost:3800',
-    credentials: true
-}));
+    credentials: true,
+  }),
+);
 
 app.use(pinoHttp({ logger }));
 
 app.use('/api/v1', apiRouter);
 
 app.all('{*path}', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, HttpStatus.NOT_FOUND));
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, HttpStatus.NOT_FOUND));
 });
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

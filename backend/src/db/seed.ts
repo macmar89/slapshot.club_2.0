@@ -1,58 +1,61 @@
-import { hashPassword } from "../utils/crypto";
-import { db } from "./index";
-import { users } from "./schema";
-import { eq } from "drizzle-orm";
-import { addYears } from "date-fns";
+import { hashPassword } from '../utils/crypto';
+import { db } from './index';
+import { users } from './schema';
+import { eq } from 'drizzle-orm';
+import { addYears } from 'date-fns';
 
 async function seed() {
-    console.log("🌱 Starting seeding process...");
+  console.log('🌱 Starting seeding process...');
 
-    const user = {
-        username: "marian",
-        email: "marian@slapshot.club",
-        password: "silneheslo123",
+  const user = {
+    username: 'marian',
+    email: 'marian@slapshot.club',
+    password: 'silneheslo123',
+  };
+
+  try {
+    const existingAdmin = await db.query.users.findFirst({
+      where: eq(users.username, user.username),
+    });
+
+    if (existingAdmin) {
+      console.log('ℹ️ Superadmin already exists. Skipping creation.');
+      process.exit(0);
     }
 
-    try {
-        const existingAdmin = await db.query.users.findFirst({
-            where: eq(users.username, user.username)
-        });
+    console.log('🔐 Hashing password...');
+    const hashedPassword = await hashPassword(user.password);
 
-        if (existingAdmin) {
-            console.log("ℹ️ Superadmin already exists. Skipping creation.");
-            process.exit(0);
-        }
+    await db.transaction(async (tx) => {
+      console.log('👤 Creating superadmin user...');
+      await tx
+        .insert(users)
+        .values({
+          username: user.username,
+          email: user.email,
+          password: hashedPassword,
 
-        console.log("🔐 Hashing password...");
-        const hashedPassword = await hashPassword(user.password);
+          lastActivity: new Date().toISOString(),
 
-        await db.transaction(async (tx) => {
-            console.log("👤 Creating superadmin user...");
-            await tx.insert(users).values({
-                username: user.username,
-                email: user.email,
-                password: hashedPassword,
+          role: 'admin',
 
-                lastActivity: new Date().toISOString(),
+          subscriptionPlan: 'pro',
+          subscriptionActiveUntil: addYears(new Date(), 50).toISOString(),
 
-                role: "admin",
+          isActive: true,
 
-                subscriptionPlan: "pro",
-                subscriptionActiveUntil: addYears(new Date(), 50).toISOString(),
+          verifiedAt: new Date().toISOString(),
+        })
+        .onConflictDoNothing();
+    });
 
-                isActive: true,
-
-                verifiedAt: new Date().toISOString(),
-            }).onConflictDoNothing();
-        });
-
-        console.log("✅ Seeding completed successfully!");
-    } catch (error) {
-        console.error("❌ Seeding error:", error);
-        process.exit(1);
-    } finally {
-        process.exit(0);
-    }
+    console.log('✅ Seeding completed successfully!');
+  } catch (error) {
+    console.error('❌ Seeding error:', error);
+    process.exit(1);
+  } finally {
+    process.exit(0);
+  }
 }
 
 seed();
