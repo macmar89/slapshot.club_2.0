@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { handleJoinCompetition } from '../competitions.api';
+import { toast } from 'sonner';
 
 import { Competition } from '../competitions.types';
 
@@ -37,17 +38,16 @@ export function JoinCompetitionModal({ isOpen, onClose, competition }: JoinCompe
           params: { slug: slug || '' },
         });
       } else {
-        console.error(res.error);
+        toast.error(res.error || t('error_generic'));
       }
     } catch (error) {
-      console.error('Failed to join:', error);
-    } finally {
+      toast.error(t('error_generic'));
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="border-[#eab308]/20 bg-[#1a1a1a] text-white">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-[#eab308]">{t('title')}</DialogTitle>
           <DialogDescription className="text-white/60">

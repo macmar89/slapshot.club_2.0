@@ -11,13 +11,13 @@ import {
 import { competitions } from './competitions.js';
 import { leagues } from './leagues.js';
 import { users } from './users.js';
-import { withUpdatesFields } from '../helpers.js';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
 import { sql } from 'drizzle-orm';
 
 export const leaderboardEntries = pgTable(
   'leaderboard_entries',
   {
-    id: varchar().primaryKey().notNull(),
+    id: generateCuid(),
     userId: varchar('user_id').notNull(),
     competitionId: varchar('competition_id').notNull(),
     seasonYear: integer('season_year').notNull(),
@@ -30,9 +30,9 @@ export const leaderboardEntries = pgTable(
     wrongGuesses: integer('wrong_guesses').default(0),
     currentForm: varchar('current_form', { length: 5 }).default(''),
 
-    currentRank: integer('current_rank'),
-    previousRank: integer('previous_rank'),
-    rankChange: integer('rank_change'),
+    currentRank: integer('current_rank').default(0),
+    previousRank: integer('previous_rank').default(0),
+    rankChange: integer('rank_change').default(0),
 
     activeLeagueId: varchar('active_league_id'),
 

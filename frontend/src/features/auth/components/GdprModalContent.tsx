@@ -46,7 +46,7 @@ const GdprModalContent = ({ open, onOpenChange }: GdprModalContentProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto border-white/10 bg-black/90 text-white">
+      <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-gold text-2xl font-bold">
             {t('gdpr_modal.title')}

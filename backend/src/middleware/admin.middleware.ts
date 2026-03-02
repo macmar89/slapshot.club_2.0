@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { ERR } from '../utils/errorMessages.js';
 import { HttpStatus } from '../utils/httpStatusCodes.js';
 
-export const isSuperadmin = (req: Request, res: Response, next: NextFunction) => {
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       error: 'Unauthorized',
@@ -10,7 +10,7 @@ export const isSuperadmin = (req: Request, res: Response, next: NextFunction) =>
     });
   }
 
-  if (req.user.isSuperadmin !== true) {
+  if (!req.user.role.includes('admin')) {
     return res.status(HttpStatus.FORBIDDEN).json({
       error: 'Forbidden',
       message: ERR.AUTH.FORBIDDEN_SUPERADMIN,

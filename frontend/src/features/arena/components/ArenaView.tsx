@@ -34,7 +34,7 @@ export function ArenaView({ initialCompetitions }: ArenaViewProps) {
       <div className="sm:pt-20 md:pt-16" />
 
       <h1 className="mb-8 text-center text-xl font-medium text-white md:text-3xl">
-        {/* {t('welcome', { username: user.username })} */} Welcome back
+        {t('welcome', { username: user?.username ?? 'User' })}
       </h1>
 
       <main className="mx-auto max-w-7xl">

@@ -91,10 +91,10 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
   }
 
-  const { password, ...userWithoutPassword } = user;
+  const { password, verifiedAt, ...userWithoutPassword } = user;
 
   return {
-    user: { ...userWithoutPassword },
+    user: { ...userWithoutPassword, isVerified: !!verifiedAt },
   };
 };
 
@@ -231,7 +231,9 @@ export const getUserProfile = async (userId: string) => {
     throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
+  const { verifiedAt, ...userWithoutVerifiedAt } = user;
+
   return {
-    user,
+    user: { ...userWithoutVerifiedAt, isVerified: !!verifiedAt },
   };
 };

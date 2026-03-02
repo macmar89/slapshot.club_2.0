@@ -5,11 +5,11 @@ declare global {
     interface Request {
       user?: {
         id: string;
-        isSuperadmin: boolean;
-      };
-      org?: {
-        id?: string;
-        role?: string;
+        username: string;
+        role: string;
+        subscriptionPlan: string;
+        subscriptionActiveUntil: string;
+        isVerified: boolean;
       };
     }
   }

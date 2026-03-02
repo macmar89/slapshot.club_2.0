@@ -1,7 +1,7 @@
 import { serverFetch } from '@/lib/api-server';
 import { API_ROUTES } from '@/lib/api-routes';
-import axios from 'axios';
 import { CompetitionsResponse, JoinCompetitionResponse } from './competitions.types';
+import { api } from '@/lib/api';
 
 export const handleGetCompetitionBySlug = async (slug: string) => {
   return {
@@ -24,7 +24,7 @@ export const handleJoinCompetition = async (
   competitionId: string,
 ): Promise<JoinCompetitionResponse> => {
   try {
-    const response = await axios.post(API_ROUTES.COMPETITIONS.JOIN, { competitionId });
+    const response = await api.post(API_ROUTES.COMPETITIONS.JOIN, { competitionId });
 
     return { success: response.status === 201 };
   } catch (error) {

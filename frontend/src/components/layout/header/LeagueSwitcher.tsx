@@ -70,7 +70,7 @@ export function LeagueSwitcher({
           <ChevronDown className="h-3 w-3 text-white/40 transition-colors group-hover:text-white" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-sm border-white/10 bg-black/95 text-white backdrop-blur-xl">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="text-xl font-black tracking-tighter text-[#eab308] uppercase italic">
             {t('select_league')}

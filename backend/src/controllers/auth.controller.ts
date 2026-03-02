@@ -37,7 +37,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     id: user.id,
     role: user.role,
     subscriptionPlan: user.subscriptionPlan,
-    verifiedAt: !!user.verifiedAt,
+    verifiedAt: !!user.isVerified,
   });
 
   res.cookie('access_token', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
