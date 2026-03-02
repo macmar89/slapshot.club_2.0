@@ -51,8 +51,11 @@ const hashToken = (token: string): string => {
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({
-    where: (users, { eq, and }) =>
-      and(eq(users.email, data.email), activeOnly(users, eq(users.isActive, true))),
+    where: (users, { eq, and, or }) =>
+      and(
+        or(eq(users.email, data.identifier), eq(users.username, data.identifier)),
+        activeOnly(users, eq(users.isActive, true)),
+      ),
     columns: {
       id: true,
       username: true,
@@ -69,7 +72,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       req,
       'LOGIN_FAILED',
       { type: 'auth' },
-      { attemptedUsername: data.email, reason: 'USER_NOT_FOUND' },
+      { attemptedUsername: data.identifier, reason: 'USER_NOT_FOUND' },
     );
 
     throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
@@ -81,7 +84,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       req,
       'LOGIN_FAILED',
       { type: 'auth', id: user?.id },
-      { attemptedUsername: data.email, reason: 'INVALID_PASSWORD' },
+      { attemptedUsername: data.identifier, reason: 'INVALID_PASSWORD' },
       { userId: user.id },
     );
 

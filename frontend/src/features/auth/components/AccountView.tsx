@@ -77,7 +77,7 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
             <div className="mb-8 flex flex-col justify-between gap-6 md:mb-12 md:flex-row md:items-end">
               <div className="flex flex-col gap-1.5 text-center md:text-left">
                 <h1 className="flex items-center justify-center gap-3 text-2xl leading-none font-black tracking-tighter text-white uppercase italic md:justify-start md:gap-4 md:text-5xl">
-                  <UserCog className="text-warning h-6 w-6 md:h-10 md:w-10" />
+                  <UserCog className="text-primary h-6 w-6 md:h-10 md:w-10" />
                   {t('title')}
                 </h1>
               </div>

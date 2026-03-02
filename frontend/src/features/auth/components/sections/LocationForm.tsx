@@ -110,7 +110,7 @@ export function LocationForm({
       <form onSubmit={onLocationSubmit} className="flex flex-col gap-4 md:gap-6">
         <div className="flex flex-col gap-1">
           <h3 className="flex items-center gap-2 text-lg font-black tracking-tight text-white uppercase italic md:text-xl">
-            <MapPin className="text-warning h-4 w-4 md:h-5 md:w-5" />
+            <MapPin className="text-primary h-4 w-4 md:h-5 md:w-5" />
             {t('location_section')}
           </h3>
           <p className="text-[10px] font-bold tracking-widest text-white/30 uppercase">
@@ -136,7 +136,7 @@ export function LocationForm({
                 setSelectedRegion(null); // Reset region when country changes
                 if (val !== 'other') setCustomCountry(''); // Clear custom country if not 'other'
               }}
-              className="rounded-app focus:border-warning/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
+              className="rounded-app focus:border-primary/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
             >
               <option value="">{t('location_select_country')}</option>
               {countries.map((c) => (
@@ -159,7 +159,7 @@ export function LocationForm({
                   onChange={(e) =>
                     setSelectedRegion(e.target.value ? Number(e.target.value) : null)
                   }
-                  className="rounded-app focus:border-warning/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
+                  className="rounded-app focus:border-primary/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
                   disabled={isLoadingRegions}
                 >
                   <option value="">
@@ -182,7 +182,7 @@ export function LocationForm({
                 type="text"
                 value={customCountry}
                 onChange={(e) => setCustomCountry(e.target.value)}
-                className="rounded-app focus:border-warning/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
+                className="rounded-app focus:border-primary/50 w-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white transition-all outline-none md:py-3 md:text-base"
                 placeholder={t('location_custom_country_placeholder')}
               />
               <p className="text-[10px] text-white/30 italic">{t('location_other_hint')}</p>
@@ -192,8 +192,8 @@ export function LocationForm({
 
         <Button
           type="submit"
-          color="warning"
-          className="bg-warning h-10 w-full self-end px-12 text-xs font-black tracking-widest text-black uppercase italic md:h-12 md:w-auto md:text-sm"
+          color="primary"
+          className="bg-primary h-10 w-full self-end px-12 text-xs font-black tracking-widest text-black uppercase italic md:h-12 md:w-auto md:text-sm"
           disabled={isLocationSubmitting}
         >
           {isLocationSubmitting ? commonT('loading') : t('save_button')}

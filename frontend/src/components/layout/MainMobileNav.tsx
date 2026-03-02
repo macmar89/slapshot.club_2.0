@@ -70,7 +70,7 @@ export function MainMobileNav({ user }: { user: any }) {
                 className="h-full w-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110"
                 priority
               />
-              <span className="bg-warning pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--warning-rgb),0.5)] transition-transform duration-300">
+              <span className="bg-primary pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA
               </span>
             </Link>
@@ -118,7 +118,7 @@ export function MainMobileNav({ user }: { user: any }) {
                         code={user.referralData.referralCode}
                         align="left"
                         title={t('share_app')}
-                        className="rounded-app bg-warning/5 border-warning/10 border px-4 py-4"
+                        className="rounded-app bg-primary/5 border-primary/10 border px-4 py-4"
                       />
                     )}
 
@@ -140,7 +140,7 @@ export function MainMobileNav({ user }: { user: any }) {
                     <span className="text-[10px] font-black tracking-widest text-white uppercase">
                       v1.0.0
                     </span>
-                    <span className="bg-warning rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
+                    <span className="bg-primary rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
                       BETA
                     </span>
                   </div>

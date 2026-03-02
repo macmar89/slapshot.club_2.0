@@ -55,7 +55,7 @@ export function EmailSection({ email }: EmailSectionProps) {
       <div className="flex h-full flex-col justify-between gap-4 md:gap-6">
         <div className="flex flex-col gap-1">
           <h3 className="flex items-center gap-2 text-lg font-black tracking-tight text-white uppercase italic md:text-xl">
-            <Mail className="text-warning h-4 w-4 md:h-5 md:w-5" />
+            <Mail className="text-primary h-4 w-4 md:h-5 md:w-5" />
             {t('email_section')}
           </h3>
           <p className="mt-2 truncate rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-white/60 md:text-sm">
@@ -70,7 +70,7 @@ export function EmailSection({ email }: EmailSectionProps) {
           <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="text-warning hover:bg-warning/10 border-warning/20 gap-2 border text-[10px] font-black tracking-widest uppercase italic md:text-xs"
+              className="text-primary hover:bg-primary/10 border-primary/20 gap-2 border text-[10px] font-black tracking-widest uppercase italic md:text-xs"
             >
               {t('request_change')}
               <ChevronRight className="h-4 w-4" />
@@ -78,7 +78,7 @@ export function EmailSection({ email }: EmailSectionProps) {
           </DialogTrigger>
           <DialogContent className="max-w-md border-white/10 bg-slate-950/95 text-white backdrop-blur-3xl">
             <DialogHeader>
-              <DialogTitle className="text-warning text-2xl font-black tracking-tighter uppercase italic">
+              <DialogTitle className="text-primary text-2xl font-black tracking-tighter uppercase italic">
                 {t('email_modal.title')}
               </DialogTitle>
               <DialogDescription className="font-medium text-white/40">
@@ -97,7 +97,7 @@ export function EmailSection({ email }: EmailSectionProps) {
                   {...registerEmail('newEmail')}
                   type="email"
                   className={cn(
-                    'rounded-app focus:border-warning/50 w-full border border-white/10 bg-white/5 px-4 py-3 font-bold text-white transition-all outline-none',
+                    'rounded-app focus:border-primary/50 w-full border border-white/10 bg-white/5 px-4 py-3 font-bold text-white transition-all outline-none',
                     emailErrors.newEmail && 'border-red-500',
                   )}
                   placeholder={authT('email_placeholder')}
@@ -115,7 +115,7 @@ export function EmailSection({ email }: EmailSectionProps) {
                 <textarea
                   {...registerEmail('message')}
                   className={cn(
-                    'rounded-app focus:border-warning/50 min-h-[100px] w-full border border-white/10 bg-white/5 px-4 py-3 font-bold text-white transition-all outline-none',
+                    'rounded-app focus:border-primary/50 min-h-[100px] w-full border border-white/10 bg-white/5 px-4 py-3 font-bold text-white transition-all outline-none',
                     emailErrors.message && 'border-red-500',
                   )}
                   placeholder={t('email_modal.reason_placeholder')}
@@ -137,8 +137,8 @@ export function EmailSection({ email }: EmailSectionProps) {
                 </Button>
                 <Button
                   type="submit"
-                  color="warning"
-                  className="bg-warning flex-1 gap-2 text-xs font-black tracking-widest text-black uppercase italic"
+                  color="primary"
+                  className="bg-primary flex-1 gap-2 text-xs font-black tracking-widest text-black uppercase italic"
                   disabled={isEmailSubmitting}
                 >
                   {isEmailSubmitting ? (

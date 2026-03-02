@@ -4,9 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { IceGlassCard } from '@/components/ui/IceGlassCard';
 import { LoginForm } from '@/features/auth/components/LoginForm';
-import { Trophy, Users, Table, Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import bgImage from '@/assets/images/background/ssc_stick.png';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 import { AuthFooter } from '@/features/auth/components/AuthFooter';
@@ -59,7 +57,7 @@ export function LoginView() {
 
               <h1 className="order-2 mb-6 text-center text-4xl leading-none font-bold tracking-tighter text-white drop-shadow-2xl sm:text-right sm:text-5xl lg:order-3 lg:text-7xl">
                 {t('hero.title_main')}
-                <span className="text-warning ml-2 inline">{t('hero.title_sub')}</span>
+                <span className="text-primary ml-2 inline">{t('hero.title_sub')}</span>
               </h1>
 
               <p className="order-4 mx-auto hidden max-w-md text-center text-lg leading-relaxed font-medium text-white/60 sm:mr-0 sm:ml-auto sm:block sm:text-right sm:text-xl">

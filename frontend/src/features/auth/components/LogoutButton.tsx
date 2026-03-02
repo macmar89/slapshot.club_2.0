@@ -2,11 +2,10 @@
 
 import React from 'react';
 import { LogOut } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { logoutUser } from '../actions';
-import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { handlePostLogout } from '../auth.api';
 
 interface LogoutButtonProps {
   className?: string;
@@ -14,12 +13,11 @@ interface LogoutButtonProps {
 }
 
 export function LogoutButton({ className, children }: LogoutButtonProps) {
-  const router = useRouter();
   const t = useTranslations('Auth');
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      await handlePostLogout();
     } catch (error) {
       console.error('Logout failed:', error);
     }

@@ -44,7 +44,7 @@ export function SecurityForm() {
       >
         <div className="flex flex-col gap-1">
           <h3 className="flex items-center gap-2 text-lg font-black tracking-tight text-white uppercase italic md:text-xl">
-            <Lock className="text-warning h-4 w-4 md:h-5 md:w-5" />
+            <Lock className="text-primary h-4 w-4 md:h-5 md:w-5" />
             {t('security_section')}
           </h3>
           <p className="text-[10px] font-bold tracking-widest text-white/30 uppercase">
@@ -82,8 +82,8 @@ export function SecurityForm() {
 
         <Button
           type="submit"
-          color="warning"
-          className="bg-warning h-10 w-full self-end px-12 text-xs font-black tracking-widest text-black uppercase italic md:h-12 md:w-auto md:text-sm"
+          color="primary"
+          className="bg-primary h-10 w-full self-end px-12 text-xs font-black tracking-widest text-black uppercase italic md:h-12 md:w-auto md:text-sm"
           disabled={isPasswordSubmitting}
         >
           {isPasswordSubmitting ? commonT('loading') : t('change_password')}

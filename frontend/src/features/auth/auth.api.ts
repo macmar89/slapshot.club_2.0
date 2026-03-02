@@ -11,13 +11,8 @@ export const handlePostLogin = async (values: LoginInput) => {
 
     setUser(data);
 
-    const {
-      data: { user },
-    } = data;
     return {
       success: true,
-      isSuperadmin: user?.isSuperadmin,
-      defaultOrgSlug: user?.defaultOrgSlug,
     };
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
@@ -29,7 +24,7 @@ export const handlePostLogin = async (values: LoginInput) => {
   }
 };
 
-export const handleLogout = async () => {
+export const handlePostLogout = async () => {
   try {
     await api.post(API_ROUTES.AUTH.LOGOUT);
     return { success: true };

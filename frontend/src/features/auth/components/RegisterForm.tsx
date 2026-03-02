@@ -173,7 +173,7 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
                   id="gdpr"
                   checked={!!field.value}
                   onCheckedChange={field.onChange}
-                  className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--warning))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--warning))]"
+                  className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--primary))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--primary))]"
                 />
               </div>
             )}
@@ -211,7 +211,7 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
                   id="marketing"
                   checked={!!field.value}
                   onCheckedChange={field.onChange}
-                  className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--warning))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--warning))]"
+                  className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--primary))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--primary))]"
                 />
               </div>
             )}

@@ -20,11 +20,12 @@ function parseJwt(token: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Ignore static files and API routes
   if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.includes('.')) {
     return NextResponse.next();
   }
 
-  let accessToken = request.cookies.get('access_token')?.value;
+  const accessToken = request.cookies.get('access_token')?.value;
   const refreshToken = request.cookies.get('refresh_token')?.value;
 
   const isPublicPage =
@@ -45,6 +46,7 @@ export async function middleware(request: NextRequest) {
     if (accessToken) {
       const decoded = parseJwt(accessToken);
       if (decoded && decoded.exp) {
+        // Check if token is expired, adding a 10 second buffer
         isExpired = decoded.exp * 1000 < Date.now() + 10000;
       }
     }
@@ -76,15 +78,19 @@ export async function middleware(request: NextRequest) {
 
             if (newCookies['access_token']) {
               request.cookies.set('access_token', newCookies['access_token']);
+              // Re-create response object with the updated request headers
+              // This ensures the injected cookie is passed to downstream layout/pages
               response = NextResponse.next({
                 request: {
                   headers: request.headers,
                 },
               });
+              // We must also re-apply the Set-Cookie header to the new response
               response.headers.set('Set-Cookie', setCookieHeader);
             }
           }
         } else if (!isPublicPage) {
+          // Refresh failed (e.g., refresh token also expired), redirect to login
           const loginUrl = new URL('/', request.url);
           return NextResponse.redirect(loginUrl);
         }

@@ -12,7 +12,7 @@ import {
   MessageSquarePlus,
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import {
@@ -22,10 +22,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@/components/ui/Sheet';
+} from '@/components/ui/sheet';
 import { format } from 'date-fns';
 import { sk, enUS, cs } from 'date-fns/locale';
-import { FeedbackModal } from '@/components/feedback/FeedbackModal';
+// import { FeedbackModal } from '@/components/feedback/FeedbackModal';
 import { useTranslations } from 'next-intl';
 import { ReferralLink } from '@/features/auth/components/ReferralLink';
 
@@ -33,7 +33,7 @@ interface UserProfileDrawerProps {
   user: any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  upcomingMatches: any[];
+  // upcomingMatches?: any[];
   slug: string;
   locale: string;
   effectiveLeagueId: string | null;
@@ -43,7 +43,7 @@ export function UserProfileDrawer({
   user,
   isOpen,
   onOpenChange,
-  upcomingMatches,
+  // upcomingMatches,
   slug,
   locale,
   effectiveLeagueId,
@@ -58,7 +58,7 @@ export function UserProfileDrawer({
           variant="ghost"
           className="group flex items-center gap-3 rounded-xs border border-white/10 bg-white/5 px-3 py-2 transition-all hover:border-white/20 hover:bg-white/10"
         >
-          <div className="bg-warning/20 border-warning/30 text-warning group-hover:bg-warning/30 flex h-8 w-8 items-center justify-center rounded-full border transition-colors">
+          <div className="bg-primary/20 border-primary/30 text-primary group-hover:bg-primary/30 flex h-8 w-8 items-center justify-center rounded-full border transition-colors">
             <UserIcon className="h-4 w-4" />
           </div>
           <span className="text-sm font-bold text-white/80 transition-colors group-hover:text-white">
@@ -67,7 +67,7 @@ export function UserProfileDrawer({
           <ChevronDown
             className={cn(
               'h-3 w-3 text-white/40 transition-transform',
-              isOpen && 'text-warning rotate-180',
+              isOpen && 'text-primary rotate-180',
             )}
           />
         </Button>
@@ -81,11 +81,11 @@ export function UserProfileDrawer({
           <SheetDescription>{t('account_menu_desc')}</SheetDescription>
         </SheetHeader>
         {/* Header Section */}
-        <div className="from-warning/10 border-b border-white/5 bg-gradient-to-b to-transparent p-8">
+        <div className="from-primary/10 border-b border-white/5 bg-gradient-to-b to-transparent p-8">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="rounded-app bg-warning/20 border-warning/30 flex h-16 w-16 items-center justify-center border shadow-[0_0_20px_-5px_rgba(var(--warning-rgb),0.4)]">
-                <UserIcon className="text-warning h-8 w-8" />
+              <div className="rounded-app bg-primary/20 border-primary/30 flex h-16 w-16 items-center justify-center border shadow-[0_0_20px_-5px_rgba(var(--primary-rgb),0.4)]">
+                <UserIcon className="text-primary h-8 w-8" />
               </div>
               <div>
                 <h3 className="text-xl font-black tracking-tighter text-white uppercase italic">
@@ -105,7 +105,7 @@ export function UserProfileDrawer({
               {t('dont_forget_to_tip')}
             </h4>
             {upcomingMatches.length > 0 && (
-              <span className="px-2 py-0.5 rounded text-[10px] bg-warning/20 text-warning font-black uppercase tracking-tighter">
+              <span className="px-2 py-0.5 rounded text-[10px] bg-primary/20 text-primary font-black uppercase tracking-tighter">
                 {t('matches_count', { count: upcomingMatches.length })}
               </span>
             )}
@@ -130,13 +130,13 @@ export function UserProfileDrawer({
                           })
                         : ''}
                     </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 text-right truncate text-sm font-bold text-white/80">
                       {match.homeTeam?.name}
                     </div>
-                    <div className="text-xs font-black text-warning italic">VS</div>
+                    <div className="text-xs font-black text-primary italic">VS</div>
                     <div className="flex-1 text-left truncate text-sm font-bold text-white/80">
                       {match.awayTeam?.name}
                     </div>
@@ -178,21 +178,21 @@ export function UserProfileDrawer({
           <div className="my-6 h-px bg-white/5" />
 
           <div className="flex flex-col gap-4">
-            <FeedbackModal triggerClassName="w-full">
-              <div className="rounded-app bg-warning/10 border-warning/20 text-warning hover:bg-warning/20 flex cursor-pointer items-center gap-3 border p-3 transition-all">
+            {/* <FeedbackModal triggerClassName="w-full">
+              <div className="rounded-app bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 flex cursor-pointer items-center gap-3 border p-3 transition-all">
                 <MessageSquarePlus className="h-4 w-4" />
                 <span className="text-[10px] font-black tracking-widest uppercase">
                   {t('feedback')}
                 </span>
               </div>
-            </FeedbackModal>
+            </FeedbackModal> */}
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-black tracking-widest text-white uppercase">
                   v1.0.0
                 </span>
-                <span className="bg-warning rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
+                <span className="bg-primary rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
                   BETA
                 </span>
               </div>

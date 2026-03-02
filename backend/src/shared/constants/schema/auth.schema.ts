@@ -51,7 +51,7 @@ export const RegisterSchema = z.object({
 });
 
 export const LoginSchema = z.object({
-  email: z.email(AuthErrors.VALIDATION.INVALID_EMAIL),
+  identifier: z.string().min(2, AuthErrors.VALIDATION.USERNAME_TOO_SHORT),
   password: z.string().min(8, AuthErrors.VALIDATION.PASSWORD_TOO_SHORT),
 });
 

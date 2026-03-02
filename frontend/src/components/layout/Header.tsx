@@ -6,15 +6,13 @@ import logo from '@/assets/images/logo/ssc_logo_2.png';
 
 import { Link } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
-import { getCurrentUser } from '@/features/auth/actions';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/ui/container';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 
 // Sub-components
 import { InitializationOverlay } from './header/InitializationOverlay';
-import { LeagueSwitcher } from './header/LeagueSwitcher';
 import { UserProfileDrawer } from './header/UserProfileDrawer';
-import { MobileMenu } from './header/MobileMenu';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface HeaderProps {
   title?: React.ReactNode;
@@ -28,82 +26,13 @@ export function Header({ title }: HeaderProps) {
   const slug = params?.slug as string;
   const locale = useLocale();
 
-  const [user, setUser] = React.useState<any>(null);
-  const [upcomingMatches, setUpcomingMatches] = React.useState<any[]>([]);
+  const { user } = useAuthStore();
+
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const [leagues, setLeagues] = React.useState<any[]>([]);
   const [savedActiveLeagueId, setSavedActiveLeagueId] = React.useState<string | null>(null);
   const [isInitializing, setIsInitializing] = React.useState(true);
-
-  // Fetch Leagues and set initial state
-  React.useEffect(() => {
-    const fetchLeagues = async () => {
-      if (slug) {
-        try {
-          setIsInitializing(true);
-          const { getUserLeaguesForCompetition } = await import('@/features/leagues/actions');
-          const { leagues: userLeagues, activeLeagueId } = await getUserLeaguesForCompetition(slug);
-
-          setLeagues(userLeagues);
-          setSavedActiveLeagueId(activeLeagueId);
-
-          // Auto-select active league if no param is present on mount
-          const currentLeagueParam = searchParams.get('leagueId');
-          if (!currentLeagueParam && activeLeagueId) {
-            const newParams = new URLSearchParams(searchParams.toString());
-            newParams.set('leagueId', activeLeagueId);
-            router.replace(`${pathname}?${newParams.toString()}`);
-          }
-        } catch (error) {
-          console.error('Failed to fetch leagues:', error);
-        } finally {
-          // Small delay to prevent flash (optional, but smoother)
-          setTimeout(() => setIsInitializing(false), 300);
-        }
-      } else {
-        setIsInitializing(false);
-      }
-    };
-    fetchLeagues();
-  }, [slug]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Fetch User and Matches to tip
-  React.useEffect(() => {
-    const fetchData = async () => {
-      // 1. Fetch User
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-
-      // 2. Fetch Matches to tip if slug is present
-      if (slug && currentUser) {
-        try {
-          const { getMatchesAction } = await import('@/features/matches/actions');
-          const { matches, userPredictions } = await getMatchesAction(slug);
-
-          // Filter: Not finished, no prediction, and close in time
-          const tippedMatchIds = new Set(
-            userPredictions.map((p: any) => (typeof p.match === 'string' ? p.match : p.match.id)),
-          );
-
-          const now = new Date();
-          const toTip = matches
-            .filter((m: any) => {
-              const matchDate = new Date(m.date);
-              return matchDate > now && !tippedMatchIds.has(m.id);
-            })
-            .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
-            .slice(0, 5); // Just show top 5
-
-          setUpcomingMatches(toTip);
-        } catch (error) {
-          console.error('Failed to fetch matches for drawer:', error);
-        }
-      }
-    };
-    fetchData();
-  }, [slug, pathname]); // Re-fetch on path change to catch new tips
 
   // Restore active league when navigating (if URL param is dropped)
   React.useEffect(() => {
@@ -115,34 +44,8 @@ export function Header({ title }: HeaderProps) {
     }
   }, [pathname, savedActiveLeagueId, searchParams, router, isInitializing]);
 
-  const handleLeagueChange = async (leagueId: string | 'global') => {
-    // Update local state first
-    const newValue = leagueId === 'global' ? null : leagueId;
-    setSavedActiveLeagueId(newValue);
-
-    // Optimistic Update URL
-    const newParams = new URLSearchParams(searchParams.toString());
-    if (!newValue) {
-      newParams.delete('leagueId');
-    } else {
-      newParams.set('leagueId', newValue);
-    }
-    router.push(`${pathname}?${newParams.toString()}`);
-
-    // Persist to backend
-    if (slug) {
-      try {
-        const { updateActiveLeagueAction } = await import('@/features/leagues/actions');
-        await updateActiveLeagueAction(slug, newValue);
-      } catch (err) {
-        console.error('Failed to persist league preference', err);
-      }
-    }
-  };
-
   // Calculate the league ID to display: URL param takes precedence, fallback to saved state
   const effectiveLeagueId = searchParams.get('leagueId') || savedActiveLeagueId;
-  const selectedLeague = leagues.find((l) => l.id === effectiveLeagueId);
 
   return (
     <>
@@ -161,14 +64,14 @@ export function Header({ title }: HeaderProps) {
                   className="h-full w-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)]"
                   priority
                 />
-                <span className="bg-warning absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--warning-rgb),0.5)] transition-transform duration-300">
+                <span className="bg-primary absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                   BETA
                 </span>
               </div>
             </div>
           ) : (
             <Link
-              href={(slug ? `/dashboard/${slug}` : '/arena') as any}
+              href={slug ? `/${slug}/dashboard` : ('/arena' as any)}
               className="group relative mr-8 flex h-16 w-60 items-center"
             >
               <div className="pointer-events-none absolute top-0 left-0 flex h-32 items-center transition-all duration-300 group-hover:-translate-y-1">
@@ -177,10 +80,10 @@ export function Header({ title }: HeaderProps) {
                   alt="Slapshot Club"
                   width={240}
                   height={128}
-                  className="h-full w-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_15px_25px_rgba(var(--warning-rgb),0.25)]"
+                  className="h-full w-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] group-hover:drop-shadow-[0_15px_25px_rgba(var(--primary-rgb),0.25)]"
                   priority
                 />
-                <span className="bg-warning absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--warning-rgb),0.5)] transition-transform duration-300 group-hover:rotate-0">
+                <span className="bg-primary absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300 group-hover:rotate-0">
                   BETA
                 </span>
               </div>
@@ -200,7 +103,7 @@ export function Header({ title }: HeaderProps) {
               user={user}
               isOpen={isProfileOpen}
               onOpenChange={setIsProfileOpen}
-              upcomingMatches={upcomingMatches}
+              // upcomingMatches={upcomingMatches}
               slug={slug}
               locale={locale}
               effectiveLeagueId={effectiveLeagueId}
@@ -208,16 +111,15 @@ export function Header({ title }: HeaderProps) {
           </div>
 
           {/* Mobile View */}
-          <MobileMenu
+          {/* <MobileMenu
             isOpen={isMenuOpen}
             onOpenChange={setIsMenuOpen}
             user={user}
             slug={slug}
             effectiveLeagueId={effectiveLeagueId}
             leagues={leagues}
-            onLeagueChange={handleLeagueChange}
             upcomingMatches={upcomingMatches}
-          />
+          /> */}
         </Container>
       </header>
     </>

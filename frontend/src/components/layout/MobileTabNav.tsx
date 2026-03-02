@@ -105,7 +105,7 @@ export function MobileTabNav() {
                 className="h-full w-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110"
                 priority
               />
-              <span className="bg-warning pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--warning-rgb),0.5)] transition-transform duration-300">
+              <span className="bg-primary pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA
               </span>
             </Link>
@@ -172,9 +172,9 @@ export function MobileTabNav() {
                       )}
                     >
                       {pathname === '/arena' && (
-                        <div className="via-warning absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
+                        <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
                       )}
-                      <div className="via-warning animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
+                      <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
                       <LayoutDashboard className="relative z-10 h-5 w-5" />
                       <span className="relative z-10 text-shadow-sm">{t('arena')}</span>
                     </Link>
@@ -225,9 +225,9 @@ export function MobileTabNav() {
                           )}
                         >
                           {isActive && (
-                            <div className="via-warning absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
+                            <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
                           )}
-                          <div className="via-warning animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
+                          <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
                           <item.icon className="relative z-10 h-5 w-5" />
                           <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
                         </Link>
@@ -237,7 +237,7 @@ export function MobileTabNav() {
                     <div className="my-4 h-px bg-white/5" />
 
                     <FeedbackModal triggerClassName="w-full">
-                      <div className="rounded-app bg-warning/[0.03] border-warning/20 text-warning hover:bg-warning/[0.08] group flex cursor-pointer items-center gap-3 border px-5 py-4 transition-all active:scale-[0.98]">
+                      <div className="rounded-app bg-primary/[0.03] border-primary/20 text-primary hover:bg-primary/[0.08] group flex cursor-pointer items-center gap-3 border px-5 py-4 transition-all active:scale-[0.98]">
                         <MessageSquarePlus className="h-5 w-5 flex-shrink-0" />
                         <span className="text-sm font-black tracking-[0.2em] uppercase">
                           {t('feedback')}
@@ -250,7 +250,7 @@ export function MobileTabNav() {
                 <div className="mt-auto flex items-center justify-between border-t border-white/5 bg-black/40 p-8">
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-black tracking-wider text-white">V1.0.0</span>
-                    <span className="bg-warning rounded-sm px-1.5 py-0.5 text-[9px] leading-tight font-black tracking-normal text-black uppercase shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+                    <span className="bg-primary rounded-sm px-1.5 py-0.5 text-[9px] leading-tight font-black tracking-normal text-black uppercase shadow-[0_0_10px_rgba(234,179,8,0.3)]">
                       BETA
                     </span>
                   </div>

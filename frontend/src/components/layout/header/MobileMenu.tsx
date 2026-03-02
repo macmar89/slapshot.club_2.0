@@ -67,8 +67,8 @@ export function MobileMenu({
           <div className="from-primary/10 border-b border-white/5 bg-gradient-to-b to-transparent p-6">
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="rounded-app bg-warning/20 border-warning/30 flex h-12 w-12 items-center justify-center border">
-                  <UserIcon className="text-warning h-6 w-6" />
+                <div className="rounded-app bg-primary/20 border-primary/30 flex h-12 w-12 items-center justify-center border">
+                  <UserIcon className="text-primary h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="text-lg font-black tracking-tighter text-white uppercase italic">
@@ -100,7 +100,7 @@ export function MobileMenu({
                     className={cn(
                       'h-10 justify-start rounded-lg px-4 text-[10px] font-black tracking-widest uppercase transition-all',
                       !effectiveLeagueId
-                        ? 'bg-warning text-black shadow-[0_0_15px_-5px_rgba(var(--warning-rgb),0.6)]'
+                        ? 'bg-primary text-black shadow-[0_0_15px_-5px_rgba(var(--primary-rgb),0.6)]'
                         : 'text-white/40 hover:bg-white/5 hover:text-white',
                     )}
                   >
@@ -117,7 +117,7 @@ export function MobileMenu({
                       className={cn(
                         'h-10 justify-start rounded-lg px-4 text-[10px] font-black tracking-widest uppercase transition-all',
                         effectiveLeagueId === league.id
-                          ? 'bg-warning text-black shadow-[0_0_15px_-5px_rgba(var(--warning-rgb),0.6)]'
+                          ? 'bg-primary text-black shadow-[0_0_15px_-5px_rgba(var(--primary-rgb),0.6)]'
                           : 'text-white/40 hover:bg-white/5 hover:text-white',
                       )}
                     >
@@ -149,7 +149,7 @@ export function MobileMenu({
                       <div className="flex-1 truncate text-right">
                         {match.homeTeam?.shortName || match.homeTeam?.name}
                       </div>
-                      <div className="text-warning text-[10px] font-black italic">VS</div>
+                      <div className="text-primary text-[10px] font-black italic">VS</div>
                       <div className="flex-1 truncate text-left">
                         {match.awayTeam?.shortName || match.awayTeam?.name}
                       </div>
@@ -191,7 +191,7 @@ export function MobileMenu({
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <FeedbackModal triggerClassName="w-full">
-                <div className="rounded-app bg-warning/10 border-warning/20 text-warning hover:bg-warning/20 flex cursor-pointer items-center justify-center gap-2 border p-3 transition-all">
+                <div className="rounded-app bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 flex cursor-pointer items-center justify-center gap-2 border p-3 transition-all">
                   <MessageSquarePlus className="h-4 w-4" />
                   <span className="text-[10px] font-black tracking-widest uppercase">
                     {t('feedback')}

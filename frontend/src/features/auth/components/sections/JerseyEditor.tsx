@@ -91,7 +91,7 @@ export function JerseyEditor({ initialJersey }: JerseyEditorProps) {
           <JerseyAvatar {...jersey} size={180} className="drop-shadow-2xl" />
         </div>
         <div className="absolute top-4 left-4">
-          <div className="text-warning/80 flex items-center gap-2">
+          <div className="text-primary/80 flex items-center gap-2">
             <Shirt className="h-5 w-5" />
             <span className="text-xs font-black tracking-widest uppercase">{t('title')}</span>
           </div>
@@ -184,7 +184,7 @@ export function JerseyEditor({ initialJersey }: JerseyEditorProps) {
                         handleChange('number', e.target.value);
                       }
                     }}
-                    className="focus:border-warning/50 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-lg font-black text-white transition-all outline-none placeholder:text-white/20"
+                    className="focus:border-primary/50 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-lg font-black text-white transition-all outline-none placeholder:text-white/20"
                     placeholder="10"
                   />
                 </div>
@@ -225,8 +225,8 @@ export function JerseyEditor({ initialJersey }: JerseyEditorProps) {
         <div className="flex justify-end border-t border-white/5 pt-4">
           <Button
             onClick={handleSave}
-            className="bg-warning w-full px-8 text-xs font-black tracking-widest text-black uppercase italic md:w-auto md:text-sm"
-            color="warning"
+            className="bg-primary w-full px-8 text-xs font-black tracking-widest text-black uppercase italic md:w-auto md:text-sm"
+            color="primary"
             disabled={!hasChanges || isPending}
           >
             {isPending ? (

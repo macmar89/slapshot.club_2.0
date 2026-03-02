@@ -40,7 +40,7 @@ export function ResetPasswordView() {
 
           <h1 className="mb-6 text-5xl leading-none font-bold tracking-tighter text-white drop-shadow-2xl lg:text-7xl">
             {t('hero.title_main')}
-            <span className="text-warning ml-2 block lg:inline">{t('hero.title_sub')}</span>
+            <span className="text-primary ml-2 block lg:inline">{t('hero.title_sub')}</span>
           </h1>
 
           <p className="mb-12 max-w-xl text-xl leading-relaxed text-white/50">

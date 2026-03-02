@@ -1,34 +1,35 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, Link } from '@/i18n/routing';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginUser } from '@/features/auth/actions';
-import { loginSchema, type LoginFormData } from '@/features/auth/schema';
+import { handlePostLogin } from '@/features/auth/auth.api';
+import { getLoginSchema, type LoginInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
-import { Turnstile } from '@/components/auth/Turnstile';
-import { Link } from '@/i18n/routing';
+import { Turnstile } from '@/components/common/turnstile';
 import { PasswordInput } from './PasswordInput';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 export const LoginForm = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/arena';
   const t = useTranslations('Auth');
+
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(getLoginSchema(t)),
     defaultValues: {
       identifier: '',
       password: '',
@@ -36,20 +37,26 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const {
+    register,
+    formState: { errors },
+  } = form;
+
+  const onSubmit = async (data: LoginInput) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const res = await loginUser(data);
+      const res = await handlePostLogin(data);
 
-      if (res.ok) {
+      if (res.success) {
         router.refresh();
-        router.push(redirectUrl);
+        router.push('/arena');
       } else {
-        setError(res.data.errors?.[0]?.message || 'Prihlásenie zlyhalo');
+        setError(res.message || 'Prihlásenie zlyhalo');
       }
-    } catch (_err) {
+    } catch (err) {
+      console.error('Login error:', err);
       setError('Nastala neočakávaná chyba');
     } finally {
       setIsLoading(false);
@@ -57,86 +64,101 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-sm flex-col gap-6">
-      <div className="mb-4 flex flex-col gap-1 text-center">
-        <h2 className="text-2xl font-bold tracking-tighter text-white uppercase">
-          {t('welcome_back')}
-        </h2>
-        <p className="text-sm font-medium text-white/40">{t('continue_journey')}</p>
-      </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full max-w-sm flex-col gap-6">
+        <div className="mb-4 flex flex-col gap-1 text-center">
+          <h2 className="text-2xl font-bold tracking-tighter text-white uppercase">
+            {t('welcome_back')}
+          </h2>
+          <p className="text-sm font-medium text-white/40">{t('continue_journey')}</p>
+        </div>
 
-      <div className="flex flex-col gap-4">
-        {error && (
-          <div className="rounded-app border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm font-medium text-red-500">
-            {error}
-          </div>
-        )}
+        <div className="flex flex-col gap-4">
+          {error && (
+            <div className="rounded-app border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm font-medium text-red-500">
+              {error}
+            </div>
+          )}
 
-        <div className="space-y-2 text-left">
-          <label
-            htmlFor="identifier"
-            className="ml-1 text-xs font-medium tracking-wider text-white/80 uppercase"
-          >
-            {t('email_or_username')}
-          </label>
-          <input
-            id="identifier"
-            type="text"
-            placeholder={t('email_placeholder')}
-            disabled={isLoading}
-            {...register('identifier')}
-            className={cn(
-              'rounded-app w-full px-4 py-3 transition-all duration-200 outline-none',
-              'border border-white/10 bg-white/5 text-white placeholder:text-white/30',
-              'focus:border-white/30 focus:bg-white/10 focus:ring-1 focus:ring-white/30',
-              'hover:border-white/20 hover:bg-white/10',
-              isLoading && 'cursor-not-allowed opacity-50',
-              errors.identifier && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+          <FormField
+            control={form.control}
+            name="identifier"
+            render={({ field }) => (
+              <FormItem className="space-y-2 text-left">
+                <FormLabel className="ml-1 text-xs font-medium tracking-wider text-white/80 uppercase">
+                  {t('email_or_username')}
+                </FormLabel>
+                <FormControl>
+                  <input
+                    {...field}
+                    id="identifier"
+                    type="text"
+                    placeholder={t('email_placeholder')}
+                    disabled={isLoading}
+                    className={cn(
+                      'rounded-app w-full px-4 py-3 transition-all duration-200 outline-none',
+                      'border border-white/10 bg-white/5 text-white placeholder:text-white/30',
+                      'focus:border-white/30 focus:bg-white/10 focus:ring-1 focus:ring-white/30',
+                      'hover:border-white/20 hover:bg-white/10',
+                      isLoading && 'cursor-not-allowed opacity-50',
+                      errors.identifier && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="ml-1 text-xs text-red-500" />
+              </FormItem>
             )}
           />
-          {errors.identifier && (
-            <p className="ml-1 text-xs text-red-500">{errors.identifier.message}</p>
-          )}
+
+          <PasswordInput
+            id="password"
+            label={t('password')}
+            placeholder={t('password_placeholder')}
+            disabled={isLoading}
+            error={errors.password?.message}
+            register={register('password')}
+          />
+
+          <div className="-mt-2 flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-white/50 transition-colors hover:text-white"
+            >
+              {t('forgot_password')}
+            </Link>
+          </div>
+
+          <FormField
+            control={form.control}
+            name="turnstileToken"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Turnstile
+                    onSuccess={field.onChange}
+                    onError={() =>
+                      form.setError('turnstileToken', { message: t('turnstile_error') })
+                    }
+                    onExpire={() => field.onChange('')}
+                  />
+                </FormControl>
+                <FormMessage className="text-center text-xs text-red-500" />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <PasswordInput
-          id="password"
-          label={t('password')}
-          placeholder={t('password_placeholder')}
-          disabled={isLoading}
-          error={errors.password?.message}
-          register={register('password')}
-        />
+        <Button type="submit" color="gold" className="w-full py-6 text-lg" disabled={isLoading}>
+          {isLoading ? t('logging_in') : t('login_button')}
+        </Button>
 
-        <div className="-mt-2 flex justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-xs text-white/50 transition-colors hover:text-white"
-          >
-            {t('forgot_password')}
+        <div className="mt-2 text-center text-sm text-white/50">
+          {t('no_account')}{' '}
+          <Link href="/register" className="font-semibold text-white hover:underline">
+            {t('register')}
           </Link>
         </div>
-
-        <Turnstile
-          onSuccess={(token) => setValue('turnstileToken', token)}
-          onError={() => setError(t('turnstile_error'))}
-          onExpire={() => setValue('turnstileToken', '')}
-        />
-        {errors.turnstileToken && (
-          <p className="text-center text-xs text-red-500">{errors.turnstileToken.message}</p>
-        )}
-      </div>
-
-      <Button type="submit" color="gold" className="w-full py-6 text-lg" disabled={isLoading}>
-        {isLoading ? t('logging_in') : t('login_button')}
-      </Button>
-
-      <div className="mt-2 text-center text-sm text-white/50">
-        {t('no_account')}{' '}
-        <Link href="/register" className="font-semibold text-white hover:underline">
-          {t('register')}
-        </Link>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 };

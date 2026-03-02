@@ -42,7 +42,7 @@ export function BackButton({
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        'hover:text-warning flex h-auto cursor-pointer items-center gap-2 self-start p-0 text-xs font-bold tracking-widest text-white uppercase transition-colors hover:bg-transparent',
+        'hover:text-primary flex h-auto cursor-pointer items-center gap-2 self-start p-0 text-xs font-bold tracking-widest text-white uppercase transition-colors hover:bg-transparent',
         className,
       )}
       {...props}
