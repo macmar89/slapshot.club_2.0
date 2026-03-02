@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import bgImage from '@/assets/images/background/ssc_stick.png';

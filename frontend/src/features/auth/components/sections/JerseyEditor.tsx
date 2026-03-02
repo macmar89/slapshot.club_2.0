@@ -3,7 +3,7 @@
 import React, { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Shirt, Save, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { updateJerseyAction } from '@/features/auth/account-actions';
 import { toast } from 'sonner';
 import { JerseyAvatar, JerseyPattern, JerseyStyle } from '../JerseyAvatar';
@@ -40,7 +40,7 @@ const PATTERNS: { value: JerseyPattern }[] = [
   { value: 'hoops' },
 ];
 
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 
 export function JerseyEditor({ initialJersey }: JerseyEditorProps) {
   const t = useTranslations('Jersey');

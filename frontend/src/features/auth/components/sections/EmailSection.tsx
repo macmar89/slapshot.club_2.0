@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Mail, ChevronRight, Send } from 'lucide-react';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
-import { Button } from '@/components/ui/Button';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
-} from '@/components/ui/Dialog';
+} from '@/components/ui/dialog';
 import { emailChangeRequestSchema, type EmailChangeRequestFormData } from '@/features/auth/schema';
 import { requestEmailChangeAction } from '@/features/auth/account-actions';
 

@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { UserCog } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/ui/container';
 import { ProfileOverview } from './sections/ProfileOverview';
 import { UsernameForm } from './sections/UsernameForm';
 import { EmailSection } from './sections/EmailSection';
 import { LocationForm } from './sections/LocationForm';
 import { SecurityForm } from './sections/SecurityForm';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { NotificationSection } from '@/features/notifications/components/NotificationSection';
 
 interface AccountViewProps {

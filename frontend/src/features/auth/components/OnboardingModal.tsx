@@ -6,10 +6,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogDescription,
-} from '@/components/ui/Dialog';
-import { Button } from '@/components/ui/Button';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import { completeOnboarding } from '@/features/auth/actions';
 import { Trophy, ShieldCheck, Users as UsersIcon, ChevronRight, Check } from 'lucide-react';

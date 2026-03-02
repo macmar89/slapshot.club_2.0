@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, Mail } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { ReferralLink } from '../ReferralLink';
 
 interface ProfileOverviewProps {

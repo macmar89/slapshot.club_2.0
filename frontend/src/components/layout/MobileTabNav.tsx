@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { dashboardConfig } from '@/config/dashboard';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { dashboardConfig } from '@/config/sidebar';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { MoreHorizontal, MessageSquarePlus, LogOut, X, LayoutDashboard } from 'lucide-react';
 import {
   Sheet,
@@ -11,16 +11,16 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetClose,
-} from '@/components/ui/Sheet';
+} from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { useParams, useSelectedLayoutSegments } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { FeedbackModal } from '@/components/feedback/FeedbackModal';
+import { Button } from '@/components/ui/button';
+import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
-import { getCompetitionBySlugAction } from '@/features/competitions/actions';
+import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
 import Image from 'next/image';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 
@@ -40,7 +40,7 @@ export function MobileTabNav() {
   React.useEffect(() => {
     async function fetchCompetition() {
       if (slug) {
-        const comp = await getCompetitionBySlugAction(slug, locale);
+        const comp = await handleGetCompetitionBySlug(slug);
         if (comp) {
           setCompetitionName(comp.name);
         }

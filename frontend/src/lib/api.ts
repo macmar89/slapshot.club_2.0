@@ -32,7 +32,6 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (originalRequest.url.includes(API_ROUTES.AUTH.REFRESH)) {
-        if (typeof window !== 'undefined') window.location.href = '/';
         return Promise.reject(error);
       }
 
@@ -53,7 +52,6 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        if (typeof window !== 'undefined') window.location.href = '/';
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

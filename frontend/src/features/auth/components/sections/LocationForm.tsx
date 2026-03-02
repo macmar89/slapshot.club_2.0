@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { MapPin } from 'lucide-react';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
-import { Button } from '@/components/ui/Button';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import { Button } from '@/components/ui/button';
 import { updateLocationAction } from '@/features/auth/account-actions';
 
 interface LocationFormProps {

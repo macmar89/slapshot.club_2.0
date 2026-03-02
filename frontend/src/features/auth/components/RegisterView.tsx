@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Zap } from 'lucide-react';

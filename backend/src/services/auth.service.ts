@@ -110,8 +110,6 @@ export const rotateRefreshToken = async (tokenString: string) => {
     throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED);
   }
 
-  console.log(dbToken);
-
   const user = await db.query.users.findFirst({
     where: (users, { eq, and }) =>
       and(eq(users.id, dbToken.userId), activeOnly(users, eq(users.isActive, true))),

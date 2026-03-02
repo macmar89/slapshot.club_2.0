@@ -6,10 +6,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogDescription,
-} from '@/components/ui/Dialog';
-import { Button } from '@/components/ui/Button';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { markAnnouncementAsSeen } from '@/features/auth/actions';
 import { X, Bell } from 'lucide-react';
 import Image from 'next/image';

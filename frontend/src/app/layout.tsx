@@ -35,12 +35,12 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${sora.variable} ${spaceGrotesk.variable}`}>
       <NextIntlClientProvider messages={messages}>
-        <Providers>
-          <body className="bg-background text-foreground relative min-h-screen font-sans antialiased">
+        <body className="bg-background text-foreground relative min-h-screen font-sans antialiased">
+          <Providers>
             <BackgroundImage />
             {children}
-          </body>
-        </Providers>
+          </Providers>
+        </body>
       </NextIntlClientProvider>
     </html>
   );

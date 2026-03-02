@@ -40,6 +40,8 @@ export const competitions = pgTable(
     }).notNull(),
     endDate: timestamp('end_date', { precision: 3, withTimezone: true, mode: 'string' }).notNull(),
 
+    totalParticipants: integer('total_participants').default(0),
+
     totalPlayedMatches: integer('total_played_matches').default(0),
     totalPossiblePoints: integer('total_possible_points').default(0),
 

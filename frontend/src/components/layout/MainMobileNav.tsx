@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import {
   MoreHorizontal,
   FileText,
@@ -10,12 +10,11 @@ import {
   LogOut,
   MessageSquarePlus,
 } from 'lucide-react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/Sheet';
-import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { Button } from '@/components/ui/Button';
-import { FeedbackModal } from '@/components/feedback/FeedbackModal';
+import { Button } from '@/components/ui/button';
+import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import { ReferralLink } from '@/features/auth/components/ReferralLink';

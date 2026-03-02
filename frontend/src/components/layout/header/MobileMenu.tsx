@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Menu as MenuIcon, User as UserIcon, Settings, MessageSquarePlus } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import {
@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@/components/ui/Sheet';
+} from '@/components/ui/sheet';
 import { FeedbackModal } from '@/components/feedback/FeedbackModal';
 import { useTranslations } from 'next-intl';
 

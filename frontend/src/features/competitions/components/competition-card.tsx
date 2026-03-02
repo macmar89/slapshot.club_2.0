@@ -1,49 +1,40 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useRouter } from '@/i18n/routing';
 import dynamic from 'next/dynamic';
 
-// Dynamicky načítame modál pre lepší výkon
 const JoinCompetitionModal = dynamic(
-  () => import('./JoinCompetitionModal').then((mod) => mod.JoinCompetitionModal),
+  () => import('./join-competition-modal').then((mod) => mod.JoinCompetitionModal),
   { ssr: false },
 );
 
+import { Competition } from '../competitions.types';
+
 interface CompetitionCardProps {
-  competition: any;
-  isJoined: boolean;
-  userId: string;
+  competition: Competition;
   compact?: boolean;
-  participantCount: number;
-  userRank?: number;
 }
 
-export function CompetitionCard({
-  competition,
-  isJoined,
-  userId,
-  compact = false,
-  participantCount,
-  userRank,
-}: CompetitionCardProps) {
+export function CompetitionCard({ competition, compact = false }: CompetitionCardProps) {
   const t = useTranslations('Arena');
   const router = useRouter();
 
-  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState<boolean>(false);
 
+  const isJoined = competition.isJoined;
   const isFinished = competition.status === 'finished';
-  const isRegistrationDisabled = !isJoined && !isFinished && !competition.isRegistrationOpen;
+  const isRegistrationDisabled = !competition.isRegistrationOpen;
+  const userRank = competition.leaderboardEntries?.currentRank ?? 0;
 
   const handleEnter = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Ak je ukončená alebo už prihlásená, ideme na dashboard
     if (isFinished || isJoined) {
       router.push({
         pathname: '/[slug]/dashboard',
@@ -52,31 +43,10 @@ export function CompetitionCard({
       return;
     }
 
-    // Ak nie je prihlásený a registrácia je otvorená, ukážeme modal
     if (competition.isRegistrationOpen) {
       setIsJoinModalOpen(true);
     }
   };
-
-  // const handleConfirmJoin = async () => {
-  //   setIsJoining(true);
-  //   try {
-  //     const res = await joinCompetition(competition.id, userId);
-  //     if (res.ok) {
-  //       setIsJoinModalOpen(false);
-  //       router.push({
-  //         pathname: '/[slug]/dashboard',
-  //         params: { slug: competition.slug || '' },
-  //       });
-  //     } else {
-  //       console.error(res.error);
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to join:', error);
-  //   } finally {
-  //     setIsJoining(false);
-  //   }
-  // };
 
   return (
     <>
@@ -159,7 +129,7 @@ export function CompetitionCard({
                 <div className="ml-auto flex items-center gap-1.5 rounded-sm border border-white/10 bg-white/5 px-2 py-1">
                   <div className="h-1 w-1 rounded-full bg-white/40" />
                   <span className="text-[9px] font-bold tracking-wider text-white/50 uppercase">
-                    {t('participants', { count: participantCount })}
+                    {t('participants', { count: competition.totalParticipants })}
                   </span>
                 </div>
               </div>
@@ -182,7 +152,6 @@ export function CompetitionCard({
               <Button
                 onClick={handleEnter}
                 color={isFinished ? 'secondary' : 'gold'}
-                // variant={isFinished ? 'outline' : 'solid'}
                 disabled={isRegistrationDisabled}
                 className={cn(
                   'rounded-app shrink-0 font-black',
@@ -207,15 +176,13 @@ export function CompetitionCard({
         </IceGlassCard>
       </div>
 
-      {/* {isJoinModalOpen && (
+      {isJoinModalOpen && (
         <JoinCompetitionModal
           isOpen={isJoinModalOpen}
           onClose={() => setIsJoinModalOpen(false)}
-          onConfirm={handleConfirmJoin}
-          competitionName={competition.name}
-          isLoading={isJoining}
+          competition={competition}
         />
-      )} */}
+      )}
     </>
   );
 }

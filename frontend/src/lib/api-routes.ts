@@ -5,4 +5,9 @@ export const API_ROUTES = {
     REFRESH: '/auth/refresh',
     ME: '/auth/me',
   },
+  COMPETITIONS: {
+    ALL: '/competition',
+    JOIN: '/competition/join',
+  },
+  FEEDBACK: '/',
 } as const;

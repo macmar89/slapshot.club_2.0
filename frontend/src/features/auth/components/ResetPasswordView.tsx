@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { ResetPasswordForm } from '@/features/auth/components/ResetPasswordForm';
 import { Trophy, Users, Table, Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';

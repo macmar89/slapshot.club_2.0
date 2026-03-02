@@ -9,7 +9,7 @@ export const handlePostLogin = async (values: LoginInput) => {
   try {
     const { data } = await api.post(API_ROUTES.AUTH.LOGIN, values);
 
-    setUser(data);
+    setUser(data.data.user);
 
     return {
       success: true,
@@ -24,11 +24,24 @@ export const handlePostLogin = async (values: LoginInput) => {
   }
 };
 
+export const handleGetMe = async () => {
+  const { setUser } = useAuthStore.getState();
+
+  try {
+    const { data } = await api.get(API_ROUTES.AUTH.ME);
+    setUser(data.data.user);
+    return { success: true, user: data.data.user };
+  } catch (error) {
+    setUser(null);
+    return { success: false, message: 'session_expired' };
+  }
+};
+
 export const handlePostLogout = async () => {
   try {
     await api.post(API_ROUTES.AUTH.LOGOUT);
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, message: 'logout_failed' };
   } finally {
     useAuthStore.getState().logout();

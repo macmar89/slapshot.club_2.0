@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';

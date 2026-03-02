@@ -3,7 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Users, Trophy, ChevronDown, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
   DialogClose,
   DialogDescription,
-} from '@/components/ui/Dialog';
+} from '@/components/ui/dialog';
 import { useTranslations } from 'next-intl';
 
 interface League {

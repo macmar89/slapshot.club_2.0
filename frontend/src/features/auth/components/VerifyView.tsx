@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { IceGlassCard } from '@/components/ui/IceGlassCard';
-import { Button } from '@/components/ui/Button';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import { Button } from '@/components/ui/button';
 import { verifyUser, resendVerification } from '@/features/auth/actions';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/routing';

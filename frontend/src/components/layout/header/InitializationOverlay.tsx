@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { HockeyLoader } from '@/components/ui/HockeyLoader';
+import { HockeyLoader } from '@/components/ui/hockey-loader';
 import { useTranslations } from 'next-intl';
 
 interface InitializationOverlayProps {
