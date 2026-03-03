@@ -1,38 +1,41 @@
-import { pgTable, index, foreignKey, varchar, numeric, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  index,
+  foreignKey,
+  varchar,
+  numeric,
+  uniqueIndex,
+  timestamp,
+  boolean,
+} from 'drizzle-orm/pg-core';
 import { users } from './users.js';
-import { generateCuid } from '../helpers.js';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
 
 export const userReferrals = pgTable(
   'user_referrals',
   {
     id: generateCuid(),
-    userId: varchar('user_id')
-      .references(() => users.id)
-      .notNull(),
-    referralCode: varchar('referral_code').unique().notNull(),
-    referredById: varchar('referred_by_id'),
-    totalRegistered: numeric('total_registered').default('0'),
-    totalPaid: numeric('total_paid').default('0'),
+    referrerId: varchar('referrer_id', { length: 24 }).notNull(),
+    referredUserId: varchar('referred_user_id', { length: 24 }).notNull(),
+
+    hasConvertedToPro: boolean('has_converted_to_pro').default(false).notNull(),
+    convertedAt: timestamp('converted_at', { precision: 3, withTimezone: true, mode: 'string' }),
+
+    ...withUpdatesFields,
   },
   (table) => [
-    uniqueIndex('user_referrals_referral_code_idx').using(
-      'btree',
-      table.referralCode.asc().nullsLast().op('text_ops'),
-    ),
-    index('user_referrals_referred_by_idx').using(
-      'btree',
-      table.referredById.asc().nullsLast().op('text_ops'),
-    ),
-    index('user_referrals_user_idx').using('btree', table.userId.asc().nullsLast().op('text_ops')),
+    index('user_referrals_referrer_idx').on(table.referrerId),
+    index('user_referrals_referred_user_idx').on(table.referredUserId),
+    index('user_referrals_referrer_pro_idx').on(table.referrerId, table.hasConvertedToPro),
     foreignKey({
-      columns: [table.userId],
+      columns: [table.referrerId],
       foreignColumns: [users.id],
-      name: 'user_referrals_user_id_fkey',
+      name: 'user_referrals_referrer_id_fkey',
     }).onDelete('cascade'),
     foreignKey({
-      columns: [table.referredById],
+      columns: [table.referredUserId],
       foreignColumns: [users.id],
-      name: 'user_referrals_referred_by_id_fkey',
-    }).onDelete('set null'),
+      name: 'user_referrals_referred_user_id_fkey',
+    }).onDelete('cascade'),
   ],
 );

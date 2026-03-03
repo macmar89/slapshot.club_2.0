@@ -7,6 +7,8 @@ import { FeedbackModal } from '@/components/common/feedback-modal';
 import { MessageSquarePlus } from 'lucide-react';
 import { getPublicCompetition } from '@/features/competitions/competitions.server';
 
+import { notFound } from 'next/navigation';
+
 export default async function CompetitionLayout({
   children,
   params,
@@ -15,7 +17,13 @@ export default async function CompetitionLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { data } = await getPublicCompetition(slug);
+  const result = await getPublicCompetition(slug);
+
+  if (!result.success) {
+    notFound();
+  }
+
+  const { data } = result;
 
   return (
     <div className="relative min-h-screen w-full">

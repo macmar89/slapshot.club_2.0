@@ -1,8 +1,10 @@
-import { ArenaView } from '@/features/arena/components/ArenaView';
-import { handleGetActiveCompetitionsServer } from '@/features/competitions/competitions.server';
+import { ArenaView } from '@/features/arena/views/ArenaView';
+import { getActiveCompetitionsServer } from '@/features/competitions/competitions.server';
 
 export default async function ArenaPage() {
-  const competitions = await handleGetActiveCompetitionsServer();
+  const result = await getActiveCompetitionsServer();
 
-  return <ArenaView initialCompetitions={competitions.data || []} />;
+  const competitions = result.success ? result.data : [];
+
+  return <ArenaView initialCompetitions={competitions} />;
 }

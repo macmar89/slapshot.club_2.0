@@ -173,11 +173,11 @@ export const notificationSettingsRelations = relations(notificationSettings, ({ 
 
 export const userReferralsRelations = relations(userReferrals, ({ one }) => ({
   user: one(users, {
-    fields: [userReferrals.userId],
+    fields: [userReferrals.referrerId],
     references: [users.id],
   }),
   referredBy: one(users, {
-    fields: [userReferrals.referredById],
+    fields: [userReferrals.referredUserId],
     references: [users.id],
     relationName: 'referredBy',
   }),

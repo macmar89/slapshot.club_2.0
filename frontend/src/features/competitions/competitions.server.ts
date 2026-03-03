@@ -3,15 +3,18 @@ import { API_ROUTES } from '@/lib/api-routes';
 import { Competition, CompetitionPublicInfo } from './competitions.types';
 import { ActionResponse } from '@/lib/types';
 
-export const handleGetActiveCompetitionsServer = async (): Promise<
-  ActionResponse<Competition[]>
-> => {
+export const getActiveCompetitionsServer = async (): Promise<ActionResponse<Competition[]>> => {
   try {
     const res = await serverFetch(API_ROUTES.COMPETITIONS.ALL);
 
     const resData = await res.json();
+
+    if (resData.status !== 'success') {
+      return { success: false, error: 'failed_to_load_competitions' };
+    }
+
     return {
-      success: resData.status === 'success',
+      success: true,
       data: resData.data.competitions as Competition[],
     };
   } catch {
@@ -27,7 +30,11 @@ export const getPublicCompetition = async (
 
     const resData = await res.json();
 
-    return { success: resData.status === 'success', data: resData.data as CompetitionPublicInfo };
+    if (resData.status !== 'success') {
+      return { success: false, error: 'failed_to_get_public_competition' };
+    }
+
+    return { success: true, data: resData.data as CompetitionPublicInfo };
   } catch {
     return { success: false, error: 'failed_to_get_public_competition' };
   }

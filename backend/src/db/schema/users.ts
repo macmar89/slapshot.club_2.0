@@ -7,6 +7,7 @@ import {
   boolean,
   pgEnum,
   text,
+  integer,
 } from 'drizzle-orm/pg-core';
 import { generateCuid, withUpdatesFields } from '../helpers';
 import { enumUsersSubscriptionPlan } from './subscriptions';
@@ -51,13 +52,22 @@ export const users = pgTable(
 
     isActive: boolean('is_active').default(true).notNull(),
 
+    referralCode: varchar('referral_code').unique().notNull(),
+    referredById: varchar('referred_by_id', { length: 24 }).references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    totalRegistered: integer('total_registered').default(0),
+    totalPaid: integer('total_paid').default(0),
+
     ...withUpdatesFields,
   },
   (table) => [
     uniqueIndex('users_email_idx').on(table.email),
     uniqueIndex('users_username_idx').on(table.username),
+    uniqueIndex('users_referral_code_idx').on(table.referralCode),
     index('users_subscription_active_until_idx').on(table.subscriptionActiveUntil),
     index('users_created_at_idx').on(table.createdAt),
     index('users_updated_at_idx').on(table.updatedAt),
+    index('users_referred_by_idx').on(table.referredById),
   ],
 );

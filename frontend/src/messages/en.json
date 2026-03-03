@@ -22,6 +22,7 @@
       "badge_top_10": "Top 10% of league",
       "badge_stable": "Stable Player",
       "badge_rookie": "Rookie of the Season",
+      "win_rate": "Win Rate",
       "stats": {
         "tips": "Tips",
         "exact": "Exact",
@@ -52,7 +53,7 @@
       "language_section": "App Language",
       "current_language": "Current language"
     },
-    "upcoming_matches_label": "{count, plural, one {Next Face-off} other {Next Face-offs}}",
+    "upcoming_matches_label": "You are still missing {count, plural, one {# tip} other {# tips}} for the next 3 days",
     "matches_remaining_count": "You have {count, plural, one {# match} other {# matches}} left to predict for the next 7 days",
     "place_prediction": "Predict now",
     "all_predicted_message": "Great job! You have predicted every match for the next week.",

@@ -35,7 +35,7 @@ async function seed() {
           email: user.email,
           password: hashedPassword,
 
-          lastActivity: new Date().toISOString(),
+          lastActiveAt: new Date().toISOString(),
 
           role: 'admin',
 
@@ -43,6 +43,8 @@ async function seed() {
           subscriptionActiveUntil: addYears(new Date(), 50).toISOString(),
 
           isActive: true,
+
+          referralCode: 'lf16nevs',
 
           verifiedAt: new Date().toISOString(),
         })

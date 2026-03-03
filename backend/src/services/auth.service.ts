@@ -64,6 +64,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       subscriptionPlan: true,
       subscriptionActiveUntil: true,
       verifiedAt: true,
+      referralCode: true,
     },
   });
 
@@ -224,6 +225,7 @@ export const getUserProfile = async (userId: string) => {
       subscriptionPlan: true,
       subscriptionActiveUntil: true,
       verifiedAt: true,
+      referralCode: true,
     },
   });
 

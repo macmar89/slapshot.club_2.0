@@ -22,6 +22,7 @@
       "badge_top_10": "Top 10% ligy",
       "badge_stable": "Stabilný hráč",
       "badge_rookie": "Nováčik sezóny",
+      "win_rate": "Úspešnosť",
       "stats": {
         "tips": "Tipy",
         "exact": "Presné",
@@ -52,7 +53,7 @@
       "language_section": "Jazyk aplikácie",
       "current_language": "Aktuálny jazyk"
     },
-    "upcoming_matches_label": "{count, plural, one {Najbližšie buly} few {Najbližšie buly} other {Najbližšie buly}}",
+    "upcoming_matches_label": "Na najbližšie 3 dni ti chýba ešte {count, plural, one {# tip} few {# tipy} other {# tipov}}",
     "matches_remaining_count": "Zostáva ti natipovať {count, plural, one {# zápas} few {# zápasy} other {# zápasov}} na 7 najbližších dní",
     "place_prediction": "Natipuj výsledok",
     "all_predicted_message": "Skvelá práca! Máš natipovaný každý zápas na najbližší týždeň.",

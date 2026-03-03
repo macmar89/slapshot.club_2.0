@@ -8,6 +8,9 @@ export const API_ROUTES = {
   COMPETITIONS: {
     ALL: '/competition',
     JOIN: '/competition/join',
+    LEADERBOARD: {
+      ME: (slug: string) => `/competition/${slug}/leaderboard/me`,
+    },
     PUBLIC: {
       INFO: (slug: string) => `/competition/public/${slug}`,
     },

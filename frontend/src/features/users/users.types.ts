@@ -7,4 +7,5 @@ export interface User {
   subscriptionPlan: string;
   subscriptionActiveUntil: string;
   isVerified: boolean;
+  referralCode: string;
 }
