@@ -28,3 +28,5 @@ export interface JoinCompetitionResponse {
   success: boolean;
   error?: string;
 }
+
+export type CompetitionPublicInfo = Pick<Competition, 'name'>;

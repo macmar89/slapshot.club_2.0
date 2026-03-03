@@ -1,6 +1,10 @@
 import { catchAsync } from '../utils/catchAsync';
 import { type Request, type Response } from 'express';
-import { findAllCompetitions, joinCompetition } from '../services/competition.service';
+import {
+  findAllCompetitions,
+  joinCompetition,
+  findPublicCompetitionName,
+} from '../services/competition.service';
 import type { AppLocale } from '../types/global';
 
 export const getCompetitionsHandler = catchAsync(async (req: Request, res: Response) => {
@@ -28,5 +32,17 @@ export const joinCompetitionHandler = catchAsync(async (req: Request, res: Respo
     data: {
       competition,
     },
+  });
+});
+
+export const getPublicCompetitionNameHandler = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug as string;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+
+  const competition = await findPublicCompetitionName(slug, locale);
+
+  res.status(200).json({
+    status: 'success',
+    data: competition,
   });
 });

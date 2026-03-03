@@ -101,3 +101,23 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
 
   return competition;
 };
+
+export const findPublicCompetitionName = async (slug: string, locale: AppLocale) => {
+  const competition = await db.query.competitions.findFirst({
+    columns: {
+      id: true,
+    },
+    with: {
+      locales: {
+        columns: {
+          name: true,
+        },
+        where: (locales, { eq }) => eq(locales.locale, locale as AppLocale),
+        limit: 1,
+      },
+    },
+    where: (competitions) => eq(competitions.slug, slug),
+  });
+
+  return { name: competition?.locales[0]?.name ?? null };
+};

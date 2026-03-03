@@ -11,7 +11,7 @@ const router = Router();
 router.use('/admin', isAuth, isAdmin, adminRoutes);
 
 router.use('/auth', authRoutes);
-router.use('/competition', isAuth, competitionRoutes);
+router.use('/competition', competitionRoutes);
 router.use('/feedback', isAuth, feedbackRoutes);
 
 export default router;

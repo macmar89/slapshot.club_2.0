@@ -10,27 +10,27 @@ export const dashboardConfig = {
   sidebarNav: [
     {
       labelKey: 'overview',
-      href: '/dashboard',
+      href: '/[slug]/dashboard',
       icon: LayoutDashboard,
     },
     {
       labelKey: 'matches',
-      href: '/dashboard/matches',
+      href: '/[slug]/matches',
       icon: Calendar,
     },
     {
       labelKey: 'leaderboard',
-      href: '/dashboard/leaderboard',
+      href: '/[slug]/leaderboard',
       icon: Trophy,
     },
     {
       labelKey: 'leagues',
-      href: '/dashboard/leagues',
+      href: '/[slug]/leagues',
       icon: Users,
     },
     {
       labelKey: 'rules',
-      href: '/dashboard/rules',
+      href: '/rules',
       icon: FileText,
     },
     {

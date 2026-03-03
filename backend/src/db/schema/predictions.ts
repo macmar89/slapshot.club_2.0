@@ -25,6 +25,7 @@ export const predictions = pgTable(
 
     userId: varchar('user_id', { length: 24 }).notNull(),
     matchId: varchar('match_id', { length: 24 }).notNull(),
+    competitionId: varchar('competition_id', { length: 24 }).notNull(),
 
     homeGoals: integer('home_goals').notNull(),
     awayGoals: integer('away_goals').notNull(),
@@ -44,6 +45,7 @@ export const predictions = pgTable(
     uniqueIndex('user_match_idx').on(table.userId, table.matchId),
     index('predictions_match_idx').on(table.matchId),
     index('predictions_user_idx').on(table.userId),
+    index('predictions_competition_idx').on(table.competitionId),
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],

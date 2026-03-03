@@ -12,7 +12,7 @@ function parseJwt(token: string) {
         .join(''),
     );
     return JSON.parse(jsonPayload);
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -37,6 +37,43 @@ export async function middleware(request: NextRequest) {
   if (!isPublicPage && !accessToken && !refreshToken) {
     const loginUrl = new URL('/', request.url);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // If on home page and have refresh token, try to validate/refresh and redirect to arena
+  if (pathname === '/' && refreshToken) {
+    let isExpired = true;
+    if (accessToken) {
+      const decoded = parseJwt(accessToken);
+      if (decoded && decoded.exp) {
+        isExpired = decoded.exp * 1000 < Date.now() + 10000;
+      }
+    }
+
+    if (!isExpired) {
+      return NextResponse.redirect(new URL('/arena', request.url));
+    }
+
+    // If expired, try to refresh
+    try {
+      const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          Cookie: `refresh_token=${refreshToken}`,
+        },
+      });
+
+      if (refreshRes.ok) {
+        const setCookieHeader = refreshRes.headers.get('set-cookie');
+        const response = NextResponse.redirect(new URL('/arena', request.url));
+        if (setCookieHeader) {
+          response.headers.set('Set-Cookie', setCookieHeader);
+        }
+        return response;
+      }
+    } catch {
+      // If refresh fails on home page, just continue to show login
+      return NextResponse.next();
+    }
   }
 
   let response = NextResponse.next();
@@ -67,7 +104,7 @@ export async function middleware(request: NextRequest) {
 
             const newCookies = setCookieHeader.split(',').reduce(
               (acc, cookieStr) => {
-                const [fullMatch, name, value] = cookieStr.match(/([^=]+)=([^;]+)/) || [];
+                const [, name, value] = cookieStr.match(/([^=]+)=([^;]+)/) || [];
                 if (name && value) {
                   acc[name.trim()] = value.trim();
                 }
@@ -94,7 +131,7 @@ export async function middleware(request: NextRequest) {
           const loginUrl = new URL('/', request.url);
           return NextResponse.redirect(loginUrl);
         }
-      } catch (error) {
+      } catch {
         if (!isPublicPage) {
           const loginUrl = new URL('/', request.url);
           return NextResponse.redirect(loginUrl);

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { dashboardConfig } from '@/config/sidebar';
+import { dashboardConfig, DashboardItem } from '@/config/sidebar';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { MoreHorizontal, MessageSquarePlus, LogOut, X, LayoutDashboard } from 'lucide-react';
 import {
@@ -15,7 +15,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
-import { useParams, useSelectedLayoutSegments } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
@@ -32,7 +32,6 @@ export function MobileTabNav() {
   const pathname = usePathname();
   const slug = params?.slug as string | undefined;
   const locale = useLocale();
-  const segments = useSelectedLayoutSegments();
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [competitionName, setCompetitionName] = React.useState<string | null>(null);
@@ -40,7 +39,7 @@ export function MobileTabNav() {
   React.useEffect(() => {
     async function fetchCompetition() {
       if (slug) {
-        const comp = await handleGetCompetitionBySlug(slug);
+        const comp = await handleGetCompetitionBySlug();
         if (comp) {
           setCompetitionName(comp.name);
         }
@@ -56,15 +55,7 @@ export function MobileTabNav() {
   const rightItems = dashboardConfig.sidebarNav.slice(3, 4);
 
   const getHref = (originalHref: string) => {
-    if (!slug) return originalHref;
-
-    if (originalHref === '/dashboard') {
-      return `/dashboard/${slug}`;
-    } else if (originalHref.startsWith('/dashboard/')) {
-      const subPath = originalHref.replace('/dashboard/', '');
-      return `/dashboard/${slug}/${subPath}`;
-    }
-    return originalHref;
+    return originalHref.replace('[slug]', slug || '');
   };
 
   return (
@@ -94,7 +85,7 @@ export function MobileTabNav() {
           {/* Logo in the center */}
           <div className="relative z-50 -mt-10 flex items-center justify-center px-2">
             <Link
-              href={`/dashboard/${slug}` as any}
+              href={slug ? (`/[slug]/dashboard`.replace('[slug]', slug) as any) : ('/arena' as any)}
               className="animate-in fade-in zoom-in group relative z-10 flex h-24 w-24 rotate-3 items-center justify-center duration-500"
             >
               <Image
@@ -192,27 +183,14 @@ export function MobileTabNav() {
                       </>
                     )}
 
-                    {dashboardConfig.sidebarNav.map((item: any) => {
-                      let href = item.href;
-                      if (slug) {
-                        if (href === '/dashboard') {
-                          href = `/dashboard/${slug}`;
-                        } else if (href.startsWith('/dashboard/')) {
-                          const subPath = href.replace('/dashboard/', '');
-                          href = `/dashboard/${slug}/${subPath}`;
-                        }
-                      } else if (item.href !== '/dashboard' && !slug) {
-                        return null;
-                      }
+                    {dashboardConfig.sidebarNav.map((item: DashboardItem) => {
+                      const isSlugPath = item.href.includes('[slug]');
 
-                      const itemSegment = item.href.split('/').pop();
-                      const isOverview = itemSegment === 'dashboard';
-                      let isActive = false;
-                      if (isOverview) {
-                        isActive = slug ? segments.length === 1 : segments.length === 0;
-                      } else {
-                        isActive = itemSegment ? segments.includes(itemSegment) : false;
-                      }
+                      if (isSlugPath && !slug) return null;
+
+                      const href = item.href.replace('[slug]', slug || '');
+                      const isActive =
+                        pathname === href || (href !== '/' && pathname.startsWith(href));
 
                       return (
                         <Link

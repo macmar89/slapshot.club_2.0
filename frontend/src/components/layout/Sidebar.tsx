@@ -1,39 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { dashboardConfig } from '@/config/sidebar';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/i18n/routing';
-import { useParams, useSelectedLayoutSegments } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { LayoutDashboard } from 'lucide-react';
-import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
+import { CompetitionPublicInfo } from '@/features/competitions/competitions.types';
 
-export function Sidebar() {
+interface SidebarProps {
+  competition: CompetitionPublicInfo;
+}
+
+export const Sidebar = ({ competition }: SidebarProps) => {
   const t = useTranslations('Dashboard.nav');
   const params = useParams();
   const pathname = usePathname();
   const slug = params?.slug as string | undefined;
-  const locale = useLocale();
-
-  const [competitionName, setCompetitionName] = useState<string | null>(null);
-
-  const segments = useSelectedLayoutSegments();
-
-  useEffect(() => {
-    async function fetchCompetition() {
-      if (slug) {
-        const comp = await handleGetCompetitionBySlug(slug);
-        if (comp) {
-          setCompetitionName(comp.name);
-        }
-      } else {
-        setCompetitionName(null);
-      }
-    }
-    fetchCompetition();
-  }, [slug, locale]);
+  const { name: competitionName } = competition;
 
   return (
     <nav className="mt-4 flex flex-col gap-2">
@@ -67,27 +51,12 @@ export function Sidebar() {
       )}
 
       {dashboardConfig.sidebarNav.map((item) => {
-        let href = item.href;
-        if (slug) {
-          if (href === '/dashboard') {
-            href = `/dashboard/${slug}`;
-          } else if (href.startsWith('/dashboard/')) {
-            const subPath = href.replace('/dashboard/', '');
-            href = `/dashboard/${slug}/${subPath}`;
-          }
-        } else {
-          if (item.href !== '/dashboard' && !slug) return null;
-        }
+        const isSlugPath = item.href.includes('[slug]');
 
-        const itemSegment = item.href.split('/').pop();
-        const isOverview = itemSegment === 'dashboard';
+        if (isSlugPath && !slug) return null;
 
-        let isActive = false;
-        if (isOverview) {
-          isActive = slug ? segments.length === 1 : segments.length === 0;
-        } else {
-          isActive = itemSegment ? segments.includes(itemSegment) : false;
-        }
+        const href = item.href.replace('[slug]', slug || '');
+        const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
 
         return (
           <Link
@@ -110,4 +79,4 @@ export function Sidebar() {
       })}
     </nav>
   );
-}
+};

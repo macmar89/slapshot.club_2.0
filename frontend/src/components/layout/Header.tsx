@@ -33,6 +33,15 @@ export function Header({ title }: HeaderProps) {
   const [leagues, setLeagues] = React.useState<any[]>([]);
   const [savedActiveLeagueId, setSavedActiveLeagueId] = React.useState<string | null>(null);
   const [isInitializing, setIsInitializing] = React.useState(true);
+  const [selectedLeague, setSelectedLeague] = React.useState<any>(null);
+
+  // Initialization
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Restore active league when navigating (if URL param is dropped)
   React.useEffect(() => {

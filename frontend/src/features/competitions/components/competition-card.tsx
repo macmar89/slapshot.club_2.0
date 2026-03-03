@@ -109,7 +109,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
               </p>
 
               <div className="mt-4 flex items-center justify-between gap-2">
-                {isJoined && userRank && (
+                {isJoined && userRank !== 0 && (
                   <div className="flex items-center gap-2 rounded-sm border border-[#eab308]/30 bg-[#eab308]/10 px-2 py-1 shadow-[0_0_15px_rgba(234,179,8,0.1)]">
                     <span className="-my-1 text-xs">
                       {userRank === 1
