@@ -2,8 +2,8 @@
 
 import { SWRConfig } from 'swr';
 import { api } from '@/lib/api';
-import { AuthSync } from '../auth/auth-sync';
 import { Toaster } from 'sonner';
+import { AuthSync } from '@/providers/auth-sync';
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (

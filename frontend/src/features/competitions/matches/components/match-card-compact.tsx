@@ -13,6 +13,7 @@ interface MatchCardCompactProps {
   awayTeamShortName: string;
   awayTeamLogoUrl: string | null;
   matchDate: string;
+  refresh: () => void;
 }
 
 export const MatchCardCompact = ({
@@ -24,6 +25,7 @@ export const MatchCardCompact = ({
   awayTeamShortName,
   awayTeamLogoUrl,
   matchDate,
+  refresh,
 }: MatchCardCompactProps) => {
   const locale = useLocale();
   const t = useTranslations('Dashboard');
@@ -31,16 +33,20 @@ export const MatchCardCompact = ({
   const openPrediction = usePredictionStore((state) => state.openPrediction);
 
   const handleOpenPrediction = () => {
-    openPrediction({
-      id: matchId,
-      homeTeamName,
-      homeTeamShortName,
-      homeTeamLogoUrl,
-      awayTeamName,
-      awayTeamShortName,
-      awayTeamLogoUrl,
-      date: matchDate,
-    });
+    openPrediction(
+      {
+        id: matchId,
+        homeTeamName,
+        homeTeamShortName,
+        homeTeamLogoUrl,
+        awayTeamName,
+        awayTeamShortName,
+        awayTeamLogoUrl,
+        date: matchDate,
+      },
+      undefined,
+      refresh,
+    );
   };
 
   return (

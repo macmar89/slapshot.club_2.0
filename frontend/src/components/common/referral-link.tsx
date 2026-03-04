@@ -4,7 +4,7 @@ import React from 'react';
 import { Copy, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface ReferralLinkProps {
   className?: string;

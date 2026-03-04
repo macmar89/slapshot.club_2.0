@@ -1,6 +1,6 @@
 import type { CreatePredictionInput } from '../shared/constants/schema/prediction.schema';
 import { db } from '../db';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, and } from 'drizzle-orm';
 import { matches, predictions } from '../db/schema';
 import { PredictionErrors } from '../shared/constants/messages/prediction.messages';
 import { AppError } from '../utils/appError';
@@ -26,19 +26,44 @@ export const createPrediction = async (userId: string, data: CreatePredictionInp
   }
 
   await db.transaction(async (tx) => {
-    await tx
-      .update(matches)
-      .set({
-        homePredictedCount:
-          data?.homeGoals > data?.awayGoals
-            ? sql`${matches.homePredictedCount} + 1`
-            : matches.homePredictedCount,
-        awayPredictedCount:
-          data?.homeGoals < data?.awayGoals
-            ? sql`${matches.awayPredictedCount} + 1`
-            : matches.awayPredictedCount,
-      })
-      .where(eq(matches.id, data.matchId));
+    const existingPrediction = await tx.query.predictions.findFirst({
+      columns: {
+        homeGoals: true,
+        awayGoals: true,
+      },
+      where: and(eq(predictions.userId, userId), eq(predictions.matchId, data.matchId)),
+    });
+
+    let homeDiff = 0;
+    let awayDiff = 0;
+
+    const newWinner = data.homeGoals > data.awayGoals ? 'home' : 'away';
+
+    if (existingPrediction) {
+      const oldWinner =
+        existingPrediction.homeGoals > existingPrediction.awayGoals ? 'home' : 'away';
+
+      if (oldWinner !== newWinner) {
+        if (oldWinner === 'home') homeDiff--;
+        if (oldWinner === 'away') awayDiff--;
+
+        if (newWinner === 'home') homeDiff++;
+        if (newWinner === 'away') awayDiff++;
+      }
+    } else {
+      if (newWinner === 'home') homeDiff++;
+      if (newWinner === 'away') awayDiff++;
+    }
+
+    if (homeDiff !== 0 || awayDiff !== 0) {
+      await tx
+        .update(matches)
+        .set({
+          homePredictedCount: sql`${matches.homePredictedCount} + ${homeDiff}`,
+          awayPredictedCount: sql`${matches.awayPredictedCount} + ${awayDiff}`,
+        })
+        .where(eq(matches.id, data.matchId));
+    }
 
     await tx
       .insert(predictions)

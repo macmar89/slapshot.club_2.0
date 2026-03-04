@@ -1,6 +1,6 @@
 export const APP_CONFIG = {
   dashboard: {
-    upcomingDaysRange: 5,
+    upcomingDaysRange: 3,
     maxMatchCards: 3,
   },
   pagination: {

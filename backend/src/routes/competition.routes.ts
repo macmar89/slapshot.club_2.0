@@ -6,6 +6,7 @@ import {
   getMyCompetitionStatsSchema,
 } from '../shared/constants/schema/competitions.schema.js';
 import { isAuth } from '../middleware/auth.middleware.js';
+import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
 
 const router = Router();
 
@@ -22,9 +23,19 @@ router.get(
   competitionController.getMyCompetitionStatsHandler,
 );
 router.get(
+  '/:slug/matches',
+  validate(getCompetitionMatchesSchema),
+  competitionController.getCompetitionMatchesHandler,
+);
+router.get(
   '/:slug/matches/upcoming',
   validate(getMyCompetitionStatsSchema),
   competitionController.getUpcomingMatchesHandler,
+);
+router.get(
+  '/:slug/matches/calendar',
+  validate(getMyCompetitionStatsSchema),
+  competitionController.getCalendarMatchesHandler,
 );
 
 export default router;

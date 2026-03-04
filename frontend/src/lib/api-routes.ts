@@ -12,7 +12,11 @@ export const API_ROUTES = {
       ME: (slug: string) => `/competition/${slug}/leaderboard/me`,
     },
     MATCHES: {
+      LIST: (slug: string, date: string, timezone: string) =>
+        `/competition/${slug}/matches?date=${date}&tz=${timezone}`,
       UPCOMING: (slug: string) => `/competition/${slug}/matches/upcoming`,
+      CALENDAR: (slug: string, timeZone: string) =>
+        `/competition/${slug}/matches/calendar?tz=${timeZone}`,
     },
     PUBLIC: {
       INFO: (slug: string) => `/competition/public/${slug}`,

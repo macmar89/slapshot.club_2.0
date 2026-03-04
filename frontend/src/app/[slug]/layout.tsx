@@ -8,6 +8,7 @@ import { MessageSquarePlus } from 'lucide-react';
 import { getPublicCompetition } from '@/features/competitions/competitions.server';
 
 import { notFound } from 'next/navigation';
+import { CompetitionStoreSync } from '@/providers/competition-store-sync';
 
 export default async function CompetitionLayout({
   children,
@@ -53,6 +54,8 @@ export default async function CompetitionLayout({
       <main className="min-h-screen pt-4 pb-32 md:pt-20 md:pb-0 lg:pl-72">
         <Container className="h-full">{children}</Container>
       </main>
+
+      <CompetitionStoreSync name={data.name} />
     </div>
   );
 }

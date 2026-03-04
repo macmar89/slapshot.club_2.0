@@ -16,7 +16,7 @@ export function UpcomingMatches() {
 
   const t = useTranslations('Dashboard');
 
-  const { data, isLoading } = useSWR<CompetitionDashboardMatchesResponse>(
+  const { data, mutate, isLoading } = useSWR<CompetitionDashboardMatchesResponse>(
     API_ROUTES.COMPETITIONS.MATCHES.UPCOMING(slug),
   );
 
@@ -56,6 +56,7 @@ export function UpcomingMatches() {
                   awayTeamShortName={match.awayTeamShortName}
                   awayTeamLogoUrl={match.awayTeamLogoUrl}
                   matchDate={match.date}
+                  refresh={mutate}
                 />
               ))}
             </div>

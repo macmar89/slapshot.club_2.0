@@ -5,7 +5,7 @@ import { Sora, Space_Grotesk } from 'next/font/google';
 
 import './globals.css';
 import BackgroundImage from '@/components/common/background-image';
-import { Providers } from '@/components/common/providers';
+import { Providers } from '@/providers/providers';
 import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
 
 const sora = Sora({

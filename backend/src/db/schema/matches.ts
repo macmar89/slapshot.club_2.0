@@ -3,7 +3,6 @@ import {
   index,
   foreignKey,
   varchar,
-  numeric,
   timestamp,
   pgEnum,
   integer,
@@ -18,7 +17,7 @@ export const enumMatchesResultEndingType = pgEnum('enum_matches_result_ending_ty
   'so',
 ]);
 
-export const enumMatchesResultStageType = pgEnum('enum_matches_result_stage_type', [
+export const enumMatchesStageType = pgEnum('enum_matches_stage_type', [
   'regular_season',
   'group_phase',
   'playoffs',
@@ -49,21 +48,19 @@ export const matches = pgTable(
     homePredictedCount: integer('home_predicted_count').default(0).notNull(),
     awayPredictedCount: integer('away_predicted_count').default(0).notNull(),
 
-    resultStageType: enumMatchesResultStageType('result_stage_type')
-      .default('regular_season')
-      .notNull(),
+    stageType: enumMatchesStageType('stage_type').default('regular_season').notNull(),
 
     resultHomeScore: integer('result_home_score').default(0),
     resultAwayScore: integer('result_away_score').default(0),
 
     resultEndingType: enumMatchesResultEndingType('result_ending_type').default('regular'),
 
-    resultRoundLabel: varchar('result_round_label', { length: 100 }),
-    resultRoundOrder: integer('result_round_order'),
-    resultGroupName: varchar('result_group_name', { length: 50 }),
+    roundLabel: varchar('round_label', { length: 100 }),
+    roundOrder: integer('round_order'),
+    groupName: varchar('group_name', { length: 50 }),
 
-    resultSeriesGameNumber: integer('result_series_game_number'),
-    resultSeriesState: varchar('result_series_state', { length: 100 }),
+    seriesGameNumber: integer('series_game_number'),
+    seriesState: varchar('series_state', { length: 100 }),
 
     rankedAt: timestamp('ranked_at', { precision: 3, withTimezone: true, mode: 'string' }),
 

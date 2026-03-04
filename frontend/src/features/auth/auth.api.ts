@@ -1,6 +1,6 @@
 import { API_ROUTES } from '@/lib/api-routes';
 import { api } from '@/lib/api';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store/use-auth-store';
 import { LoginInput } from './auth.schema';
 
 export const handlePostLogin = async (values: LoginInput) => {

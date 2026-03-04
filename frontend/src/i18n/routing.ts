@@ -29,6 +29,7 @@ export const routing = defineRouting({
     '/arena/rules': '/arena/rules',
     '/arena/[slug]': '/arena/[slug]',
     '/ranking': '/ranking',
-  },
+  } as Record<string, string>,
 });
+
 export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);

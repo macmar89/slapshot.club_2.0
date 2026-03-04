@@ -12,7 +12,7 @@ import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigat
 // Sub-components
 import { InitializationOverlay } from './header/InitializationOverlay';
 import { UserProfileDrawer } from './header/UserProfileDrawer';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface HeaderProps {
   title?: React.ReactNode;

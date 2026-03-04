@@ -7,7 +7,11 @@ import {
   getMemberStatsBySlug,
 } from '../services/competition.service';
 import type { AppLocale } from '../types/global';
-import { getUpcomingMatches } from '../services/matches.service';
+import {
+  getCompetitionMatches,
+  getMatchDatesByCompetition,
+  getUpcomingMatches,
+} from '../services/matches.service';
 
 export const getCompetitionsHandler = catchAsync(async (req: Request, res: Response) => {
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
@@ -71,5 +75,32 @@ export const getUpcomingMatchesHandler = catchAsync(async (req: Request, res: Re
   res.status(200).json({
     status: 'success',
     data: upcomingMatches,
+  });
+});
+
+export const getCalendarMatchesHandler = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug as string;
+  const timezone = req.query.tz as string;
+
+  const data = await getMatchDatesByCompetition(slug, timezone);
+
+  res.status(200).json({
+    status: 'success',
+    data: data.matchDates,
+  });
+});
+
+export const getCompetitionMatchesHandler = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug as string;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+  const userId = req.user!.id;
+  const date = req.query.date as string;
+  const timezone = req.query.tz as string;
+
+  const matches = await getCompetitionMatches(date, userId, slug, locale, timezone);
+
+  res.status(200).json({
+    status: 'success',
+    data: matches,
   });
 });

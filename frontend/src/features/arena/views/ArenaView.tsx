@@ -5,7 +5,7 @@ import { CompetitionCard } from '../../competitions/components/competition-card'
 import { MainMobileNav } from '@/components/layout/MainMobileNav';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store/use-auth-store';
 
 import { Competition } from '../../competitions/competitions.types';
 

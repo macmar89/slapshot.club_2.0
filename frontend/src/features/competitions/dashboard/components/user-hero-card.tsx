@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import useSWR from 'swr';
 import { useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store/use-auth-store';
 import { UserCompetitionStats } from '../dashboard.types';
 import { WinRate } from '@/components/common/win-rate';
 

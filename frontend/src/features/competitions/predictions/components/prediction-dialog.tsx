@@ -16,16 +16,11 @@ import { Trophy } from 'lucide-react';
 import { usePredictionStore } from '../store/use-prediction-store';
 import { ScoreInput } from './score-input';
 import { postCreatePrediction } from '../prediction.api';
-import { mutate } from 'swr';
-import { API_ROUTES } from '@/lib/api-routes';
-import { useParams } from 'next/navigation';
 
 export function PredictionDialog() {
-  const params = useParams();
-  const slug = params.slug as string;
-
   const t = useTranslations('Dashboard.matches.dialog');
-  const { isOpen, selectedMatch, closePrediction, initialPrediction } = usePredictionStore();
+  const { isOpen, selectedMatch, closePrediction, initialPrediction, onSuccess } =
+    usePredictionStore();
 
   const [homeGoals, setHomeGoals] = useState<number>(0);
   const [awayGoals, setAwayGoals] = useState<number>(0);
@@ -51,7 +46,7 @@ export function PredictionDialog() {
         awayGoals,
       });
 
-      await mutate(API_ROUTES.COMPETITIONS.MATCHES.UPCOMING(slug));
+      onSuccess?.();
 
       toast.success(t('prediction_saved_success'));
       closePrediction();
