@@ -106,11 +106,12 @@
       "my_category": "Tvoj Tip",
       "dialog": {
         "title": "Tvoj Tip",
-        "description": "Zadaj konečné skóre (vrátane OT a PP)",
+        "description": "Zadaj konečné skóre (vrátane OT a PP).",
+        "no_draws": "Remíza nie je povolená.",
         "submit": "Potvrdiť Tip",
         "update": "Aktualizovať Tip",
+        "prediction_saved_success": "Tip uložený! Držíme palce! 🏒",
         "loading": "Ukladám...",
-        "no_draws": "Remíza nie je povolená. Vyberte víťaza.",
         "match_live": "Zápas sa už začal. Tipovanie je uzavreté.",
         "match_finished": "Zápas už skončil. Tipovanie je uzavreté.",
         "close": "Zavrieť"

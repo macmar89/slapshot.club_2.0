@@ -1,3 +1,5 @@
+import { DashboardMatchPreview } from '../matches/matches.types';
+
 export interface UserCompetitionStats {
   totalPoints: number;
   totalMatches: number;
@@ -10,4 +12,9 @@ export interface UserCompetitionStats {
   winRate: number;
   pointsPerGame: number;
   totalCorrect: number;
+}
+
+export interface CompetitionDashboardMatchesResponse {
+  upcomingMatches: DashboardMatchPreview[];
+  unpredictedCount: number;
 }

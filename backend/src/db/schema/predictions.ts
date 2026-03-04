@@ -7,6 +7,7 @@ import {
   boolean,
   pgEnum,
   index,
+  timestamp,
 } from 'drizzle-orm/pg-core';
 import { matches } from './matches.js';
 import { users } from './users.js';
@@ -32,6 +33,7 @@ export const predictions = pgTable(
 
     points: integer('points').default(0).notNull(),
     status: enumPredictionsStatus('status').default('pending').notNull(),
+    evaluatedAt: timestamp('evaluated_at', { withTimezone: true }),
 
     isExact: boolean('is_exact').default(false).notNull(),
     isTrend: boolean('is_trend').default(false).notNull(),

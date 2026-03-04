@@ -11,9 +11,15 @@ export const API_ROUTES = {
     LEADERBOARD: {
       ME: (slug: string) => `/competition/${slug}/leaderboard/me`,
     },
+    MATCHES: {
+      UPCOMING: (slug: string) => `/competition/${slug}/matches/upcoming`,
+    },
     PUBLIC: {
       INFO: (slug: string) => `/competition/public/${slug}`,
     },
+  },
+  PREDICTION: {
+    CREATE: '/prediction',
   },
   FEEDBACK: '/',
 } as const;

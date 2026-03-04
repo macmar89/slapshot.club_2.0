@@ -5,10 +5,9 @@ import {
   joinCompetition,
   findPublicCompetitionName,
   getMemberStatsBySlug,
-  getUpcomingMatches,
 } from '../services/competition.service';
 import type { AppLocale } from '../types/global';
-import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
+import { getUpcomingMatches } from '../services/matches.service';
 
 export const getCompetitionsHandler = catchAsync(async (req: Request, res: Response) => {
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';

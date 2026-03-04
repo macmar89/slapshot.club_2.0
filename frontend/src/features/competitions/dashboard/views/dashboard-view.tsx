@@ -4,10 +4,8 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { DashboardHeader } from '@/features/competitions/dashboard/components/dashboard-header';
 import { UserHeroCard } from '@/features/competitions/dashboard/components/user-hero-card';
-import { UpcomingMatches } from '@/features/competitions/dashboard/components/upcoming-matches';
 import { useAuthStore } from '@/store/useAuthStore';
-import { ReferralLink } from '@/components/common/referral-link';
-import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import { UpcomingMatches } from '@/features/competitions/matches/components/upcoming-matches';
 
 export function DashboardView() {
   const t = useTranslations('Account');
@@ -23,12 +21,7 @@ export function DashboardView() {
       </div>
 
       {/* Row 2: Upcoming Matches Section */}
-      {/* <UpcomingMatches
-        upcomingMatches={upcomingMatches}
-        allMatchesPredicted={allMatchesPredicted}
-        competition={competition}
-        locale={locale}
-      /> */}
+      <UpcomingMatches />
 
       {/* Row 3: Results, Stats, Mini Leaderboard */}
       {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

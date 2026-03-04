@@ -6,6 +6,7 @@ import { Sora, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import BackgroundImage from '@/components/common/background-image';
 import { Providers } from '@/components/common/providers';
+import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
 
 const sora = Sora({
   subsets: ['latin'],
@@ -38,6 +39,7 @@ export default async function RootLayout({
         <body className="bg-background text-foreground relative min-h-screen font-sans antialiased">
           <Providers>
             <BackgroundImage />
+            <PredictionDialog />
             {children}
           </Providers>
         </body>
