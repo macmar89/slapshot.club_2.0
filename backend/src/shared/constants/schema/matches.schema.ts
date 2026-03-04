@@ -11,3 +11,13 @@ export const getCompetitionMatchesSchema = z.object({
 });
 
 export type GetCompetitionMatchesInput = z.infer<typeof getCompetitionMatchesSchema>['query'];
+
+export const getMatchPredictionSchema = z.object({
+  params: z.object({
+    matchId: z.string(),
+  }),
+  query: z.object({
+    page: z.string(),
+    limit: z.string(),
+  }),
+});

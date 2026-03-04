@@ -7,46 +7,12 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { PencilLine, Trophy, Eye } from 'lucide-react';
-import Image from 'next/image';
-import { Match } from '../matches.types';
-import { getLogoUrl } from '@/lib/logo';
-import { usePredictionStore } from '../../predictions/store/use-prediction-store';
-
-interface Team {
-  name: string;
-  shortName: string;
-  logoUrl: string | null;
-}
-
-const renderTeam = (team: Team) => (
-  <div className={cn('flex w-1/3 flex-col items-center gap-3')}>
-    <div
-      className={cn(
-        'group relative flex h-10 w-20 items-center justify-center md:h-14 md:w-28',
-        !team.logoUrl && 'rounded-app overflow-hidden border border-white/10 bg-white/5 p-2',
-      )}
-    >
-      {!team.logoUrl && (
-        <div className="absolute inset-0 opacity-20 transition-opacity group-hover:opacity-30" />
-      )}
-      {team.logoUrl && (
-        <Image
-          src={getLogoUrl(team.logoUrl)}
-          alt={team.name}
-          width={120}
-          height={80}
-          className="rounded-app relative z-10 h-full w-auto object-contain drop-shadow-2xl"
-        />
-      )}
-    </div>
-    <div className="text-center">
-      <div className="line-clamp-1 hidden text-sm font-bold text-white md:block">{team.name}</div>
-      <div className="line-clamp-1 text-[0.65rem] font-bold tracking-wider text-white uppercase md:hidden">
-        {team.shortName}
-      </div>
-    </div>
-  </div>
-);
+import { Match } from '@/features/competitions/matches/matches.types';
+import { usePredictionStore } from '@/features/competitions/predictions/store/use-prediction-store';
+import { useAuthStore } from '@/store/use-auth-store';
+import { useRouter } from '@/i18n/routing';
+import { MatchTeamDisplay } from './match-team-display';
+import { MatchPredictionsBar } from './match-predictions-bar';
 
 interface MatchCardProps {
   match: Match;
@@ -55,19 +21,16 @@ interface MatchCardProps {
 
 export function MatchCard({ match, refresh }: MatchCardProps) {
   const t = useTranslations('Dashboard.matches');
+  const router = useRouter();
   const { slug } = useParams();
 
   const locale = useLocale();
 
+  const user = useAuthStore((state) => state.user);
   const openPrediction = usePredictionStore((state) => state.openPrediction);
 
   const matchDate = new Date(match.date);
   const isStarted = new Date() >= matchDate || match.status !== 'scheduled';
-
-  const totalPredictions = match.homePredictedCount + match.awayPredictedCount;
-  const homeWinPct =
-    totalPredictions > 0 ? Math.round((match.homePredictedCount / totalPredictions) * 100) : 0;
-  const awayWinPct = totalPredictions > 0 ? 100 - homeWinPct : 0;
 
   const statusStyles = {
     scheduled: 'text-white/40 border-white/10 bg-white/5',
@@ -133,11 +96,11 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
       </div>
 
       <div className="mb-8 flex items-center justify-between gap-4">
-        {renderTeam({
-          name: match.homeTeamName,
-          shortName: match.homeTeamShortName,
-          logoUrl: match.homeTeamLogo,
-        })}
+        <MatchTeamDisplay
+          name={match.homeTeamName}
+          shortName={match.homeTeamShortName}
+          logoUrl={match.homeTeamLogo}
+        />
         <div className="flex flex-1 flex-col items-center justify-center gap-2">
           <div className="flex items-center gap-4 text-3xl font-black tracking-tighter italic md:text-5xl">
             {match.status === 'scheduled' || match.status === 'cancelled' ? (
@@ -180,65 +143,18 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
             </span>
           )}
         </div>
-        {renderTeam({
-          name: match.awayTeamName,
-          shortName: match.awayTeamShortName,
-          logoUrl: match.awayTeamLogo,
-        })}
+        <MatchTeamDisplay
+          name={match.awayTeamName}
+          shortName={match.awayTeamShortName}
+          logoUrl={match.awayTeamLogo}
+        />
       </div>
 
-      <div className="space-y-6 border-t border-white/5 pt-6">
-        <div className="relative w-full">
-          <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-white/5">
-            {totalPredictions > 0 ? (
-              <>
-                <div
-                  className={cn(
-                    'h-full transition-all duration-1000',
-                    homeWinPct > awayWinPct ? 'bg-primary' : 'bg-white/80',
-                  )}
-                  style={{ width: `${homeWinPct}%` }}
-                />
-                <div
-                  className={cn(
-                    'h-full transition-all duration-1000',
-                    awayWinPct > homeWinPct ? 'bg-primary' : 'bg-white/80',
-                  )}
-                  style={{ width: `${awayWinPct}%` }}
-                />
-              </>
-            ) : (
-              <div className="h-full w-full bg-white/10" />
-            )}
-          </div>
-
-          <div className="relative mt-2 flex justify-between px-1">
-            <div
-              className={cn(
-                'text-left text-[0.8rem] leading-none font-black tracking-wider',
-                homeWinPct > awayWinPct ? 'text-primary' : 'text-white/80',
-              )}
-            >
-              {homeWinPct}%
-            </div>
-
-            <div className="absolute top-0 left-1/2 flex -translate-x-1/2 flex-col items-center">
-              <span className="text-xs font-bold tracking-[0.2em] text-white/60 uppercase">
-                {t('predictions_count', { count: totalPredictions })}
-              </span>
-            </div>
-
-            <div
-              className={cn(
-                'text-right text-[0.8rem] leading-none font-black tracking-wider',
-                awayWinPct > homeWinPct ? 'text-primary' : 'text-white/80',
-              )}
-            >
-              {awayWinPct}%
-            </div>
-          </div>
-        </div>
-      </div>
+      <MatchPredictionsBar
+        homePredictedCount={match.homePredictedCount}
+        awayPredictedCount={match.awayPredictedCount}
+        className="space-y-6 border-t border-white/5 pt-6"
+      />
 
       <div className="mt-4 flex items-center justify-between gap-2">
         <div>
@@ -279,8 +195,18 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
               ) : (
                 !isStarted &&
                 match.status === 'scheduled' && (
-                  <Button size="lg" onClick={handleOpenPredictionModal}>
-                    {t('predict_button')}
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      if (!user?.isVerified) {
+                        router.push('/account');
+                        return;
+                      }
+
+                      handleOpenPredictionModal();
+                    }}
+                  >
+                    {user?.isVerified ? t('predict_button') : t('verify_to_predict')}
                   </Button>
                 )
               )}
@@ -289,7 +215,7 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/${slug}/matches/${match.id}`}>
+          <Link href={`/${slug}/matches/${match.id}?tab=info`}>
             <Button variant="outline">
               <Eye className="h-4 w-4 text-white" />
               {t('view_detail')}

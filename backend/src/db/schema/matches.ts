@@ -6,6 +6,7 @@ import {
   timestamp,
   pgEnum,
   integer,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 import { competitions } from './competitions.js';
 import { teams } from './teams.js';
@@ -66,6 +67,12 @@ export const matches = pgTable(
 
     apiHockeyId: varchar('api_hockey_id', { length: 50 }),
     apiHockeyStatus: varchar('api_hockey_status', { length: 10 }),
+
+    predictionStats: jsonb('prediction_stats')
+      .$type<{
+        scores: Record<string, number>;
+      }>()
+      .default({ scores: {} }),
 
     ...withUpdatesFields,
   },

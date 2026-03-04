@@ -69,7 +69,7 @@
     "matches": {
       "title": "Zápasy",
       "info_tab": "Info",
-      "tips_tab": "Tipy",
+      "predictions_tab": "Tipy",
       "match_label": "Hokejový zápas",
       "potential_points": "Potenciálně",
       "point_label": "BOD",
@@ -79,6 +79,7 @@
       "match_locked": "Na tento zápas již není možné tipovat.",
       "empty_state": "Zatím nejsou naplánovány žádné zápasy.",
       "predict_button": "Natipovat",
+      "verify_to_predict": "Ověřit se pro tipování",
       "my_prediction": "Můj Tip",
       "selected_day": "Vybraný Den",
       "no_matches_day": "Na tento den nejsou naplánovány žádné zápasy",

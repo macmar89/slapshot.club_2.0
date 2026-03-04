@@ -22,6 +22,7 @@ router.get(
   validate(getMyCompetitionStatsSchema),
   competitionController.getMyCompetitionStatsHandler,
 );
+
 router.get(
   '/:slug/matches',
   validate(getCompetitionMatchesSchema),

@@ -22,6 +22,12 @@ export const API_ROUTES = {
       INFO: (slug: string) => `/competition/public/${slug}`,
     },
   },
+  MATCHES: {
+    DETAIL: {
+      INFO: (id: string) => `/matches/${id}`,
+      PREDICTIONS: (id: string) => `/matches/${id}/predictions`,
+    },
+  },
   PREDICTION: {
     CREATE: '/prediction',
   },

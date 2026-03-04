@@ -69,7 +69,7 @@
     "matches": {
       "title": "Matches",
       "info_tab": "Info",
-      "tips_tab": "Tips",
+      "predictions_tab": "Predictions",
       "match_label": "Hockey Match",
       "potential_points": "Potential",
       "point_label": "PT",
@@ -79,6 +79,7 @@
       "match_locked": "It is no longer possible to predict this match.",
       "empty_state": "No matches scheduled yet.",
       "predict_button": "Predict",
+      "verify_to_predict": "Verify to predict",
       "my_prediction": "My Prediction",
       "selected_day": "Selected Day",
       "no_matches_day": "No matches scheduled for this day",

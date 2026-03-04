@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { getLogoUrl } from '@/lib/logo';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePredictionStore } from '../../predictions/store/use-prediction-store';
+import { useRouter } from '@/i18n/routing';
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface MatchCardCompactProps {
   matchId: string;
@@ -28,7 +30,9 @@ export const MatchCardCompact = ({
   refresh,
 }: MatchCardCompactProps) => {
   const locale = useLocale();
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Dashboard.matches');
+  const user = useAuthStore((state) => state.user);
+  const router = useRouter();
 
   const openPrediction = usePredictionStore((state) => state.openPrediction);
 
@@ -113,10 +117,17 @@ export const MatchCardCompact = ({
         </div>
 
         <Button
-          onClick={handleOpenPrediction}
-          className="w-full gap-2 py-4 text-[10px] font-black tracking-[0.1em] uppercase shadow-[0_4px_15px_rgba(234,179,8,0.2)] transition-all hover:scale-[1.02]"
+          size="lg"
+          onClick={() => {
+            if (!user?.isVerified) {
+              router.push('/account');
+              return;
+            }
+
+            handleOpenPrediction();
+          }}
         >
-          {t('place_prediction')}
+          {user?.isVerified ? t('predict_button') : t('verify_to_predict')}
         </Button>
       </div>
     </>

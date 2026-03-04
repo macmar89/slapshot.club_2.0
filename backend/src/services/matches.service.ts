@@ -6,6 +6,8 @@ import { CompetitionErrors } from '../shared/constants/errors/competition.errors
 import { addDays } from 'date-fns';
 import { APP_CONFIG } from '../config/app';
 import { createTeamAliases } from '../utils/helpers';
+import { MatchMessages } from '../shared/constants/messages/matches.messages';
+import { mapMatchToPreview } from '../utils/mappers/matches.mappers';
 
 export const getUpcomingMatches = async (userId: string, slug: string, locale: AppLocale) => {
   const competition = await db.query.competitions.findFirst({
@@ -112,7 +114,6 @@ export const getMatchDatesByCompetition = async (slug: string, tz: string) => {
     .where(eq(matches.competitionId, competition.id))
     .orderBy(asc(matches.date));
 
-  // Len ak je tz validovaný v Zod (napr. 'Europe/Bratislava')
   const safeTz = sql.raw(`'${tz}'`);
 
   const matchDatesResult = await db
@@ -135,10 +136,6 @@ export const getMatchDatesByCompetition = async (slug: string, tz: string) => {
     matchDates: dates,
     today,
   };
-
-  // return {
-  //   matchDates: matchDates.map((match) => match.date),
-  // };
 };
 
 export const getCompetitionMatches = async (
@@ -229,41 +226,101 @@ export const getCompetitionMatches = async (
     orderBy: [asc(matches.date), asc(matches.apiHockeyId)],
   });
 
-  return matchesResult.map((match) => {
-    const prediction = match.predictions?.[0] || null;
-    return {
-      id: match.id,
-      date: match.date,
-      displayTitle: match.displayTitle,
-      status: match.status,
-      homeTeamName: (match.homeTeam as any).locales[0]?.name,
-      homeTeamShortName: (match.homeTeam as any).locales[0]?.shortName,
-      homeTeamLogo: (match.homeTeam as any).logo?.url,
-      awayTeamName: (match.awayTeam as any).locales[0]?.name,
-      awayTeamShortName: (match.awayTeam as any).locales[0]?.shortName,
-      awayTeamLogo: (match.awayTeam as any).logo?.url,
-      apiHockeyStatus: match.apiHockeyStatus,
-      homePredictedCount: match.homePredictedCount,
-      awayPredictedCount: match.awayPredictedCount,
-      stageType: match.stageType,
-      resultHomeScore: match.resultHomeScore,
-      resultAwayScore: match.resultAwayScore,
-      resultEndingType: match.resultEndingType,
-      roundLabel: match.roundLabel,
-      roundOrder: match.roundOrder,
-      groupName: match.groupName,
-      seriesGameNumber: match.seriesGameNumber,
-      seriesState: match.seriesState,
-      rankedAt: match.rankedAt,
-      userPrediction: prediction
-        ? {
-            id: prediction.id,
-            homeGoals: prediction.homeGoals,
-            awayGoals: prediction.awayGoals,
-            status: prediction.status,
-            points: prediction.points,
-          }
-        : null,
-    };
+  return matchesResult.map((match) => mapMatchToPreview(match, userId));
+};
+
+export const getMatchInfoById = async (matchId: string, locale: AppLocale, userId: string) => {
+  const existMatch = await db.query.matches.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (matches) => eq(matches.id, matchId),
   });
+
+  if (!existMatch) {
+    throw new Error(MatchMessages.MATCH_NOT_FOUND);
+  }
+
+  const match = await db.query.matches.findFirst({
+    where: (matches) => eq(matches.id, matchId),
+    columns: {
+      competitionId: false,
+      homeTeamId: false,
+      awayTeamId: false,
+      apiHockeyId: false,
+      createdAt: false,
+      updatedAt: false,
+      deletedAt: false,
+    },
+    with: {
+      homeTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      awayTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      predictions: {
+        columns: {
+          id: true,
+          homeGoals: true,
+          awayGoals: true,
+          status: true,
+          points: true,
+        },
+        where: (p, { eq }) => eq(p.userId, userId),
+      },
+    },
+    orderBy: [asc(matches.date), asc(matches.apiHockeyId)],
+  });
+
+  const rawScores = match?.predictionStats?.scores || {};
+
+  const scores = Object.entries(rawScores)
+    .filter(([_, count]) => (count as number) > 0)
+    .reduce(
+      (acc, [score, count]) => {
+        acc[score] = count as number;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+  return {
+    match: mapMatchToPreview(match!, userId),
+    scores,
+  };
 };
