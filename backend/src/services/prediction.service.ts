@@ -1,7 +1,7 @@
 import type { CreatePredictionInput } from '../shared/constants/schema/prediction.schema';
 import { db } from '../db';
-import { eq, sql, and } from 'drizzle-orm';
-import { matches, predictions } from '../db/schema';
+import { eq, sql, and, ilike } from 'drizzle-orm';
+import { matches, predictions, users } from '../db/schema';
 import { AppError } from '../utils/appError';
 import { MatchMessages } from '../shared/constants/messages/matches.messages';
 
@@ -104,7 +104,8 @@ export const createPrediction = async (userId: string, data: CreatePredictionInp
 
 export const getMatchPredictions = async (
   matchId: string,
-  { page, limit }: { page: number; limit: number },
+  { page, limit, search }: { page: number; limit: number; search?: string },
+  isFreeUser: boolean,
 ) => {
   const offset = (page - 1) * limit;
 
@@ -120,18 +121,65 @@ export const getMatchPredictions = async (
     throw new AppError(MatchMessages.MATCH_NOT_FOUND, 404);
   }
 
+  const totalCountResult = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(predictions)
+    .where(eq(predictions.matchId, matchId));
+
+  const totalCount = totalCountResult[0]?.count ? Number(totalCountResult[0]?.count) : 0;
+
+  const pagination = {
+    total: totalCount,
+    page,
+    limit,
+    totalPages: Math.ceil(totalCount / limit),
+  };
+
   if (!(match.status === 'live' || match.status === 'finished')) {
-    throw new AppError(MatchMessages.MATCH_NOT_STARTED, 400);
+    return {
+      data: [],
+      pagination,
+      meta: { message: MatchMessages.MATCH_NOT_STARTED, isLocked: true, matchStatus: match.status },
+    };
+  }
+
+  if (isFreeUser) {
+    return {
+      data: [],
+      pagination,
+      meta: {
+        message: MatchMessages.PREDICTION_NOT_ALLOWED_FOR_FREE_USER,
+        isLocked: true,
+        matchStatus: match.status,
+      },
+    };
   }
 
   const result = await db.query.predictions.findMany({
-    where: eq(predictions.matchId, matchId),
+    where: (predictions, { and, eq, exists }) => {
+      const conditions = [eq(predictions.matchId, matchId)];
+
+      if (search) {
+        conditions.push(
+          exists(
+            db
+              .select()
+              .from(users)
+              .where(and(eq(users.id, predictions.userId), ilike(users.username, `%${search}%`))),
+          ),
+        );
+      }
+
+      return and(...conditions);
+    },
     limit: limit,
     offset: offset,
     columns: {
       id: true,
       homeGoals: true,
       awayGoals: true,
+      points: true,
+      createdAt: true,
     },
     with: {
       user: {
@@ -141,29 +189,20 @@ export const getMatchPredictions = async (
         },
       },
     },
-    orderBy: (predictions, { asc }) => [asc(predictions.createdAt)],
+    orderBy: (predictions, { asc, desc }) => [desc(predictions.points), asc(predictions.createdAt)],
   });
-
-  const totalCountResult = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(predictions)
-    .where(eq(predictions.matchId, matchId));
-
-  const totalCount = totalCountResult[0]?.count ? Number(totalCountResult[0]?.count) : 0;
 
   return {
     data: result.map((prediction: any) => ({
       id: prediction.id,
       homeGoals: prediction.homeGoals,
       awayGoals: prediction.awayGoals,
+      points: prediction.points,
       userId: prediction.user?.id,
       username: prediction.user?.username,
+      createdAt: prediction.createdAt,
     })),
-    pagination: {
-      total: totalCount,
-      page,
-      limit,
-      totalPages: Math.ceil(totalCount / limit),
-    },
+    pagination,
+    meta: { message: '', isLocked: false, matchStatus: match.status },
   };
 };

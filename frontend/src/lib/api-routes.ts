@@ -25,7 +25,15 @@ export const API_ROUTES = {
   MATCHES: {
     DETAIL: {
       INFO: (id: string) => `/matches/${id}`,
-      PREDICTIONS: (id: string) => `/matches/${id}/predictions`,
+      PREDICTIONS: (id: string, params?: { page?: number; limit?: number; search?: string }) => {
+        const query = new URLSearchParams({
+          page: String(params?.page || 1),
+          limit: String(params?.limit || 3),
+          ...(params?.search && { search: params.search }),
+        });
+
+        return `/matches/${id}/predictions?${query.toString()}`;
+      },
     },
   },
   PREDICTION: {

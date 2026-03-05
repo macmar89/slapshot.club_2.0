@@ -18,11 +18,17 @@ export const getMatchInfoHandler = async (req: Request, res: Response) => {
 
 export const getMatchPredictionsHandler = async (req: Request, res: Response) => {
   const matchId = req.params.matchId as string;
+  const isFreeUser = req.user!.subscriptionPlan === 'free';
 
-  const predictions = await getMatchPredictions(matchId, {
-    page: Number(req.query.page),
-    limit: Number(req.query.limit),
-  });
+  const predictions = await getMatchPredictions(
+    matchId,
+    {
+      page: Number(req.query.page),
+      limit: Number(req.query.limit),
+      search: req.query.search as string,
+    },
+    isFreeUser,
+  );
 
   return res.status(200).json({
     success: true,

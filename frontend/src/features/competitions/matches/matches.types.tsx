@@ -17,11 +17,13 @@ export interface UserPrediction {
   points: number;
 }
 
+export type MatchStatus = 'scheduled' | 'live' | 'finished' | 'cancelled';
+
 export interface Match {
   id: string;
   date: string;
   displayTitle: string;
-  status: 'scheduled' | 'live' | 'finished' | 'cancelled';
+  status: MatchStatus;
 
   homeTeamId: string;
   homeTeamName: string;

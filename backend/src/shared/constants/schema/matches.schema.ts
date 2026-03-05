@@ -16,8 +16,21 @@ export const getMatchPredictionSchema = z.object({
   params: z.object({
     matchId: z.string(),
   }),
+});
+
+export const getMatchDetailInfoSchema = z.object({
+  params: z.object({
+    matchId: z.string(),
+  }),
+});
+
+export const getMatchDetailPredictionsSchema = z.object({
+  params: z.object({
+    matchId: z.string(),
+  }),
   query: z.object({
     page: z.string(),
     limit: z.string(),
+    search: z.string().optional(),
   }),
 });
