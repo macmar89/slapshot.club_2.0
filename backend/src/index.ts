@@ -9,6 +9,7 @@ import apiRouter from './routes/index.js';
 import { IS_PRODUCTION } from './config/env.js';
 import { AppError } from './utils/appError.js';
 import { HttpStatus } from './utils/httpStatusCodes.js';
+import './workers/email.worker.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;

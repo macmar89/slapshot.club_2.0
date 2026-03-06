@@ -23,6 +23,7 @@ import { generateAccessToken } from '../utils/jwt.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { logActivity } from '../services/audit.service.js';
 import type { AvailabilityCheckType } from '../types/global.js';
+import { emailQueue } from '../queues/email.queue.js';
 
 export const login = catchAsync(async (req: Request, res: Response) => {
   const validatedData = LoginSchema.parse(req.body);
@@ -117,8 +118,6 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
 export const registerHandler = catchAsync(async (req: Request, res: Response) => {
   const user = await registerUser(req.body);
 
-  console.log(user);
-
   const userAgent = req.headers['user-agent'] || 'unknown';
   const refreshToken = await createSession(user.id, userAgent);
 
@@ -145,10 +144,33 @@ export const registerHandler = catchAsync(async (req: Request, res: Response) =>
     { userId: user.id },
   );
 
+  const locale = req.cookies.NEXT_LOCALE || req.body.preferredLanguage || 'sk';
+
+  await emailQueue.add('verification-email', {
+    type: 'verification-email',
+    data: {
+      user: {
+        username: user.username,
+        email: user.email,
+        preferredLanguage: req.body.preferredLanguage,
+      },
+      token: user.verificationToken,
+      locale,
+    },
+  });
+
   res.status(HttpStatus.CREATED).json({
     status: 'success',
     data: {
-      user,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        subscriptionPlan: user.subscriptionPlan,
+        subscriptionActiveUntil: user.subscriptionActiveUntil,
+        isVerified: user.isVerified,
+        referralCode: user.referralCode,
+      },
     },
   });
 });

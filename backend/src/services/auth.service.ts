@@ -99,11 +99,13 @@ export const registerUser = async (data: RegisterInput) => {
     return {
       id: user.id,
       username: user.username,
+      email: user.email,
       role: user.role,
       subscriptionPlan: user.subscriptionPlan,
       subscriptionActiveUntil: user.subscriptionActiveUntil,
       isVerified: !!user.verifiedAt,
       referralCode: user.referralCode,
+      verificationToken: user.verificationToken,
     };
   });
 };

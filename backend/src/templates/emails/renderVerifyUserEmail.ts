@@ -19,7 +19,7 @@ const getTranslations = (lang?: string) => {
 export const renderVerificationEmail = ({ token, user }: { token: string; user: User }) => {
   const lang = user.preferredLanguage || 'sk';
   const urlLocale = lang === 'cz' ? 'cs' : lang;
-  const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/${urlLocale}/verify?token=${token}&email=${encodeURIComponent(user.email)}`;
+  const url = `${process.env.FRONTEND_URL}/${urlLocale}/verify?token=${token}&email=${encodeURIComponent(user.email)}`;
 
   const translations = getTranslations(lang);
   const emailT = (translations as any).Email.verification;
