@@ -4,8 +4,12 @@ import { useAuthStore } from '@/store/use-auth-store';
 import { LoginInput, RegisterInput } from './auth.schema';
 
 export const handlePostRegister = async (values: RegisterInput) => {
+  const { setUser } = useAuthStore.getState();
+
   try {
     const { data } = await api.post(API_ROUTES.AUTH.REGISTER, values);
+
+    setUser(data.data.user);
 
     return {
       success: true,

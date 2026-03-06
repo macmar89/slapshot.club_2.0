@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -31,7 +31,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
   console.log(referralCode);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
@@ -68,7 +67,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
       });
 
       if (res.success) {
-        setIsSuccess(true);
+        router.push('/arena');
       } else {
         setError(t(`errors.${res.message}`) || t('errors.registration_failed'));
       }
@@ -78,53 +77,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
       setIsLoading(false);
     }
   };
-  // const onSubmit = async (data: RegisterFormData) => {
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const res = await registerUser({
-  //       ...data,
-  //       preferredLanguage: locale,
-  //     });
-
-  //     if (res.ok) {
-  //       setIsSuccess(true);
-  //     } else {
-  //       setError(res.data.errors?.[0]?.message || 'Registrácia zlyhala');
-  //     }
-  //   } catch (_err) {
-  //     setError('Nastala neočakávaná chyba');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  if (isSuccess) {
-    return (
-      <div className="animate-in fade-in zoom-in flex w-full max-w-sm flex-col items-center gap-6 text-center duration-500">
-        <div className="bg-gold/10 border-gold/20 mb-2 flex h-20 w-20 items-center justify-center rounded-full border">
-          <svg
-            className="text-gold h-10 w-10"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl leading-tight font-bold tracking-tighter text-white uppercase">
-            {t('register_success_title')}
-          </h2>
-          <p className="font-medium text-white/60">{t('register_success_description')}</p>
-        </div>
-        <Button color="gold" className="mt-4 w-full" onClick={() => router.push('/login')}>
-          {t('login')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-sm flex-col gap-6 pb-2">

@@ -17,6 +17,7 @@ import type { AvailabilityCheckType } from '../types/global.js';
 import { hashPassword } from '../utils/crypto.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { getSubscriptionEndDate } from '../utils/date.js';
+import { userSettings } from '../db/schema/userSettings.js';
 import { subscriptions } from '../db/schema/subscriptions.js';
 import { userReferrals } from '../db/schema/userReferrals.js';
 
@@ -70,6 +71,13 @@ export const registerUser = async (data: RegisterInput) => {
       status: 'active',
       activeFrom: new Date().toISOString(),
       activeUntil: subscriptionEndDate,
+    });
+
+    await tx.insert(userSettings).values({
+      userId: user.id,
+      gdprConsent: data.gdprConsent,
+      marketingConsent: data.marketingConsent,
+      marketingConsentDate: data.marketingConsent ? new Date().toISOString() : null,
     });
 
     if (data.referralCode) {

@@ -3,11 +3,11 @@ import { z } from 'zod';
 export const getBasePasswordSchema = (t: (key: string) => string) =>
   z
     .string()
-    .min(8, t('Auth.errors.password_too_short'))
-    .regex(/[A-Z]/, t('Auth.errors.password_no_uppercase'))
-    .regex(/[a-z]/, t('Auth.errors.password_no_lowercase'))
-    .regex(/[0-9]/, t('Auth.errors.password_no_number'))
-    .regex(/[@$!%*?&#^()._+\-=\[\]{};:,.]/, t('Auth.errors.password_no_special'));
+    .min(8, t('errors.password_too_short'))
+    .regex(/[A-Z]/, t('errors.password_no_uppercase'))
+    .regex(/[a-z]/, t('errors.password_no_lowercase'))
+    .regex(/[0-9]/, t('errors.password_no_number'))
+    .regex(/[@$!%*?&#^()._+\-=\[\]{};:,.]/, t('errors.password_no_special'));
 
 const isTurnstileEnabled =
   process.env.NEXT_PUBLIC_ENABLE_TURNSTILE !== 'false' &&
@@ -31,7 +31,7 @@ export const getRegisterSchema = (t: (key: string) => string) =>
       .regex(/^[a-zA-Z0-9_.]+$/, t('errors.username_invalid_characters')),
     email: z.email(t('errors.email_invalid')),
     password: getBasePasswordSchema(t),
-    turnstileToken: z.string().min(1, t('errors.turnstile_error')),
+    turnstileToken: z.string().min(1, t('turnstile_error')),
     gdprConsent: z.boolean().refine((val) => val === true, {
       message: t('errors.gdpr_required'),
     }),
@@ -43,7 +43,7 @@ export const getRegisterSchema = (t: (key: string) => string) =>
 export const getForgotPasswordSchema = (t: (key: string) => string) =>
   z.object({
     email: z.email(t('errors.email_invalid')),
-    turnstileToken: z.string().min(1, t('errors.turnstile_error')),
+    turnstileToken: z.string().min(1, t('turnstile_error')),
   });
 
 export const getResetPasswordSchema = (t: (key: string) => string) =>
