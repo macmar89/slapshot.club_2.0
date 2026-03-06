@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { useDebounce } from 'use-debounce';
 import { CheckCircle2, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export function AvailabilityInput({
   >('idle');
   const [apiError, setApiError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const t = useTranslations('Auth.availability');
 
   const checkAvailability = useCallback(
     async (value: string) => {
@@ -45,7 +47,7 @@ export function AvailabilityInput({
       if (type === 'username') {
         if (value.includes(' ')) {
           setStatus('invalid');
-          setValidationError('Medzery nie sú povolené');
+          setValidationError(t('validation.no_spaces'));
           onAvailabilityChange?.(false);
           return;
         }
@@ -53,7 +55,7 @@ export function AvailabilityInput({
         if (value.length < 4 || value.length > 20) {
           setStatus('invalid');
           setValidationError(
-            value.length < 4 ? 'Meno je príliš krátke (min. 4)' : 'Meno je príliš dlhé (max. 20)',
+            value.length < 4 ? t('validation.too_short') : t('validation.too_long'),
           );
           onAvailabilityChange?.(false);
           return;
@@ -62,7 +64,7 @@ export function AvailabilityInput({
         const usernameRegex = /^[a-zA-Z0-9_.]+$/;
         if (!usernameRegex.test(value)) {
           setStatus('invalid');
-          setValidationError('Len písmená, čísla, . a _');
+          setValidationError(t('validation.invalid_chars'));
           onAvailabilityChange?.(false);
           return;
         }
@@ -110,7 +112,7 @@ export function AvailabilityInput({
         onAvailabilityChange?.(false);
       }
     },
-    [type, onAvailabilityChange],
+    [type, onAvailabilityChange, t],
   );
 
   useEffect(() => {
@@ -145,7 +147,7 @@ export function AvailabilityInput({
             <>
               <Loader2 className="h-3 w-3 animate-spin text-blue-400" />
               <span className="text-[10px] font-bold tracking-tighter text-blue-400 uppercase">
-                Rozhodca preveruje video...
+                {t('checking')}
               </span>
             </>
           )}
@@ -153,7 +155,7 @@ export function AvailabilityInput({
             <>
               <CheckCircle2 className="h-3 w-3 text-emerald-400" />
               <span className="text-[10px] font-bold tracking-tighter text-emerald-400 uppercase">
-                Čistý ľad!
+                {t('available')}
               </span>
             </>
           )}
@@ -161,7 +163,7 @@ export function AvailabilityInput({
             <>
               <XCircle className="h-3 w-3 text-red-400" />
               <span className="text-[10px] font-bold tracking-tighter text-red-400 uppercase">
-                Zakázané uvoľnenie!
+                {t('invalid')}
               </span>
             </>
           )}
@@ -169,7 +171,7 @@ export function AvailabilityInput({
             <>
               <XCircle className="h-3 w-3 text-red-400" />
               <span className="text-[10px] font-bold tracking-tighter text-red-400 uppercase">
-                Ofsajd!
+                {t('taken')}
               </span>
             </>
           )}
@@ -181,13 +183,13 @@ export function AvailabilityInput({
             >
               <AlertCircle className="h-3 w-3 text-amber-400" />
               <span className="text-[10px] font-bold tracking-tighter text-amber-400 uppercase underline decoration-dotted underline-offset-2">
-                Trestná lavica!
+                {t('cooldown')}
               </span>
             </button>
           )}
           {status === 'idle' && (
             <span className="text-[10px] font-bold tracking-tighter text-white/20 uppercase">
-              Čakám na zadanie
+              {t('idle')}
             </span>
           )}
         </div>
@@ -216,23 +218,19 @@ export function AvailabilityInput({
         <p className="ml-1 text-xs text-red-500">{error}</p>
       ) : status === 'invalid' ? (
         <p className="ml-1 animate-pulse text-[10px] font-bold tracking-tight text-red-400 uppercase">
-          {validationError || 'Zakázané uvoľnenie!'}
+          {validationError || t('invalid')}
         </p>
       ) : status === 'taken' ? (
-        <p className="ml-1 text-xs text-red-500">
-          Toto {type === 'username' ? 'meno' : 'email'} je už v ofsajde (obsadené).
-        </p>
+        <p className="ml-1 text-xs text-red-500">{t('taken_message', { type })}</p>
       ) : status === 'rate-limited' ? (
         <div className="ml-1 flex items-center justify-between">
-          <p className="text-xs font-medium text-amber-500 italic">
-            Si na trestnej lavici (cooldown). Skús to o chvíľu.
-          </p>
+          <p className="text-xs font-medium text-amber-500 italic">{t('cooldown_message')}</p>
           <button
             type="button"
             onClick={() => checkAvailability(inputValue)}
             className="text-[10px] font-bold tracking-wider text-white/60 uppercase underline underline-offset-2 hover:text-white"
           >
-            Skúsiť znova
+            {t('retry')}
           </button>
         </div>
       ) : hint ? (

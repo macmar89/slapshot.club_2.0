@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { getLogoUrl } from '@/lib/logo';
+import { getLogoUrl } from '@/lib/utils/logo';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePredictionStore } from '../../predictions/store/use-prediction-store';
 import { useRouter } from '@/i18n/routing';

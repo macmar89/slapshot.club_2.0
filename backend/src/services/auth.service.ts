@@ -10,44 +10,103 @@ import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
 import { HttpStatus } from '../utils/httpStatusCodes.js';
 import { activeOnly } from '../db/helpers.js';
 import { logActivity } from './audit.service.js';
-import { verifyPassword } from '../utils/crypto.js';
+import { generateRandomToken, verifyPassword } from '../utils/crypto.js';
 import { users } from '../db/schema/users.js';
+import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
+import type { AvailabilityCheckType } from '../types/global.js';
+import { hashPassword } from '../utils/crypto.js';
+import { generateReferralCode } from '../utils/referralCode.js';
+import { getSubscriptionEndDate } from '../utils/date.js';
+import { subscriptions } from '../db/schema/subscriptions.js';
+import { userReferrals } from '../db/schema/userReferrals.js';
 
 const hashToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
 };
 
-// export const registerUser = async (data: RegisterInput) => {
-//     const [existingUser] = await db.select().from(users).where(eq(users.username, data.username));
+export const registerUser = async (data: RegisterInput) => {
+  const usernameAvailable = await checkAvailability('username', data.username);
+  const emailAvailable = await checkAvailability('email', data.email);
 
-//     if (existingUser) {
-//         throw new AppError(AuthErrors.USERNAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
-//     }
+  if (!usernameAvailable) {
+    throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatus.CONFLICT);
+  }
 
-//     return await db.transaction(async (tx) => {
-//         const [organization] = await tx.insert(organizations).values({
-//             name: data.organizationName,
-//             slug: data.organizationName.toLowerCase().replace(/\s+/g, '-'),
-//         }).returning();
+  if (!emailAvailable) {
+    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT);
+  }
 
-//         if (!organization) throw new AppError(AuthErrors.ORGANIZATION_CREATION_FAILED, HttpStatus.BAD_REQUEST);
+  return await db.transaction(async (tx) => {
+    const hashedPassword = await hashPassword(data.password);
 
-//         const hashedPassword = hashPassword(data.password);
+    const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
+      (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
 
-//         const [user] = await tx.insert(users).values({
-//             username: data.username,
-//             displayName: data.displayName,
-//             password: hashedPassword,
-//             email: data.email,
-//             phoneNumber: data.phoneNumber,
-//             organizationId: organization.id,
-//         }).returning();
+    const subscriptionEndDate = getSubscriptionEndDate();
 
-//         if (!user) throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    const [user] = await tx
+      .insert(users)
+      .values({
+        username: data.username,
+        password: hashedPassword,
+        email: data.email,
+        role: 'user',
+        subscriptionPlan: defaultPlan,
+        subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
+        isActive: true,
+        referralCode: generateReferralCode(),
+        preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cz') ?? 'sk',
+        verificationToken: generateRandomToken(),
+      })
+      .returning();
 
-//         return { user, organization };
-//     });
-// };
+    if (!user)
+      throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    await tx.insert(subscriptions).values({
+      userId: user.id,
+      plan: defaultPlan,
+      planType: 'seasonal',
+      status: 'active',
+      activeFrom: new Date().toISOString(),
+      activeUntil: subscriptionEndDate,
+    });
+
+    if (data.referralCode) {
+      const referrer = await tx.query.users.findFirst({
+        columns: {
+          id: true,
+          totalRegistered: true,
+        },
+        where: (users, { eq }) => eq(users.referralCode, data.referralCode!),
+      });
+
+      if (referrer) {
+        await tx
+          .update(users)
+          .set({
+            totalRegistered: (referrer.totalRegistered || 0) + 1,
+          })
+          .where(eq(users.id, referrer.id));
+
+        await tx.insert(userReferrals).values({
+          referrerId: referrer.id,
+          referredUserId: user.id,
+        });
+      }
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      subscriptionPlan: user.subscriptionPlan,
+      subscriptionActiveUntil: user.subscriptionActiveUntil,
+      isVerified: !!user.verifiedAt,
+      referralCode: user.referralCode,
+    };
+  });
+};
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({
@@ -238,4 +297,22 @@ export const getUserProfile = async (userId: string) => {
   return {
     user: { ...userWithoutVerifiedAt, isVerified: !!verifiedAt },
   };
+};
+
+export const checkAvailability = async (type: AvailabilityCheckType, value: string) => {
+  const existingUser = await db.query.users.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (users, { eq }) => eq(users[type], value),
+  });
+
+  if (existingUser) {
+    const errorKey =
+      type === 'username'
+        ? AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS
+        : AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS;
+    throw new AppError(errorKey, HttpStatus.CONFLICT);
+  }
+  return true;
 };

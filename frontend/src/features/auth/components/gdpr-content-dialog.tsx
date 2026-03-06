@@ -8,8 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { getGeneralSettings } from '@/actions/general-settings';
-import { RichTextParser } from '@/components/RichTextParser';
+
 import { useLocale, useTranslations } from 'next-intl';
 
 interface GdprModalContentProps {
@@ -22,27 +21,6 @@ const GdprModalContent = ({ open, onOpenChange }: GdprModalContentProps) => {
   const locale = useLocale();
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (open && !content) {
-      const fetchData = async () => {
-        setIsLoading(true);
-        try {
-          const settings = await getGeneralSettings(locale);
-          // @ts-ignore
-          if (settings?.gdpr?.content) {
-            // @ts-ignore
-            setContent(settings.gdpr.content);
-          }
-        } catch (error) {
-          console.error('Failed to load GDPR content', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [open, content, locale]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -59,7 +37,8 @@ const GdprModalContent = ({ open, onOpenChange }: GdprModalContentProps) => {
               <div className="border-gold h-8 w-8 animate-spin rounded-full border-b-2"></div>
             </div>
           ) : content ? (
-            <RichTextParser content={content} />
+            // <RichTextParser content={content} />
+            <div>GDPR content</div>
           ) : (
             <p className="py-10 text-center text-white/50">{t('gdpr_modal.failed_to_load')}</p>
           )}

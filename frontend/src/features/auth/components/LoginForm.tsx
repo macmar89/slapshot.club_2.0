@@ -10,7 +10,7 @@ import { handlePostLogin } from '@/features/auth/auth.api';
 import { getLoginSchema, type LoginInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
 import { Turnstile } from '@/components/common/turnstile';
-import { PasswordInput } from './PasswordInput';
+import { PasswordInput } from './password-input';
 import {
   Form,
   FormControl,

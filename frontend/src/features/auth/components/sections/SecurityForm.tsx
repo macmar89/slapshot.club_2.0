@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { Lock, CheckCircle2 } from 'lucide-react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Button } from '@/components/ui/button';
-import { PasswordInput } from '@/features/auth/components/PasswordInput';
+import { PasswordInput } from '@/features/auth/components/password-input';
 import { passwordUpdateSchema, type PasswordUpdateFormData } from '@/features/auth/schema';
 import { updatePasswordAction } from '@/features/auth/account-actions';
 

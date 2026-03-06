@@ -7,7 +7,7 @@ import { LoginForm } from '@/features/auth/components/LoginForm';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
-import { AuthFooter } from '@/features/auth/components/AuthFooter';
+import { AuthFooter } from '@/features/auth/components/auth-footer';
 
 export function LoginView() {
   const t = useTranslations('Login');

@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { resetPassword } from '@/features/auth/actions';
 import { resetPasswordSchema, type ResetPasswordFormData } from '@/features/auth/schema';
 import { useTranslations } from 'next-intl';
-import { PasswordInput } from './PasswordInput';
+import { PasswordInput } from './password-input';
 import { toast } from 'sonner';
 
 export const ResetPasswordForm = () => {

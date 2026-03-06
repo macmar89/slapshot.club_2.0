@@ -4,6 +4,7 @@ import { generateCuid } from '../helpers';
 export const auditActionEnum = pgEnum('audit_action', [
   'LOGIN_SUCCESS',
   'LOGIN_FAILED',
+  'REGISTER_SUCCESS',
   'LOGOUT',
   'PASSWORD_CHANGE',
   'PREDICTIONS_UPDATE',

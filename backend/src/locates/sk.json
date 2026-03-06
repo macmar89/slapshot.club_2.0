@@ -1,0 +1,18 @@
+{
+  "Email": {
+    "verification": {
+      "subject": "🏒 Potvrď svoje miesto v zostave Slapshot Club!",
+      "title": "Vitaj v tíme, {username}!",
+      "message": "Tréner ti práve pridelil miesto v zostave <strong>Slapshot Club</strong>. Tvoj dres už visí v šatni, ale predtým, než vykorčuľuješ na ľad, musíme potvrdiť tvoju identitu.",
+      "button": "Potvrdiť miesto v zostave",
+      "footer": "Vidíme sa v aréne! <br> SLAPSHOT CLUB • 2026"
+    },
+    "forgotPassword": {
+      "subject": "🔑 Stratený puk? Obnov si svoje heslo!",
+      "title": "Oddychový čas, {username}?",
+      "message": "Zdá sa, že sa ti niekde v rohu klziska stratil puk (alebo tvoje heslo). Žiadny strach, vybavíme ti rýchly reset, aby si mohol v ďalšom striedaní opäť skórovať.",
+      "button": "Nastaviť nové heslo",
+      "footer": "Nenechaj sa posadiť na striedačku! <br> SLAPSHOT CLUB • 2026"
+    }
+  }
+}

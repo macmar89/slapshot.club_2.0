@@ -1,41 +1,36 @@
-'use client';
-
-import React from 'react';
-import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import bgImage from '@/assets/images/background/ssc_stick.png';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
-import { Trophy, Users, Table, Zap } from 'lucide-react';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
-import { AuthFooter } from '@/features/auth/components/auth-footer';
+import { AuthFooter } from '../components/auth-footer';
+import { RegisterForm } from '../components/register-form';
 
-export const ForgotPasswordView = () => {
+export interface RegisterViewProps {
+  referralCode?: string;
+}
+
+export const RegisterView = ({ referralCode }: RegisterViewProps) => {
   const t = useTranslations('Login');
 
   return (
-    <div className="selection:bg-gold/30 selection:text-gold-light relative flex min-h-screen flex-col overflow-hidden">
+    <div className="selection:bg-gold/30 selection:text-gold-light relative flex min-h-screen overflow-hidden pb-12">
       <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/80 to-slate-950/40" />
       <div className="fixed top-6 right-6 z-50">
         <LanguageSwitcher />
       </div>
 
       <div className="relative mx-auto flex w-full max-w-[1920px] flex-col p-4 text-right lg:flex-row">
-        {/* Left Column: Forgot Password Form */}
         <div className="relative z-40 order-2 flex w-full items-center justify-center p-2 sm:p-8 lg:order-1 lg:w-1/2 lg:p-12">
           <div className="animate-in fade-in slide-in-from-left w-full max-w-md duration-1000">
             <IceGlassCard className="border-0 p-0 sm:p-0" backdropBlur="xl">
               <div className="relative z-10 flex w-full flex-col items-center border border-white/5 bg-white/5 p-6 shadow-inner sm:p-8">
-                <React.Suspense fallback={<div className="text-white/50">Loading...</div>}>
-                  <ForgotPasswordForm />
-                </React.Suspense>
+                <RegisterForm referralCode={referralCode} />
               </div>
             </IceGlassCard>
           </div>
         </div>
 
-        {/* Right Column: Hero Content */}
         <div className="relative order-1 min-h-[30vh] w-full overflow-hidden lg:order-2 lg:min-h-screen lg:w-1/2">
           <div className="relative z-20 flex h-full flex-col items-center justify-center p-6 pb-4 text-right sm:p-12 lg:items-end lg:p-24">
             <div className="animate-in fade-in slide-in-from-right flex flex-col space-y-2 duration-1000 sm:space-y-4">
@@ -74,6 +69,7 @@ export const ForgotPasswordView = () => {
           <div className="bg-gold-dark animate-pulse-slow absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full opacity-30 blur-[160px] filter delay-700" />
         </div>
       </div>
+
       <AuthFooter />
     </div>
   );

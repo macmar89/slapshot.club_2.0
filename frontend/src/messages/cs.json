@@ -262,6 +262,16 @@
       "user_not_found": "Uživatel nebyl nalezen",
       "invalid_refresh_token": "Neplatný nebo expirovaný obnovovací token",
       "invalid_email": "Neplatný formát e-mailu",
+      "email_invalid": "Enter a valid email",
+      "username_too_long": "Uživatelské jméno může mít maximálně 20 znaků",
+      "username_invalid_characters": "Povoleny jsou pouze písmena, čísla, tečka a podtržítko",
+      "password_no_uppercase": "Heslo musí obsahovat alespoň jedno velké písmeno",
+      "password_no_lowercase": "Heslo musí obsahovat alespoň jedno malé písmeno",
+      "password_no_number": "Heslo musí obsahovat alespoň jedno číslo",
+      "password_no_special": "Heslo musí obsahovat alespoň jeden speciální znak",
+      "gdpr_required": "Musíte souhlasit se zpracováním osobních údajů (GDPR)",
+      "confirm_password_required": "Zopakujte nové heslo",
+      "passwords_dont_match": "Hesla se neshodují",
       "phone_number_too_short": "Telefonní číslo musí mít alespoň 10 znaků",
       "organization_name_too_short": "Název organizace musí mít alespoň 2 znaky",
       "organization_slug_too_short": "Slug organizace musí mít alespoň 2 znaky",
@@ -298,7 +308,24 @@
     "confirm_password": "Zopakuj nové heslo",
     "loading": "Ukládám...",
     "success_title": "Úspěch!",
-    "error_generic": "Nastala neočekávaná chyba"
+    "error_generic": "Nastala neočekávaná chyba",
+    "availability": {
+      "checking": "Rozhodčí prověřuje video...",
+      "available": "Čistý led!",
+      "invalid": "Zakázané uvolnění!",
+      "taken": "Ofsajd!",
+      "cooldown": "Trestná lavice!",
+      "idle": "Čekám na zadání",
+      "taken_message": "Toto {type, select, username {jméno} email {email} other {pole}} je již v ofsajdu (obsazené).",
+      "cooldown_message": "Jsi na trestné lavici (cooldown). Zkus to za chvíli.",
+      "retry": "Zkusit znovu",
+      "validation": {
+        "no_spaces": "Mezery nejsou povoleny",
+        "too_short": "Jméno je příliš krátké (min. 4)",
+        "too_long": "Jméno je příliš dlouhé (max. 20)",
+        "invalid_chars": "Jen písmena, čísla, . a _"
+      }
+    }
   },
   "Onboarding": {
     "title": "Vítej v týmu!",

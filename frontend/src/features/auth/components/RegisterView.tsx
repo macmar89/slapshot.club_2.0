@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { RegisterForm } from '@/features/auth/components/RegisterForm';
+import { RegisterForm } from '@/features/auth/components/register-form';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Zap } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
-import { AuthFooter } from '@/features/auth/components/AuthFooter';
+import { AuthFooter } from '@/features/auth/components/auth-footer';
 
 export const RegisterView = ({ referralCode }: { referralCode?: string }) => {
   const t = useTranslations('Login');

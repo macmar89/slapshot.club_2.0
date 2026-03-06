@@ -1,0 +1,18 @@
+{
+  "Email": {
+    "verification": {
+      "subject": "🏒 Confirm your roster spot at Slapshot Club!",
+      "title": "Welcome to the team, {username}!",
+      "message": "The coach has just assigned you a spot on the <strong>Slapshot Club</strong> roster. Your jersey is already hanging in the locker room, but before you hit the ice, we need to confirm your identity.",
+      "button": "Confirm Roster Spot",
+      "footer": "See you in the arena! <br> SLAPSHOT CLUB • 2026"
+    },
+    "forgotPassword": {
+      "subject": "🔑 Lost puck? Reset your password!",
+      "title": "Timeout, {username}?",
+      "message": "Looks like you lost the puck (or your password) somewhere in the corner of the rink. No worries, we'll get you a quick reset so you can score again in the next shift.",
+      "button": "Set new password",
+      "footer": "Don't get benched! <br> SLAPSHOT CLUB • 2026"
+    }
+  }
+}

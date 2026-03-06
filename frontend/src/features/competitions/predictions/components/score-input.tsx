@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { getLogoUrl } from '@/lib/logo';
+import { getLogoUrl } from '@/lib/utils/logo';
 import { Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
 

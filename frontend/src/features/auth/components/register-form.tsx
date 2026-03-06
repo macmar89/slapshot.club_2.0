@@ -1,33 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { registerUser } from '@/features/auth/actions';
-import { registerSchema, type RegisterFormData } from '@/features/auth/schema';
+
 import { Link } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
-import { Turnstile } from '@/components/auth/Turnstile';
-import { AvailabilityInput } from './AvailabilityInput';
-import { PasswordInput } from './PasswordInput';
+import { AvailabilityInput } from './availability-input';
+import { PasswordInput } from '@/features/auth/components/password-input';
 import dynamic from 'next/dynamic';
+import { Turnstile } from '@/components/common/turnstile';
+import { getRegisterSchema } from '../auth.schema';
 
-const GdprModalContent = dynamic(() => import('./GdprModalContent'), { ssr: false });
+const GdprModalContent = dynamic(() => import('./gdpr-content-dialog'), { ssr: false });
 
-export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
+interface RegisterFormProps {
+  referralCode?: string;
+}
+
+export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
   const router = useRouter();
   const t = useTranslations('Auth');
+
+  const locale = useLocale();
+
+  console.log(referralCode);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -42,8 +42,9 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
     setValue,
     control,
     formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  } = useForm({
+    // } = useForm<RegisterFormData>({
+    resolver: zodResolver(getRegisterSchema(t)),
     defaultValues: {
       username: '',
       email: '',
@@ -55,29 +56,30 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
     },
   });
 
-  const locale = useLocale();
-
-  const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const res = await registerUser({
-        ...data,
-        preferredLanguage: locale,
-      });
-
-      if (res.ok) {
-        setIsSuccess(true);
-      } else {
-        setError(res.data.errors?.[0]?.message || 'Registrácia zlyhala');
-      }
-    } catch (_err) {
-      setError('Nastala neočakávaná chyba');
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = async (data: any) => {
+    console.log(data);
   };
+  // const onSubmit = async (data: RegisterFormData) => {
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const res = await registerUser({
+  //       ...data,
+  //       preferredLanguage: locale,
+  //     });
+
+  //     if (res.ok) {
+  //       setIsSuccess(true);
+  //     } else {
+  //       setError(res.data.errors?.[0]?.message || 'Registrácia zlyhala');
+  //     }
+  //   } catch (_err) {
+  //     setError('Nastala neočakávaná chyba');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   if (isSuccess) {
     return (
@@ -133,6 +135,7 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
           onAvailabilityChange={setIsUsernameAvailable}
         />
 
+        {/* 
         <AvailabilityInput
           id="email"
           type="email"
@@ -152,16 +155,16 @@ export const RegisterForm = ({ referralCode }: { referralCode?: string }) => {
           error={errors.password?.message}
           hint={!errors.password?.message ? t('password_hint') : undefined}
           register={register('password')}
-        />
+        /> */}
 
-        <Turnstile
+        {/* <Turnstile
           onSuccess={(token) => setValue('turnstileToken', token)}
           onError={() => setError(t('turnstile_error'))}
           onExpire={() => setValue('turnstileToken', '')}
         />
         {errors.turnstileToken && (
           <p className="text-center text-xs text-red-500">{errors.turnstileToken.message}</p>
-        )}
+        )} */}
 
         <div className="relative flex flex-row items-start gap-2 pt-1 text-left">
           <Controller

@@ -8,6 +8,7 @@ import {
   pgEnum,
   text,
   integer,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { generateCuid, withUpdatesFields } from '../helpers';
 import { enumUsersSubscriptionPlan } from './subscriptions';
@@ -24,8 +25,8 @@ export const users = pgTable(
   'users',
   {
     id: generateCuid(),
-    username: varchar('username', { length: 100 }).notNull(),
-    email: varchar('email', { length: 255 }).notNull(),
+    username: varchar('username', { length: 100 }).unique().notNull(),
+    email: varchar('email', { length: 255 }).unique().notNull(),
     password: text('password').notNull(),
     role: enumUsersRole().default('user').notNull(),
 
@@ -53,9 +54,12 @@ export const users = pgTable(
     isActive: boolean('is_active').default(true).notNull(),
 
     referralCode: varchar('referral_code').unique().notNull(),
-    referredById: varchar('referred_by_id', { length: 24 }).references(() => users.id, {
-      onDelete: 'set null',
-    }),
+    referredById: varchar('referred_by_id', { length: 24 }).references(
+      (): AnyPgColumn => users.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
     totalRegistered: integer('total_registered').default(0),
     totalPaid: integer('total_paid').default(0),
 

@@ -7,6 +7,8 @@ import {
   loginUser,
   rotateRefreshToken,
   getUserProfile,
+  checkAvailability,
+  registerUser,
 } from '../services/auth.service.js';
 import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
 import { LoginSchema } from '../shared/constants/schema/auth.schema.js';
@@ -20,6 +22,7 @@ import { HttpStatus } from '../utils/httpStatusCodes.js';
 import { generateAccessToken } from '../utils/jwt.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { logActivity } from '../services/audit.service.js';
+import type { AvailabilityCheckType } from '../types/global.js';
 
 export const login = catchAsync(async (req: Request, res: Response) => {
   const validatedData = LoginSchema.parse(req.body);
@@ -60,7 +63,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const refresh = catchAsync(async (req: Request, res: Response) => {
+export const refreshTokenHandler = catchAsync(async (req: Request, res: Response) => {
   const oldRefreshToken = req.cookies.refresh_token;
 
   if (!oldRefreshToken) {
@@ -107,6 +110,58 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
     status: 'success',
     data: {
       user,
+    },
+  });
+});
+
+export const registerHandler = catchAsync(async (req: Request, res: Response) => {
+  const user = await registerUser(req.body);
+
+  console.log(user);
+
+  const userAgent = req.headers['user-agent'] || 'unknown';
+  const refreshToken = await createSession(user.id, userAgent);
+
+  if (!refreshToken) {
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  const accessToken = generateAccessToken({
+    id: user.id,
+    role: user.role,
+    subscriptionPlan: user.subscriptionPlan,
+    verifiedAt: !!user.isVerified,
+  });
+
+  res.cookie('access_token', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+
+  res.cookie('refresh_token', refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
+
+  await logActivity(
+    req,
+    'REGISTER_SUCCESS',
+    { type: 'auth', id: user.id },
+    { method: 'password' },
+    { userId: user.id },
+  );
+
+  res.status(HttpStatus.CREATED).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});
+
+export const checkAvailabilityHandler = catchAsync(async (req: Request, res: Response) => {
+  const { type, value } = req.query;
+
+  const isAvailable = await checkAvailability(type as AvailabilityCheckType, value as string);
+
+  res.status(HttpStatus.OK).json({
+    status: 'success',
+    data: {
+      available: isAvailable,
     },
   });
 });

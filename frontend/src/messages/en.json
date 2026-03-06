@@ -267,6 +267,16 @@
       "user_not_found": "User not found",
       "invalid_refresh_token": "Invalid or expired refresh token",
       "invalid_email": "Invalid email format",
+      "email_invalid": "Enter a valid email",
+      "username_too_long": "Username can be at most 20 characters long",
+      "username_invalid_characters": "Only letters, numbers, dot, and underscore are allowed",
+      "password_no_uppercase": "Password must contain at least one uppercase letter",
+      "password_no_lowercase": "Password must contain at least one lowercase letter",
+      "password_no_number": "Password must contain at least one number",
+      "password_no_special": "Password must contain at least one special character",
+      "gdpr_required": "You must agree to the processing of personal data (GDPR)",
+      "confirm_password_required": "Repeat the new password",
+      "passwords_dont_match": "Passwords do not match",
       "phone_number_too_short": "Phone number must be at least 10 characters long",
       "organization_name_too_short": "Organization name must be at least 2 characters long",
       "organization_slug_too_short": "Organization slug must be at least 2 characters long",
@@ -300,7 +310,24 @@
     "confirm_password": "Confirm new password",
     "loading": "Saving...",
     "success_title": "Success!",
-    "error_generic": "An unexpected error occurred"
+    "error_generic": "An unexpected error occurred",
+    "availability": {
+      "checking": "Referee is reviewing the play...",
+      "available": "Clear ice!",
+      "invalid": "Icing!",
+      "taken": "Offside!",
+      "cooldown": "Penalty box!",
+      "idle": "Waiting for input",
+      "taken_message": "This {type, select, username {username} email {email} other {field}} is already offside (taken).",
+      "cooldown_message": "You're in the penalty box (cooldown). Try again in a moment.",
+      "retry": "Try again",
+      "validation": {
+        "no_spaces": "Spaces are not allowed",
+        "too_short": "Username is too short (min. 4)",
+        "too_long": "Username is too long (max. 20)",
+        "invalid_chars": "Only letters, numbers, . and _"
+      }
+    }
   },
   "Onboarding": {
     "title": "Welcome to the Team!",
