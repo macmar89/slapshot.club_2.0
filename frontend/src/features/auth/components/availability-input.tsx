@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useDebounce } from 'use-debounce';
 import { CheckCircle2, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { handleGetCheckAvailability } from '../auth.api';
 
 interface AvailabilityInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type: 'username' | 'email';
@@ -30,7 +31,6 @@ export function AvailabilityInput({
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'available' | 'taken' | 'rate-limited' | 'error' | 'invalid'
   >('idle');
-  const [apiError, setApiError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const t = useTranslations('Auth.availability');
 
@@ -83,12 +83,9 @@ export function AvailabilityInput({
 
       setStatus('loading');
       setValidationError(null);
-      setApiError(null);
 
       try {
-        const res = await fetch(
-          `/api/users/check-availability?type=${type}&value=${encodeURIComponent(value)}`,
-        );
+        const res = await handleGetCheckAvailability(type, value);
 
         if (res.status === 429) {
           setStatus('rate-limited');
@@ -96,10 +93,9 @@ export function AvailabilityInput({
           return;
         }
 
-        if (!res.ok) throw new Error('Failed to check availability');
+        if (!res.success) throw new Error('Failed to check availability');
 
-        const data = await res.json();
-        if (data.available) {
+        if (res.available) {
           setStatus('available');
           onAvailabilityChange?.(true);
         } else {

@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import type { Request } from 'express';
 import { db } from '../db/index.js';
 import { refreshTokens } from '../db/schema/auth.js';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { AppError } from '../utils/appError.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
 import { type LoginInput, type RegisterInput } from '../shared/constants/schema/auth.schema.js';
@@ -112,9 +112,12 @@ export const registerUser = async (data: RegisterInput) => {
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({
-    where: (users, { eq, and, or }) =>
+    where: (users, { and, or }) =>
       and(
-        or(eq(users.email, data.identifier), eq(users.username, data.identifier)),
+        or(
+          sql`LOWER(${users.email}) = LOWER(${data.identifier})`,
+          sql`LOWER(${users.username}) = LOWER(${data.identifier})`,
+        ),
         activeOnly(users, eq(users.isActive, true)),
       ),
     columns: {
@@ -306,7 +309,7 @@ export const checkAvailability = async (type: AvailabilityCheckType, value: stri
     columns: {
       id: true,
     },
-    where: (users, { eq }) => eq(users[type], value),
+    where: (users) => sql`LOWER(${users[type]}) = LOWER(${value})`,
   });
 
   if (existingUser) {

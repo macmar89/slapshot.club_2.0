@@ -13,7 +13,8 @@ import { AvailabilityInput } from './availability-input';
 import { PasswordInput } from '@/features/auth/components/password-input';
 import dynamic from 'next/dynamic';
 import { Turnstile } from '@/components/common/turnstile';
-import { getRegisterSchema } from '../auth.schema';
+import { getRegisterSchema, type RegisterInput } from '../auth.schema';
+import { handlePostRegister } from '../auth.api';
 
 const GdprModalContent = dynamic(() => import('./gdpr-content-dialog'), { ssr: false });
 
@@ -56,8 +57,26 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
     },
   });
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: RegisterInput) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await handlePostRegister({
+        ...data,
+        preferredLanguage: locale,
+      });
+
+      if (res.success) {
+        setIsSuccess(true);
+      } else {
+        setError(t(`errors.${res.message}`) || t('errors.registration_failed'));
+      }
+    } catch {
+      setError(t('errors.unexpected_error'));
+    } finally {
+      setIsLoading(false);
+    }
   };
   // const onSubmit = async (data: RegisterFormData) => {
   //   setIsLoading(true);
@@ -135,7 +154,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           onAvailabilityChange={setIsUsernameAvailable}
         />
 
-        {/* 
         <AvailabilityInput
           id="email"
           type="email"
@@ -155,16 +173,16 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           error={errors.password?.message}
           hint={!errors.password?.message ? t('password_hint') : undefined}
           register={register('password')}
-        /> */}
+        />
 
-        {/* <Turnstile
+        <Turnstile
           onSuccess={(token) => setValue('turnstileToken', token)}
-          onError={() => setError(t('turnstile_error'))}
+          onError={() => setError(t('errors.turnstile_error'))}
           onExpire={() => setValue('turnstileToken', '')}
         />
         {errors.turnstileToken && (
           <p className="text-center text-xs text-red-500">{errors.turnstileToken.message}</p>
-        )} */}
+        )}
 
         <div className="relative flex flex-row items-start gap-2 pt-1 text-left">
           <Controller
