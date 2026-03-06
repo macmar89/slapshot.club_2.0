@@ -254,7 +254,7 @@
     "gdpr_label_link": "osobných údajov (GDPR)",
     "marketing_label": "Chcem byť v prvej lajne! 🏒 Posielajte mi novinky z kabíny o nových ligách a vychytávkach, nech mám hru stále pod kontrolou.",
     "errors": {
-      "invalid_username_or_password": "Nesprávne meno alebo heslo",
+      "wrong_credentials": "Nesprávne meno alebo heslo",
       "username_too_short": "Používateľské meno musí mať aspoň 2 znaky",
       "password_too_short": "Heslo musí mať aspoň 8 znakov",
       "missing_refresh_token": "Chýbajúci obnovovací token",

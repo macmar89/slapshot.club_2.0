@@ -10,7 +10,7 @@ export const AuthMessages = {
 
     USERNAME_ALREADY_EXISTS: 'username_already_exists',
     EMAIL_ALREADY_EXISTS: 'email_already_exists',
-    INVALID_CREDENTIALS: 'invalid_username_or_password',
+    INVALID_CREDENTIALS: 'wrong_credentials',
     TOKEN_EXPIRED: 'token_expired',
     UNAUTHORIZED: 'unauthorized',
 

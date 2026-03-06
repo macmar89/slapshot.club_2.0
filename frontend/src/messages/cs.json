@@ -251,7 +251,7 @@
     "verification_sent": "Nový ověřovací e-mail byl odeslán",
     "resending": "Odesílám...",
     "errors": {
-      "invalid_username_or_password": "Nesprávné jméno nebo heslo",
+      "wrong_credentials": "Nesprávné jméno nebo heslo",
       "username_too_short": "Uživatelské jméno musí mít alespoň 2 znaky",
       "password_too_short": "Heslo musí mít alespoň 8 znaků",
       "missing_refresh_token": "Chybějící obnovovací token",

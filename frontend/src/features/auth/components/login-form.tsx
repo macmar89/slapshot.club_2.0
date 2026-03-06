@@ -74,12 +74,6 @@ export const LoginForm = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {error && (
-            <div className="rounded-app border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm font-medium text-red-500">
-              {error}
-            </div>
-          )}
-
           <FormField
             control={form.control}
             name="identifier"
@@ -147,6 +141,12 @@ export const LoginForm = () => {
             )}
           />
         </div>
+
+        {error && (
+          <div className="rounded-app border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm font-medium text-red-500">
+            {t(`errors.${error}`)}
+          </div>
+        )}
 
         <Button type="submit" color="gold" className="w-full py-6 text-lg" disabled={isLoading}>
           {isLoading ? t('logging_in') : t('login_button')}

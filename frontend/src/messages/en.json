@@ -256,7 +256,7 @@
     "gdpr_label_link": "personal data (GDPR)",
     "marketing_label": "I want to be in the first line! 🏒 Send me news from the locker room about new leagues and tweaks so I have the game under control.",
     "errors": {
-      "invalid_username_or_password": "Invalid username or password",
+      "wrong_credentials": "Invalid username or password",
       "username_too_short": "Username must be at least 2 characters long",
       "password_too_short": "Password must be at least 8 characters long",
       "missing_refresh_token": "Missing refresh token",

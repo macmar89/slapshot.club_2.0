@@ -2,7 +2,7 @@ export const AuthErrors = {
   MISSING_REFRESH_TOKEN: 'missing_refresh_token',
 
   USERNAME_ALREADY_EXISTS: 'username_already_exists',
-  INVALID_CREDENTIALS: 'invalid_username_or_password',
+  INVALID_CREDENTIALS: 'wrong_credentials',
   TOKEN_EXPIRED: 'token_expired',
   UNAUTHORIZED: 'unauthorized',
   SESSION_FAILED: 'session_failed',

@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
-import { LoginForm } from '@/features/auth/components/LoginForm';
+import { LoginForm } from '@/features/auth/components/login-form';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
