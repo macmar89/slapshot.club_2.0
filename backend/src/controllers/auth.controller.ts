@@ -9,6 +9,8 @@ import {
   getUserProfile,
   checkAvailability,
   registerUser,
+  verifyEmail,
+  resendVerification,
 } from '../services/auth.service.js';
 import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
 import { LoginSchema } from '../shared/constants/schema/auth.schema.js';
@@ -185,5 +187,76 @@ export const checkAvailabilityHandler = catchAsync(async (req: Request, res: Res
     data: {
       available: isAvailable,
     },
+  });
+});
+
+export const verifyEmailHandler = catchAsync(async (req: Request, res: Response) => {
+  const { token } = req.body;
+
+  const user = await verifyEmail(token);
+
+  const userAgent = req.headers['user-agent'] || 'unknown';
+  const refreshToken = await createSession(user.id, userAgent);
+
+  if (!refreshToken) {
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  const accessToken = generateAccessToken({
+    id: user.id,
+    role: user.role,
+    subscriptionPlan: user.subscriptionPlan,
+    verifiedAt: !!user.verifiedAt,
+  });
+
+  res.cookie('access_token', accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+  res.cookie('refresh_token', refreshToken, REFRESH_TOKEN_COOKIE_OPTIONS);
+
+  await logActivity(
+    req,
+    'EMAIL_VERIFIED',
+    { type: 'auth', id: user.id },
+    { method: 'token' },
+    { userId: user.id },
+  );
+
+  res.status(HttpStatus.OK).json({
+    status: 'success',
+    message: AuthMessages.VERIFY_SUCCESS,
+    data: {
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        subscriptionPlan: user.subscriptionPlan,
+        isVerified: true,
+      },
+    },
+  });
+});
+
+export const resendVerificationHandler = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  const { username, email: userEmail, token, preferredLanguage } = await resendVerification(email);
+
+  const locale = req.cookies.NEXT_LOCALE || preferredLanguage || 'sk';
+
+  await emailQueue.add('verification-email', {
+    type: 'verification-email',
+    data: {
+      user: {
+        username,
+        email: userEmail,
+        preferredLanguage,
+      },
+      token,
+      locale,
+    },
+  });
+
+  res.status(HttpStatus.OK).json({
+    status: 'success',
+    message: AuthMessages.VERIFICATION_SENT,
   });
 });

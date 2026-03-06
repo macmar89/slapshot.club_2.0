@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Button } from '@/components/ui/button';
-import { verifyUser, resendVerification } from '@/features/auth/actions';
+import { handlePostVerify, handlePostResendVerification } from '@/features/auth/auth.api';
 import { useTranslations } from 'next-intl';
-import { Link, useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/routing';
 import { Loader2, CheckCircle2, XCircle, Send } from 'lucide-react';
+
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface VerifyViewProps {
   token: string;
@@ -16,11 +18,12 @@ interface VerifyViewProps {
 export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
   const t = useTranslations('Auth');
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [isResending, setIsResending] = useState(false);
-  const [resendDone, setResendDone] = useState(false);
-  const [email, setEmail] = useState<string | null>(initialEmail || null);
-  const hasStartedVerification = React.useRef(false);
+  const [isResending, setIsResending] = useState<boolean>(false);
+  const [resendDone, setResendDone] = useState<boolean>(false);
+  const [email] = useState<string | null>(initialEmail || null);
+  const hasStartedVerification = useRef(false);
 
   useEffect(() => {
     const performVerification = async () => {
@@ -28,20 +31,14 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
       hasStartedVerification.current = true;
 
       try {
-        const res = await verifyUser(token);
+        const res = await handlePostVerify(token);
 
-        if (res.ok) {
+        if (res.success && res.data?.user) {
+          setUser(res.data.user);
           setStatus('success');
         } else {
-          const resData = res.data as any;
-          console.error('Verification failed:', resData?.errors || resData);
+          console.error('Verification failed:', res.message);
           setStatus('error');
-          // Try to get email from response to allow resending
-          if (resData?.user?.email) {
-            setEmail(resData.user.email);
-          } else if (resData?.email) {
-            setEmail(resData.email);
-          }
         }
       } catch (err) {
         console.error('Unexpected verification error:', err);
@@ -54,14 +51,14 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
     } else {
       setStatus('error');
     }
-  }, [token, initialEmail]);
+  }, [token, setUser]);
 
   const handleResend = async () => {
     if (!email) return;
     setIsResending(true);
     try {
-      const res = await resendVerification(email);
-      if (res.ok) {
+      const res = await handlePostResendVerification(email);
+      if (res.success) {
         setResendDone(true);
       }
     } catch (err) {
@@ -90,9 +87,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
               {status === 'loading' && (
                 <>
                   <Loader2 className="text-gold h-16 w-16 animate-spin" />
-                  <p className="animate-pulse font-medium text-white/60">
-                    Overujem tvoju súpisku...
-                  </p>
+                  <p className="animate-pulse font-medium text-white/60">{t('verifying_roster')}</p>
                 </>
               )}
 
@@ -105,9 +100,9 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
                   <Button
                     color="gold"
                     className="mt-4 w-full"
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push('/arena')}
                   >
-                    {t('verify_button')}
+                    {t('enter_arena')}
                   </Button>
                 </>
               )}
@@ -150,7 +145,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
                       className="border-gold/20 hover:bg-gold/10 w-full border"
                       onClick={() => router.push('/register')}
                     >
-                      {t('register_again')}
+                      {t('register')}
                     </Button>
                   )}
 

@@ -329,3 +329,66 @@ export const checkAvailability = async (type: AvailabilityCheckType, value: stri
   }
   return true;
 };
+
+export const verifyEmail = async (token: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.verificationToken, token),
+    columns: {
+      id: true,
+      username: true,
+      verifiedAt: true,
+      role: true,
+      subscriptionPlan: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+  }
+
+  if (user.verifiedAt) {
+    return user;
+  }
+
+  await db
+    .update(users)
+    .set({
+      verifiedAt: new Date().toISOString(),
+      verificationToken: null,
+    })
+    .where(eq(users.id, user.id));
+
+  return user;
+};
+
+export const resendVerification = async (email: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.email, email),
+    columns: {
+      id: true,
+      username: true,
+      email: true,
+      verifiedAt: true,
+      preferredLanguage: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
+  if (user.verifiedAt) {
+    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_VERIFIED, HttpStatus.BAD_REQUEST);
+  }
+
+  const newToken = generateRandomToken();
+
+  await db.update(users).set({ verificationToken: newToken }).where(eq(users.id, user.id));
+
+  return {
+    username: user.username,
+    email: user.email,
+    token: newToken,
+    preferredLanguage: user.preferredLanguage,
+  };
+};

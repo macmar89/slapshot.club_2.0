@@ -2,6 +2,8 @@ export const AuthMessages = {
   LOGOUT_SUCCESS: 'Logged out successfully',
   LOGIN_SUCCESS: 'Logged in successfully',
   REGISTER_SUCCESS: 'Registered successfully',
+  VERIFY_SUCCESS: 'verify_success',
+  VERIFICATION_SENT: 'verification_sent',
 
   ERRORS: {
     MISSING_REFRESH_TOKEN: 'missing_refresh_token',
@@ -17,6 +19,8 @@ export const AuthMessages = {
     USER_NOT_FOUND: 'user_not_found',
 
     INVALID_REFRESH_TOKEN: 'invalid_refresh_token',
+    INVALID_TOKEN: 'invalid_token',
+    EMAIL_ALREADY_VERIFIED: 'email_already_verified',
 
     VALIDATION: {
       INVALID_EMAIL: 'invalid_email',

@@ -50,5 +50,21 @@ export const CheckAvailabilitySchema = z.object({
   }),
 });
 
+export const VerifyEmailSchema = z.object({
+  token: z.string().min(1, VALIDATION.TURNISTILE_ERROR),
+});
+
+export const VerifyEmailHandlerSchema = z.object({
+  body: VerifyEmailSchema,
+});
+
+export const ResendVerificationSchema = z.object({
+  email: z.email(VALIDATION.INVALID_EMAIL),
+});
+
+export const ResendVerificationHandlerSchema = z.object({
+  body: ResendVerificationSchema,
+});
+
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;

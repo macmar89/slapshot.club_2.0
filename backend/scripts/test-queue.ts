@@ -11,10 +11,10 @@ async function testEmailQueue() {
       data: {
         user: {
           username: 'testuser',
-          email: 'marian@slapshot.club',
+          email: 'anetka@slapshot.club',
           preferredLanguage: 'sk',
         },
-        token: 'test-token-123',
+        token: '4d285e0dfdf0ea301ff3789e233e3749a5157458f164df2d51f9393a72a81d94',
         locale: 'sk',
       },
     });

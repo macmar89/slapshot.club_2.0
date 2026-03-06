@@ -32,7 +32,8 @@ export async function middleware(request: NextRequest) {
     pathname === '/' ||
     pathname === '/login' ||
     pathname === '/register' ||
-    pathname === '/forgot-password';
+    pathname === '/forgot-password' ||
+    pathname === '/verify';
 
   if (!isPublicPage && !accessToken && !refreshToken) {
     const loginUrl = new URL('/', request.url);

@@ -101,3 +101,41 @@ export const handleGetCheckAvailability = async (type: 'username' | 'email', val
     return { success: false, status: 500 };
   }
 };
+
+export const handlePostVerify = async (token: string) => {
+  try {
+    const { data } = await api.post(API_ROUTES.AUTH.VERIFY, { token });
+
+    return {
+      success: true,
+      message: data.message,
+      data: data.data,
+    };
+  } catch (error: unknown) {
+    const errorMessage = ((error as any).response?.data?.message || 'UNEXPECTED_ERROR') as string;
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};
+
+export const handlePostResendVerification = async (email: string) => {
+  try {
+    const { data } = await api.post(API_ROUTES.AUTH.RESEND_VERIFICATION, { email });
+
+    return {
+      success: true,
+      message: data.message,
+      data: data.data,
+    };
+  } catch (error: unknown) {
+    const errorMessage = ((error as any).response?.data?.message || 'UNEXPECTED_ERROR') as string;
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};

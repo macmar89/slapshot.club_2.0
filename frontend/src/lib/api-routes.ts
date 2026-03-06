@@ -2,6 +2,8 @@ export const API_ROUTES = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
+    VERIFY: '/auth/verify-email',
+    RESEND_VERIFICATION: '/auth/resend-verification',
     CHECK_AVAILABILITY: '/auth/check-availability',
     LOGOUT: '/auth/logout',
     REFRESH: '/auth/refresh',
