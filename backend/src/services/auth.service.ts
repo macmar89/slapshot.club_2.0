@@ -5,7 +5,11 @@ import { refreshTokens } from '../db/schema/auth.js';
 import { and, eq, sql } from 'drizzle-orm';
 import { AppError } from '../utils/appError.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
-import { type LoginInput, type RegisterInput } from '../shared/constants/schema/auth.schema.js';
+import {
+  type LoginInput,
+  type RegisterInput,
+  type ResetPasswordInput,
+} from '../shared/constants/schema/auth.schema.js';
 import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
 import { HttpStatus } from '../utils/httpStatusCodes.js';
 import { activeOnly } from '../db/helpers.js';
@@ -391,4 +395,77 @@ export const resendVerification = async (email: string) => {
     token: newToken,
     preferredLanguage: user.preferredLanguage,
   };
+};
+
+export const forgotPassword = async (email: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.email, email),
+    columns: {
+      id: true,
+      username: true,
+      email: true,
+      preferredLanguage: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
+  const token = generateRandomToken();
+  const hashedToken = hashToken(token);
+  const expiration = new Date(Date.now() + 3600000).toISOString(); // 1 hour
+
+  await db
+    .update(users)
+    .set({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpiration: expiration,
+    })
+    .where(eq(users.id, user.id));
+
+  return {
+    token, // We send the raw token to the user via email
+    user: {
+      username: user.username,
+      email: user.email,
+      preferredLanguage: user.preferredLanguage,
+    },
+  };
+};
+
+export const resetPassword = async (data: ResetPasswordInput) => {
+  const hashedToken = hashToken(data.token);
+
+  const user = await db.query.users.findFirst({
+    where: (users, { eq, and, gt }) =>
+      and(
+        eq(users.resetPasswordToken, hashedToken),
+        sql`${users.resetPasswordExpiration} > ${new Date().toISOString()}`,
+      ),
+    columns: {
+      id: true,
+      username: true,
+      role: true,
+      subscriptionPlan: true,
+      verifiedAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+  }
+
+  const hashedPassword = await hashPassword(data.password);
+
+  await db
+    .update(users)
+    .set({
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpiration: null,
+    })
+    .where(eq(users.id, user.id));
+
+  return user;
 };

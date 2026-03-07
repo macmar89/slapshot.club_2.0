@@ -6,6 +6,8 @@ import {
   RegisterHandlerSchema,
   VerifyEmailHandlerSchema,
   ResendVerificationHandlerSchema,
+  ForgotPasswordHandlerSchema,
+  ResetPasswordHandlerSchema,
 } from '../shared/constants/schema/auth.schema.js';
 
 const router = Router();
@@ -16,11 +18,20 @@ router.post('/logout', authController.logout);
 router.get('/me', isAuth, authController.getMe);
 router.post('/refresh', authController.refreshTokenHandler);
 router.post('/register', validate(RegisterHandlerSchema), authController.registerHandler);
-router.post('/verify-email', validate(VerifyEmailHandlerSchema), authController.verifyEmailHandler);
 router.post(
   '/resend-verification',
   validate(ResendVerificationHandlerSchema),
   authController.resendVerificationHandler,
+);
+router.post(
+  '/forgot-password',
+  validate(ForgotPasswordHandlerSchema),
+  authController.forgotPasswordHandler,
+);
+router.post(
+  '/reset-password',
+  validate(ResetPasswordHandlerSchema),
+  authController.resetPasswordHandler,
 );
 
 export default router;

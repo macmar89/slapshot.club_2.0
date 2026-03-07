@@ -8,6 +8,8 @@ export const API_ROUTES = {
     LOGOUT: '/auth/logout',
     REFRESH: '/auth/refresh',
     ME: '/auth/me',
+    FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD: '/auth/reset-password',
   },
   COMPETITIONS: {
     ALL: '/competition',

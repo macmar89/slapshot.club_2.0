@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPassword } from '@/features/auth/actions';
-import { resetPasswordSchema, type ResetPasswordFormData } from '@/features/auth/schema';
+import { handlePostResetPassword } from '@/features/auth/auth.api';
+import { getResetPasswordSchema, type ResetPasswordInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
 import { PasswordInput } from './password-input';
 import { toast } from 'sonner';
@@ -22,12 +21,14 @@ export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const schema = getResetPasswordSchema(t);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(resetPasswordSchema),
+  } = useForm<ResetPasswordInput>({
+    resolver: zodResolver(schema),
     defaultValues: {
       password: '',
       confirmPassword: '',
@@ -35,7 +36,7 @@ export const ResetPasswordForm = () => {
     },
   });
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     if (!token) {
       setError(t('verify_error'));
       return;
@@ -45,15 +46,19 @@ export const ResetPasswordForm = () => {
     setError(null);
 
     try {
-      const res = await resetPassword(data);
+      const res = await handlePostResetPassword(data);
 
-      if (res.ok) {
+      if (res.success) {
         setIsSuccess(true);
         toast.success(t('reset_password_success'));
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
       } else {
-        setError(res.data.errors?.[0]?.message || t('error_generic'));
+        setError(t(`errors.${res.message}`));
       }
-    } catch (_err) {
+    } catch {
       setError(t('error_generic'));
     } finally {
       setIsLoading(false);
@@ -78,10 +83,8 @@ export const ResetPasswordForm = () => {
             {t('success_title')}
           </h2>
           <p className="font-medium text-white/60">{t('reset_password_success')}</p>
+          <p className="text-sm text-white/40 italic">{t('redirect_to_app')}</p>
         </div>
-        <Button color="gold" className="mt-4 w-full" onClick={() => router.push('/login')}>
-          {t('login')}
-        </Button>
       </div>
     );
   }
@@ -107,7 +110,7 @@ export const ResetPasswordForm = () => {
           label={t('password')}
           placeholder={t('password_placeholder')}
           disabled={isLoading}
-          error={errors.password?.message}
+          error={errors.password?.message as string}
           hint={!errors.password?.message ? t('password_hint') : undefined}
           register={register('password')}
         />
@@ -117,7 +120,7 @@ export const ResetPasswordForm = () => {
           label={t('confirm_password') || 'Potvrdiť heslo'}
           placeholder={t('password_placeholder')}
           disabled={isLoading}
-          error={errors.confirmPassword?.message}
+          error={errors.confirmPassword?.message as string}
           register={register('confirmPassword')}
         />
       </div>

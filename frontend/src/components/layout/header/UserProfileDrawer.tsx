@@ -27,7 +27,7 @@ import { format } from 'date-fns';
 import { sk, enUS, cs } from 'date-fns/locale';
 // import { FeedbackModal } from '@/components/feedback/FeedbackModal';
 import { useTranslations } from 'next-intl';
-import { ReferralLink } from '@/features/auth/components/ReferralLink';
+import { ReferralLink } from '@/components/common/referral-link';
 
 interface UserProfileDrawerProps {
   user: any;

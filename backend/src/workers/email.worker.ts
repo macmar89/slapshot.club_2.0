@@ -1,6 +1,7 @@
 import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../config/redis.config.js';
 import { renderVerificationEmail } from '../templates/emails/renderVerifyUserEmail.js';
+import { renderForgotPasswordEmail } from '../templates/emails/renderResetPasswordEmail.js';
 import { logger } from '../utils/logger.js';
 import { emailService } from '../services/email.service.js';
 
@@ -25,6 +26,20 @@ export const emailWorker = new Worker(
 
       const translations = getTranslations(locale);
       const subject = translations.Email.verification.subject;
+
+      await emailService.sendEmail({
+        to: user.email,
+        subject,
+        htmlContent,
+      });
+    }
+
+    if (type === 'forgot-password-email') {
+      const { user, token, locale } = data;
+      const htmlContent = renderForgotPasswordEmail({ token, user });
+
+      const translations = getTranslations(locale);
+      const subject = translations.Email.forgotPassword.subject;
 
       await emailService.sendEmail({
         to: user.email,

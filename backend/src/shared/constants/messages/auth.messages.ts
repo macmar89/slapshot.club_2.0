@@ -4,6 +4,8 @@ export const AuthMessages = {
   REGISTER_SUCCESS: 'Registered successfully',
   VERIFY_SUCCESS: 'verify_success',
   VERIFICATION_SENT: 'verification_sent',
+  FORGOT_PASSWORD_SUCCESS: 'forgot_password_success',
+  RESET_PASSWORD_SUCCESS: 'reset_password_success',
 
   ERRORS: {
     MISSING_REFRESH_TOKEN: 'missing_refresh_token',
@@ -37,6 +39,8 @@ export const AuthMessages = {
       PASSWORD_NO_SPECIAL: 'password_no_special',
       TURNISTILE_ERROR: 'turnistile_error',
       GDPR_REQUIRED: 'gdpr_required',
+      PASSWORDS_DONT_MATCH: 'passwords_dont_match',
+      REQUIRED: 'required',
     },
 
     FORBIDDEN: 'forbidden',

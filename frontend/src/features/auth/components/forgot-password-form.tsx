@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forgotPassword } from '@/features/auth/actions';
-import { forgotPasswordSchema, type ForgotPasswordFormData } from '@/features/auth/schema';
+import { handlePostForgotPassword } from '@/features/auth/auth.api';
+import { getForgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
-import { Turnstile } from '@/components/auth/Turnstile';
+import { Turnstile } from '@/components/common/turnstile';
 import { Link } from '@/i18n/routing';
 import { toast } from 'sonner';
 
@@ -19,34 +19,36 @@ export const ForgotPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSent, setIsSent] = useState(false);
 
+  const schema = getForgotPasswordSchema(t);
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(forgotPasswordSchema),
+  } = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(schema),
     defaultValues: {
       email: '',
       turnstileToken: '',
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordFormData) => {
+  const onSubmit = async (data: ForgotPasswordInput) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const res = await forgotPassword(data);
+      const res = await handlePostForgotPassword(data);
 
-      if (res.ok) {
+      if (res.success) {
         setIsSent(true);
         toast.success(t('forgot_password_success') || 'Inštrukcie boli odoslané na váš email.');
       } else {
-        setError(res.data.errors?.[0]?.message || 'Nepodarilo sa odoslať inštrukcie');
+        setError(t(`errors.${res.message}`));
       }
-    } catch (_err) {
-      setError('Nastala neočakávaná chyba');
+    } catch {
+      setError(t('error_generic'));
     } finally {
       setIsLoading(false);
     }
@@ -113,7 +115,7 @@ export const ForgotPasswordForm = () => {
         </div>
 
         <Turnstile
-          onSuccess={(token) => setValue('turnstileToken', token)}
+          onSuccess={(token: string) => setValue('turnstileToken', token)}
           onError={() => setError(t('turnstile_error'))}
           onExpire={() => setValue('turnstileToken', '')}
         />
@@ -123,11 +125,11 @@ export const ForgotPasswordForm = () => {
       </div>
 
       <Button type="submit" color="gold" className="w-full py-6 text-lg" disabled={isLoading}>
-        {isLoading ? t('sending') : t('reset_password_button')}
+        {isLoading ? t('sending') : t('send_instructions')}
       </Button>
 
       <div className="mt-2 text-center text-sm text-white/50">
-        <Link href="/login" className="font-semibold text-white hover:underline">
+        <Link href="/" className="font-semibold text-white hover:underline">
           {t('back_to_login')}
         </Link>
       </div>

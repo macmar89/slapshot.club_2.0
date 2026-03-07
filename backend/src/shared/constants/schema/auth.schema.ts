@@ -66,5 +66,30 @@ export const ResendVerificationHandlerSchema = z.object({
   body: ResendVerificationSchema,
 });
 
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email(VALIDATION.INVALID_EMAIL),
+});
+
+export const ForgotPasswordHandlerSchema = z.object({
+  body: ForgotPasswordSchema,
+});
+
+export const ResetPasswordSchema = z
+  .object({
+    token: z.string().min(1, VALIDATION.REQUIRED),
+    password: basePasswordSchema,
+    confirmPassword: z.string().min(1, VALIDATION.REQUIRED),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: VALIDATION.PASSWORDS_DONT_MATCH,
+    path: ['confirmPassword'],
+  });
+
+export const ResetPasswordHandlerSchema = z.object({
+  body: ResetPasswordSchema,
+});
+
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;

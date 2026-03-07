@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
-import { ReferralLink } from '@/features/auth/components/ReferralLink';
+import { ReferralLink } from '@/components/common/referral-link';
 import Image from 'next/image';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 

@@ -33,6 +33,7 @@ export async function middleware(request: NextRequest) {
     pathname === '/login' ||
     pathname === '/register' ||
     pathname === '/forgot-password' ||
+    pathname === '/reset-password' ||
     pathname === '/verify';
 
   if (!isPublicPage && !accessToken && !refreshToken) {

@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@/lib/api-routes';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/use-auth-store';
-import { LoginInput, RegisterInput } from './auth.schema';
+import { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput } from './auth.schema';
 
 export const handlePostRegister = async (values: RegisterInput) => {
   const { setUser } = useAuthStore.getState();
@@ -124,6 +124,47 @@ export const handlePostVerify = async (token: string) => {
 export const handlePostResendVerification = async (email: string) => {
   try {
     const { data } = await api.post(API_ROUTES.AUTH.RESEND_VERIFICATION, { email });
+
+    return {
+      success: true,
+      message: data.message,
+      data: data.data,
+    };
+  } catch (error: unknown) {
+    const errorMessage = ((error as any).response?.data?.message || 'UNEXPECTED_ERROR') as string;
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};
+
+export const handlePostForgotPassword = async (values: ForgotPasswordInput) => {
+  try {
+    const { data } = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, values);
+
+    return {
+      success: true,
+      message: data.message,
+    };
+  } catch (error: unknown) {
+    const errorMessage = ((error as any).response?.data?.message || 'UNEXPECTED_ERROR') as string;
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};
+
+export const handlePostResetPassword = async (values: ResetPasswordInput) => {
+  const { setUser } = useAuthStore.getState();
+
+  try {
+    const { data } = await api.post(API_ROUTES.AUTH.RESET_PASSWORD, values);
+
+    setUser(data.data.user);
 
     return {
       success: true,
