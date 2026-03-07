@@ -15,6 +15,8 @@ export const auditActionEnum = pgEnum('audit_action', [
   'COMP_LEAVE',
   'CREDIT_REFUND',
   'EMAIL_VERIFIED',
+  'USERNAME_CHANGE',
+  'EMAIL_CHANGE_REQUEST',
 ]);
 
 export const entityTypeEnum = pgEnum('entity_type', [

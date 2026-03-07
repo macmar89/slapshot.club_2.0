@@ -19,7 +19,7 @@ import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import { LogoutButton } from '@/features/auth/components/LogoutButton';
+import { LogoutButton } from '@/features/auth/components/logout-button';
 import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
 import Image from 'next/image';
 import logo from '@/assets/images/logo/ssc_logo_2.png';

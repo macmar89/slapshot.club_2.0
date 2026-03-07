@@ -13,6 +13,9 @@ export const API_ROUTES = {
   },
   USER: {
     UPDATE_PREFERRED_LANGUAGE: '/user/preferred-language',
+    UPDATE_USERNAME: '/user/username',
+    CHANGE_PASSWORD: '/user/change-password',
+    EMAIL_CHANGE_REQUEST: '/user/email-change-request',
   },
   COMPETITIONS: {
     ALL: '/competition',

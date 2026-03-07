@@ -88,16 +88,6 @@ export const ResetPasswordSchema = z
 export const ResetPasswordHandlerSchema = z.object({
   body: ResetPasswordSchema,
 });
-export const UpdatePreferredLanguageSchema = z.object({
-  preferredLanguage: z.enum(['sk', 'en', 'cs'] as const),
-});
-
-export const UpdatePreferredLanguageHandlerSchema = z.object({
-  body: UpdatePreferredLanguageSchema,
-});
-
-export type UpdatePreferredLanguageInput = z.infer<typeof UpdatePreferredLanguageSchema>;
-
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;

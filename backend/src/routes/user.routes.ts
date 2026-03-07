@@ -1,16 +1,37 @@
 import { Router } from 'express';
 import * as userController from '../controllers/user.controller.js';
-import { isAuth } from '../middleware/auth.middleware.js';
 import { validate } from '../middleware/validate.middleware.js';
-import { UpdatePreferredLanguageHandlerSchema } from '../shared/constants/schema/auth.schema.js';
+import {
+  UpdatePreferredLanguageHandlerSchema,
+  UpdateUsernameHandlerSchema,
+  ChangePasswordHandlerSchema,
+  EmailChangeRequestHandlerSchema,
+} from '../shared/constants/schema/user.schema.js';
 
 const router = Router();
 
 router.patch(
   '/preferred-language',
-  isAuth,
   validate(UpdatePreferredLanguageHandlerSchema),
   userController.updatePreferredLanguageHandler,
+);
+
+router.patch(
+  '/username',
+  validate(UpdateUsernameHandlerSchema),
+  userController.updateUsernameHandler,
+);
+
+router.post(
+  '/change-password',
+  validate(ChangePasswordHandlerSchema),
+  userController.changePasswordHandler,
+);
+
+router.post(
+  '/email-change-request',
+  validate(EmailChangeRequestHandlerSchema),
+  userController.requestEmailChangeHandler,
 );
 
 export default router;

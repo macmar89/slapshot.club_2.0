@@ -255,6 +255,7 @@
       "wrong_credentials": "Nesprávné jméno nebo heslo",
       "username_too_short": "Uživatelské jméno musí mít alespoň 2 znaky",
       "password_too_short": "Heslo musí mít alespoň 8 znaků",
+      "password_required": "Heslo je povinné",
       "missing_refresh_token": "Chybějící obnovovací token",
       "username_already_exists": "Uživatel s tímto jménem již existuje",
       "token_expired": "Vaše relace vypršela. Prosím, obnovte token nebo se znovu přihlaste.",
@@ -265,7 +266,7 @@
       "user_not_found": "Uživatel nebyl nalezen",
       "invalid_refresh_token": "Neplatný nebo expirovaný obnovovací token",
       "invalid_email": "Neplatný formát e-mailu",
-      "email_invalid": "Enter a valid email",
+      "email_invalid": "Zadejte platný email",
       "username_too_long": "Uživatelské jméno může mít maximálně 20 znaků",
       "username_invalid_characters": "Povoleny jsou pouze písmena, čísla, tečka a podtržítko",
       "password_no_uppercase": "Heslo musí obsahovat alespoň jedno velké písmeno",
@@ -534,7 +535,8 @@
       "scoreChange": "Změna skóre",
       "matchEnd": "Konec zápasu + vyhodnocení",
       "leaderboardUpdate": "Update žebříčku",
-      "status_updated": "Nastavení byla aktualizována"
+      "status_updated": "Nastavení byla aktualizována",
+      "coming_soon": "Nastavení notifikací budou brzy k dispozici."
     },
     "username_section": "Jméno",
     "username_description": "Změň si své veřejné jméno v žebříčcích.",

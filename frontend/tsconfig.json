@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "src/app/[slug]/dashboard"
+    "src/app/(app)/[slug]/dashboard"
   ],
   "exclude": ["node_modules"]
 }

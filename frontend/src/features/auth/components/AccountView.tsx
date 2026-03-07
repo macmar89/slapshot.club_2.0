@@ -5,11 +5,11 @@ import { useTranslations } from 'next-intl';
 import { UserCog } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Container } from '@/components/ui/container';
-import { ProfileOverview } from './sections/ProfileOverview';
-import { UsernameForm } from './sections/UsernameForm';
-import { EmailSection } from './sections/EmailSection';
+import { ProfileOverview } from '../../account/components/profile-overview';
+import { UsernameForm } from '../../account/components/username-form';
+import { EmailSection } from '../../account/components/email-section';
 import { LocationForm } from './sections/LocationForm';
-import { SecurityForm } from './sections/SecurityForm';
+import { SecurityForm } from '../../account/components/security-form';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { NotificationSection } from '@/features/notifications/components/NotificationSection';
 

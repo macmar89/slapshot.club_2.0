@@ -14,7 +14,7 @@ import {
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import { LogoutButton } from '@/features/auth/components/LogoutButton';
+import { LogoutButton } from '@/features/auth/components/logout-button';
 import {
   Sheet,
   SheetContent,
@@ -166,11 +166,7 @@ export function UserProfileDrawer({
             </Link>
             {user?.referralData?.referralCode && (
               <div className="rounded-app border border-white/5 bg-white/5 p-4">
-                <ReferralLink
-                  code={user.referralData.referralCode}
-                  align="center"
-                  className="w-full"
-                />
+                <ReferralLink align="center" className="w-full" />
               </div>
             )}
           </div>

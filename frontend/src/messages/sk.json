@@ -258,6 +258,7 @@
       "wrong_credentials": "Nesprávne meno alebo heslo",
       "username_too_short": "Používateľské meno musí mať aspoň 2 znaky",
       "password_too_short": "Heslo musí mať aspoň 8 znakov",
+      "password_required": "Heslo je povinné",
       "missing_refresh_token": "Chýbajúci obnovovací token",
       "username_already_exists": "Používateľ s týmto menom už existuje",
       "token_expired": "Vaša relácia vypršala. Prosím, obnovte token alebo sa znova prihláste.",
@@ -534,7 +535,8 @@
       "scoreChange": "Zmena skóre",
       "matchEnd": "Koniec zápasu + vyhodnotenie",
       "leaderboardUpdate": "Update rebríčku",
-      "status_updated": "Nastavenia boli aktualizované"
+      "status_updated": "Nastavenia boli aktualizované",
+      "coming_soon": "Nastavenia notifikácií sú čoskoro k dispozícii."
     },
     "username_section": "Meno",
     "username_description": "Zmeň si svoje verejné meno v rebríčkoch.",

@@ -260,6 +260,7 @@
       "wrong_credentials": "Invalid username or password",
       "username_too_short": "Username must be at least 2 characters long",
       "password_too_short": "Password must be at least 8 characters long",
+      "password_required": "Password is required",
       "missing_refresh_token": "Missing refresh token",
       "username_already_exists": "A user with this username already exists",
       "token_expired": "Your session has expired. Please refresh the token or log in again.",
@@ -536,7 +537,8 @@
       "scoreChange": "Score Change",
       "matchEnd": "Match End & Evaluation",
       "leaderboardUpdate": "Leaderboard Update",
-      "status_updated": "Settings updated"
+      "status_updated": "Settings updated",
+      "coming_soon": "Notification settings will be available soon."
     },
     "username_section": "Name",
     "username_description": "Change your public name in the leaderboards.",

@@ -9,13 +9,15 @@ import { Lock, CheckCircle2 } from 'lucide-react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Button } from '@/components/ui/button';
 import { PasswordInput } from '@/features/auth/components/password-input';
-import { passwordUpdateSchema, type PasswordUpdateFormData } from '@/features/auth/schema';
-import { updatePasswordAction } from '@/features/auth/account-actions';
+import { getPasswordUpdateSchema, type PasswordUpdateFormData } from '@/features/auth/schema';
+import { updatePasswordAction } from '@/features/account/account.api';
 
 export function SecurityForm() {
   const t = useTranslations('Account');
   const authT = useTranslations('Auth');
   const commonT = useTranslations('Common');
+
+  const schema = React.useMemo(() => getPasswordUpdateSchema(authT), [authT]);
 
   const {
     register: registerPassword,
@@ -23,11 +25,11 @@ export function SecurityForm() {
     formState: { errors: passwordErrors, isSubmitting: isPasswordSubmitting },
     reset: resetPassword,
   } = useForm<PasswordUpdateFormData>({
-    resolver: zodResolver(passwordUpdateSchema),
+    resolver: zodResolver(schema),
   });
 
   const onPasswordSubmit = async (data: PasswordUpdateFormData) => {
-    const res = await updatePasswordAction(data.newPassword);
+    const res = await updatePasswordAction(data.currentPassword, data.newPassword);
     if (res.ok) {
       toast.success(commonT('success_title'));
       resetPassword();
@@ -60,6 +62,7 @@ export function SecurityForm() {
             disabled={isPasswordSubmitting}
             error={passwordErrors.currentPassword?.message}
             register={registerPassword('currentPassword')}
+            autoComplete="off"
           />
           <div className="hidden md:block" />
           <PasswordInput
@@ -69,6 +72,7 @@ export function SecurityForm() {
             disabled={isPasswordSubmitting}
             error={passwordErrors.newPassword?.message}
             register={registerPassword('newPassword')}
+            autoComplete="off"
           />
           <PasswordInput
             id="confirmPassword"
@@ -77,6 +81,7 @@ export function SecurityForm() {
             disabled={isPasswordSubmitting}
             error={passwordErrors.confirmPassword?.message}
             register={registerPassword('confirmPassword')}
+            autoComplete="off"
           />
         </div>
 

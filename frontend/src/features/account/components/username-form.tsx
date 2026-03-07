@@ -9,8 +9,8 @@ import { User, AlertCircle } from 'lucide-react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { usernameUpdateSchema, type UsernameUpdateFormData } from '@/features/auth/schema';
-import { updateUsernameAction } from '@/features/auth/account-actions';
+import { getUsernameUpdateSchema, type UsernameUpdateFormData } from '@/features/auth/schema';
+import { updateUsernameAction } from '@/features/account/account.api';
 
 interface UsernameFormProps {
   initialUsername: string;
@@ -22,12 +22,14 @@ export function UsernameForm({ initialUsername, onUsernameUpdated }: UsernameFor
   const authT = useTranslations('Auth');
   const commonT = useTranslations('Common');
 
+  const schema = React.useMemo(() => getUsernameUpdateSchema(authT), [authT]);
+
   const {
     register: registerUsername,
     handleSubmit: handleUsernameSubmit,
     formState: { errors: usernameErrors, isSubmitting: isUsernameSubmitting },
   } = useForm<UsernameUpdateFormData>({
-    resolver: zodResolver(usernameUpdateSchema),
+    resolver: zodResolver(schema),
     defaultValues: { username: initialUsername },
   });
 

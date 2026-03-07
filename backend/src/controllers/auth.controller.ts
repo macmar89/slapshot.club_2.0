@@ -173,6 +173,7 @@ export const registerHandler = catchAsync(async (req: Request, res: Response) =>
       user: {
         id: user.id,
         username: user.username,
+        email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
         subscriptionActiveUntil: user.subscriptionActiveUntil,
@@ -233,6 +234,7 @@ export const verifyEmailHandler = catchAsync(async (req: Request, res: Response)
       user: {
         id: user.id,
         username: user.username,
+        email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
         isVerified: true,
@@ -330,6 +332,7 @@ export const resetPasswordHandler = catchAsync(async (req: Request, res: Respons
       user: {
         id: user.id,
         username: user.username,
+        email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
         isVerified: !!user.verifiedAt,

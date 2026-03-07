@@ -16,7 +16,7 @@ import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import { LogoutButton } from '@/features/auth/components/LogoutButton';
+import { LogoutButton } from '@/features/auth/components/logout-button';
 import { ReferralLink } from '@/components/common/referral-link';
 import Image from 'next/image';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
@@ -114,7 +114,6 @@ export function MainMobileNav({ user }: { user: any }) {
                   <div className="flex flex-col gap-6">
                     {user?.referralData?.referralCode && (
                       <ReferralLink
-                        code={user.referralData.referralCode}
                         align="left"
                         title={t('share_app')}
                         className="rounded-app bg-primary/5 border-primary/10 border px-4 py-4"

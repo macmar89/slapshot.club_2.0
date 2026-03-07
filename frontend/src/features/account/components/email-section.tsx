@@ -17,8 +17,11 @@ import {
   DialogTrigger,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { emailChangeRequestSchema, type EmailChangeRequestFormData } from '@/features/auth/schema';
-import { requestEmailChangeAction } from '@/features/auth/account-actions';
+import {
+  getEmailChangeRequestSchema,
+  type EmailChangeRequestFormData,
+} from '@/features/auth/schema';
+import { requestEmailChangeAction } from '@/features/account/account.api';
 
 interface EmailSectionProps {
   email: string;
@@ -30,13 +33,15 @@ export function EmailSection({ email }: EmailSectionProps) {
   const commonT = useTranslations('Common');
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
+  const schema = React.useMemo(() => getEmailChangeRequestSchema(authT), [authT]);
+
   const {
     register: registerEmail,
     handleSubmit: handleEmailSubmit,
     formState: { errors: emailErrors, isSubmitting: isEmailSubmitting },
     reset: resetEmail,
   } = useForm<EmailChangeRequestFormData>({
-    resolver: zodResolver(emailChangeRequestSchema),
+    resolver: zodResolver(schema),
   });
 
   const onEmailRequestSubmit = async (data: EmailChangeRequestFormData) => {

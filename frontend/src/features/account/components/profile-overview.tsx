@@ -1,22 +1,14 @@
-import React from 'react';
 import { User, Mail } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
-import { ReferralLink } from '../ReferralLink';
+import { ReferralLink } from '@/components/common/referral-link';
+import { useAuthStore } from '@/store/use-auth-store';
 
-interface ProfileOverviewProps {
-  user: {
-    username: string;
-    email: string;
-    referralData?: {
-      referralCode?: string;
-    };
-  };
-}
-
-export function ProfileOverview({ user }: ProfileOverviewProps) {
+export function ProfileOverview() {
   const t = useTranslations('Account');
-  const code = user.referralData?.referralCode;
+  const user = useAuthStore((state) => state.user);
+
+  if (!user) return null;
 
   return (
     <IceGlassCard backdropBlur="md" className="border-primary/20 p-6 md:col-span-2 md:p-8">
@@ -36,7 +28,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
           </div>
         </div>
 
-        {code && <ReferralLink code={code} />}
+        <ReferralLink />
       </div>
     </IceGlassCard>
   );

@@ -6,7 +6,7 @@ import { Menu as MenuIcon, User as UserIcon, Settings, MessageSquarePlus } from 
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import { LogoutButton } from '@/features/auth/components/LogoutButton';
+import { LogoutButton } from '@/features/auth/components/logout-button';
 import {
   Sheet,
   SheetContent,
@@ -15,8 +15,8 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
-import { FeedbackModal } from '@/components/feedback/FeedbackModal';
 import { useTranslations } from 'next-intl';
+import { FeedbackModal } from '@/components/common/feedback-modal';
 
 interface League {
   id: string;

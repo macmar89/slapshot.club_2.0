@@ -135,6 +135,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     columns: {
       id: true,
       username: true,
+      email: true,
       role: true,
       password: true,
       subscriptionPlan: true,
@@ -340,6 +341,7 @@ export const verifyEmail = async (token: string) => {
     columns: {
       id: true,
       username: true,
+      email: true,
       verifiedAt: true,
       role: true,
       subscriptionPlan: true,
@@ -446,6 +448,7 @@ export const resetPassword = async (data: ResetPasswordInput) => {
     columns: {
       id: true,
       username: true,
+      email: true,
       role: true,
       subscriptionPlan: true,
       verifiedAt: true,
