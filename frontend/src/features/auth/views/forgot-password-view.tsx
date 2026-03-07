@@ -5,7 +5,7 @@ import { ForgotPasswordForm } from '@/features/auth/components/forgot-password-f
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 import { AuthFooter } from '@/features/auth/components/auth-footer';
 

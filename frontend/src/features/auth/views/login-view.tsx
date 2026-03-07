@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { useTranslations } from 'next-intl';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 import { AuthFooter } from '@/features/auth/components/auth-footer';
 

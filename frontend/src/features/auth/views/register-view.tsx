@@ -1,4 +1,4 @@
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';

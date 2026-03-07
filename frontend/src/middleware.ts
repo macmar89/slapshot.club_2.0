@@ -119,6 +119,7 @@ export async function middleware(request: NextRequest) {
               request.cookies.set('access_token', newCookies['access_token']);
               // Re-create response object with the updated request headers
               // This ensures the injected cookie is passed to downstream layout/pages
+              // We reuse the cookies already set by intlMiddleware
               response = NextResponse.next({
                 request: {
                   headers: request.headers,

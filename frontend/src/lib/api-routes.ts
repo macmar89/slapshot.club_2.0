@@ -11,6 +11,9 @@ export const API_ROUTES = {
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
   },
+  USER: {
+    UPDATE_PREFERRED_LANGUAGE: '/user/preferred-language',
+  },
   COMPETITIONS: {
     ALL: '/competition',
     JOIN: '/competition/join',

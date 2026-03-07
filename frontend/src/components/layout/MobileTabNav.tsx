@@ -18,7 +18,7 @@ import { Link, usePathname } from '@/i18n/routing';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
 import Image from 'next/image';

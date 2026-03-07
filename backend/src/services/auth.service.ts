@@ -60,7 +60,7 @@ export const registerUser = async (data: RegisterInput) => {
         subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
         isActive: true,
         referralCode: generateReferralCode(),
-        preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cz') ?? 'sk',
+        preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
         verificationToken: generateRandomToken(),
       })
       .returning();

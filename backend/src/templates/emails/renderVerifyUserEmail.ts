@@ -12,13 +12,13 @@ interface User {
 
 const getTranslations = (lang?: string) => {
   if (lang === 'en') return enTranslations;
-  if (lang === 'cz' || lang === 'cs') return csTranslations;
+  if (lang === 'cs') return csTranslations;
   return skTranslations;
 };
 
 export const renderVerificationEmail = ({ token, user }: { token: string; user: User }) => {
   const lang = user.preferredLanguage || 'sk';
-  const url = `${process.env.FRONTEND_URL}/verify?token=${token}&email=${encodeURIComponent(user.email)}&locale=${lang === 'cz' ? 'cs' : lang}`;
+  const url = `${process.env.FRONTEND_URL}/verify?token=${token}&email=${encodeURIComponent(user.email)}&locale=${lang}`;
 
   const translations = getTranslations(lang);
   const emailT = (translations as any).Email.verification;

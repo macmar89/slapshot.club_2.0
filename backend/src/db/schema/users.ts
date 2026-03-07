@@ -16,7 +16,7 @@ import { enumUsersSubscriptionPlan } from './subscriptions';
 export const enumUsersPreferredLanguage = pgEnum('enum_users_preferred_language', [
   'sk',
   'en',
-  'cz',
+  'cs',
 ]);
 
 export const enumUsersRole = pgEnum('enum_users_role', ['admin', 'editor', 'user', 'demo']);

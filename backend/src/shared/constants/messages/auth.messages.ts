@@ -6,6 +6,7 @@ export const AuthMessages = {
   VERIFICATION_SENT: 'verification_sent',
   FORGOT_PASSWORD_SUCCESS: 'forgot_password_success',
   RESET_PASSWORD_SUCCESS: 'reset_password_success',
+  UPDATE_SUCCESS: 'update_success',
 
   ERRORS: {
     MISSING_REFRESH_TOKEN: 'missing_refresh_token',

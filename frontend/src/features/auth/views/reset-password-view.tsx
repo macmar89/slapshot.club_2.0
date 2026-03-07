@@ -6,7 +6,7 @@ import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { ResetPasswordForm } from '@/features/auth/components/reset-password-form';
 import { Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import logo from '@/assets/images/logo/ssc_logo_2.png';
 
 export function ResetPasswordView() {

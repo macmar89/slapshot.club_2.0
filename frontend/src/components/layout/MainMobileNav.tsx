@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import { ReferralLink } from '@/components/common/referral-link';
 import Image from 'next/image';

@@ -11,7 +11,7 @@ import csTranslations from '../locates/cs.json' with { type: 'json' };
 
 const getTranslations = (lang?: string) => {
   if (lang === 'en') return enTranslations;
-  if (lang === 'cz' || lang === 'cs') return csTranslations;
+  if (lang === 'cs') return csTranslations;
   return skTranslations;
 };
 

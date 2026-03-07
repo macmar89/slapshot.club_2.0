@@ -2,15 +2,18 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { Languages, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
+import { API_ROUTES } from '@/lib/api-routes';
+
+const setLocaleCookie = (newLocale: string) => {
+  document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+};
 
 export function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -20,15 +23,27 @@ export function LanguageSwitcher() {
     { code: 'cs', label: 'Čeština' },
   ];
 
-  const toggleLanguage = (newLocale: string) => {
-    // Manually set the cookie to be sure (especially for localePrefix: 'never')
-    // eslint-disable-next-line
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+  const toggleLanguage = async (newLocale: string) => {
+    // 1. Manually set the cookie to be sure (especially for localePrefix: 'never')
+    setLocaleCookie(newLocale);
 
-    // Use simple routing with locale persistence
-    // @ts-expect-error -- pathname type mismatch with router.replace
-    router.replace(pathname, { locale: newLocale, scroll: false });
+    // 2. Try to update the preferred language in the database
+    // Only if access_token exists
+    if (document.cookie.includes('access_token')) {
+      try {
+        await api.patch(API_ROUTES.USER.UPDATE_PREFERRED_LANGUAGE, {
+          preferredLanguage: newLocale,
+        });
+      } catch {
+        // Ignore errors if user is not logged in or endpoint fails
+      }
+    }
+
+    // 3. Close the dropdown
     setIsOpen(false);
+
+    // 4. Use window.location.reload() to ensure the change is picked up across the whole app
+    window.location.reload();
   };
 
   // Close dropdown when clicking outside

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
-import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
 import {
   Sheet,
