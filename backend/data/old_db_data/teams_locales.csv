@@ -1,0 +1,189 @@
+name,short_name,id,_locale,_parent_id
+HC ’05 Banská Bystrica,BBY,37,sk,h7i8j9k0l1m2n3o4p5q6r7s8
+Banska Bystrica,BBY,38,en,h7i8j9k0l1m2n3o4p5q6r7s8
+HC ’05 Banská Bystrica,BBY,39,cz,h7i8j9k0l1m2n3o4p5q6r7s8
+HK Dukla Trenčín,TRE,40,sk,r3s4t5u6v7w8x9y0z1a2b3c4
+Dukla Trencin,TRE,41,en,r3s4t5u6v7w8x9y0z1a2b3c4
+HK Dukla Trenčín,TRE,42,cz,r3s4t5u6v7w8x9y0z1a2b3c4
+HC Košice,KOS,43,sk,o8z4y5p9q2a1b3c5d7e9f0g1
+HC Kosice,KOS,44,en,o8z4y5p9q2a1b3c5d7e9f0g1
+HC Kosice,KOS,45,cz,o8z4y5p9q2a1b3c5d7e9f0g1
+HK 32 Liptovský Mikuláš,LMI,46,sk,d5e6f7g8h9i0j1k2l3m4n5o6
+Liptovsky Mikulas,LMI,47,en,d5e6f7g8h9i0j1k2l3m4n5o6
+HK 32 Liptovský Mikuláš,LMI,48,cz,d5e6f7g8h9i0j1k2l3m4n5o6
+HK Dukla Michalovce,MIC,49,sk,b9c0d1e2f3g4h5i6j7k8l9m0
+Michalovce,MIC,50,en,b9c0d1e2f3g4h5i6j7k8l9m0
+HK Michalovce,MIC,51,cz,b9c0d1e2f3g4h5i6j7k8l9m0
+HK Nitra,NIT,52,sk,j3k4l5m6n7o8p9q0r1s2t3u4
+HK Nitra,NIT,53,en,j3k4l5m6n7o8p9q0r1s2t3u4
+HK Nitra,NIT,54,cz,j3k4l5m6n7o8p9q0r1s2t3u4
+HK Poprad,POP,55,sk,v5w6x7y8z9a0b1c2d3e4f5g6
+HK Poprad,POP,56,en,v5w6x7y8z9a0b1c2d3e4f5g6
+HK Poprad,POP,57,cz,v5w6x7y8z9a0b1c2d3e4f5g6
+HC Prešov,PRE,58,sk,kr5200wmyj1b6e856yeyyph5
+HC Presov,PRE,59,en,kr5200wmyj1b6e856yeyyph5
+HC Prešov,PRE,60,cz,kr5200wmyj1b6e856yeyyph5
+Slovan Bratislava,SBA,61,sk,f1g2h3i4j5k6l7m8n9o0p1q2
+Slovan Bratislava,SBA,62,en,f1g2h3i4j5k6l7m8n9o0p1q2
+Slovan Bratislava,SBA,63,cz,f1g2h3i4j5k6l7m8n9o0p1q2
+HK Spišská Nová Ves,SNV,64,sk,x1y2z3a4b5c6d7e8f9g0h1i2
+Spisska Nova Ves,SNV,65,en,x1y2z3a4b5c6d7e8f9g0h1i2
+HK Spišská Nová Ves,SNV,66,cz,x1y2z3a4b5c6d7e8f9g0h1i2
+Vlci Žilina,ZIL,67,sk,n1o2p3q4r5s6t7u8v9w0x1y2
+Vlci Zilina,ZIL,68,en,n1o2p3q4r5s6t7u8v9w0x1y2
+Vlci Zilina,ZIL,69,cz,n1o2p3q4r5s6t7u8v9w0x1y2
+HKM Zvolen,ZVO,70,sk,t9u0v1w2x3y4z5a6b7c8d9e0
+HKM Zvolen,ZVO,71,en,t9u0v1w2x3y4z5a6b7c8d9e0
+HKM Zvolen,ZVO,72,cz,t9u0v1w2x3y4z5a6b7c8d9e0
+Žiar nad Hronom,ZIA,77,sk,jnznxuqqpyu2wvrqy5uelufq
+Ziar nad Hronom,ZIA,78,en,jnznxuqqpyu2wvrqy5uelufq
+Žiar nad Hronom,ZIA,79,cz,jnznxuqqpyu2wvrqy5uelufq
+Trnava,TRN,83,sk,bc1shxyiojqaokw7ssfbdecy
+Trnava,TRN,84,en,bc1shxyiojqaokw7ssfbdecy
+Trnava,TRN,85,cz,bc1shxyiojqaokw7ssfbdecy
+Topolčany,TOP,89,sk,e7xq9q6m6pjsfgdj3wyjb2cx
+Topolcany,TOP,90,en,e7xq9q6m6pjsfgdj3wyjb2cx
+Topolčany,TOP,91,cz,e7xq9q6m6pjsfgdj3wyjb2cx
+TEBS Bratislava,TEB,93,sk,wqsxsr6pbf6frhz5hd89ouhq
+TEBS Bratislava,TEB,94,en,wqsxsr6pbf6frhz5hd89ouhq
+Francúzsko,Fra,96,sk,fq521qu6u08tpdsjc6v607p5
+France,Fra,97,en,fq521qu6u08tpdsjc6v607p5
+Česko,Cze,98,sk,j4h5g6f7d8s9a0p1o2i3u4y5
+Czechia,Cze,99,en,j4h5g6f7d8s9a0p1o2i3u4y5
+USA,USA,100,sk,zxcvbnm123456asdfghjkl78
+USA,USA,101,en,zxcvbnm123456asdfghjkl78
+Švajčiarsko,Sui,102,sk,1qaz2wsx3edc4rfv5tgb6yhn
+Switzerland,Sui,103,en,1qaz2wsx3edc4rfv5tgb6yhn
+Nemecko,Nem,104,sk,laksjdhfgqpwoeirutyznvm1
+Germany,Ger,105,en,laksjdhfgqpwoeirutyznvm1
+Lotyšsko,Lot,106,sk,zaq1xsw2cde3vfr4bgt5nhy6
+Latvia,Lat,107,en,zaq1xsw2cde3vfr4bgt5nhy6
+Taliansko,Tal,108,sk,pl0ok9ij8uh7yg6tf5rd4es3
+Italy,Ita,109,en,pl0ok9ij8uh7yg6tf5rd4es3
+Fínsko,Fin,110,sk,q1w2e3r4t5y6u7i8o9p0a1s2
+Finland,Fin,111,en,q1w2e3r4t5y6u7i8o9p0a1s2
+Slovensko,Svk,112,sk,ky7x9r2m5k8l1n3p4q6s0t2v
+Slovakia,Svk,113,en,ky7x9r2m5k8l1n3p4q6s0t2v
+Švédsko,Swe,114,sk,mnbvcxzasdfghjklpoiuytre
+Sweden,Swe,115,en,mnbvcxzasdfghjklpoiuytre
+Dánsko,dan,116,sk,mju7nhy6bgt5vfr4cde3xsw2
+Denmark,Den,117,en,mju7nhy6bgt5vfr4cde3xsw2
+Kanada,Can,118,sk,w2e3r4t5y6u7i8o9p0a1s2d3
+Canada,Can,119,en,w2e3r4t5y6u7i8o9p0a1s2d3
+Francie,FRA,194,cz,fq521qu6u08tpdsjc6v607p5
+Kanada,CAN,197,cz,w2e3r4t5y6u7i8o9p0a1s2d3
+Dánsko,DEN,200,cz,mju7nhy6bgt5vfr4cde3xsw2
+Švédsko,SWE,203,cz,mnbvcxzasdfghjklpoiuytre
+Finsko,FIN,206,cz,q1w2e3r4t5y6u7i8o9p0a1s2
+Itálie,ITA,209,cz,pl0ok9ij8uh7yg6tf5rd4es3
+USA,USA,212,cz,zxcvbnm123456asdfghjkl78
+Švýcarsko,SUI,215,cz,1qaz2wsx3edc4rfv5tgb6yhn
+Německo,GER,218,cz,laksjdhfgqpwoeirutyznvm1
+Česko,CZE,221,cz,j4h5g6f7d8s9a0p1o2i3u4y5
+Slovensko,SVK,224,cz,ky7x9r2m5k8l1n3p4q6s0t2v
+Lotyšsko,LAT,227,cz,zaq1xsw2cde3vfr4bgt5nhy6
+Dubnica,DUB,325,sk,tgvgp83qdf10ohe0yy57e4iw
+HC 19 Humenne,HC ,326,sk,ekpd3u84tk6657j1weimlb80
+HK Detva,HK ,327,sk,d8wvv5sq5t3avg2r69npe8mu
+HK Levice,HK ,328,sk,zi3p0ax1sneg46qp0peqkirr
+Martin,MAR,329,sk,jdtu11rxcmifimpy3gga7wc8
+Nove Zamky,NOV,330,sk,q4wa8tqs7txm6knojl3m65s2
+Povazska Bystrica,POV,331,sk,jq1j8yoccy6oord1t1vdbnzo
+Skalica,SKA,332,sk,k0vfrngpwjj4qk321hms1jvh
+Slovakia U18,SLO,333,sk,bim4p58po0wak6razcdl3lbu
+Anaheim Ducks,ANA,717,sk,gevo1m85ta8et2ydhciqdb73
+Anaheim Ducks,ANA,718,en,gevo1m85ta8et2ydhciqdb73
+Anaheim Ducks,ANA,719,cz,gevo1m85ta8et2ydhciqdb73
+Boston Bruins,BOS,726,sk,tjpjzqphdmetl4xq9n4g9kkx
+Boston Bruins,BOS,727,en,tjpjzqphdmetl4xq9n4g9kkx
+Boston Bruins,BOS,728,cz,tjpjzqphdmetl4xq9n4g9kkx
+Buffalo Sabres,BUF,735,sk,mxtxzdc206dy4fflnum7wlql
+Buffalo Sabres,BUF,736,en,mxtxzdc206dy4fflnum7wlql
+Buffalo Sabres,BUF,737,cz,mxtxzdc206dy4fflnum7wlql
+Calgary Flames,CAL,744,sk,y753ajioamngfwl172adzgwh
+Calgary Flames,CAL,745,en,y753ajioamngfwl172adzgwh
+Calgary Flames,CAL,746,cz,y753ajioamngfwl172adzgwh
+Carolina Hurricanes,CAR,753,sk,s039qrr2jdxok9jo9x8dadxa
+Carolina Hurricanes,CAR,754,en,s039qrr2jdxok9jo9x8dadxa
+Carolina Hurricanes,CAR,755,cz,s039qrr2jdxok9jo9x8dadxa
+Chicago Blackhawks,CHI,762,sk,p2is50977u6818giebpc83ac
+Chicago Blackhawks,CHI,763,en,p2is50977u6818giebpc83ac
+Chicago Blackhawks,CHI,764,cz,p2is50977u6818giebpc83ac
+Colorado Avalanche,COL,771,sk,vs1quxu6cr1o2b9kgwfhj2j3
+Colorado Avalanche,COL,772,en,vs1quxu6cr1o2b9kgwfhj2j3
+Colorado Avalanche,COL,773,cz,vs1quxu6cr1o2b9kgwfhj2j3
+Columbus Blue Jackets,COL,780,sk,sc8pg4fr4jp7292tt7xibobl
+Columbus Blue Jackets,COL,781,en,sc8pg4fr4jp7292tt7xibobl
+Columbus Blue Jackets,COL,782,cz,sc8pg4fr4jp7292tt7xibobl
+Dallas Stars,DAL,789,sk,p2qpzbj4j1u09p1ou55zt0by
+Dallas Stars,DAL,790,en,p2qpzbj4j1u09p1ou55zt0by
+Dallas Stars,DAL,791,cz,p2qpzbj4j1u09p1ou55zt0by
+Detroit Red Wings,DET,798,sk,vuuc9di1vy6nf1du7ed28xho
+Detroit Red Wings,DET,799,en,vuuc9di1vy6nf1du7ed28xho
+Detroit Red Wings,DET,800,cz,vuuc9di1vy6nf1du7ed28xho
+Edmonton Oilers,EDM,807,sk,ujfqmhronfrnl99rldwt77tw
+Edmonton Oilers,EDM,808,en,ujfqmhronfrnl99rldwt77tw
+Edmonton Oilers,EDM,809,cz,ujfqmhronfrnl99rldwt77tw
+Florida Panthers,FLO,816,sk,f3c63n9g6lqr5hseu530syq8
+Florida Panthers,FLO,817,en,f3c63n9g6lqr5hseu530syq8
+Florida Panthers,FLO,818,cz,f3c63n9g6lqr5hseu530syq8
+Los Angeles Kings,LOS,825,sk,ntwii4nqx34dtcomyvnn3du6
+Los Angeles Kings,LOS,826,en,ntwii4nqx34dtcomyvnn3du6
+Los Angeles Kings,LOS,827,cz,ntwii4nqx34dtcomyvnn3du6
+Minnesota Wild,MIN,834,sk,q4nlcr62ro2qwb0ycmr7rll3
+Minnesota Wild,MIN,835,en,q4nlcr62ro2qwb0ycmr7rll3
+Minnesota Wild,MIN,836,cz,q4nlcr62ro2qwb0ycmr7rll3
+Montreal Canadiens,MON,843,sk,bke8df06v4fmm5lkyvjddvhr
+Montreal Canadiens,MON,844,en,bke8df06v4fmm5lkyvjddvhr
+Montreal Canadiens,MON,845,cz,bke8df06v4fmm5lkyvjddvhr
+Nashville Predators,NAS,852,sk,un0pchtt2a1ol6h8irkzew9b
+Nashville Predators,NAS,853,en,un0pchtt2a1ol6h8irkzew9b
+Nashville Predators,NAS,854,cz,un0pchtt2a1ol6h8irkzew9b
+New Jersey Devils,NEW,861,sk,s7lg5pepsvg6nbtngnqk5u2r
+New Jersey Devils,NEW,862,en,s7lg5pepsvg6nbtngnqk5u2r
+New Jersey Devils,NEW,863,cz,s7lg5pepsvg6nbtngnqk5u2r
+New York Islanders,NEW,870,sk,p8qedae0rtpzt0m28xzrgdev
+New York Islanders,NEW,871,en,p8qedae0rtpzt0m28xzrgdev
+New York Islanders,NEW,872,cz,p8qedae0rtpzt0m28xzrgdev
+New York Rangers,NEW,879,sk,wb9q96wax09c9oxlsnjgrkf0
+New York Rangers,NEW,880,en,wb9q96wax09c9oxlsnjgrkf0
+New York Rangers,NEW,881,cz,wb9q96wax09c9oxlsnjgrkf0
+Ottawa Senators,OTT,888,sk,vch78bb4gj93f5cerygi49if
+Ottawa Senators,OTT,889,en,vch78bb4gj93f5cerygi49if
+Ottawa Senators,OTT,890,cz,vch78bb4gj93f5cerygi49if
+Philadelphia Flyers,PHI,897,sk,bj9v45j33fm5cnfyxnx20qpm
+Philadelphia Flyers,PHI,898,en,bj9v45j33fm5cnfyxnx20qpm
+Philadelphia Flyers,PHI,899,cz,bj9v45j33fm5cnfyxnx20qpm
+Pittsburgh Penguins,PIT,906,sk,t1sa8foqm1vpug3s8pnqgzvd
+Pittsburgh Penguins,PIT,907,en,t1sa8foqm1vpug3s8pnqgzvd
+Pittsburgh Penguins,PIT,908,cz,t1sa8foqm1vpug3s8pnqgzvd
+San Jose Sharks,SAN,915,sk,xyrpd5kxq30yuak47rhysyue
+San Jose Sharks,SAN,916,en,xyrpd5kxq30yuak47rhysyue
+San Jose Sharks,SAN,917,cz,xyrpd5kxq30yuak47rhysyue
+Seattle Kraken,SEA,924,sk,ac89heia4wpmrxlav95g2nsi
+Seattle Kraken,SEA,925,en,ac89heia4wpmrxlav95g2nsi
+Seattle Kraken,SEA,926,cz,ac89heia4wpmrxlav95g2nsi
+St. Louis Blues,ST.,933,sk,aad0z87u1lfdld9qq3syqi6q
+St. Louis Blues,ST.,934,en,aad0z87u1lfdld9qq3syqi6q
+St. Louis Blues,ST.,935,cz,aad0z87u1lfdld9qq3syqi6q
+Tampa Bay Lightning,TAM,942,sk,rp1izzvf46dp9hi26dpwxt9h
+Tampa Bay Lightning,TAM,943,en,rp1izzvf46dp9hi26dpwxt9h
+Tampa Bay Lightning,TAM,944,cz,rp1izzvf46dp9hi26dpwxt9h
+Toronto Maple Leafs,TOR,951,sk,tvs3td15i2e7o7nea7wyxsv6
+Toronto Maple Leafs,TOR,952,en,tvs3td15i2e7o7nea7wyxsv6
+Toronto Maple Leafs,TOR,953,cz,tvs3td15i2e7o7nea7wyxsv6
+Utah Mammoth,UTA,960,sk,e2pykmkooqocbx8fj9sjhjpl
+Utah Mammoth,UTA,961,en,e2pykmkooqocbx8fj9sjhjpl
+Utah Mammoth,UTA,962,cz,e2pykmkooqocbx8fj9sjhjpl
+Vancouver Canucks,VAN,969,sk,livjk367dz0y9w68rfbzuj6h
+Vancouver Canucks,VAN,970,en,livjk367dz0y9w68rfbzuj6h
+Vancouver Canucks,VAN,971,cz,livjk367dz0y9w68rfbzuj6h
+Vegas Golden Knights,VEG,978,sk,aek9kjtg9rsm1jocs2b4jb8d
+Vegas Golden Knights,VEG,979,en,aek9kjtg9rsm1jocs2b4jb8d
+Vegas Golden Knights,VEG,980,cz,aek9kjtg9rsm1jocs2b4jb8d
+Washington Capitals,WAS,987,sk,pffio7conwiiwoze3z4rylfr
+Washington Capitals,WAS,988,en,pffio7conwiiwoze3z4rylfr
+Washington Capitals,WAS,989,cz,pffio7conwiiwoze3z4rylfr
+Winnipeg Jets,WIN,996,sk,kgdb17a6gfove164t2zema69
+Winnipeg Jets,WIN,997,en,kgdb17a6gfove164t2zema69
+Winnipeg Jets,WIN,998,cz,kgdb17a6gfove164t2zema69

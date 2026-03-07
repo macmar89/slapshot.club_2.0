@@ -15,6 +15,7 @@
     "start": "node dist/index.js",
     "seed:superadmin": "tsx --env-file=.env src/db/seed.ts",
     "seed:users": "tsx --env-file=.env src/db/seed-users.ts",
+    "db:migrate-old-data": "tsx --env-file=.env scripts/migrate-data.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "keywords": [],
@@ -28,6 +29,7 @@
     "bullmq": "^5.70.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "csv-parser": "^3.2.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
