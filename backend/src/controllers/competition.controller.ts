@@ -4,7 +4,6 @@ import {
   findAllCompetitions,
   joinCompetition,
   findPublicCompetitionName,
-  getMemberStatsBySlug,
 } from '../services/competition.service';
 import type { AppLocale } from '../types/global';
 import {
@@ -50,18 +49,6 @@ export const getPublicCompetitionNameHandler = catchAsync(async (req: Request, r
   res.status(200).json({
     status: 'success',
     data: competition,
-  });
-});
-
-export const getMyCompetitionStatsHandler = catchAsync(async (req: Request, res: Response) => {
-  const slug = req.params.slug as string;
-  const userId = req.user!.id;
-
-  const stats = await getMemberStatsBySlug(userId, slug);
-
-  res.status(200).json({
-    status: 'success',
-    data: stats,
   });
 });
 

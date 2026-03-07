@@ -18,6 +18,7 @@ export const API_ROUTES = {
     ALL: '/competition',
     JOIN: '/competition/join',
     LEADERBOARD: {
+      LIST: (slug: string) => `/competition/${slug}/leaderboard`,
       ME: (slug: string) => `/competition/${slug}/leaderboard/me`,
     },
     MATCHES: {

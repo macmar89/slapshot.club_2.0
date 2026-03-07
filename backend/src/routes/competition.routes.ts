@@ -4,9 +4,12 @@ import { validate } from '../middleware/validate.middleware.js';
 import {
   joinCompetitionSchema,
   getMyCompetitionStatsSchema,
+  getLeaderboardSchema,
 } from '../shared/constants/schema/competitions.schema.js';
 import { isAuth } from '../middleware/auth.middleware.js';
 import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
+
+import leaderboardRoutes from './leaderboard.routes.js';
 
 const router = Router();
 
@@ -17,11 +20,8 @@ router.get('/public/:slug', competitionController.getPublicCompetitionNameHandle
 router.use(isAuth);
 router.get('/', competitionController.getCompetitionsHandler);
 router.post('/join', validate(joinCompetitionSchema), competitionController.joinCompetitionHandler);
-router.get(
-  '/:slug/leaderboard/me',
-  validate(getMyCompetitionStatsSchema),
-  competitionController.getMyCompetitionStatsHandler,
-);
+
+router.use('/:slug/leaderboard', leaderboardRoutes);
 
 router.get(
   '/:slug/matches',

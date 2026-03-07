@@ -12,6 +12,8 @@ import {
   matches,
   predictions,
   assets,
+  leagues,
+  leaderboardEntries,
 } from '../src/db/schema';
 import { locales } from '../src/db/schema/locales';
 
@@ -52,6 +54,8 @@ async function migrate() {
     const teamLogosData = await parseCSV<any>('team_logos.csv');
     const matchesData = await parseCSV<any>('matches.csv');
     const predictionsData = await parseCSV<any>('predictions.csv');
+    const leaguesData = await parseCSV<any>('leagues.csv');
+    const leaderboardEntriesData = await parseCSV<any>('leaderboard_entries.csv');
 
     console.log(`📊 Loaded ${usersData.length} users`);
     console.log(`📊 Loaded ${competitionsData.length} competitions`);
@@ -59,12 +63,15 @@ async function migrate() {
     console.log(`📊 Loaded ${teamLogosData.length} team logos`);
     console.log(`📊 Loaded ${matchesData.length} matches`);
     console.log(`📊 Loaded ${predictionsData.length} predictions`);
+    console.log(`📊 Loaded ${leaguesData.length} leagues`);
+    console.log(`📊 Loaded ${leaderboardEntriesData.length} leaderboard entries`);
 
     // Create Sets to track valid IDs, initializing them with IDs from the CSV data
     const validTeamIds = new Set<string>(teamsData.map((t: any) => t.id));
     const validCompetitionIds = new Set<string>(competitionsData.map((c: any) => c.id));
     const validUserIds = new Set<string>(usersData.map((u: any) => u.id));
     const validMatchIds = new Set<string>(matchesData.map((m: any) => m.id));
+    const validLeagueIds = new Set<string>(leaguesData.map((l: any) => l.id));
 
     // Fetch existing records to pre-populate valid IDs
     const existingTeams = await db.query.teams.findMany({ columns: { id: true } });
@@ -208,6 +215,41 @@ async function migrate() {
         }
       }
 
+      // --- LEAGUES ---
+      console.log('🏘️  Migrating Leagues...');
+      for (const l of leaguesData) {
+        if (!validUserIds.has(l.owner_id) || !validCompetitionIds.has(l.competition_id)) continue;
+
+        let slug =
+          l.slug ||
+          l.name
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        if (!slug) slug = `league-${l.id.substring(0, 8)}`;
+
+        await tx
+          .insert(leagues)
+          .values({
+            id: l.id,
+            name: l.name,
+            slug: slug,
+            type: ['private', 'vip', 'business', 'pub', 'partner'].includes(l.type)
+              ? (l.type as any)
+              : 'private',
+            code: l.code || null,
+            ownerId: l.owner_id,
+            competitionId: l.competition_id,
+            creditCost: 0,
+            maxMembers: l.max_members ? parseInt(l.max_members) : 15,
+            statsMembersCount: l.stats_member_count ? parseInt(l.stats_member_count) : 0,
+            createdAt: l.created_at || new Date().toISOString(),
+            updatedAt: l.updated_at || new Date().toISOString(),
+          })
+          .onConflictDoNothing();
+        validLeagueIds.add(l.id);
+      }
+
       // --- USERS ---
       console.log('👤 Migrating Users...');
       for (const u of usersData) {
@@ -331,6 +373,41 @@ async function migrate() {
             updatedAt: p.updated_at
               ? new Date(p.updated_at).toISOString()
               : new Date().toISOString(),
+          })
+          .onConflictDoNothing();
+      }
+
+      // --- LEADERBOARD ENTRIES ---
+      console.log('📈 Migrating Leaderboard Entries...');
+      for (const le of leaderboardEntriesData) {
+        if (!validUserIds.has(le.user_id) || !validCompetitionIds.has(le.competition_id)) continue;
+
+        const comp = competitionsData.find((c: any) => c.id === le.competition_id);
+        const seasonYear = comp ? parseInt(comp.api_hockey_season || '2024') : 2024;
+
+        await tx
+          .insert(leaderboardEntries)
+          .values({
+            id: le.id,
+            userId: le.user_id,
+            competitionId: le.competition_id,
+            seasonYear: seasonYear,
+            totalPoints: parseInt(le.total_points || '0'),
+            totalMatches: parseInt(le.total_matches || '0'),
+            exactGuesses: parseInt(le.exact_guesses || '0'),
+            correctTrends: parseInt(le.correct_trends || '0'),
+            correctDiffs: parseInt(le.correct_diffs || '0'),
+            wrongGuesses: parseInt(le.wrong_guesses || '0'),
+            currentRank: parseInt(le.current_rank || '0'),
+            previousRank: parseInt(le.previous_rank || '0'),
+            rankChange: parseInt(le.rank_change || '0'),
+            activeLeagueId:
+              le.active_league_id && validLeagueIds.has(le.active_league_id)
+                ? le.active_league_id
+                : null,
+            ovr: le.ovr ? parseInt(le.ovr) : 0,
+            createdAt: le.created_at || new Date().toISOString(),
+            updatedAt: le.updated_at || new Date().toISOString(),
           })
           .onConflictDoNothing();
       }

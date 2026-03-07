@@ -13,3 +13,7 @@ export const competitionParamsSchema = z.object({
 export const getMyCompetitionStatsSchema = z.object({
   params: competitionParamsSchema,
 });
+
+export const getLeaderboardSchema = z.object({
+  params: competitionParamsSchema,
+});
