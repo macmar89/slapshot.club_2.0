@@ -164,11 +164,9 @@ export function UserProfileDrawer({
               <span className="text-xs font-bold tracking-widest uppercase">{t('my_account')}</span>
               <ChevronRight className="ml-auto h-4 w-4 opacity-20 transition-all group-hover:opacity-100" />
             </Link>
-            {user?.referralData?.referralCode && (
-              <div className="rounded-app border border-white/5 bg-white/5 p-4">
-                <ReferralLink align="center" className="w-full" />
-              </div>
-            )}
+            <div className="rounded-app border border-white/5 bg-white/5 p-4">
+              <ReferralLink align="center" />
+            </div>
           </div>
 
           <div className="my-6 h-px bg-white/5" />

@@ -194,10 +194,12 @@ export const rotateRefreshToken = async (tokenString: string) => {
     columns: {
       id: true,
       username: true,
+      email: true,
       role: true,
       subscriptionPlan: true,
       subscriptionActiveUntil: true,
       verifiedAt: true,
+      referralCode: true,
     },
   });
 
@@ -298,6 +300,7 @@ export const getUserProfile = async (userId: string) => {
     columns: {
       id: true,
       username: true,
+      email: true,
       role: true,
       subscriptionPlan: true,
       subscriptionActiveUntil: true,
@@ -345,6 +348,8 @@ export const verifyEmail = async (token: string) => {
       verifiedAt: true,
       role: true,
       subscriptionPlan: true,
+      subscriptionActiveUntil: true,
+      referralCode: true,
     },
   });
 
@@ -451,7 +456,9 @@ export const resetPassword = async (data: ResetPasswordInput) => {
       email: true,
       role: true,
       subscriptionPlan: true,
+      subscriptionActiveUntil: true,
       verifiedAt: true,
+      referralCode: true,
     },
   });
 

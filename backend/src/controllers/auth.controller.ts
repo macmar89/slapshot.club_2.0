@@ -237,7 +237,9 @@ export const verifyEmailHandler = catchAsync(async (req: Request, res: Response)
         email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
+        subscriptionActiveUntil: user.subscriptionActiveUntil,
         isVerified: true,
+        referralCode: user.referralCode,
       },
     },
   });
@@ -335,7 +337,9 @@ export const resetPasswordHandler = catchAsync(async (req: Request, res: Respons
         email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
+        subscriptionActiveUntil: user.subscriptionActiveUntil,
         isVerified: !!user.verifiedAt,
+        referralCode: user.referralCode,
       },
     },
   });

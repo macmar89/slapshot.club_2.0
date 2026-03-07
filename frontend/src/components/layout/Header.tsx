@@ -11,7 +11,7 @@ import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigat
 
 // Sub-components
 import { InitializationOverlay } from './header/InitializationOverlay';
-import { UserProfileDrawer } from './header/UserProfileDrawer';
+import { UserProfileDrawer } from './header/user-profile-drawer';
 import { useAuthStore } from '@/store/use-auth-store';
 
 interface HeaderProps {

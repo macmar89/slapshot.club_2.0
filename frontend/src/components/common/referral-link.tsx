@@ -54,7 +54,7 @@ export function ReferralLink({ className, align = 'right', title }: ReferralLink
           <span className="mb-1 truncate font-mono text-[9px] leading-none tracking-tighter text-white/30 uppercase">
             {baseUrl.replace(/^https?:\/\//, '')}/register/
           </span>
-          <code className="text-warning truncate font-mono text-lg leading-tight font-black tracking-widest md:text-xl">
+          <code className="text-primary truncate font-mono text-lg leading-tight font-black tracking-widest md:text-xl">
             {code}
           </code>
         </div>
