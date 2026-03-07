@@ -52,5 +52,5 @@ export const API_ROUTES = {
   PREDICTION: {
     CREATE: '/prediction',
   },
-  FEEDBACK: '/',
+  FEEDBACK: '/feedback',
 } as const;

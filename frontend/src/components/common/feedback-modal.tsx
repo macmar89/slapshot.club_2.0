@@ -149,12 +149,7 @@ export function FeedbackModal({
             />
           </div>
 
-          <Button
-            type="submit"
-            color="warning"
-            className="bg-warning w-full gap-2 font-black tracking-widest text-black uppercase italic"
-            disabled={isSubmitting || !message.trim()}
-          >
+          <Button type="submit" disabled={isSubmitting || !message.trim()}>
             {isSubmitting ? (
               commonT('loading')
             ) : (

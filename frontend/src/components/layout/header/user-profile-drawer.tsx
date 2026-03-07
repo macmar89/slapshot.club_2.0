@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/sheet';
 import { format } from 'date-fns';
 import { sk, enUS, cs } from 'date-fns/locale';
-// import { FeedbackModal } from '@/components/feedback/FeedbackModal';
+import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useTranslations } from 'next-intl';
 import { ReferralLink } from '@/components/common/referral-link';
 
@@ -172,14 +172,14 @@ export function UserProfileDrawer({
           <div className="my-6 h-px bg-white/5" />
 
           <div className="flex flex-col gap-4">
-            {/* <FeedbackModal triggerClassName="w-full">
+            <FeedbackModal triggerClassName="w-full">
               <div className="rounded-app bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 flex cursor-pointer items-center gap-3 border p-3 transition-all">
                 <MessageSquarePlus className="h-4 w-4" />
                 <span className="text-[10px] font-black tracking-widest uppercase">
                   {t('feedback')}
                 </span>
               </div>
-            </FeedbackModal> */}
+            </FeedbackModal>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

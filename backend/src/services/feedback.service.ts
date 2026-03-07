@@ -4,8 +4,8 @@ import { feedback } from '../db/schema/feedback.js';
 export const createFeedback = async (data: {
   type: 'bug' | 'idea' | 'other';
   message: string;
-  pageUrl?: string;
-  userId?: string;
+  userId: string;
+  pageUrl?: string | undefined;
 }) => {
   const [newFeedback] = await db
     .insert(feedback)
