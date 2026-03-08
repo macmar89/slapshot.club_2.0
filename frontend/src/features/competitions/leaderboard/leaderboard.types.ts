@@ -13,3 +13,17 @@ export interface LeaderboardEntry {
   wrongGuesses: number;
   username?: string;
 }
+
+export interface CompetitionLeaderboardEntry {
+  id: string;
+  userId: string;
+  username: string;
+  isCurrentUser: boolean;
+  currentRank: number;
+  totalPoints: number;
+  totalPredictions: number;
+  exactGuesses: number;
+  correctTrends: number;
+  correctDiffs: number;
+  wrongGuesses: number;
+}

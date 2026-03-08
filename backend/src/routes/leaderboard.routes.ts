@@ -5,11 +5,8 @@ import {
   getLeaderboardSchema,
   getMyCompetitionStatsSchema,
 } from '../shared/constants/schema/competitions.schema.js';
-import { isAuth } from '../middleware/auth.middleware.js';
 
 const router = Router({ mergeParams: true });
-
-router.use(isAuth);
 
 router.get(
   '/me',

@@ -1,98 +1,91 @@
-'use client'
+'use client';
 
-import React from 'react'
-import Image from 'next/image'
-import { TrendingUp, TrendingDown, Minus, User as UserIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { LeaderboardEntry } from '../types'
-import { useTranslations } from 'next-intl'
+import { User as UserIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { CompetitionLeaderboardEntry } from '@/features/competitions/leaderboard/leaderboard.types';
+import { useTranslations } from 'next-intl';
+
+const getRankDisplay = (rank: number) => {
+  switch (rank) {
+    case 1:
+      return (
+        <div className="relative flex h-8 w-8 items-center justify-center md:h-10 md:w-10">
+          <div className="absolute inset-0 animate-pulse rounded-full bg-yellow-500/20 blur-md" />
+          <span className="relative z-10 text-2xl drop-shadow-[0_0_8px_rgba(234,179,8,0.5)] md:text-3xl">
+            🥇
+          </span>
+        </div>
+      );
+    case 2:
+      return (
+        <div className="relative flex h-8 w-8 items-center justify-center md:h-10 md:w-10">
+          <div className="absolute inset-0 rounded-full bg-slate-400/20 blur-md" />
+          <span className="relative z-10 text-2xl drop-shadow-[0_0_8px_rgba(148,163,184,0.5)] md:text-3xl">
+            🥈
+          </span>
+        </div>
+      );
+    case 3:
+      return (
+        <div className="relative flex h-8 w-8 items-center justify-center md:h-10 md:w-10">
+          <div className="absolute inset-0 rounded-full bg-amber-700/20 blur-md" />
+          <span className="relative z-10 text-2xl drop-shadow-[0_0_8px_rgba(180,83,9,0.5)] md:text-3xl">
+            🥉
+          </span>
+        </div>
+      );
+    default:
+      return !rank ? (
+        <span className="text-sm font-black text-white/40 italic md:text-base">-</span>
+      ) : (
+        <span className="text-sm font-black text-white italic md:text-base">#{rank}</span>
+      );
+  }
+};
 
 interface RankRowProps {
-  entry: LeaderboardEntry
-  className?: string
-  onClick?: () => void
-  isHeader?: boolean
-  hideRank?: boolean
+  entry: CompetitionLeaderboardEntry;
+  className?: string;
+  onClick?: () => void;
+  isHeader?: boolean;
+  hideRank?: boolean;
 }
 
 export const GRID_LAYOUT =
-  'grid grid-cols-[40px_1fr_60px] md:grid-cols-[40px_1fr_60px_60px_60px_60px_60px_90px] items-center gap-2 md:gap-4'
+  'grid grid-cols-[40px_1fr_60px] md:grid-cols-[40px_1fr_60px_60px_60px_60px_60px_90px] items-center gap-2 md:gap-4';
 
-export function RankRow({ entry, className, onClick, isHeader, hideRank }: RankRowProps) {
-  const t = useTranslations('Dashboard.leaderboard')
-  const getRankDisplay = (rank: number) => {
-    switch (rank) {
-      case 1:
-        return (
-          <div className="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10">
-            <div className="absolute inset-0 bg-yellow-500/20 blur-md rounded-full animate-pulse" />
-            <span className="text-2xl md:text-3xl relative z-10 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]">
-              🥇
-            </span>
-          </div>
-        )
-      case 2:
-        return (
-          <div className="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10">
-            <div className="absolute inset-0 bg-slate-400/20 blur-md rounded-full" />
-            <span className="text-2xl md:text-3xl relative z-10 drop-shadow-[0_0_8px_rgba(148,163,184,0.5)]">
-              🥈
-            </span>
-          </div>
-        )
-      case 3:
-        return (
-          <div className="relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10">
-            <div className="absolute inset-0 bg-amber-700/20 blur-md rounded-full" />
-            <span className="text-2xl md:text-3xl relative z-10 drop-shadow-[0_0_8px_rgba(180,83,9,0.5)]">
-              🥉
-            </span>
-          </div>
-        )
-      default:
-        return !rank ? (
-          <span className="text-sm md:text-base font-black text-white/40 italic">-</span>
-        ) : (
-          <span className="text-sm md:text-base font-black text-white italic">#{rank}</span>
-        )
-    }
-  }
-
-  const TrendIcon = {
-    up: <TrendingUp className="w-2.5 h-2.5 text-emerald-500" />,
-    down: <TrendingDown className="w-2.5 h-2.5 text-rose-500" />,
-    same: <Minus className="w-2.5 h-2.5 text-white/10" />,
-  }[entry?.trend || 'same']
+export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankRowProps) => {
+  const t = useTranslations('Dashboard.leaderboard');
 
   if (isHeader) {
     return (
       <div
-        className={cn(GRID_LAYOUT, 'px-4 py-3 bg-white/[0.03] border-b border-white/10', className)}
+        className={cn(GRID_LAYOUT, 'border-b border-white/10 bg-white/[0.03] px-4 py-3', className)}
       >
-        <span className="text-[10px] font-black uppercase text-[#eab308] tracking-widest">#</span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-left">
+        <span className="text-[10px] font-black tracking-widest text-[#eab308] uppercase">#</span>
+        <span className="text-left text-[10px] font-black tracking-widest text-white/30 uppercase">
           {t('name')}
         </span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-right hidden md:block">
+        <span className="hidden text-right text-[10px] font-black tracking-widest text-white/30 uppercase md:block">
           {t('predictions')}
         </span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-right hidden md:block">
+        <span className="hidden text-right text-[10px] font-black tracking-widest text-white/30 uppercase md:block">
           {t('exact')}
         </span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-right hidden md:block">
+        <span className="hidden text-right text-[10px] font-black tracking-widest text-white/30 uppercase md:block">
           {t('diff')}
         </span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-right hidden md:block">
+        <span className="hidden text-right text-[10px] font-black tracking-widest text-white/30 uppercase md:block">
           {t('winners')}
         </span>
-        <span className="text-[10px] font-black uppercase text-white/30 tracking-widest text-right hidden md:block">
+        <span className="hidden text-right text-[10px] font-black tracking-widest text-white/30 uppercase md:block">
           {t('wrong')}
         </span>
-        <span className="text-[10px] font-black uppercase text-[#eab308] tracking-[0.2em] text-center px-3 bg-white/10 h-full flex items-center justify-center border-l border-white/20 ml-2 md:ml-4">
+        <span className="ml-2 flex h-full items-center justify-center border-l border-white/20 bg-white/10 px-3 text-center text-[10px] font-black tracking-[0.2em] text-[#eab308] uppercase md:ml-4">
           {t('points')}
         </span>
       </div>
-    )
+    );
   }
 
   return (
@@ -100,109 +93,89 @@ export function RankRow({ entry, className, onClick, isHeader, hideRank }: RankR
       onClick={onClick}
       className={cn(
         GRID_LAYOUT,
-        'px-4 py-1.5 md:py-4 transition-all duration-300 border-b border-white/[0.05] relative',
+        'relative border-b border-white/[0.05] px-4 py-1.5 transition-all duration-300 md:py-4',
         entry.isCurrentUser
-          ? 'bg-[#eab308]/10 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-[#eab308]'
+          ? 'bg-[#eab308]/10 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-1 before:bg-[#eab308]'
           : 'bg-transparent hover:bg-white/[0.02]',
         onClick && 'cursor-pointer active:scale-[0.99]',
         className,
       )}
     >
-      {/* Rank */}
-      <div className="flex items-center justify-center min-h-[32px] md:min-h-[40px]">
-        {!hideRank && getRankDisplay(entry.rank)}
+      <div className="flex min-h-[32px] items-center justify-center md:min-h-[40px]">
+        {!hideRank && getRankDisplay(entry.currentRank)}
       </div>
 
-      {/* Name / Avatar */}
-      <div className="flex items-center gap-2 md:gap-3 min-w-0">
-        <div className="relative w-6 h-6 md:w-9 md:h-9 shrink-0 hidden sm:block">
-          {entry.avatarUrl ? (
-            <Image
-              src={entry.avatarUrl}
-              alt={entry.name}
-              fill
-              className="object-cover border border-white/10"
-            />
-          ) : (
-            <div className="w-full h-full bg-white/5 flex items-center justify-center border border-white/10">
-              <UserIcon className="w-3 h-3 md:w-4 md:h-4 text-white/10" />
-            </div>
-          )}
+      <div className="flex min-w-0 items-center gap-2 md:gap-3">
+        <div className="relative hidden h-6 w-6 shrink-0 sm:block md:h-9 md:w-9">
+          <div className="flex h-full w-full items-center justify-center border border-white/10 bg-white/5">
+            <UserIcon className="h-3 w-3 text-white/10 md:h-4 md:w-4" />
+          </div>
         </div>
-        <div className="flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-col">
           <div className="flex items-center gap-2">
             <span
               className={cn(
-                'font-black uppercase tracking-tight truncate text-[12px] md:text-sm',
+                'truncate text-[12px] font-black tracking-tight uppercase md:text-sm',
                 entry.isCurrentUser ? 'text-[#eab308]' : 'text-white',
               )}
             >
-              {entry.name}
+              {entry.username}
             </span>
           </div>
-          {entry.trend !== 'same' && (
-            <div className="flex items-center gap-1">
-              {TrendIcon}
-              <span className="text-[7px] md:text-[8px] uppercase font-bold text-white/20 tracking-widest">
-                {entry.trend}
-              </span>
-            </div>
-          )}
 
-          {/* Mobile Only Stats */}
-          <div className="flex md:hidden items-center gap-3 mt-1.5 py-1 px-2 bg-white/5 rounded-sm border border-white/[0.05] w-fit">
+          <div className="mt-1.5 flex w-fit items-center gap-3 rounded-sm border border-white/[0.05] bg-white/5 px-2 py-1 md:hidden">
             <div className="flex flex-col items-center leading-none">
-              <span className="text-[6px] font-bold text-white/30 uppercase tracking-tighter mb-0.5">
+              <span className="mb-0.5 text-[6px] font-bold tracking-tighter text-white/30 uppercase">
                 {t('predictions')}
               </span>
-              <span className="text-[9px] font-black text-white/60">{entry.predictionsCount}</span>
+              <span className="text-[9px] font-black text-white/60">{entry.totalPredictions}</span>
             </div>
             <div className="flex flex-col items-center border-l border-white/10 pl-2 leading-none">
-              <span className="text-[6px] font-bold text-white/30 uppercase tracking-tighter mb-0.5">
+              <span className="mb-0.5 text-[6px] font-bold tracking-tighter text-white/30 uppercase">
                 {t('exact')}
               </span>
-              <span className="text-[9px] font-black text-[#eab308]">{entry.exactScores}</span>
+              <span className="text-[9px] font-black text-[#eab308]">{entry.exactGuesses}</span>
             </div>
             <div className="flex flex-col items-center border-l border-white/10 pl-2 leading-none">
-              <span className="text-[6px] font-bold text-white/30 uppercase tracking-tighter mb-0.5">
+              <span className="mb-0.5 text-[6px] font-bold tracking-tighter text-white/30 uppercase">
                 {t('diff')}
               </span>
               <span className="text-[9px] font-black text-blue-400/80">{entry.correctDiffs}</span>
             </div>
             <div className="flex flex-col items-center border-l border-white/10 pl-2 leading-none">
-              <span className="text-[6px] font-bold text-white/30 uppercase tracking-tighter mb-0.5">
+              <span className="mb-0.5 text-[6px] font-bold tracking-tighter text-white/30 uppercase">
                 {t('winners')}
               </span>
-              <span className="text-[9px] font-black text-emerald-500/80">{entry.winners}</span>
+              <span className="text-[9px] font-black text-emerald-500/80">
+                {entry.correctTrends}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats - Hidden on Mobile */}
-      <span className="text-xs font-black text-white/60 text-right hidden md:block">
-        {entry.predictionsCount}
+      <span className="hidden text-right text-xs font-black text-white/60 md:block">
+        {entry.totalPredictions}
       </span>
-      <span className="text-xs font-black text-[#eab308] text-right hidden md:block">
-        {entry.exactScores}
+      <span className="hidden text-right text-xs font-black text-[#eab308] md:block">
+        {entry.exactGuesses}
       </span>
-      <span className="text-xs font-black text-blue-400/80 text-right hidden md:block">
+      <span className="hidden text-right text-xs font-black text-blue-400/80 md:block">
         {entry.correctDiffs}
       </span>
-      <span className="text-xs font-black text-emerald-500/80 text-right hidden md:block">
-        {entry.winners}
+      <span className="hidden text-right text-xs font-black text-emerald-500/80 md:block">
+        {entry.correctTrends}
       </span>
-      <span className="text-xs font-black text-rose-500/80 text-right hidden md:block">
+      <span className="hidden text-right text-xs font-black text-rose-500/80 md:block">
         {entry.wrongGuesses}
       </span>
 
-      {/* Points */}
-      <div className="h-full flex items-center justify-center px-3 bg-gradient-to-l from-[#eab308]/10 to-transparent border-l border-white/10 relative group/points ml-2 md:ml-4">
-        <div className="absolute inset-0 bg-white/5 opacity-0 md:group-hover:opacity-100 transition-opacity" />
-        <span className="text-base md:text-xl font-black text-[#eab308] italic tracking-tighter drop-shadow-[0_0_15px_rgba(234,179,8,0.4)] transition-transform duration-300 md:group-hover:scale-110">
-          {entry.points}
+      <div className="group/points relative ml-2 flex h-full items-center justify-center border-l border-white/10 bg-gradient-to-l from-[#eab308]/10 to-transparent px-3 md:ml-4">
+        <div className="absolute inset-0 bg-white/5 opacity-0 transition-opacity md:group-hover:opacity-100" />
+        <span className="text-base font-black tracking-tighter text-[#eab308] italic drop-shadow-[0_0_15px_rgba(234,179,8,0.4)] transition-transform duration-300 md:text-xl md:group-hover:scale-110">
+          {entry.totalPoints}
         </span>
       </div>
     </div>
-  )
-}
+  );
+};

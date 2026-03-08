@@ -39,4 +39,10 @@ router.get(
   competitionController.getCalendarMatchesHandler,
 );
 
+router.get('/:slug/player/:username/stats', competitionController.getPlayerStatsHandler);
+router.get(
+  '/:slug/player/:username/predictions',
+  competitionController.getPlayerPredictionsHandler,
+);
+
 export default router;

@@ -4,6 +4,8 @@ import { randomBytes } from 'node:crypto';
 export interface JwtPayload {
   id: string;
   isSuperadmin: boolean;
+  role: string;
+  subscriptionPlan: 'free' | 'starter' | 'pro' | 'vip';
 }
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_SECRET!;

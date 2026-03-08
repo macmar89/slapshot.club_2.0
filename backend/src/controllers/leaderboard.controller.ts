@@ -4,8 +4,9 @@ import { getLeaderboard, getMemberStatsBySlug } from '../services/leaderboard.se
 
 export const getLeaderboardHandler = catchAsync(async (req: Request, res: Response) => {
   const slug = req.params.slug as string;
+  const userId = req.user!.id;
 
-  const leaderboard = await getLeaderboard(slug);
+  const leaderboard = await getLeaderboard(slug, userId);
 
   res.status(200).json({
     status: 'success',

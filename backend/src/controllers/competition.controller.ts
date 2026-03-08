@@ -4,6 +4,8 @@ import {
   findAllCompetitions,
   joinCompetition,
   findPublicCompetitionName,
+  getPlayerStats,
+  getPlayerPredictions,
 } from '../services/competition.service';
 import type { AppLocale } from '../types/global';
 import {
@@ -11,6 +13,32 @@ import {
   getMatchDatesByCompetition,
   getUpcomingMatches,
 } from '../services/matches.service';
+
+export const getPlayerStatsHandler = catchAsync(async (req: Request, res: Response) => {
+  const username = req.params.username as string;
+  const slug = req.params.slug as string;
+
+  const stats = await getPlayerStats(username, slug);
+
+  res.status(200).json({
+    status: 'success',
+    data: stats,
+  });
+});
+
+export const getPlayerPredictionsHandler = catchAsync(async (req: Request, res: Response) => {
+  const username = req.params.username as string;
+  const slug = req.params.slug as string;
+  const viewerId = req.user!.id;
+  const viewerPlan = req.user!.subscriptionPlan;
+
+  const predictions = await getPlayerPredictions(username, slug, viewerId, viewerPlan);
+
+  res.status(200).json({
+    status: 'success',
+    data: predictions,
+  });
+});
 
 export const getCompetitionsHandler = catchAsync(async (req: Request, res: Response) => {
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';

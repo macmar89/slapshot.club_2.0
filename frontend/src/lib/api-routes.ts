@@ -34,7 +34,13 @@ export const API_ROUTES = {
     PUBLIC: {
       INFO: (slug: string) => `/competition/public/${slug}`,
     },
+    PLAYER: {
+      STATS: (slug: string, username: string) => `/competition/${slug}/player/${username}/stats`,
+      PREDICTIONS: (slug: string, username: string) =>
+        `/competition/${slug}/player/${username}/predictions`,
+    },
   },
+
   MATCHES: {
     DETAIL: {
       INFO: (id: string) => `/matches/${id}`,

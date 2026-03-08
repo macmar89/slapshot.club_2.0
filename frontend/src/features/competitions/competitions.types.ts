@@ -3,6 +3,11 @@ export type CompetitionStatus = 'upcoming' | 'active' | 'finished';
 export interface LeaderboardEntry {
   totalPoints: number;
   currentRank: number;
+  rankChange: number;
+  totalMatches: number;
+  exactGuesses: number;
+  correctDiffs: number;
+  correctTrends: number;
 }
 
 export interface Competition {

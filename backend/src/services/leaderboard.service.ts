@@ -1,10 +1,9 @@
 import { eq, and } from 'drizzle-orm';
 import { db } from '../db';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
-import { leaderboardEntries } from '../db/schema';
 import { calculateRate, roundTo } from '../utils/math';
 
-export const getLeaderboard = async (slug: string) => {
+export const getLeaderboard = async (slug: string, userId: string) => {
   const competition = await db.query.competitions.findFirst({
     columns: {
       id: true,
@@ -17,20 +16,43 @@ export const getLeaderboard = async (slug: string) => {
   }
 
   const entries = await db.query.leaderboardEntries.findMany({
+    columns: {
+      id: true,
+      userId: true,
+      currentRank: true,
+      totalPoints: true,
+      totalMatches: true,
+      exactGuesses: true,
+      correctTrends: true,
+      correctDiffs: true,
+      wrongGuesses: true,
+    },
     where: (leaderboardEntries) => eq(leaderboardEntries.competitionId, competition.id),
     with: {
       user: {
         columns: {
-          id: true,
           username: true,
-          email: true,
         },
       },
     },
     orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
   });
 
-  return entries;
+  return entries.map((entry) => {
+    return {
+      id: entry.id,
+      userId: entry.userId,
+      username: entry.user.username,
+      isCurrentUser: entry.userId === userId,
+      currentRank: entry.currentRank,
+      totalPoints: entry.totalPoints,
+      totalPredictions: entry.totalMatches,
+      exactGuesses: entry.exactGuesses,
+      correctTrends: entry.correctTrends,
+      correctDiffs: entry.correctDiffs,
+      wrongGuesses: entry.wrongGuesses,
+    };
+  });
 };
 
 export const getMemberStatsBySlug = async (userId: string, slug: string) => {

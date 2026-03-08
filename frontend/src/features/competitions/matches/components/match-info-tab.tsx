@@ -15,7 +15,7 @@ import { MatchPredictionsBar } from '@/features/competitions/matches/components/
 import { MatchPointsAnalysis } from './match-points-analysis';
 import { usePredictionStore } from '../../predictions/store/use-prediction-store';
 
-export function MatchInfoTab() {
+export const MatchInfoTab = () => {
   const params = useParams();
   const id = params.id as string;
 
@@ -294,4 +294,4 @@ export function MatchInfoTab() {
       </IceGlassCard>
     </div>
   );
-}
+};

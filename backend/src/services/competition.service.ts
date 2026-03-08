@@ -1,18 +1,10 @@
-import { eq, sql, isNull, and, gte, asc } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db } from '../db';
 import type { AppLocale } from '../types/global';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
-import {
-  assets,
-  competitions,
-  leaderboardEntries,
-  matches,
-  predictions,
-  teams,
-  teamsLocales,
-} from '../db/schema';
+import { competitions, leaderboardEntries } from '../db/schema';
 import { calculateRate, roundTo } from '../utils/math';
-import { alias } from 'drizzle-orm/pg-core';
+import { AppError } from '../utils/appError';
 
 export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
   const competitions = await db.query.competitions.findMany({
@@ -73,7 +65,7 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
   });
 
   if (!competition) {
-    throw new Error(CompetitionErrors.COMPETITION_NOT_FOUND);
+    throw new AppError(CompetitionErrors.COMPETITION_NOT_FOUND);
   }
 
   const leaderboardEntry = await db.query.leaderboardEntries.findFirst({
@@ -85,11 +77,11 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
   });
 
   if (leaderboardEntry) {
-    throw new Error(CompetitionErrors.USER_ALREADY_JOINED_COMPETITION);
+    throw new AppError(CompetitionErrors.USER_ALREADY_JOINED_COMPETITION);
   }
 
   if (!competition.isRegistrationOpen) {
-    throw new Error(CompetitionErrors.COMPETITION_NOT_OPEN_FOR_REGISTRATION);
+    throw new AppError(CompetitionErrors.COMPETITION_NOT_OPEN_FOR_REGISTRATION);
   }
 
   await db.transaction(async (tx) => {
@@ -131,11 +123,145 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
   });
 
   if (!competition) {
-    throw new Error(CompetitionErrors.COMPETITION_NOT_FOUND);
+    throw new AppError(CompetitionErrors.COMPETITION_NOT_FOUND);
   }
 
   return {
     name: competition?.locales[0]?.name ?? null,
     description: competition?.locales[0]?.description ?? null,
+  };
+};
+
+export const getPlayerStats = async (username: string, slug: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.username, username),
+  });
+
+  if (!user) {
+    throw new AppError('User not found');
+  }
+
+  const competition = await db.query.competitions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (competitions) => eq(competitions.slug, slug),
+  });
+
+  if (!competition) {
+    throw new AppError(CompetitionErrors.COMPETITION_NOT_FOUND);
+  }
+
+  const leaderboardEntry = await db.query.leaderboardEntries.findFirst({
+    columns: {
+      totalPoints: true,
+      totalMatches: true,
+      currentRank: true,
+      exactGuesses: true,
+      correctTrends: true,
+      correctDiffs: true,
+      wrongGuesses: true,
+      createdAt: true,
+    },
+    where: (leaderboardEntries, { eq, and }) =>
+      and(
+        eq(leaderboardEntries.userId, user.id),
+        eq(leaderboardEntries.competitionId, competition.id),
+      ),
+  });
+
+  if (!leaderboardEntry) {
+    throw new AppError(CompetitionErrors.USER_NOT_MEMBER_OF_COMPETITION);
+  }
+
+  const lastPredictionsResult = await db.query.predictions.findMany({
+    where: (predictions, { eq, and }) =>
+      and(eq(predictions.userId, user.id), eq(predictions.competitionId, competition.id)),
+    limit: 5,
+    orderBy: (predictions, { desc }) => [desc(predictions.createdAt)],
+  });
+
+  const points = leaderboardEntry.totalPoints || 0;
+  const games = leaderboardEntry.totalMatches || 0;
+
+  const totalCorrect =
+    (leaderboardEntry.exactGuesses || 0) +
+    (leaderboardEntry.correctTrends || 0) +
+    (leaderboardEntry.correctDiffs || 0);
+
+  return {
+    user: {
+      id: user.id,
+      username: user.username,
+      subscriptionPlan: user.subscriptionPlan,
+      createdAt: user.createdAt,
+    },
+    ...leaderboardEntry,
+    successRate: calculateRate(totalCorrect, games),
+    averagePoints: roundTo(points / (games || 1), 2),
+    points,
+    rank: leaderboardEntry.currentRank,
+    lastPredictions: lastPredictionsResult,
+  };
+};
+
+export const getPlayerPredictions = async (
+  username: string,
+  slug: string,
+  viewerId: string,
+  viewerPlan: string,
+) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.username, username),
+  });
+
+  if (!user) {
+    throw new AppError('User not found');
+  }
+
+  const isOwner = user.id === viewerId;
+  const isLocked = !isOwner && viewerPlan === 'free';
+
+  if (isLocked) {
+    return {
+      docs: [],
+      hasNextPage: false,
+      totalDocs: 0,
+      isLocked: true,
+    };
+  }
+
+  const competition = await db.query.competitions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (competitions) => eq(competitions.slug, slug),
+  });
+
+  if (!competition) {
+    throw new AppError(CompetitionErrors.COMPETITION_NOT_FOUND);
+  }
+
+  // Fetch predictions for this user in this competition
+  const userPredictions = await db.query.predictions.findMany({
+    where: (predictions, { eq, and }) =>
+      and(eq(predictions.userId, user.id), eq(predictions.competitionId, competition.id)),
+    with: {
+      match: {
+        with: {
+          homeTeam: true,
+          awayTeam: true,
+        },
+      },
+    },
+    orderBy: (predictions, { desc }) => [desc(predictions.createdAt)],
+    limit: 50, // Simplified for now, can add pagination if needed
+  });
+
+  return {
+    docs: userPredictions,
+    hasNextPage: false,
+    totalDocs: userPredictions.length,
+    isLocked: false,
   };
 };
