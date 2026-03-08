@@ -8,7 +8,6 @@ import {
 } from '../shared/constants/schema/competitions.schema.js';
 import { isAuth } from '../middleware/auth.middleware.js';
 import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
-
 import leaderboardRoutes from './leaderboard.routes.js';
 
 const router = Router();
@@ -45,5 +44,6 @@ router.get(
   validate(getPlayerPredictionsSchema),
   competitionController.getPlayerPredictionsHandler,
 );
+router.get('/:slug/teams', competitionController.getCompetitionTeamsHandler);
 
 export default router;

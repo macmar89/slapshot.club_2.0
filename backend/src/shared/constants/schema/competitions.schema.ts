@@ -22,5 +22,6 @@ export const getPlayerPredictionsSchema = z.object({
   query: z.object({
     limit: z.string().optional(),
     cursorDate: z.string().optional(),
+    search: z.string().optional(),
   }),
 });

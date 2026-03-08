@@ -7,6 +7,7 @@ import {
   getPlayerStats,
   getPlayerPredictions,
 } from '../services/competition.service';
+import { getCompetitionTeams } from '../services/team.service';
 import type { AppLocale } from '../types/global';
 import {
   getCompetitionMatches,
@@ -32,6 +33,7 @@ export const getPlayerPredictionsHandler = catchAsync(async (req: Request, res: 
   const viewerId = req.user!.id;
   const viewerPlan = req.user!.subscriptionPlan;
   const cursorDate = req.query.cursorDate as string | undefined;
+  const search = req.query.search as string | undefined;
   const limit = req.query.count ? Number(req.query.count) : 6;
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
 
@@ -40,6 +42,7 @@ export const getPlayerPredictionsHandler = catchAsync(async (req: Request, res: 
     slug,
     limit,
     cursorDate,
+    search,
     viewerId,
     viewerPlan,
     locale,
@@ -128,5 +131,17 @@ export const getCompetitionMatchesHandler = catchAsync(async (req: Request, res:
   res.status(200).json({
     status: 'success',
     data: matches,
+  });
+});
+
+export const getCompetitionTeamsHandler = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug as string;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+
+  const teams = await getCompetitionTeams(slug, locale);
+
+  res.status(200).json({
+    status: 'success',
+    data: teams,
   });
 });

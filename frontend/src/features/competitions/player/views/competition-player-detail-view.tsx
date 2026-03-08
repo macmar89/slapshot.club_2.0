@@ -1,10 +1,10 @@
 'use client';
 
 import useSWR from 'swr';
-import { useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { useState, useTransition } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
@@ -13,6 +13,26 @@ import { PlayerStatsGrid } from '@/features/player/components/player-stats-grid'
 import { API_ROUTES } from '@/lib/api-routes';
 import { useAppParams } from '@/hooks/use-app-params';
 import { PlayerStats } from '@/features/player/player.types';
+import useSWRInfinite from 'swr/infinite';
+import {
+  PlayerPredictionHistory,
+  type CompetitionTeam,
+} from '@/features/player/components/player-prediction-history';
+import { PlayerHeader } from '@/features/player/components/player-header';
+
+const getKey =
+  (slug: string, username: string, q: string) => (pageIndex: number, previousPageData: any) => {
+    // SWR fetcher unwraps outer envelope; previousPageData = { data: [], nextCursor, hasNextPage, ... }
+    if (previousPageData && !previousPageData.nextCursor) return null;
+
+    const baseUrl = API_ROUTES.COMPETITIONS.PLAYER.PREDICTIONS(slug, username);
+    const searchPart = q ? `&search=${encodeURIComponent(q)}` : '';
+
+    if (pageIndex === 0) return `${baseUrl}?limit=6${searchPart}`;
+
+    const cursor = encodeURIComponent(previousPageData.nextCursor);
+    return `${baseUrl}?limit=6&cursorDate=${cursor}${searchPart}`;
+  };
 
 export const CompetitionPlayerDetailView = () => {
   const t = useTranslations('PlayerDetail');
@@ -30,9 +50,31 @@ export const CompetitionPlayerDetailView = () => {
     API_ROUTES.COMPETITIONS.PLAYER.STATS(slug, username),
   );
 
-  // const { data: predictionsData, isLoading: predictionsLoading } = useSWR(
-  //   `${API_ROUTES.COMPETITIONS.PLAYER.PREDICTIONS(slug, username)}?page=${page}&q=${q}`,
-  // );
+  const { data: teamsData } = useSWR<CompetitionTeam[]>(API_ROUTES.COMPETITIONS.TEAMS(slug));
+
+  const [q, setQ] = useState(searchParams.get('q') || '');
+
+  const { data, size, setSize, isValidating } = useSWRInfinite(getKey(slug, username, q));
+
+  // SWR fetcher unwraps outer envelope; page = { data: [], nextCursor, hasNextPage, totalPredictions, isLocked, meta }
+  const predictions = data ? data.flatMap((page) => page.data ?? []) : [];
+  const totalCount = data?.[0]?.totalPredictions ?? 0;
+  const hasNextPage = data ? !!data[data.length - 1]?.nextCursor : false;
+
+  const isLoadingMore = isValidating || (size > 0 && data && typeof data[size - 1] === 'undefined');
+
+  const handleSearchChange = (value: string) => {
+    setQ(value);
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams);
+      if (value) {
+        params.set('q', value);
+      } else {
+        params.delete('q');
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  };
 
   const handleTabChange = (value: string) => {
     startTransition(() => {
@@ -60,6 +102,8 @@ export const CompetitionPlayerDetailView = () => {
     <div className="mx-auto max-w-7xl space-y-8 pb-20">
       <BackLink href={`/${slug}/leaderboard`} label={t('back_to_leaderboard')} />
 
+      {playerStats && <PlayerHeader playerStats={playerStats} />}
+
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <div className="mb-8 flex justify-start">
           <TabsList>
@@ -74,26 +118,19 @@ export const CompetitionPlayerDetailView = () => {
         </TabsContent>
 
         <TabsContent value="predictions" className="space-y-6">
-          {/* <PlayerPredictionHistory
-              userId={user.id}
-              currentUserId={currentUser?.id}
-              currentUserPlan={
-                (currentUser?.subscriptionPlan as 'free' | 'starter' | 'pro' | 'vip') || 'free'
-              }
-              profileOwnerPlan={
-                (user.subscriptionPlan as 'free' | 'starter' | 'pro' | 'vip') || 'free'
-              }
-              competitionId={statsData.competitionId}
-              initialData={predictionsData?.docs || []}
-              initialSearch={q}
-              initialHasMore={predictionsData?.hasNextPage}
-              initialTotalCount={predictionsData?.totalDocs}
-              initialTotalLeagueCount={predictionsData?.totalDocs}
-              pageSize={predictionsData?.limit || 50}
-              loading={predictionsLoading}
-              onPageChange={handlePageChange}
-              onSearchChange={handleSearchChange}
-            /> */}
+          <PlayerPredictionHistory
+            predictions={predictions}
+            teams={teamsData ?? []}
+            isLocked={data?.[0]?.isLocked ?? false}
+            playerSubscriptionPlan={data?.[0]?.meta?.playerSubscriptionPlan}
+            totalCount={totalCount}
+            hasMore={hasNextPage}
+            search={q}
+            loading={isValidating && !data}
+            loadingMore={isLoadingMore}
+            onPageChange={() => setSize((s) => s + 1)}
+            onSearchChange={handleSearchChange}
+          />
         </TabsContent>
 
         <TabsContent value="other_leagues" className="space-y-6">

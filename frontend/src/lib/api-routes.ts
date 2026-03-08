@@ -39,6 +39,7 @@ export const API_ROUTES = {
       PREDICTIONS: (slug: string, username: string) =>
         `/competition/${slug}/player/${username}/predictions`,
     },
+    TEAMS: (slug: string) => `/competition/${slug}/teams`,
   },
 
   MATCHES: {
