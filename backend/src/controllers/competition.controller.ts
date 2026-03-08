@@ -31,8 +31,19 @@ export const getPlayerPredictionsHandler = catchAsync(async (req: Request, res: 
   const slug = req.params.slug as string;
   const viewerId = req.user!.id;
   const viewerPlan = req.user!.subscriptionPlan;
+  const cursorDate = req.query.cursorDate as string | undefined;
+  const limit = req.query.count ? Number(req.query.count) : 6;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
 
-  const predictions = await getPlayerPredictions(username, slug, viewerId, viewerPlan);
+  const predictions = await getPlayerPredictions(
+    username,
+    slug,
+    limit,
+    cursorDate,
+    viewerId,
+    viewerPlan,
+    locale,
+  );
 
   res.status(200).json({
     status: 'success',

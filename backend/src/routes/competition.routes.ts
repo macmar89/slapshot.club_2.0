@@ -4,7 +4,7 @@ import { validate } from '../middleware/validate.middleware.js';
 import {
   joinCompetitionSchema,
   getMyCompetitionStatsSchema,
-  getLeaderboardSchema,
+  getPlayerPredictionsSchema,
 } from '../shared/constants/schema/competitions.schema.js';
 import { isAuth } from '../middleware/auth.middleware.js';
 import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
@@ -42,6 +42,7 @@ router.get(
 router.get('/:slug/player/:username/stats', competitionController.getPlayerStatsHandler);
 router.get(
   '/:slug/player/:username/predictions',
+  validate(getPlayerPredictionsSchema),
   competitionController.getPlayerPredictionsHandler,
 );
 

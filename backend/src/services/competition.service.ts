@@ -1,11 +1,11 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, count, eq, ne, sql } from 'drizzle-orm';
 import { db } from '../db';
 import type { AppLocale } from '../types/global';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
-import { competitions, leaderboardEntries } from '../db/schema';
+import { competitions, leaderboardEntries, locales, predictions } from '../db/schema';
 import { calculateRate, roundTo } from '../utils/math';
 import { AppError } from '../utils/appError';
-import { AuthMessages } from '../shared/constants/messages/auth.messages';
+import { PlayerMessages } from '../shared/constants/messages/player.messages';
 
 export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
   const competitions = await db.query.competitions.findMany({
@@ -139,7 +139,7 @@ export const getPlayerStats = async (username: string, slug: string) => {
   });
 
   if (!user) {
-    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND);
+    throw new AppError(PlayerMessages.ERRORS.PLAYER_NOT_FOUND);
   }
 
   const competition = await db.query.competitions.findFirst({
@@ -200,15 +200,18 @@ export const getPlayerStats = async (username: string, slug: string) => {
 export const getPlayerPredictions = async (
   username: string,
   slug: string,
+  limit: number,
+  cursorDate: string | undefined,
   viewerId: string,
   viewerPlan: string,
+  locale: AppLocale,
 ) => {
   const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.username, username),
+    where: (users, { eq }) => eq(sql`lower(${users.username})`, username.toLowerCase()),
   });
 
   if (!user) {
-    throw new AppError('User not found');
+    throw new AppError(PlayerMessages.ERRORS.PLAYER_NOT_FOUND);
   }
 
   const isOwner = user.id === viewerId;
@@ -216,10 +219,11 @@ export const getPlayerPredictions = async (
 
   if (isLocked) {
     return {
-      docs: [],
+      data: [],
       hasNextPage: false,
-      totalDocs: 0,
-      isLocked: true,
+      totalPredictions: 0,
+      nextCursor: null,
+      isLocked: false,
     };
   }
 
@@ -234,26 +238,122 @@ export const getPlayerPredictions = async (
     throw new AppError(CompetitionErrors.COMPETITION_NOT_FOUND);
   }
 
-  // Fetch predictions for this user in this competition
   const userPredictions = await db.query.predictions.findMany({
-    where: (predictions, { eq, and }) =>
-      and(eq(predictions.userId, user.id), eq(predictions.competitionId, competition.id)),
+    columns: {
+      id: true,
+      matchId: true,
+      status: true,
+      homeGoals: true,
+      awayGoals: true,
+      points: true,
+      createdAt: true,
+    },
+    where: (predictions, { eq, and, ne, lt }) => {
+      const filters = [
+        eq(predictions.userId, user.id),
+        eq(predictions.competitionId, competition.id),
+        ne(predictions.status, 'pending'),
+      ];
+
+      if (cursorDate) {
+        // Fix for cursorDate being sent with spaces instead of + due to URL decoding
+        const normalizedDate =
+          cursorDate.includes(' ') && !cursorDate.includes('T')
+            ? cursorDate.replace(/ (\d{2})$/, '+$1')
+            : cursorDate;
+
+        filters.push(lt(predictions.createdAt, normalizedDate));
+      }
+
+      return and(...filters);
+    },
     with: {
       match: {
+        columns: {
+          resultHomeScore: true,
+          resultAwayScore: true,
+          status: true,
+        },
         with: {
-          homeTeam: true,
-          awayTeam: true,
+          homeTeam: {
+            columns: {
+              id: true,
+            },
+            with: {
+              logo: {
+                columns: {
+                  url: true,
+                },
+              },
+              locales: {
+                columns: { name: true, shortName: true },
+                where: (locales, { eq }) => eq(locales.locale, locale),
+              },
+            },
+          },
+          awayTeam: {
+            columns: {
+              id: true,
+            },
+            with: {
+              logo: {
+                columns: {
+                  url: true,
+                },
+              },
+              locales: {
+                columns: { name: true, shortName: true },
+                where: (locales, { eq }) => eq(locales.locale, locale),
+              },
+            },
+          },
         },
       },
     },
     orderBy: (predictions, { desc }) => [desc(predictions.createdAt)],
-    limit: 50, // Simplified for now, can add pagination if needed
+    limit,
   });
 
+  const [countResult] = await db
+    .select({ count: count() })
+    .from(predictions)
+    .where(
+      and(
+        eq(predictions.userId, user.id),
+        eq(predictions.competitionId, competition.id),
+        ne(predictions.status, 'pending'),
+      ),
+    );
+
+  const totalPredictions = countResult!.count;
+  const hasMore = userPredictions.length === limit;
+
+  const lastPrediction = userPredictions[userPredictions.length - 1];
+  const nextCursor =
+    hasMore && lastPrediction ? new Date(lastPrediction.createdAt).toISOString() : null;
+
   return {
-    docs: userPredictions,
-    hasNextPage: false,
-    totalDocs: userPredictions.length,
+    data: userPredictions.map((up) => ({
+      id: up.id,
+      matchId: up.matchId,
+      matchStatus: up.match.status,
+      predictionStatus: up.status,
+      points: up.points,
+      homeTeamName: up.match.homeTeam.locales[0]?.name,
+      homeTeamShortName: up.match.homeTeam.locales[0]?.shortName,
+      homeTeamLogoUrl: up.match.homeTeam.logo?.url,
+      resultHomeScore: up.match.resultHomeScore,
+      predictionHomeGoals: up.homeGoals,
+      awayTeamName: up.match.awayTeam.locales[0]?.name,
+      awayTeamShortName: up.match.awayTeam.locales[0]?.shortName,
+      awayTeamLogoUrl: up.match.awayTeam.logo?.url,
+      resultAwayScore: up.match.resultAwayScore,
+      predictionAwayGoals: up.awayGoals,
+      createdAt: up.createdAt,
+    })),
+    hasNextPage: hasMore,
+    totalPredictions,
+    nextCursor,
     isLocked: false,
   };
 };

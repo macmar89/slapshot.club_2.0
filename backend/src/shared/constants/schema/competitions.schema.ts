@@ -17,3 +17,10 @@ export const getMyCompetitionStatsSchema = z.object({
 export const getLeaderboardSchema = z.object({
   params: competitionParamsSchema,
 });
+
+export const getPlayerPredictionsSchema = z.object({
+  query: z.object({
+    limit: z.string().optional(),
+    cursorDate: z.string().optional(),
+  }),
+});

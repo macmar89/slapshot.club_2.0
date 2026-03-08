@@ -30,7 +30,6 @@ export const CompetitionPlayerDetailView = () => {
     API_ROUTES.COMPETITIONS.PLAYER.STATS(slug, username),
   );
 
-  console.log(API_ROUTES.COMPETITIONS.PLAYER.STATS(slug, username));
   // const { data: predictionsData, isLoading: predictionsLoading } = useSWR(
   //   `${API_ROUTES.COMPETITIONS.PLAYER.PREDICTIONS(slug, username)}?page=${page}&q=${q}`,
   // );
