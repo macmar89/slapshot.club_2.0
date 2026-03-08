@@ -47,7 +47,7 @@ const TabsList = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
     <div
       ref={ref}
       className={cn(
-        'rounded-app flex h-auto w-full items-center justify-start border border-white/10 bg-white/5 p-1 text-white/40 backdrop-blur-lg sm:inline-flex sm:w-auto',
+        'rounded-app flex h-auto w-full items-center justify-start gap-1 border border-white/10 bg-white/5 p-1 text-white/40 backdrop-blur-lg sm:inline-flex sm:w-auto',
         className,
       )}
       {...props}

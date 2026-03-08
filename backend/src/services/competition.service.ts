@@ -5,6 +5,7 @@ import { CompetitionErrors } from '../shared/constants/errors/competition.errors
 import { competitions, leaderboardEntries } from '../db/schema';
 import { calculateRate, roundTo } from '../utils/math';
 import { AppError } from '../utils/appError';
+import { AuthMessages } from '../shared/constants/messages/auth.messages';
 
 export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
   const competitions = await db.query.competitions.findMany({
@@ -134,11 +135,11 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
 
 export const getPlayerStats = async (username: string, slug: string) => {
   const user = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.username, username),
+    where: (users, { eq }) => eq(sql`lower(${users.username})`, username.toLowerCase()),
   });
 
   if (!user) {
-    throw new AppError('User not found');
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND);
   }
 
   const competition = await db.query.competitions.findFirst({
@@ -154,14 +155,14 @@ export const getPlayerStats = async (username: string, slug: string) => {
 
   const leaderboardEntry = await db.query.leaderboardEntries.findFirst({
     columns: {
+      currentRank: true,
       totalPoints: true,
       totalMatches: true,
-      currentRank: true,
       exactGuesses: true,
       correctTrends: true,
       correctDiffs: true,
       wrongGuesses: true,
-      createdAt: true,
+      currentForm: true,
     },
     where: (leaderboardEntries, { eq, and }) =>
       and(
@@ -174,13 +175,6 @@ export const getPlayerStats = async (username: string, slug: string) => {
     throw new AppError(CompetitionErrors.USER_NOT_MEMBER_OF_COMPETITION);
   }
 
-  const lastPredictionsResult = await db.query.predictions.findMany({
-    where: (predictions, { eq, and }) =>
-      and(eq(predictions.userId, user.id), eq(predictions.competitionId, competition.id)),
-    limit: 5,
-    orderBy: (predictions, { desc }) => [desc(predictions.createdAt)],
-  });
-
   const points = leaderboardEntry.totalPoints || 0;
   const games = leaderboardEntry.totalMatches || 0;
 
@@ -190,18 +184,16 @@ export const getPlayerStats = async (username: string, slug: string) => {
     (leaderboardEntry.correctDiffs || 0);
 
   return {
-    user: {
-      id: user.id,
-      username: user.username,
-      subscriptionPlan: user.subscriptionPlan,
-      createdAt: user.createdAt,
-    },
+    userId: user.id,
+    username: user.username,
+    subscriptionPlan: user.subscriptionPlan,
+    createdAt: user.createdAt,
+
     ...leaderboardEntry,
+
     successRate: calculateRate(totalCorrect, games),
     averagePoints: roundTo(points / (games || 1), 2),
     points,
-    rank: leaderboardEntry.currentRank,
-    lastPredictions: lastPredictionsResult,
   };
 };
 

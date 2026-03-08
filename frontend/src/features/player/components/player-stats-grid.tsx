@@ -11,66 +11,56 @@ import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { PlanBadge } from '@/components/ui/plan-badge';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
-import { User } from '@/features/users/users.types';
-
-interface PlayerStats {
-  totalMatches: number;
-  averagePoints: number;
-  exactGuesses: number;
-  successRate: number;
-  rank: number;
-  points: number;
-  lastPredictions: Array<{
-    points: number | null;
-  }>;
-}
+import { SubscriptionPlan } from '@/features/users/users.types';
+import { PlayerStats } from '../player.types';
+import { PlayerDotsFormLegend, PlayerFormDots } from './player-form-dots';
 
 interface PlayerStatsGridProps {
-  stats: PlayerStats | null;
-  user: PlayerStats;
-  isLocked?: boolean;
+  playerStats: PlayerStats;
   className?: string;
 }
 
-export function PlayerStatsGrid({ stats, user, isLocked, className }: PlayerStatsGridProps) {
+export function PlayerStatsGrid({ playerStats, className }: PlayerStatsGridProps) {
   const t = useTranslations('PlayerDetail');
   const locale = useLocale();
 
-  const memberSinceDate = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString(locale, {
+  const isLocked = false;
+
+  const memberSinceDate = playerStats.createdAt
+    ? new Date(playerStats.createdAt).toLocaleDateString(locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       })
     : '?';
 
-  const plan = user.subscriptionPlan || 'free';
+  const plan = playerStats.subscriptionPlan || 'free';
 
   const remainingItems = [
     {
       label: t('tips_count'),
-      value: stats?.totalMatches.toString() || '0',
+      value: playerStats?.totalMatches.toString() || '0',
       icon: ClipboardCheck,
       color: 'text-blue-400',
       desc: t('desc_tips'),
     },
     {
       label: t('avgPoints'),
-      value: stats?.averagePoints.toFixed(2) || '0.00',
+      value: playerStats?.averagePoints.toFixed(2) || '0.00',
       icon: Calculator,
       color: 'text-purple-400',
       desc: t('desc_avg'),
     },
     {
       label: t('sniperRate'),
-      value: stats?.exactGuesses.toString() || '0',
+      value: playerStats?.exactGuesses.toString() || '0',
       icon: Target,
       color: 'text-red-500',
       desc: t('desc_sniper_new'),
     },
     {
       label: t('success_rate'),
-      value: stats ? `${stats.successRate.toFixed(1)}%` : '0.0%',
+      value: playerStats ? `${playerStats.successRate.toFixed(1)}%` : '0.0%',
       icon: TrendingUp,
       color: 'text-emerald-400',
       desc: t('success_rate_desc'),
@@ -90,53 +80,19 @@ export function PlayerStatsGrid({ stats, user, isLocked, className }: PlayerStat
             <div className="flex flex-col">
               <div className="mb-1 flex items-center gap-2">
                 <h3 className="text-2xl leading-none font-black tracking-tight text-white uppercase italic">
-                  {user.username}
+                  {playerStats.username}
                 </h3>
-                <PlanBadge plan={plan as any} />
+                <PlanBadge plan={plan as SubscriptionPlan} />
               </div>
               <p className="text-[10px] font-black tracking-widest text-white/40 uppercase italic">
                 {t('member_since')}: <span className="text-white/70">{memberSinceDate}</span>
               </p>
-
-              {/* Form Dots */}
-              <div className="relative">
-                <div className={cn(isLocked && 'opacity-40 blur-sm grayscale select-none')}>
-                  {stats?.lastPredictions && stats.lastPredictions.length > 0 && (
-                    <div className="mt-3 flex items-center gap-2">
-                      <span className="text-[10px] font-black tracking-wider text-white/40 uppercase italic">
-                        {t('form')}:
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {stats.lastPredictions.map((p, i) => {
-                          const points = p.points ?? 0;
-                          let color = 'bg-white/10';
-                          if (points === 5)
-                            color =
-                              'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)] border border-emerald-300/30';
-                          if (points === 3) color = 'bg-blue-400';
-                          if (points === 2) color = 'bg-orange-400';
-                          if (points === 0) color = 'bg-red-500/50';
-
-                          return (
-                            <div
-                              key={i}
-                              className={cn(
-                                'h-2.5 w-2.5 rounded-full transition-all hover:scale-125',
-                                color,
-                              )}
-                              title={`${points} pts`}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="relative mt-2">
+                <PlayerFormDots form={playerStats.currentForm} />
               </div>
             </div>
           </div>
 
-          {/* Right Side: Key Stats */}
           <div className="flex items-center gap-8 md:gap-12 md:pr-4">
             <div className="flex flex-col items-center md:items-end">
               <span className="mb-1 text-[10px] font-bold tracking-widest text-white/40 uppercase">
@@ -145,7 +101,7 @@ export function PlayerStatsGrid({ stats, user, isLocked, className }: PlayerStat
               <div className="flex items-center gap-2">
                 <Trophy size={18} className="text-warning" />
                 <span className="text-3xl leading-none font-black tracking-tighter text-white italic">
-                  {stats ? `#${stats.rank}` : '-'}
+                  {playerStats ? `#${playerStats.currentRank}` : '-'}
                 </span>
               </div>
             </div>
@@ -160,7 +116,7 @@ export function PlayerStatsGrid({ stats, user, isLocked, className }: PlayerStat
                 <div className="flex items-center gap-2">
                   <Zap size={18} className="text-yellow-400" />
                   <span className="text-3xl leading-none font-black tracking-tighter text-white italic">
-                    {stats?.points.toString() || '0'}
+                    {playerStats?.totalPoints.toString() || '0'}
                   </span>
                 </div>
               </div>
@@ -176,26 +132,7 @@ export function PlayerStatsGrid({ stats, user, isLocked, className }: PlayerStat
         {/* Legend for Form */}
         <div className="relative">
           <div className={cn(isLocked && 'opacity-40 blur-sm grayscale select-none')}>
-            {stats?.lastPredictions && stats.lastPredictions.length > 0 && (
-              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/5 pt-4">
-                <div className="flex items-center gap-2 text-[9px] font-black tracking-tight text-white/40 uppercase italic">
-                  <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                  {t('exact_tip')}
-                </div>
-                <div className="flex items-center gap-2 text-[9px] font-black tracking-tight text-white/40 uppercase italic">
-                  <div className="h-2 w-2 rounded-full bg-blue-400" />
-                  {t('winner_diff')}
-                </div>
-                <div className="flex items-center gap-2 text-[9px] font-black tracking-tight text-white/40 uppercase italic">
-                  <div className="h-2 w-2 rounded-full bg-orange-400" />
-                  {t('winner')}
-                </div>
-                <div className="flex items-center gap-2 text-[9px] font-black tracking-tight text-white/40 uppercase italic">
-                  <div className="h-2 w-2 rounded-full bg-red-500/50" />
-                  {t('miss')}
-                </div>
-              </div>
-            )}
+            <PlayerDotsFormLegend />
           </div>
         </div>
       </IceGlassCard>
