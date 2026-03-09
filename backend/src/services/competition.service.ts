@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, inArray, ne, or, sql } from 'drizzle-orm';
+import { and, count, eq, ne, sql } from 'drizzle-orm';
 import { db } from '../db';
 import type { AppLocale } from '../types/global';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';

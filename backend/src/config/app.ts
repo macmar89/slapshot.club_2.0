@@ -13,5 +13,11 @@ export const APP_CONFIG = {
       pro: 5,
       vip: 10,
     },
+    maxJoinedGroups: {
+      free: 1,
+      starter: 1,
+      pro: 5,
+      vip: 99,
+    },
   },
 } as const;

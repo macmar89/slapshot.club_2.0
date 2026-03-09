@@ -14,5 +14,16 @@ export const createGroupHandlerSchema = z.object({
   body: createGroupSchema,
 });
 
+export const joinGroupSchema = z
+  .object({
+    code: z.string(),
+  })
+  .strict();
+
+export const joinGroupHandlerSchema = z.object({
+  body: joinGroupSchema,
+});
+
 export type GroupType = z.infer<typeof createGroupSchema>['type'];
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
+export type JoinGroupInput = z.infer<typeof joinGroupSchema>;

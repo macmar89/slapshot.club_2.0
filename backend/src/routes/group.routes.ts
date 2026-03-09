@@ -1,11 +1,14 @@
 import { Router } from 'express';
 import * as groupController from '../controllers/group.controller.js';
 import { validate } from '../middleware/validate.middleware.js';
-import { createGroupHandlerSchema } from '../shared/constants/schema/group.schema.js';
+import {
+  createGroupHandlerSchema,
+  joinGroupHandlerSchema,
+} from '../shared/constants/schema/group.schema.js';
 
 const router = Router();
 
 router.post('/', validate(createGroupHandlerSchema), groupController.createGroupHandler);
-router.post('/join', groupController.joinGroupHandler);
+router.post('/join', validate(joinGroupHandlerSchema), groupController.joinGroupHandler);
 
 export default router;
