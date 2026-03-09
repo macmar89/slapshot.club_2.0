@@ -5,6 +5,7 @@ import type { UserSubscriptionPlan } from '../types/user';
 import { HttpStatus } from '../utils/httpStatusCodes';
 import { GroupMessages } from '../shared/constants/messages/group.messages';
 import { logActivity } from '../services/audit.service';
+import { logger } from '../utils/logger';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user!.id;
@@ -12,7 +13,7 @@ export const createGroupHandler = catchAsync(async (req: Request, res: Response)
 
   const response = await createGroup(userId, userSubscriptionPlan, req.body);
 
-  await logActivity(
+  logActivity(
     req,
     'GROUP_CREATE',
     { type: 'group', id: response.groupId },
@@ -23,7 +24,7 @@ export const createGroupHandler = catchAsync(async (req: Request, res: Response)
       type: req.body.type,
       competitionId: response.competitionId,
     },
-  );
+  ).catch((err) => logger.error(err));
 
   res
     .status(HttpStatus.CREATED)
@@ -36,7 +37,7 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
 
   const response = await joinGroup(userId, userSubscriptionPlan, req.body);
 
-  await logActivity(
+  logActivity(
     req,
     'GROUP_JOIN',
     { type: 'group', id: response!.group.id },
@@ -47,9 +48,9 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
       type: response!.group.type,
       competitionId: response!.competitionId,
     },
-  );
+  ).catch((err) => logger.error(err));
 
   return res
     .status(HttpStatus.CREATED)
-    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS, response });
+    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS });
 });
