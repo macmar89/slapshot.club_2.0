@@ -9,7 +9,7 @@ import {
   check,
 } from 'drizzle-orm/pg-core';
 import { competitions } from './competitions.js';
-import { leagues } from './leagues.js';
+import { groups } from './groups.js';
 import { users } from './users.js';
 import { generateCuid, withUpdatesFields } from '../helpers.js';
 import { sql } from 'drizzle-orm';
@@ -64,7 +64,7 @@ export const leaderboardEntries = pgTable(
 
     foreignKey({
       columns: [table.activeLeagueId],
-      foreignColumns: [leagues.id],
+      foreignColumns: [groups.id],
       name: 'leaderboard_entries_active_league_id_fkey',
     }).onDelete('set null'),
     check('current_form_check', sql`${table.currentForm} ~ '^[ESWL]*$'`),

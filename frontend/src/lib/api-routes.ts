@@ -20,6 +20,7 @@ export const API_ROUTES = {
   COMPETITIONS: {
     ALL: '/competition',
     JOIN: '/competition/join',
+
     LEADERBOARD: {
       LIST: (slug: string) => `/competition/${slug}/leaderboard`,
       ME: (slug: string) => `/competition/${slug}/leaderboard/me`,
@@ -41,7 +42,10 @@ export const API_ROUTES = {
     },
     TEAMS: (slug: string) => `/competition/${slug}/teams`,
   },
-
+  FEEDBACK: '/feedback',
+  GROUPS: {
+    CREATE: `/groups`,
+  },
   MATCHES: {
     DETAIL: {
       INFO: (id: string) => `/matches/${id}`,
@@ -59,5 +63,4 @@ export const API_ROUTES = {
   PREDICTION: {
     CREATE: '/prediction',
   },
-  FEEDBACK: '/feedback',
 } as const;

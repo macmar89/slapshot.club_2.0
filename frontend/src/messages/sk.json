@@ -37,6 +37,7 @@
       "tables": "Tabuľky",
       "teams": "Tímy",
       "leaderboard": "Rebríček",
+      "groups": "Skupiny",
       "leagues": "Mini-ligy",
       "rules": "Pravidlá",
       "profile": "Môj Účet",
@@ -371,8 +372,13 @@
     "rules": "Pravidlá",
     "settings": "Nastavenia"
   },
+  "Groups": {
+    "title": "Skupiny",
+    "description": "Súťaž s kamošmi a vyhraj to!"
+  },
   "Leagues": {
     "title": "Mini Ligy",
+    "description": "Súťaž s kamošmi a vyhraj to!",
     "create_button": "Vytvoriť Ligu",
     "detail": "Detail",
     "owned_section": "Moje Ligy",

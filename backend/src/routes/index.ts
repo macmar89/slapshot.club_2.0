@@ -8,6 +8,7 @@ import competitionRoutes from './competition.routes.js';
 import feedbackRoutes from './feedback.routes.js';
 import predictionRoutes from './prediction.routes.js';
 import matchRoutes from './matches.routes.js';
+import groupRoutes from './group.routes.js';
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use('/auth', authRoutes);
 router.use('/user', isAuth, userRoutes);
 router.use('/competition', competitionRoutes);
 router.use('/feedback', isAuth, feedbackRoutes);
+router.use('/groups', isAuth, groupRoutes);
 router.use('/matches', isAuth, matchRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
 

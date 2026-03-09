@@ -24,8 +24,8 @@ export const dashboardConfig = {
       icon: Trophy,
     },
     {
-      labelKey: 'leagues',
-      href: '/[slug]/leagues',
+      labelKey: 'groups',
+      href: '/[slug]/groups',
       icon: Users,
     },
     {

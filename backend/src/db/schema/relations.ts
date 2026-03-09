@@ -2,8 +2,8 @@ import { relations } from 'drizzle-orm/relations';
 import {
   users,
   refreshTokens,
-  leagues,
-  leagueMembers,
+  groups,
+  groupMembers,
   predictions,
   userStats,
   userSettings,
@@ -26,8 +26,8 @@ import {
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   refreshTokens: many(refreshTokens),
-  leaguesOwned: many(leagues),
-  memberships: many(leagueMembers),
+  groupsOwned: many(groups),
+  memberships: many(groupMembers),
   predictions: many(predictions),
   stats: one(userStats, {
     fields: [users.id],
@@ -43,9 +43,13 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   }),
   referral: one(userReferrals, {
     fields: [users.id],
-    references: [userReferrals.userId],
+    references: [userReferrals.referrerId],
   }),
-  referralsReceived: many(userReferrals, { relationName: 'referredBy' }),
+  referredBy: one(userReferrals, {
+    fields: [users.id],
+    references: [userReferrals.referredUserId],
+  }),
+  referralsReceived: many(userReferrals),
   subscriptions: many(subscriptions),
   auditLogs: many(auditLogs),
   feedback: many(feedback),
@@ -103,7 +107,7 @@ export const matchesRelations = relations(matches, ({ one, many }) => ({
 export const competitionsRelations = relations(competitions, ({ many }) => ({
   locales: many(competitionsLocales),
   matches: many(matches),
-  leagues: many(leagues),
+  groups: many(groups),
   leaderboardEntries: many(leaderboardEntries),
   snapshots: many(competitionSnapshots),
 }));
@@ -115,26 +119,26 @@ export const competitionsLocalesRelations = relations(competitionsLocales, ({ on
   }),
 }));
 
-export const leaguesRelations = relations(leagues, ({ one, many }) => ({
+export const groupsRelations = relations(groups, ({ one, many }) => ({
   competition: one(competitions, {
-    fields: [leagues.competitionId],
+    fields: [groups.competitionId],
     references: [competitions.id],
   }),
   owner: one(users, {
-    fields: [leagues.ownerId],
+    fields: [groups.ownerId],
     references: [users.id],
   }),
-  members: many(leagueMembers),
+  members: many(groupMembers),
   leaderboardEntries: many(leaderboardEntries),
 }));
 
-export const leagueMembersRelations = relations(leagueMembers, ({ one }) => ({
-  league: one(leagues, {
-    fields: [leagueMembers.leagueId],
-    references: [leagues.id],
+export const groupMembersRelations = relations(groupMembers, ({ one }) => ({
+  group: one(groups, {
+    fields: [groupMembers.groupId],
+    references: [groups.id],
   }),
   user: one(users, {
-    fields: [leagueMembers.userId],
+    fields: [groupMembers.userId],
     references: [users.id],
   }),
 }));
@@ -213,9 +217,9 @@ export const leaderboardEntriesRelations = relations(leaderboardEntries, ({ one 
     fields: [leaderboardEntries.competitionId],
     references: [competitions.id],
   }),
-  activeLeague: one(leagues, {
+  activeLeague: one(groups, {
     fields: [leaderboardEntries.activeLeagueId],
-    references: [leagues.id],
+    references: [groups.id],
   }),
 }));
 

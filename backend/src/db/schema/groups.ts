@@ -12,7 +12,7 @@ import { competitions } from './competitions.js';
 import { users } from './users.js';
 import { generateCuid, withUpdatesFields } from '../helpers.js';
 
-export const enumLeaguesType = pgEnum('enum_leagues_type', [
+export const enumGroupType = pgEnum('enum_group_type', [
   'private',
   'vip',
   'business',
@@ -20,20 +20,20 @@ export const enumLeaguesType = pgEnum('enum_leagues_type', [
   'partner',
 ]);
 
-export const enumLeagueMemberStatus = pgEnum('enum_league_member_status', [
+export const enumGroupMemberStatus = pgEnum('enum_group_member_status', [
   'pending',
   'active',
   'rejected',
   'banned',
 ]);
 
-export const leagues = pgTable(
-  'leagues',
+export const groups = pgTable(
+  'groups',
   {
     id: generateCuid(),
     name: varchar('name', { length: 100 }).notNull(),
     slug: varchar('slug', { length: 100 }).notNull(),
-    type: enumLeaguesType('type').default('private').notNull(),
+    type: enumGroupType('type').default('private').notNull(),
 
     code: varchar('code', { length: 20 }),
 
@@ -49,32 +49,32 @@ export const leagues = pgTable(
     ...withUpdatesFields,
   },
   (table) => [
-    uniqueIndex('leagues_code_idx').on(table.code),
-    uniqueIndex('leagues_slug_idx').on(table.slug),
-    index('leagues_competition_idx').on(table.competitionId),
-    index('leagues_owner_idx').on(table.ownerId),
+    uniqueIndex('groups_code_idx').on(table.code),
+    uniqueIndex('groups_slug_idx').on(table.slug),
+    index('groups_competition_idx').on(table.competitionId),
+    index('groups_owner_idx').on(table.ownerId),
     foreignKey({
       columns: [table.competitionId],
       foreignColumns: [competitions.id],
-      name: 'leagues_competition_id_fkey',
+      name: 'groups_competition_id_fkey',
     }).onDelete('cascade'),
     foreignKey({
       columns: [table.ownerId],
       foreignColumns: [users.id],
-      name: 'leagues_owner_id_fkey',
+      name: 'groups_owner_id_fkey',
     }).onDelete('cascade'),
   ],
 );
 
-export const leagueMembers = pgTable(
-  'league_members',
+export const groupMembers = pgTable(
+  'group_members',
   {
     id: generateCuid(),
 
-    leagueId: varchar('league_id', { length: 24 }).notNull(),
+    groupId: varchar('group_id', { length: 24 }).notNull(),
     userId: varchar('user_id', { length: 24 }).notNull(),
 
-    status: enumLeagueMemberStatus('status').default('active').notNull(),
+    status: enumGroupMemberStatus('status').default('active').notNull(),
 
     joinedAt: timestamp('joined_at', {
       precision: 3,
@@ -84,16 +84,16 @@ export const leagueMembers = pgTable(
     ...withUpdatesFields,
   },
   (table) => [
-    uniqueIndex('league_user_unique_idx').on(table.leagueId, table.userId),
+    uniqueIndex('group_user_unique_idx').on(table.groupId, table.userId),
     foreignKey({
-      columns: [table.leagueId],
-      foreignColumns: [leagues.id],
-      name: 'league_members_league_id_fkey',
+      columns: [table.groupId],
+      foreignColumns: [groups.id],
+      name: 'group_members_group_id_fkey',
     }).onDelete('cascade'),
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
-      name: 'league_members_user_id_fkey',
+      name: 'group_members_user_id_fkey',
     }).onDelete('cascade'),
   ],
 );

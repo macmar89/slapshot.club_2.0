@@ -5,7 +5,7 @@ export * from './competitions.js';
 export * from './feedback.js';
 export * from './generalSettings.js';
 export * from './leaderboardEntries.js';
-export * from './leagues.js';
+export * from './groups.js';
 export * from './locales.js';
 export * from './matches.js';
 export * from './assets.js';

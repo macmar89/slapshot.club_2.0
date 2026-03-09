@@ -37,6 +37,7 @@
       "tables": "Tables",
       "teams": "Teams",
       "leaderboard": "Leaderboard",
+      "groups": "Groups",
       "leagues": "Mini Leagues",
       "rules": "Rules",
       "profile": "My Account",
@@ -373,8 +374,13 @@
     "rules": "Rules",
     "settings": "Settings"
   },
+  "Groups": {
+    "title": "Groups",
+    "description": "Compete with friends and win it!"
+  },
   "Leagues": {
     "title": "Mini Leagues",
+    "description": "Compete with friends and win it!",
     "create_button": "Create League",
     "detail": "Detail",
     "owned_section": "My Leagues",
