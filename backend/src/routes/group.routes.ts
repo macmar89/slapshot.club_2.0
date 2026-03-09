@@ -6,5 +6,6 @@ import { createGroupHandlerSchema } from '../shared/constants/schema/group.schem
 const router = Router();
 
 router.post('/', validate(createGroupHandlerSchema), groupController.createGroupHandler);
+router.post('/join', groupController.joinGroupHandler);
 
 export default router;

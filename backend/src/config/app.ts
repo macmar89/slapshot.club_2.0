@@ -6,4 +6,12 @@ export const APP_CONFIG = {
   pagination: {
     defaultLimit: 10,
   },
+  groups: {
+    maxMembers: {
+      free: 0,
+      starter: 0,
+      pro: 5,
+      vip: 10,
+    },
+  },
 } as const;

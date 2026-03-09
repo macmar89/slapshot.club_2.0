@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const groupType = ['private', 'vip', 'business', 'pub', 'partner'];
+const groupType = ['private', 'vip', 'business', 'pub', 'partner'] as const;
 
 export const createGroupSchema = z
   .object({
