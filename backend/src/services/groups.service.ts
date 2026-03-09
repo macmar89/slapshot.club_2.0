@@ -1,6 +1,10 @@
 import { db } from '../db/index.js';
-import type { CreateGroupInput, JoinGroupInput } from '../shared/constants/schema/group.schema.js';
-import { competitionRepository } from '../repositories/competition.repository.js';
+import type {
+  CreateGroupInput,
+  GroupType,
+  JoinGroupInput,
+} from '../shared/constants/schema/group.schema.js';
+import { competitionRepository } from '../repositories/competitions.repository.js';
 import { AppError } from '../utils/appError.js';
 import { CompetitionMessages } from '../shared/constants/messages/competition.messages.js';
 import { generateSlug } from '../utils/slug.js';
@@ -10,10 +14,10 @@ import type { UserSubscriptionPlan } from '../types/user.js';
 import { PlayerMessages } from '../shared/constants/messages/player.messages.js';
 import { HttpStatus } from '../utils/httpStatusCodes.js';
 import { APP_CONFIG } from '../config/app.js';
-import { and, count, eq, ne, sql } from 'drizzle-orm';
 import { GroupMessages } from '../shared/constants/messages/group.messages.js';
 import { groupMembersRepository } from '../repositories/groupMembers.repository.js';
-import { groupRepository } from '../repositories/group.repository.js';
+import { groupRepository } from '../repositories/groups.repository.js';
+import { leaderboardEntriesRepository } from '../repositories/leaderboardEntries.repository.js';
 
 export const createGroup = async (
   userId: string,
@@ -28,6 +32,18 @@ export const createGroup = async (
 
   if (!(userSubscriptionPlan === 'pro' || userSubscriptionPlan === 'vip')) {
     throw new AppError(PlayerMessages.ERRORS.USER_NOT_PRO_OR_VIP, HttpStatus.FORBIDDEN);
+  }
+
+  const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
+
+  const { statsJoinedPrivateGroups, statsOwnedPrivateGroups } = leadeboardEntry;
+
+  if (statsJoinedPrivateGroups >= APP_CONFIG.groups.maxJoinedPrivateGroups[userSubscriptionPlan]) {
+    throw new AppError(GroupMessages.ERRORS.MAX_JOINED_GROUPS_REACHED, HttpStatus.FORBIDDEN);
+  }
+
+  if (statsOwnedPrivateGroups >= APP_CONFIG.groups.maxCreatedPrivateGroups[userSubscriptionPlan]) {
+    throw new AppError(GroupMessages.ERRORS.MAX_OWNED_GROUPS_REACHED, HttpStatus.FORBIDDEN);
   }
 
   const groupId = createId();
@@ -46,16 +62,28 @@ export const createGroup = async (
       creditCost: 0,
       maxMembers:
         userSubscriptionPlan === 'vip'
-          ? APP_CONFIG.groups.maxMembers.vip
-          : APP_CONFIG.groups.maxMembers.pro,
+          ? APP_CONFIG.groups.memberCapacityBoost.vip
+          : APP_CONFIG.groups.memberCapacityBoost.pro,
       statsMembersCount: 1,
+      isAliasRequired: body.isAliasRequired ?? false,
     });
 
     await tx.insert(groupMembers).values({
       groupId,
       userId,
+      role: 'owner',
     });
+
+    await leaderboardEntriesRepository.updateStats(
+      userId,
+      competitionId,
+      'inc',
+      { owned: true, joined: true },
+      tx,
+    );
   });
+
+  return { groupId, competitionId };
 };
 
 export const joinGroup = async (
@@ -64,7 +92,7 @@ export const joinGroup = async (
   body: JoinGroupInput,
 ) => {
   const groupResult = await db.query.groups.findFirst({
-    columns: { id: true, type: true },
+    columns: { id: true, name: true, competitionId: true, type: true },
     where: (groups, { eq }) => eq(groups.code, body.code),
   });
 
@@ -80,9 +108,16 @@ export const joinGroup = async (
     throw new AppError(GroupMessages.ERRORS.USER_ALREADY_JOINED, HttpStatus.CONFLICT);
   }
 
+  const competitionId = groupResult.competitionId;
+
   switch (groupResult.type) {
     case 'private':
-      return await joinPrivateGroup(userId, userSubscriptionPlan, groupResult.id);
+      return await joinPrivateGroup(
+        userId,
+        userSubscriptionPlan,
+        { id: groupResult.id, name: groupResult.name, type: groupResult.type },
+        competitionId,
+      );
     // case 'business':
     //   return await joinBusinessGroup(userId, plan, group);
     // case 'vip':
@@ -95,41 +130,37 @@ export const joinGroup = async (
 export const joinPrivateGroup = async (
   userId: string,
   userSubscriptionPlan: UserSubscriptionPlan,
-  groupId: string,
+  group: { id: string; name: string; type: GroupType },
+  competitionId: string,
 ) => {
-  const isFreeUser = userSubscriptionPlan === 'free' || userSubscriptionPlan === 'starter';
-  const isProUser = userSubscriptionPlan === 'pro';
+  const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
 
-  const [groupMemberhipsCountResult] = await db
-    .select({ count: count() })
-    .from(groupMembers)
-    .where(eq(groupMembers.userId, userId));
+  const { statsJoinedPrivateGroups } = leadeboardEntry;
 
-  const groupMemberhipsCount = groupMemberhipsCountResult
-    ? Number(groupMemberhipsCountResult?.count)
-    : 0;
-
-  if (isFreeUser && groupMemberhipsCount >= APP_CONFIG.groups.maxJoinedGroups.free) {
+  if (statsJoinedPrivateGroups >= APP_CONFIG.groups.maxJoinedPrivateGroups[userSubscriptionPlan]) {
     throw new AppError(GroupMessages.ERRORS.MAX_GROUPS_REACHED);
   }
 
-  if (isProUser && groupMemberhipsCount >= APP_CONFIG.groups.maxJoinedGroups.pro) {
-    throw new AppError(GroupMessages.ERRORS.MAX_GROUPS_REACHED);
-  }
+  await db.transaction(async (tx) => {
+    await groupMembersRepository.addMember(userId, group.id, 'pending', tx);
 
-  const increaseMaxMembersMap: Record<UserSubscriptionPlan, number> = {
-    free: APP_CONFIG.groups.maxMembers.free,
-    starter: APP_CONFIG.groups.maxMembers.starter,
-    pro: APP_CONFIG.groups.maxMembers.pro,
-    vip: APP_CONFIG.groups.maxMembers.vip,
-  };
-
-  return await db.transaction(async (tx) => {
-    await groupMembersRepository.addMember(userId, groupId, 'pending', tx);
     await groupRepository.updateGroupStats(
-      groupId,
-      increaseMaxMembersMap[userSubscriptionPlan],
+      group.id,
+      APP_CONFIG.groups.memberCapacityBoost[userSubscriptionPlan],
+      tx,
+    );
+
+    await leaderboardEntriesRepository.updateStats(
+      userId,
+      competitionId,
+      'inc',
+      { joined: true },
       tx,
     );
   });
+
+  return {
+    group,
+    competitionId,
+  };
 };

@@ -17,6 +17,18 @@ export const auditActionEnum = pgEnum('audit_action', [
   'EMAIL_VERIFIED',
   'USERNAME_CHANGE',
   'EMAIL_CHANGE_REQUEST',
+
+  //  GROUP
+  'GROUP_CREATE',
+  'GROUP_DELETE',
+  'GROUP_JOIN',
+  'GROUP_LEAVE',
+  'GROUP_INVITE',
+  'GROUP_REQUEST',
+  'GROUP_KICK',
+  'GROUP_ROLE_CHANGE',
+  'GROUP_STATUS_CHANGE',
+  'GROUP_ALIAS_CHANGE',
 ]);
 
 export const entityTypeEnum = pgEnum('entity_type', [
@@ -25,6 +37,7 @@ export const entityTypeEnum = pgEnum('entity_type', [
   'competition',
   'auth',
   'prediction',
+  'group',
   'match',
   'team',
   'leaderboard',
@@ -45,6 +58,10 @@ export const auditLogs = pgTable(
 
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
+
+    sport: varchar('sport')
+      .default(process.env.APP_SPORT as string)
+      .notNull(),
 
     createdAt: timestamp('created_at', { precision: 3, withTimezone: true, mode: 'string' })
       .defaultNow()

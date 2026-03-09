@@ -1,10 +1,11 @@
+'use client';
+
 import { PageHeader } from '@/components/layout/page-header';
-import { useAuthStore } from '@/store/use-auth-store';
 import { useTranslations } from 'next-intl';
+import { CreateGroupForm } from '../components/create-group-form';
 
 export const GroupsView = () => {
   const t = useTranslations('Groups');
-  const user = useAuthStore((state) => state.user);
 
   return (
     <div>
@@ -19,7 +20,7 @@ export const GroupsView = () => {
       >
         <div className="flex w-full flex-col items-center gap-4 sm:flex-row md:w-auto">
           <div className="flex w-full items-center gap-4 sm:w-auto">
-            <CreateLeagueForm userPlan={user?.subscriptionPlan} />
+            <CreateGroupForm />
             {/* <div className="md:hidden">
               <JoinLeagueModal />
             </div> */}

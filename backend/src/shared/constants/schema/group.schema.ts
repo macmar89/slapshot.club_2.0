@@ -7,6 +7,7 @@ export const createGroupSchema = z
     name: z.string().min(3).max(100),
     competitionSlug: z.string().min(3).max(100),
     type: z.enum(groupType),
+    isAliasRequired: z.boolean().default(false).optional(),
   })
   .strict();
 

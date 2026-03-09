@@ -8,7 +8,7 @@ import competitionRoutes from './competition.routes.js';
 import feedbackRoutes from './feedback.routes.js';
 import predictionRoutes from './prediction.routes.js';
 import matchRoutes from './matches.routes.js';
-import groupRoutes from './group.routes.js';
+import groupRoutes from './groups.routes.js';
 
 const router = Router();
 

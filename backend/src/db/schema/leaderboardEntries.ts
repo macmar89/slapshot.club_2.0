@@ -38,6 +38,9 @@ export const leaderboardEntries = pgTable(
 
     ovr: integer().default(0),
 
+    statsOwnedPrivateGroups: integer().default(0).notNull(),
+    statsJoinedPrivateGroups: integer().default(0).notNull(),
+
     ...withUpdatesFields,
   },
   (table) => [

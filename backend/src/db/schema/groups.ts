@@ -7,6 +7,7 @@ import {
   integer,
   uniqueIndex,
   pgEnum,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { competitions } from './competitions.js';
 import { users } from './users.js';
@@ -20,12 +21,7 @@ export const enumGroupType = pgEnum('enum_group_type', [
   'partner',
 ]);
 
-export const enumGroupMemberStatus = pgEnum('enum_group_member_status', [
-  'pending',
-  'active',
-  'rejected',
-  'banned',
-]);
+export const enumGroupStatus = pgEnum('enum_group_status', ['active', 'warning', 'locked']);
 
 export const groups = pgTable(
   'groups',
@@ -34,6 +30,13 @@ export const groups = pgTable(
     name: varchar('name', { length: 100 }).notNull(),
     slug: varchar('slug', { length: 100 }).notNull(),
     type: enumGroupType('type').default('private').notNull(),
+
+    status: enumGroupStatus('status').default('active').notNull(),
+    warningExpiresAt: timestamp('warning_expires_at', {
+      precision: 3,
+      withTimezone: true,
+      mode: 'string',
+    }),
 
     code: varchar('code', { length: 20 }),
 
@@ -45,6 +48,8 @@ export const groups = pgTable(
     maxMembers: integer('max_members').default(5).notNull(),
 
     statsMembersCount: integer('stats_members_count').default(0).notNull(),
+
+    isAliasRequired: boolean('is_alias_required').default(false).notNull(),
 
     ...withUpdatesFields,
   },
@@ -66,6 +71,16 @@ export const groups = pgTable(
   ],
 );
 
+export const enumGroupMemberStatus = pgEnum('enum_group_member_status', [
+  'pending',
+  'invited',
+  'active',
+  'rejected',
+  'banned',
+]);
+
+export const enumGroupMemberRole = pgEnum('enum_group_member_role', ['owner', 'admin', 'member']);
+
 export const groupMembers = pgTable(
   'group_members',
   {
@@ -73,6 +88,9 @@ export const groupMembers = pgTable(
 
     groupId: varchar('group_id', { length: 24 }).notNull(),
     userId: varchar('user_id', { length: 24 }).notNull(),
+    role: enumGroupMemberRole('role').default('member'),
+
+    alias: varchar('alias', { length: 100 }),
 
     status: enumGroupMemberStatus('status').default('active').notNull(),
 

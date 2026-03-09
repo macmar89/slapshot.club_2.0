@@ -10,9 +10,9 @@ import { IS_PRODUCTION } from './config/env.js';
 import { AppError } from './utils/appError.js';
 import { HttpStatus } from './utils/httpStatusCodes.js';
 import './workers/email.worker.js';
+import { env } from './config/env';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
 app.set('trust proxy', 1);
 
@@ -37,6 +37,6 @@ app.all('{*path}', (req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`Server running on http://localhost:${env.PORT}`);
 });

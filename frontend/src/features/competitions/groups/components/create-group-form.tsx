@@ -12,8 +12,8 @@ import { postCreatePrivateGroup } from '../groups.api';
 import { useAppParams } from '@/hooks/use-app-params';
 import { useAuthStore } from '@/store/use-auth-store';
 
-export function CreateLeagueForm() {
-  const t = useTranslations('Leagues');
+export function CreateGroupForm() {
+  const t = useTranslations('Groups');
   const router = useRouter();
 
   const { slug } = useAppParams(['slug']);

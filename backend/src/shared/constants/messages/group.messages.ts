@@ -6,5 +6,7 @@ export const GroupMessages = {
     GROUP_NOT_FOUND: 'group_not_found',
     USER_ALREADY_JOINED: 'user_already_joined',
     MAX_GROUPS_REACHED: 'max_groups_reached',
+    MAX_JOINED_GROUPS_REACHED: 'max_joined_groups_reached',
+    MAX_OWNED_GROUPS_REACHED: 'max_owned_groups_reached',
   },
 } as const;

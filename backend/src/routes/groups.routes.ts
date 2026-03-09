@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as groupController from '../controllers/group.controller.js';
+import * as groupController from '../controllers/groups.controller.js';
 import { validate } from '../middleware/validate.middleware.js';
 import {
   createGroupHandlerSchema,
