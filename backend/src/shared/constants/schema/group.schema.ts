@@ -18,6 +18,7 @@ export const createGroupHandlerSchema = z.object({
 export const joinGroupSchema = z
   .object({
     code: z.string(),
+    competitionSlug: z.string(),
   })
   .strict();
 

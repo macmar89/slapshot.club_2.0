@@ -92,31 +92,81 @@ export const joinGroup = async (
   userSubscriptionPlan: UserSubscriptionPlan,
   body: JoinGroupInput,
 ) => {
+  const competitionId = await competitionRepository.getIdBySlug(body.competitionSlug);
+
+  if (!competitionId) {
+    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
   const groupResult = await db.query.groups.findFirst({
-    columns: { id: true, name: true, competitionId: true, type: true },
-    where: (groups, { eq }) => eq(groups.code, body.code),
+    columns: {
+      id: true,
+      name: true,
+      competitionId: true,
+      type: true,
+      maxMembers: true,
+      statsMembersCount: true,
+      statsPendingMembersCount: true,
+      absoluteMaxCapacity: true,
+      settings: true,
+    },
+    where: (groups, { eq, and, isNull }) =>
+      and(
+        eq(groups.code, body.code),
+        eq(groups.competitionId, competitionId),
+        isNull(groups.deletedAt),
+      ),
   });
 
   if (!groupResult) throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
 
   const isGroupMember = await db.query.groupMembers.findFirst({
-    columns: { id: true },
+    columns: { status: true },
     where: (groupMembers, { eq, and }) =>
       and(eq(groupMembers.groupId, groupResult.id), eq(groupMembers.userId, userId)),
   });
+
+  if (isGroupMember?.status === 'banned') {
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
 
   if (isGroupMember) {
     throw new AppError(GroupMessages.ERRORS.USER_ALREADY_JOINED, HttpStatus.CONFLICT);
   }
 
-  const competitionId = groupResult.competitionId;
+  if (
+    groupResult?.maxMembers <= groupResult?.statsMembersCount &&
+    (userSubscriptionPlan === 'free' || userSubscriptionPlan === 'starter')
+  ) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+  }
+
+  if (groupResult?.absoluteMaxCapacity <= groupResult?.statsMembersCount) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+  }
+
+  if (
+    groupResult?.absoluteMaxCapacity <=
+    groupResult?.statsPendingMembersCount + groupResult?.statsMembersCount
+  ) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+  }
+
+  if (groupResult.settings?.isLocked) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_LOCKED, HttpStatus.FORBIDDEN);
+  }
 
   switch (groupResult.type) {
     case 'private':
       return await joinPrivateGroup(
         userId,
         userSubscriptionPlan,
-        { id: groupResult.id, name: groupResult.name, type: groupResult.type },
+        {
+          id: groupResult.id,
+          name: groupResult.name,
+          type: groupResult.type,
+          settings: groupResult.settings,
+        },
         competitionId,
       );
     // case 'business':
@@ -131,7 +181,12 @@ export const joinGroup = async (
 export const joinPrivateGroup = async (
   userId: string,
   userSubscriptionPlan: UserSubscriptionPlan,
-  group: { id: string; name: string; type: GroupType },
+  group: {
+    id: string;
+    name: string;
+    type: GroupType;
+    settings: { isLocked: boolean; allowMemberInvites: boolean; requireApproval: boolean };
+  },
   competitionId: string,
 ) => {
   const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
@@ -142,14 +197,24 @@ export const joinPrivateGroup = async (
     throw new AppError(GroupMessages.ERRORS.MAX_GROUPS_REACHED);
   }
 
-  await db.transaction(async (tx) => {
-    await groupMembersRepository.addMember(userId, group.id, 'pending', tx);
+  const finalStatus = group.settings?.requireApproval ? 'pending' : 'active';
+  const isImmediatelyActive = finalStatus === 'active';
 
-    await groupRepository.updateGroupStats(
-      group.id,
-      APP_CONFIG.groups.memberCapacityBoost[userSubscriptionPlan],
-      tx,
-    );
+  await db.transaction(async (tx) => {
+    await groupMembersRepository.addMember(userId, group.id, finalStatus, tx);
+
+    if (isImmediatelyActive) {
+      await groupRepository.incrementMaxMembers(
+        group.id,
+        APP_CONFIG.groups.memberCapacityBoost[userSubscriptionPlan],
+        tx,
+      );
+      await groupRepository.incrementMemberCount(group.id, tx);
+    }
+
+    if (!isImmediatelyActive) {
+      await groupRepository.incrementPendingMembersCount(group.id, tx);
+    }
 
     await leaderboardEntriesRepository.updateStats(
       userId,
@@ -188,6 +253,7 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
       status: groups.status,
       warningExpiresAt: groups.warningExpiresAt,
       groupMemberStatus: groupMembers.status,
+      pendingMembersCount: groups.statsPendingMembersCount,
       createdAt: groups.createdAt,
     })
     .from(groups)

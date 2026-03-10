@@ -469,6 +469,7 @@
     "delete_confirm_done": "Potvrdit smazání",
     "join_league_trigger": "nebo se přidej do ligy",
     "rules_label": "Pravidla",
+    "empty_state_title": "Zatím nejsi v žádné skupině a nemáš ani žádnou vytvořenou.",
     "no_leagues_hint": "Vytvoř si vlastní nebo se přidej kámošům pomocí kódu!",
     "group_created": "Skupina byla úspěšně vytvořena! 🏒",
     "errors": {
@@ -479,6 +480,8 @@
       "max_groups_reached": "Dosáhl jsi maximálního počtu skupin.",
       "group_not_found": "Skupina s tímto kódem neexistuje. Zkontroluj kód a zkus znovu.",
       "user_already_joined": "Již jsi členem této skupiny.",
+      "group_full": "Skupina je plná. Není možné se připojit.",
+      "group_locked": "Skupina je uzamčena a momentálně nepřijímá nové členy.",
       "unexpected": "Nastala neočekávaná chyba. Zkus znovu."
     },
     "validation": {

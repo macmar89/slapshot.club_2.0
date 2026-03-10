@@ -8,5 +8,7 @@ export const GroupMessages = {
     MAX_GROUPS_REACHED: 'max_groups_reached',
     MAX_JOINED_GROUPS_REACHED: 'max_joined_groups_reached',
     MAX_OWNED_GROUPS_REACHED: 'max_owned_groups_reached',
+    GROUP_LOCKED: 'group_locked',
+    GROUP_FULL: 'group_full',
   },
 } as const;

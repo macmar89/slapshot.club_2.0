@@ -29,8 +29,9 @@ export function GroupCard({ data }: GroupCardProps) {
 
   const isOwner = data?.role === 'owner';
   const memberCount = data?.memberCount ?? 0;
-  const waitingCount = 3;
-  const maxMembers = data.maxMembers || 20;
+  const waitingCount = data?.pendingMembersCount ?? 0;
+  const maxMembers = data.maxMembers ?? 0;
+  const isPending = data?.groupMemberStatus === 'pending';
 
   return (
     <div className="rounded-app hover:border-primary/30 group relative flex h-full flex-col border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:bg-white/[0.08]">
@@ -54,9 +55,10 @@ export function GroupCard({ data }: GroupCardProps) {
               <Users className="h-3 w-3" />
               <span className="font-mono">{memberCount}</span>
             </div>
-            {waitingCount > 0 && (
+            {waitingCount > 0 && !isPending && (
               <div className="text-primary flex items-center gap-1">
                 <span className="bg-primary h-1 w-1 animate-pulse rounded-full" />
+
                 <span className="font-mono">{t('waiting_label', { count: waitingCount })}</span>
               </div>
             )}
@@ -71,24 +73,39 @@ export function GroupCard({ data }: GroupCardProps) {
       </div>
 
       <div className="mt-auto flex flex-col gap-3 pt-4">
-        <div className="group-hover:border-primary/20 flex items-center justify-between rounded border border-white/5 bg-black/40 px-3 py-2 transition-colors">
-          <span className="text-primary font-mono text-xs tracking-widest">{data.code}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => copyToClipboard(e, data.code || '')}
-            className="h-5 w-5 text-white/30 hover:text-white"
-          >
-            <Copy className="h-3 w-3" />
-          </Button>
-        </div>
-
-        <Link href={`${pathname}/groups/${data.slug}`} className="w-full">
-          <Button variant="outline" className="w-full">
-            <Eye className="h-4 w-4 text-white" />
-            {t('detail') || 'Detail'}
-          </Button>
-        </Link>
+        {isPending ? (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2.5 rounded border border-white/5 bg-white/[0.03] px-4 py-3">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="bg-primary/60 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+                <span className="bg-primary/50 relative inline-flex h-2 w-2 rounded-full" />
+              </span>
+              <span className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+                {t('pending_status')}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="group-hover:border-primary/20 flex items-center justify-between rounded border border-white/5 bg-black/40 px-3 py-2 transition-colors">
+              <span className="text-primary font-mono text-xs tracking-widest">{data.code}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => copyToClipboard(e, data.code || '')}
+                className="h-5 w-5 text-white/30 hover:text-white"
+              >
+                <Copy className="h-3 w-3" />
+              </Button>
+            </div>
+            <Link href={`${pathname}/groups/${data.slug}`} className="w-full">
+              <Button variant="outline" className="w-full">
+                <Eye className="h-4 w-4 text-white" />
+                {t('detail') || 'Detail'}
+              </Button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

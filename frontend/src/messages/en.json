@@ -471,6 +471,7 @@
     "delete_confirm_done": "Confirm deletion",
     "join_league_trigger": "or join a league",
     "rules_label": "Rules",
+    "empty_state_title": "You haven't created or joined any group yet.",
     "no_leagues_hint": "Create your own or join your friends using a code!",
     "group_created": "Group created successfully! 🏒",
     "errors": {
@@ -481,6 +482,8 @@
       "max_groups_reached": "You have reached the maximum number of groups.",
       "group_not_found": "No group found with this code. Please check the code and try again.",
       "user_already_joined": "You are already a member of this group.",
+      "group_full": "This group is full. You cannot join at this time.",
+      "group_locked": "This group is locked and not accepting new members.",
       "unexpected": "An unexpected error occurred. Please try again."
     },
     "validation": {

@@ -8,6 +8,9 @@ import {
   uniqueIndex,
   pgEnum,
   boolean,
+  jsonb,
+  uuid,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { competitions } from './competitions.js';
 import { users } from './users.js';
@@ -46,10 +49,29 @@ export const groups = pgTable(
     creditCost: integer('credit_cost').default(0).notNull(),
 
     maxMembers: integer('max_members').default(5).notNull(),
+    absoluteMaxCapacity: integer('absolute_max_capacity').default(30).notNull(),
 
     statsMembersCount: integer('stats_members_count').default(0).notNull(),
+    statsPendingMembersCount: integer('stats_pending_members_count').default(0).notNull(),
 
     isAliasRequired: boolean('is_alias_required').default(false).notNull(),
+
+    originGroupId: varchar('origin_group_id', { length: 24 }).references(
+      (): AnyPgColumn => groups.id,
+    ),
+
+    settings: jsonb('settings')
+      .$type<{
+        isLocked: boolean;
+        allowMemberInvites: boolean;
+        requireApproval: boolean;
+      }>()
+      .notNull()
+      .default({
+        isLocked: false,
+        allowMemberInvites: true,
+        requireApproval: true,
+      }),
 
     ...withUpdatesFields,
   },

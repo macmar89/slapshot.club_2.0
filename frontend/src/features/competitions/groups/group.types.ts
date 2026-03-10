@@ -23,6 +23,7 @@ export interface UserGroup {
   status: GroupStatus;
   warningExpiresAt: string | null;
   groupMemberStatus: GroupMemberStatus;
+  pendingMembersCount: number;
   createdAt: string;
 }
 

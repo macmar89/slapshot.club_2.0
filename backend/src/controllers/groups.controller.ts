@@ -56,7 +56,7 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
 
   return res
     .status(HttpStatus.CREATED)
-    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS });
+    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS, response });
 });
 
 export const getUserGroupsByCompetitionSlugHandler = catchAsync(

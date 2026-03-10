@@ -34,6 +34,8 @@ import {
   createGroupFormSchema,
   type CreateGroupFormValues,
 } from '@/features/competitions/groups/groups.schema';
+import { useSWRConfig } from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 
 export function CreateGroupForm() {
   const t = useTranslations('Groups');
@@ -41,6 +43,8 @@ export function CreateGroupForm() {
 
   const { slug } = useAppParams(['slug']);
   const subscriptionPlan = useAuthStore((state) => state.user?.subscriptionPlan);
+
+  const { mutate } = useSWRConfig();
 
   const [open, setOpen] = useState(false);
 
@@ -77,6 +81,7 @@ export function CreateGroupForm() {
       toast.success(t('group_created'));
       form.reset();
       setOpen(false);
+      mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug!));
       router.refresh();
     } else {
       const errorKey = res.error && BACKEND_ERROR_KEYS[res.error];

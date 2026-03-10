@@ -15,3 +15,14 @@ export const postCreatePrivateGroup = async (slug: string, name: string) => {
     return { success: false, error: errorMessage };
   }
 };
+
+export const postJoinGroup = async (code: string, competitionSlug: string) => {
+  try {
+    const response = await api.post(API_ROUTES.GROUPS.JOIN, { code, competitionSlug });
+
+    return { success: response.status === 201 };
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
+    return { success: false, error: errorMessage };
+  }
+};

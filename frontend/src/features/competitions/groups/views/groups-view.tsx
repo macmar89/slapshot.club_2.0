@@ -9,6 +9,7 @@ import { API_ROUTES } from '@/lib/api-routes';
 import { UserGroupsResponse } from '../group.types';
 import { useAppParams } from '@/hooks/use-app-params';
 import { GroupList } from '../components/group-list';
+import { GroupJoinCard } from '../components/group-join-card';
 
 export const GroupsView = () => {
   const t = useTranslations('Groups');
@@ -27,6 +28,7 @@ export const GroupsView = () => {
             <span className="flex items-center gap-2">{t('title')}</span>
           </div>
         }
+        className="mb-8"
         description={t('description')}
         hideDescriptionOnMobile
       >
@@ -40,7 +42,12 @@ export const GroupsView = () => {
         </div>
       </PageHeader>
 
-      <GroupList data={data?.data} isLoading={isLoading} metadata={data?.metadata} />
+      <div className="flex flex-col gap-8 overflow-hidden lg:grid lg:grid-cols-12 lg:items-stretch">
+        <GroupList data={data?.data} isLoading={isLoading} metadata={data?.metadata} />
+        <div className="order-2 hidden min-w-0 lg:col-span-4 lg:flex lg:flex-col">
+          <GroupJoinCard className="h-full" />
+        </div>
+      </div>
     </div>
   );
 };

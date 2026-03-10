@@ -7,6 +7,11 @@ export const APP_CONFIG = {
     defaultLimit: 10,
   },
   groups: {
+    maxGroupMembers: {
+      private: 30,
+      business: 50,
+      vip: 100,
+    },
     memberCapacityBoost: {
       free: 0,
       starter: 0,
