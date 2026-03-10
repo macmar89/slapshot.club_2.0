@@ -469,7 +469,22 @@
     "delete_confirm_done": "Potvrdit smazání",
     "join_league_trigger": "nebo se přidej do ligy",
     "rules_label": "Pravidla",
-    "no_leagues_hint": "Vytvoř si vlastní nebo se přidej kámošům pomocí kódu!"
+    "no_leagues_hint": "Vytvoř si vlastní nebo se přidej kámošům pomocí kódu!",
+    "group_created": "Skupina byla úspěšně vytvořena! 🏒",
+    "errors": {
+      "competition_not_found": "Soutěž nebyla nalezena.",
+      "user_not_pro_or_vip": "Pro vytvoření skupiny potřebuješ Pro nebo VIP účet.",
+      "max_joined_groups_reached": "Dosáhl jsi maximálního počtu skupin, do kterých se můžeš připojit.",
+      "max_owned_groups_reached": "Dosáhl jsi maximálního počtu skupin, které můžeš vlastnit.",
+      "max_groups_reached": "Dosáhl jsi maximálního počtu skupin.",
+      "group_not_found": "Skupina s tímto kódem neexistuje. Zkontroluj kód a zkus znovu.",
+      "user_already_joined": "Již jsi členem této skupiny.",
+      "unexpected": "Nastala neočekávaná chyba. Zkus znovu."
+    },
+    "validation": {
+      "name_min": "Název musí mít alespoň 3 znaky.",
+      "name_max": "Název může mít nejvýše 100 znaků."
+    }
   },
   "NotFound": {
     "title": "Zakázané uvolnění!",

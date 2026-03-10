@@ -2,10 +2,22 @@
 
 import { PageHeader } from '@/components/layout/page-header';
 import { useTranslations } from 'next-intl';
-import { CreateGroupForm } from '../components/create-group-form';
+import { CreateGroupForm } from '../components/create-group';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import useSWR from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
+import { UserGroupsResponse } from '../group.types';
+import { useAppParams } from '@/hooks/use-app-params';
+import { GroupList } from '../components/group-list';
 
 export const GroupsView = () => {
   const t = useTranslations('Groups');
+
+  const { slug } = useAppParams(['slug']);
+
+  const { data, isLoading } = useSWR<UserGroupsResponse>(
+    API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug),
+  );
 
   return (
     <div>
@@ -18,7 +30,7 @@ export const GroupsView = () => {
         description={t('description')}
         hideDescriptionOnMobile
       >
-        <div className="flex w-full flex-col items-center gap-4 sm:flex-row md:w-auto">
+        <div className="flex w-full flex-col items-start gap-4 sm:flex-row md:w-auto">
           <div className="flex w-full items-center gap-4 sm:w-auto">
             <CreateGroupForm />
             {/* <div className="md:hidden">
@@ -27,6 +39,8 @@ export const GroupsView = () => {
           </div>
         </div>
       </PageHeader>
+
+      <GroupList data={data?.data} isLoading={isLoading} metadata={data?.metadata} />
     </div>
   );
 };

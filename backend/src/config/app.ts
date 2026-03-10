@@ -15,13 +15,13 @@ export const APP_CONFIG = {
     },
     maxCreatedPrivateGroups: {
       free: 0,
-      starter: 0,
+      starter: 1,
       pro: 2,
       vip: 5,
     },
     maxJoinedPrivateGroups: {
       free: 1,
-      starter: 1,
+      starter: 2,
       pro: 5,
       vip: 10,
     },

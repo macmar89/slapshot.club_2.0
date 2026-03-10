@@ -10,7 +10,7 @@ import { CompetitionMessages } from '../shared/constants/messages/competition.me
 import { generateSlug } from '../utils/slug.js';
 import { createId } from '@paralleldrive/cuid2';
 import { groupMembers, groups } from '../db/schema/groups.js';
-import type { UserSubscriptionPlan } from '../types/user.js';
+import type { User, UserSubscriptionPlan } from '../types/user.js';
 import { PlayerMessages } from '../shared/constants/messages/player.messages.js';
 import { HttpStatus } from '../utils/httpStatusCodes.js';
 import { APP_CONFIG } from '../config/app.js';
@@ -18,6 +18,7 @@ import { GroupMessages } from '../shared/constants/messages/group.messages.js';
 import { groupMembersRepository } from '../repositories/groupMembers.repository.js';
 import { groupRepository } from '../repositories/groups.repository.js';
 import { leaderboardEntriesRepository } from '../repositories/leaderboardEntries.repository.js';
+import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 
 export const createGroup = async (
   userId: string,
@@ -162,5 +163,70 @@ export const joinPrivateGroup = async (
   return {
     group,
     competitionId,
+  };
+};
+
+export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug: string) => {
+  const competitionId = await competitionRepository.getIdBySlug(competitionSlug);
+
+  if (!competitionId) {
+    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
+  const { id: userId, subscriptionPlan } = user;
+
+  const userGroups = await db
+    .select({
+      id: groups.id,
+      name: groups.name,
+      slug: groups.slug,
+      code: groups.code,
+      type: groups.type,
+      role: groupMembers.role,
+      maxMembers: groups.maxMembers,
+      memberCount: groups.statsMembersCount,
+      status: groups.status,
+      warningExpiresAt: groups.warningExpiresAt,
+      groupMemberStatus: groupMembers.status,
+      createdAt: groups.createdAt,
+    })
+    .from(groups)
+    .innerJoin(groupMembers, eq(groups.id, groupMembers.groupId))
+    .where(
+      and(
+        eq(groups.competitionId, competitionId),
+        eq(groups.type, 'private'),
+        eq(groupMembers.userId, userId),
+        ne(groupMembers.status, 'banned'),
+        isNull(groups.deletedAt),
+      ),
+    )
+    .orderBy(
+      sql`CASE 
+        WHEN ${groupMembers.role} = 'owner' THEN 1 
+        WHEN ${groupMembers.role} = 'admin' THEN 2 
+        ELSE 3 
+      END`,
+      desc(groups.createdAt),
+    );
+
+  const ownedCount = userGroups.filter((g) => g.role === 'owner').length ?? 0;
+  const joinedCount = userGroups.filter((g) => g.role !== 'owner').length ?? 0;
+
+  const groupLimits = APP_CONFIG.groups;
+
+  return {
+    data: userGroups,
+    metadata: {
+      canCreateMore: ownedCount < groupLimits.maxCreatedPrivateGroups[subscriptionPlan],
+      canJoinMore: joinedCount < groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
+      maxOwned: groupLimits.maxCreatedPrivateGroups[subscriptionPlan],
+      maxJoined: groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
+      currentOwned: ownedCount,
+      currentJoined: joinedCount,
+      isOverLimit:
+        ownedCount > groupLimits.maxCreatedPrivateGroups[subscriptionPlan] ||
+        joinedCount > groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
+    },
   };
 };

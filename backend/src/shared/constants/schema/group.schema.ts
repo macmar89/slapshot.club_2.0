@@ -25,6 +25,12 @@ export const joinGroupHandlerSchema = z.object({
   body: joinGroupSchema,
 });
 
+export const getUserGroupsByCompetitionSlugSchema = z.object({
+  params: z.object({
+    competitionSlug: z.string(),
+  }),
+});
+
 export type GroupType = z.infer<typeof createGroupSchema>['type'];
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type JoinGroupInput = z.infer<typeof joinGroupSchema>;

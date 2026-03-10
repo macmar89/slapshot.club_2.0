@@ -471,7 +471,22 @@
     "delete_confirm_done": "Confirm deletion",
     "join_league_trigger": "or join a league",
     "rules_label": "Rules",
-    "no_leagues_hint": "Create your own or join your friends using a code!"
+    "no_leagues_hint": "Create your own or join your friends using a code!",
+    "group_created": "Group created successfully! 🏒",
+    "errors": {
+      "competition_not_found": "Competition not found.",
+      "user_not_pro_or_vip": "You need a Pro or VIP account to create a group.",
+      "max_joined_groups_reached": "You have reached the maximum number of groups you can join.",
+      "max_owned_groups_reached": "You have reached the maximum number of groups you can own.",
+      "max_groups_reached": "You have reached the maximum number of groups.",
+      "group_not_found": "No group found with this code. Please check the code and try again.",
+      "user_already_joined": "You are already a member of this group.",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
+    "validation": {
+      "name_min": "Name must be at least 3 characters.",
+      "name_max": "Name can be at most 100 characters."
+    }
   },
   "NotFound": {
     "title": "Icing!",

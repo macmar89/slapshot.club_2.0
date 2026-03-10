@@ -45,6 +45,7 @@ export const API_ROUTES = {
   FEEDBACK: '/feedback',
   GROUPS: {
     CREATE: `/groups`,
+    USER_GROUPS_BY_COMPETITION_SLUG: (slug: string) => `/groups/competition/${slug}`,
   },
   MATCHES: {
     DETAIL: {
