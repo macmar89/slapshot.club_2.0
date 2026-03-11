@@ -58,6 +58,7 @@ export interface GroupMember {
   id: string;
   status: GroupMemberStatus;
   userId: string;
+  isMe: boolean;
   memberName: string;
   username: string;
   alias: string | null;
@@ -72,4 +73,18 @@ export interface GroupMembersResponse {
   banned: GroupMember[];
   invited: GroupMember[];
   rejected: GroupMember[];
+}
+
+export interface GroupDetailSettings {
+  code: string;
+  status: GroupStatus;
+  warningExpiresAt: string | null;
+  maxMembers: number;
+  statsMembersCount: number;
+  isAliasRequired: boolean;
+  absoluteMaxCapacity: number;
+  createdAt: string;
+  isLocked: boolean;
+  requireApproval: boolean;
+  allowMemberInvites: boolean;
 }

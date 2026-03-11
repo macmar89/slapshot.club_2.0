@@ -36,10 +36,50 @@ export const CustomTabs = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const [showLeftIndicator, setShowLeftIndicator] = React.useState(false);
+  const [showRightIndicator, setShowRightIndicator] = React.useState(false);
 
   const visibleItems = items.filter((item) => item.show !== false);
   const currentParamValue = searchParams.get(paramName);
   const activeTab = currentParamValue || defaultValue || visibleItems[0]?.value;
+
+  const checkScroll = React.useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setShowLeftIndicator(scrollLeft > 5);
+      setShowRightIndicator(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      checkScroll();
+      container.addEventListener('scroll', checkScroll);
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, [checkScroll]);
+
+  // Scroll active tab into view
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const activeElement = container.querySelector(`[data-state="active"]`) as HTMLElement;
+      if (activeElement) {
+        activeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }
+  }, [activeTab]);
 
   const handleTabChange = (value: string) => {
     // If it's already active or disabled, do nothing
@@ -75,15 +115,39 @@ export const CustomTabs = ({
       onValueChange={handleTabChange}
       className={cn('flex flex-col', className)}
     >
-      <div className="mb-4 px-1">
+      <div className="relative mb-4 px-1">
+        {/* Indicators */}
+        <div
+          className={cn(
+            'from-background pointer-events-none absolute bottom-0 left-0 z-10 h-full w-8 bg-gradient-to-r to-transparent transition-opacity duration-300 sm:hidden',
+            showLeftIndicator ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+        <div
+          className={cn(
+            'from-background pointer-events-none absolute right-0 bottom-0 z-10 h-full w-8 bg-gradient-to-l to-transparent transition-opacity duration-300 sm:hidden',
+            showRightIndicator ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+
         <TabsList
-          className={cn('grid w-full', getGridColsClass(visibleItems.length), tabsListClassName)}
+          ref={scrollContainerRef}
+          className={cn(
+            'scrollbar-hide whitespace-nowrap',
+            visibleItems.length < 3
+              ? cn('grid w-full sm:w-max', getGridColsClass(visibleItems.length))
+              : cn(
+                  'flex w-full justify-start overflow-x-auto sm:grid sm:inline-flex sm:w-auto',
+                  getGridColsClass(visibleItems.length),
+                ),
+            tabsListClassName,
+          )}
         >
           {visibleItems.map((item) => (
             <TabsTrigger
               key={item.value}
               value={item.value}
-              className="gap-2"
+              className={cn('gap-2', visibleItems.length >= 3 && 'min-w-[110px] sm:min-w-0')}
               disabled={isPending || item.disabled}
             >
               {item.label}

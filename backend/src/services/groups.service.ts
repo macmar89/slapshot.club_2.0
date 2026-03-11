@@ -345,8 +345,8 @@ export const getGroupDetail = async (userId: string, slug: string) => {
   };
 };
 
-export const getGroupMembers = async (groupId: string, search?: string) => {
-  const members = await groupMembersRepository.getByGroupId(groupId, search);
+export const getGroupMembers = async (groupId: string, userId: string, search?: string) => {
+  const members = await groupMembersRepository.getByGroupId(groupId, userId, search);
 
   const active = members.filter((m) => m.status === 'active');
   const pending = members.filter((m) => m.status === 'pending');
@@ -355,4 +355,12 @@ export const getGroupMembers = async (groupId: string, search?: string) => {
   const rejected = members.filter((m) => m.status === 'rejected');
 
   return { active, pending, banned, invited, rejected };
+};
+
+export const getGroupSettings = async (groupId: string) => {
+  const result: any = await groupRepository.getSettingsById(groupId);
+
+  const { settings, ...rest } = result;
+
+  return { ...rest, ...settings };
 };

@@ -485,6 +485,11 @@
       "group_locked": "Skupina je uzamknutá a momentálne neprijíma nových členov.",
       "unexpected": "Nastala neočakávaná chyba. Skús znova."
     },
+    "status_active": "Aktívni",
+    "status_pending": "Čakajúci",
+    "status_invited": "Pozvaní",
+    "status_rejected": "Odmietnutí",
+    "status_banned": "Zablokovaní",
     "validation": {
       "name_min": "Názov musí mať aspoň 3 znaky.",
       "name_max": "Názov môže mať najviac 100 znakov."

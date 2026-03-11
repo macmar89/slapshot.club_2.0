@@ -487,6 +487,11 @@
       "group_locked": "This group is locked and not accepting new members.",
       "unexpected": "An unexpected error occurred. Please try again."
     },
+    "status_active": "Active",
+    "status_pending": "Pending",
+    "status_invited": "Invited",
+    "status_rejected": "Rejected",
+    "status_banned": "Banned",
     "validation": {
       "name_min": "Name must be at least 3 characters.",
       "name_max": "Name can be at most 100 characters."

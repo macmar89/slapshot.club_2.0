@@ -79,4 +79,21 @@ export const groupRepository = {
   async decrementPendingMembersCount(groupId: string, tx?: any) {
     return this.updatePendingMembersCount(groupId, 'dec', tx);
   },
+
+  async getSettingsById(groupId: string) {
+    return defaultDb.query.groups.findFirst({
+      columns: {
+        code: true,
+        status: true,
+        warningExpiresAt: true,
+        maxMembers: true,
+        statsMembersCount: true,
+        isAliasRequired: true,
+        absoluteMaxCapacity: true,
+        createdAt: true,
+        settings: true,
+      },
+      where: (g, { eq }) => eq(g.id, groupId),
+    });
+  },
 };

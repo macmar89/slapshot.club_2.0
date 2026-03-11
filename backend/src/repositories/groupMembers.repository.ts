@@ -20,7 +20,7 @@ export const groupMembersRepository = {
     });
   },
 
-  async getByGroupId(groupId: string, search?: string) {
+  async getByGroupId(groupId: string, userId: string, search?: string) {
     const result = await defaultDb.query.groupMembers.findMany({
       columns: {
         id: true,
@@ -46,6 +46,6 @@ export const groupMembersRepository = {
       ],
     });
 
-    return mapGroupMembers(result);
+    return mapGroupMembers(result, userId);
   },
 };

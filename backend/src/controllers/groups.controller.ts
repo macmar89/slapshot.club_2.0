@@ -4,6 +4,7 @@ import {
   createGroup,
   getGroupDetail,
   getGroupMembers,
+  getGroupSettings,
   getUserGroupsByCompetitionSlug,
   joinGroup,
 } from '../services/groups.service.js';
@@ -82,10 +83,19 @@ export const getGroupDetailHandler = catchAsync(async (req: Request, res: Respon
 });
 
 export const getGroupMembersHandler = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   const groupId = req.group!.groupId as string;
   const search = req.query.search as string;
 
-  const data = await getGroupMembers(groupId, search);
+  const data = await getGroupMembers(groupId, userId, search);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data });
+});
+
+export const getGroupSettingsHandler = catchAsync(async (req: Request, res: Response) => {
+  const groupId = req.group!.groupId;
+
+  const data = await getGroupSettings(groupId);
 
   return res.status(HttpStatusCode.OK).json({ status: 'success', data });
 });

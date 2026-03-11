@@ -21,15 +21,20 @@ router.get(
 router.post('/join', validate(joinGroupHandlerSchema), groupController.joinGroupHandler);
 router.get(
   '/:slug',
-  validateGroupRole(),
   validate(getGroupDetailSchema),
+  validateGroupRole(),
   groupController.getGroupDetailHandler,
 );
 router.get(
   '/:slug/members',
-  validateGroupRole(['owner', 'admin']),
   validate(getGroupMembersSchema),
+  validateGroupRole(['owner', 'admin']),
   groupController.getGroupMembersHandler,
 );
-
+router.get(
+  '/:slug/settings',
+  validate(getGroupDetailSchema),
+  validateGroupRole(['owner']),
+  groupController.getGroupSettingsHandler,
+);
 export default router;

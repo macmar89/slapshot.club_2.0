@@ -12,8 +12,8 @@ import { GroupDetailRosterTab } from '@/features/competitions/groups/components/
 import { TabsContent } from '@/components/ui/tabs';
 import { GroupDetailCabinTab } from '../components/group-detail-cabin-tab';
 import { GroupDetailLeaderboardTab } from '../components/group-detail-leaderboard-tab';
-import { GroupDetailSettingsTab } from '../components/group-detail-settings-tab';
 import { GroupDetailDataLoader } from '../components/group-detail-data-loader';
+import { GroupDetailSettingsTab } from '../components/group-detail-settings-tab';
 
 export const GroupDetailView = () => {
   const t = useTranslations('Groups');
@@ -76,7 +76,7 @@ export const GroupDetailView = () => {
                 <GroupDetailRosterTab groupSlug={groupSlug} />
               </TabsContent>
               <TabsContent value="settings" className="mt-0">
-                <GroupDetailSettingsTab />
+                <GroupDetailSettingsTab groupSlug={groupSlug} />
               </TabsContent>
             </CustomTabs>
           </div>
