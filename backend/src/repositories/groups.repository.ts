@@ -1,19 +1,15 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db as defaultDb } from '../db';
 import { groups } from '../db/schema';
+import { notDeleted } from '../db/helpers';
 
 export const groupRepository = {
-  async updateGroupStats(groupId: string, incrementMaxMembers?: number, tx?: any) {
-    const db = tx ?? defaultDb;
-    return await db
-      .update(groups)
-      .set({
-        statsMembersCount: sql`${groups.statsMembersCount} + 1`,
-        maxMembers: incrementMaxMembers
-          ? sql`LEAST(${groups.maxMembers} + ${incrementMaxMembers}, ${groups.absoluteMaxCapacity})`
-          : groups.maxMembers,
-      })
-      .where(eq(groups.id, groupId));
+  async getIdBySlug(slug: string): Promise<string | null> {
+    const result = await defaultDb.query.groups.findFirst({
+      columns: { id: true },
+      where: (table, { eq, and }) => and(eq(table.slug, slug), notDeleted(table)),
+    });
+    return result?.id ?? null;
   },
 
   async updateGroupMaxCapacity(groupId: string, direction: 'inc' | 'dec', boost: number, tx?: any) {

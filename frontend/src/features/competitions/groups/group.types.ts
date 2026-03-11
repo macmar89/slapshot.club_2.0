@@ -36,3 +36,18 @@ export interface UserGroupsMetadata {
   currentJoined: number;
   isOverLimit: boolean;
 }
+
+export interface GroupDetail {
+  id: string;
+  name: string;
+  code: string;
+  type: GroupType;
+  maxMembers: number;
+  statsMembersCount: number;
+  statsPendingMembersCount: number;
+  absoluteMaxCapacity: number;
+  status: GroupStatus;
+  currentUserRole: GroupMemberRole;
+  warningExpiresAt: string | null;
+  createdAt: string;
+}

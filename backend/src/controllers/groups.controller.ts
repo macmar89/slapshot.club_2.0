@@ -2,6 +2,7 @@ import { catchAsync } from '../utils/catchAsync';
 import type { Request, Response } from 'express';
 import {
   createGroup,
+  getGroupDetail,
   getUserGroupsByCompetitionSlug,
   joinGroup,
 } from '../services/groups.service.js';
@@ -56,7 +57,7 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
 
   return res
     .status(HttpStatus.CREATED)
-    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS, response });
+    .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS });
 });
 
 export const getUserGroupsByCompetitionSlugHandler = catchAsync(
@@ -69,3 +70,12 @@ export const getUserGroupsByCompetitionSlugHandler = catchAsync(
     return res.status(HttpStatus.OK).json({ status: 'success', data });
   },
 );
+
+export const getGroupDetailHandler = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+  const slug = req.params.slug as string;
+
+  const response = await getGroupDetail(userId, slug);
+
+  return res.status(HttpStatus.OK).json({ status: 'success', data: response });
+});

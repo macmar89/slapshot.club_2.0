@@ -19,6 +19,7 @@ import { groupMembersRepository } from '../repositories/groupMembers.repository.
 import { groupRepository } from '../repositories/groups.repository.js';
 import { leaderboardEntriesRepository } from '../repositories/leaderboardEntries.repository.js';
 import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
+import { notDeleted } from '../db/helpers.js';
 
 export const createGroup = async (
   userId: string,
@@ -294,5 +295,51 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
         ownedCount > groupLimits.maxCreatedPrivateGroups[subscriptionPlan] ||
         joinedCount > groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
     },
+  };
+};
+
+export const getGroupDetail = async (userId: string, slug: string) => {
+  const group = await db.query.groups.findFirst({
+    columns: {
+      id: true,
+      name: true,
+      code: true,
+      type: true,
+      maxMembers: true,
+      statsMembersCount: true,
+      statsPendingMembersCount: true,
+      absoluteMaxCapacity: true,
+      status: true,
+      warningExpiresAt: true,
+      createdAt: true,
+    },
+    with: {
+      members: {
+        columns: {
+          role: true,
+        },
+        where: (groupMembers, { eq }) => eq(groupMembers.userId, userId),
+      },
+    },
+    where: (groups, { eq, and }) => and(eq(groups.slug, slug), notDeleted(groups)),
+  });
+
+  if (!group) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
+  return {
+    id: group.id,
+    name: group.name,
+    code: group.code,
+    type: group.type,
+    maxMembers: group.maxMembers,
+    statsMembersCount: group.statsMembersCount,
+    statsPendingMembersCount: group.statsPendingMembersCount,
+    absoluteMaxCapacity: group.absoluteMaxCapacity,
+    status: group.status,
+    warningExpiresAt: group.warningExpiresAt,
+    currentUserRole: group.members[0]?.role,
+    createdAt: group.createdAt,
   };
 };

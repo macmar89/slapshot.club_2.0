@@ -1,10 +1,12 @@
+'use client';
+
 import { useParams } from 'next/navigation';
 
 interface AppRouteParams {
   slug: string;
   username: string;
   matchId: string;
-  groupId: string;
+  groupSlug: string;
 }
 
 export function useAppParams<K extends keyof AppRouteParams>(keys: K[]): Pick<AppRouteParams, K> {

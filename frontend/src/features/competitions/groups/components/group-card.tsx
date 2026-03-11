@@ -98,7 +98,7 @@ export function GroupCard({ data }: GroupCardProps) {
                 <Copy className="h-3 w-3" />
               </Button>
             </div>
-            <Link href={`${pathname}/groups/${data.slug}`} className="w-full">
+            <Link href={`${pathname}/${data.slug}`} className="w-full">
               <Button variant="outline" className="w-full">
                 <Eye className="h-4 w-4 text-white" />
                 {t('detail') || 'Detail'}
