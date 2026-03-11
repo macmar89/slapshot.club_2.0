@@ -8,7 +8,7 @@ import {
   getPlayerPredictions,
 } from '../services/competition.service';
 import { getCompetitionTeams } from '../services/team.service';
-import type { AppLocale } from '../types/global';
+import type { AppLocale } from '../types/global.types';
 import {
   getCompetitionMatches,
   getMatchDatesByCompetition,

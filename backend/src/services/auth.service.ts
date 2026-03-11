@@ -11,13 +11,13 @@ import {
   type ResetPasswordInput,
 } from '../shared/constants/schema/auth.schema.js';
 import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { activeOnly } from '../db/helpers.js';
 import { logActivity } from './audit.service.js';
 import { generateRandomToken, verifyPassword } from '../utils/crypto.js';
 import { users } from '../db/schema/users.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
-import type { AvailabilityCheckType } from '../types/global.js';
+import type { AvailabilityCheckType } from '../types/global.types.js';
 import { hashPassword } from '../utils/crypto.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { getSubscriptionEndDate } from '../utils/date.js';
@@ -34,11 +34,11 @@ export const registerUser = async (data: RegisterInput) => {
   const emailAvailable = await checkAvailability('email', data.email);
 
   if (!usernameAvailable) {
-    throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatus.CONFLICT);
+    throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
   if (!emailAvailable) {
-    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT);
+    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
   return await db.transaction(async (tx) => {
@@ -66,7 +66,7 @@ export const registerUser = async (data: RegisterInput) => {
       .returning();
 
     if (!user)
-      throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
 
     await tx.insert(subscriptions).values({
       userId: user.id,
@@ -153,7 +153,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       { attemptedUsername: data.identifier, reason: 'USER_NOT_FOUND' },
     );
 
-    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
   }
 
   const isPasswordValid = await verifyPassword(user.password, data.password);
@@ -166,7 +166,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       { userId: user.id },
     );
 
-    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
   }
 
   const { password, verifiedAt, ...userWithoutPassword } = user;
@@ -185,7 +185,7 @@ export const rotateRefreshToken = async (tokenString: string) => {
     .where(eq(refreshTokens.token, hashedToken));
 
   if (!dbToken || new Date() > dbToken.expiresAt) {
-    throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED);
+    throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
   }
 
   const user = await db.query.users.findFirst({
@@ -203,7 +203,7 @@ export const rotateRefreshToken = async (tokenString: string) => {
     },
   });
 
-  if (!user) throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+  if (!user) throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
 
   const newRefreshTokenString = generateRefreshToken();
   const hashedNewToken = hashToken(newRefreshTokenString);
@@ -260,7 +260,7 @@ export const createSession = async (userId: string, userAgent: string): Promise<
       .returning();
 
     if (!session) {
-      throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new AppError(AuthErrors.SESSION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
     }
 
     await tx
@@ -310,7 +310,7 @@ export const getUserProfile = async (userId: string) => {
   });
 
   if (!user) {
-    throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   const { verifiedAt, ...userWithoutVerifiedAt } = user;
@@ -333,7 +333,7 @@ export const checkAvailability = async (type: AvailabilityCheckType, value: stri
       type === 'username'
         ? AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS
         : AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS;
-    throw new AppError(errorKey, HttpStatus.CONFLICT);
+    throw new AppError(errorKey, HttpStatusCode.CONFLICT);
   }
   return true;
 };
@@ -354,7 +354,7 @@ export const verifyEmail = async (token: string) => {
   });
 
   if (!user) {
-    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatusCode.BAD_REQUEST);
   }
 
   if (user.verifiedAt) {
@@ -385,11 +385,11 @@ export const resendVerification = async (email: string) => {
   });
 
   if (!user) {
-    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   if (user.verifiedAt) {
-    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_VERIFIED, HttpStatus.BAD_REQUEST);
+    throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_VERIFIED, HttpStatusCode.BAD_REQUEST);
   }
 
   const newToken = generateRandomToken();
@@ -416,7 +416,7 @@ export const forgotPassword = async (email: string) => {
   });
 
   if (!user) {
-    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   const token = generateRandomToken();
@@ -463,7 +463,7 @@ export const resetPassword = async (data: ResetPasswordInput) => {
   });
 
   if (!user) {
-    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+    throw new AppError(AuthMessages.ERRORS.INVALID_TOKEN, HttpStatusCode.BAD_REQUEST);
   }
 
   const hashedPassword = await hashPassword(data.password);

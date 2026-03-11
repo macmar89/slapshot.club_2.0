@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { getMatchInfoById } from '../services/matches.service.js';
-import type { AppLocale } from '../types/global';
+import type { AppLocale } from '../types/global.types.js';
 import { getMatchPredictions } from '../services/prediction.service.js';
 
 export const getMatchInfoHandler = async (req: Request, res: Response) => {

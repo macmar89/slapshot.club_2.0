@@ -446,7 +446,8 @@
     "tabs": {
       "ranking": "Ranking",
       "cabin": "Cabin",
-      "office": "Office"
+      "roster": "Roster",
+      "settings": "Settings"
     },
     "cabin": {
       "title": "Cabin & Banter",

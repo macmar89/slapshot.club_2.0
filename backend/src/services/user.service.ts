@@ -3,7 +3,7 @@ import { db } from '../db/index.js';
 import { users } from '../db/schema/users.js';
 import { feedback } from '../db/schema/feedback.js';
 import { AppError } from '../utils/appError.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { verifyPassword, hashPassword } from '../utils/crypto.js';
 import { AuthErrors } from '../shared/constants/errors/auth.errors.js';
@@ -21,7 +21,7 @@ export const updateUsername = async (userId: string, username: string) => {
   });
 
   if (existingUser && existingUser.id !== userId) {
-    throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatus.CONFLICT);
+    throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
   await db.update(users).set({ username }).where(eq(users.id, userId));
@@ -36,13 +36,13 @@ export const changePassword = async (userId: string, oldPassword: string, newPas
   });
 
   if (!user) {
-    throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   const isPasswordValid = await verifyPassword(user.password, oldPassword);
 
   if (!isPasswordValid) {
-    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
   }
 
   const hashedPassword = await hashPassword(newPassword);

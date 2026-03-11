@@ -10,5 +10,9 @@ export const GroupMessages = {
     MAX_OWNED_GROUPS_REACHED: 'max_owned_groups_reached',
     GROUP_LOCKED: 'group_locked',
     GROUP_FULL: 'group_full',
+    NOT_A_MEMBER: 'not_a_member',
+    INSUFFICIENT_PERMISSIONS: 'insufficient_permissions',
+    NOT_ACTIVE: 'not_active',
+    SLUG_REQUIRED: 'slug_required',
   },
 } as const;

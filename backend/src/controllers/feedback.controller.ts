@@ -1,5 +1,5 @@
 import { catchAsync } from '../utils/catchAsync.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import * as feedbackService from '../services/feedback.service.js';
 import type { Request, Response } from 'express';
 
@@ -14,7 +14,7 @@ export const submitFeedback = catchAsync(async (req: Request, res: Response) => 
     pageUrl,
   });
 
-  res.status(HttpStatus.CREATED).json({
+  res.status(HttpStatusCode.CREATED).json({
     status: 'success',
     data: {
       feedback: result,

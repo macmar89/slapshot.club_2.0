@@ -1,6 +1,6 @@
 import { eq, isNull, and, gte, asc, count, lt, sql } from 'drizzle-orm';
 import { matches, predictions } from '../db/schema';
-import type { AppLocale } from '../types/global';
+import type { AppLocale } from '../types/global.types';
 import { db } from '../db';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
 import { addDays } from 'date-fns';

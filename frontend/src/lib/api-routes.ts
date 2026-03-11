@@ -47,6 +47,9 @@ export const API_ROUTES = {
     CREATE: `/groups`,
     DETAIL: {
       INFO: (slug: string) => `/groups/${slug}`,
+      LEADERBOARD: (slug: string) => `/groups/${slug}/leaderboard`,
+      MEMBERS: (slug: string) => `/groups/${slug}/members`,
+      SETTINGS: (slug: string) => `/groups/${slug}/settings`,
     },
     JOIN: `/groups/join`,
     USER_GROUPS_BY_COMPETITION_SLUG: (slug: string) => `/groups/competition/${slug}`,

@@ -1,6 +1,6 @@
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import { db } from '../db';
-import type { AppLocale } from '../types/global';
+import type { AppLocale } from '../types/global.types';
 import { AppError } from '../utils/appError';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
 import { competitions, matches } from '../db/schema';

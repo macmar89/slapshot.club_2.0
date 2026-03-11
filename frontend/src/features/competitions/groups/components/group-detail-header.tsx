@@ -15,7 +15,7 @@ export const GroupDetailHeader = ({ group }: GroupDetailHeaderProps) => {
   return (
     <div className="mb-4 flex shrink-0 flex-col gap-4 px-1">
       <div className="flex items-center justify-between">
-        <BackLink href={`/dashboard/${competitionSlug}/leagues`} label={t('back_to_list')} />
+        <BackLink href={`/${competitionSlug}/groups`} label={t('back_to_list')} />
       </div>
 
       <div className="mt-2 flex flex-col items-start justify-between gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center">

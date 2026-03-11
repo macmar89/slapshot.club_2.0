@@ -1,12 +1,12 @@
-import { HttpStatus } from './httpStatusCodes.js';
+import { HttpStatusCode } from './httpStatusCodes.js';
 
 export class AppError extends Error {
-  public readonly statusCode: HttpStatus;
+  public readonly statusCode: HttpStatusCode;
   public readonly isOperational: boolean;
 
   constructor(
     message: string,
-    statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+    statusCode: HttpStatusCode = HttpStatusCode.INTERNAL_SERVER_ERROR,
     isOperational = true,
   ) {
     super(message);

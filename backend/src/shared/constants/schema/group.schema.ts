@@ -38,6 +38,15 @@ export const getGroupDetailSchema = z.object({
   }),
 });
 
+export const getGroupMembersSchema = z.object({
+  params: z.object({
+    slug: z.string(),
+  }),
+  query: z.object({
+    search: z.string().optional(),
+  }),
+});
+
 export type GroupType = z.infer<typeof createGroupSchema>['type'];
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type JoinGroupInput = z.infer<typeof joinGroupSchema>;

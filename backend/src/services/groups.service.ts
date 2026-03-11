@@ -10,9 +10,9 @@ import { CompetitionMessages } from '../shared/constants/messages/competition.me
 import { generateSlug } from '../utils/slug.js';
 import { createId } from '@paralleldrive/cuid2';
 import { groupMembers, groups } from '../db/schema/groups.js';
-import type { User, UserSubscriptionPlan } from '../types/user.js';
+import type { User, UserSubscriptionPlan } from '../types/user.types.js';
 import { PlayerMessages } from '../shared/constants/messages/player.messages.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { APP_CONFIG } from '../config/app.js';
 import { GroupMessages } from '../shared/constants/messages/group.messages.js';
 import { groupMembersRepository } from '../repositories/groupMembers.repository.js';
@@ -29,11 +29,11 @@ export const createGroup = async (
   const competitionId = await competitionRepository.getIdBySlug(body.competitionSlug);
 
   if (!competitionId) {
-    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   if (!(userSubscriptionPlan === 'pro' || userSubscriptionPlan === 'vip')) {
-    throw new AppError(PlayerMessages.ERRORS.USER_NOT_PRO_OR_VIP, HttpStatus.FORBIDDEN);
+    throw new AppError(PlayerMessages.ERRORS.USER_NOT_PRO_OR_VIP, HttpStatusCode.FORBIDDEN);
   }
 
   const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
@@ -41,11 +41,11 @@ export const createGroup = async (
   const { statsJoinedPrivateGroups, statsOwnedPrivateGroups } = leadeboardEntry;
 
   if (statsJoinedPrivateGroups >= APP_CONFIG.groups.maxJoinedPrivateGroups[userSubscriptionPlan]) {
-    throw new AppError(GroupMessages.ERRORS.MAX_JOINED_GROUPS_REACHED, HttpStatus.FORBIDDEN);
+    throw new AppError(GroupMessages.ERRORS.MAX_JOINED_GROUPS_REACHED, HttpStatusCode.FORBIDDEN);
   }
 
   if (statsOwnedPrivateGroups >= APP_CONFIG.groups.maxCreatedPrivateGroups[userSubscriptionPlan]) {
-    throw new AppError(GroupMessages.ERRORS.MAX_OWNED_GROUPS_REACHED, HttpStatus.FORBIDDEN);
+    throw new AppError(GroupMessages.ERRORS.MAX_OWNED_GROUPS_REACHED, HttpStatusCode.FORBIDDEN);
   }
 
   const groupId = createId();
@@ -96,7 +96,7 @@ export const joinGroup = async (
   const competitionId = await competitionRepository.getIdBySlug(body.competitionSlug);
 
   if (!competitionId) {
-    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   const groupResult = await db.query.groups.findFirst({
@@ -119,7 +119,8 @@ export const joinGroup = async (
       ),
   });
 
-  if (!groupResult) throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
+  if (!groupResult)
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
 
   const isGroupMember = await db.query.groupMembers.findFirst({
     columns: { status: true },
@@ -128,33 +129,33 @@ export const joinGroup = async (
   });
 
   if (isGroupMember?.status === 'banned') {
-    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   if (isGroupMember) {
-    throw new AppError(GroupMessages.ERRORS.USER_ALREADY_JOINED, HttpStatus.CONFLICT);
+    throw new AppError(GroupMessages.ERRORS.USER_ALREADY_JOINED, HttpStatusCode.CONFLICT);
   }
 
   if (
     groupResult?.maxMembers <= groupResult?.statsMembersCount &&
     (userSubscriptionPlan === 'free' || userSubscriptionPlan === 'starter')
   ) {
-    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatusCode.BAD_REQUEST);
   }
 
   if (groupResult?.absoluteMaxCapacity <= groupResult?.statsMembersCount) {
-    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatusCode.BAD_REQUEST);
   }
 
   if (
     groupResult?.absoluteMaxCapacity <=
     groupResult?.statsPendingMembersCount + groupResult?.statsMembersCount
   ) {
-    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatus.BAD_REQUEST);
+    throw new AppError(GroupMessages.ERRORS.GROUP_FULL, HttpStatusCode.BAD_REQUEST);
   }
 
   if (groupResult.settings?.isLocked) {
-    throw new AppError(GroupMessages.ERRORS.GROUP_LOCKED, HttpStatus.FORBIDDEN);
+    throw new AppError(GroupMessages.ERRORS.GROUP_LOCKED, HttpStatusCode.FORBIDDEN);
   }
 
   switch (groupResult.type) {
@@ -236,7 +237,7 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
   const competitionId = await competitionRepository.getIdBySlug(competitionSlug);
 
   if (!competitionId) {
-    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(CompetitionMessages.ERRORS.COMPETITION_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   const { id: userId, subscriptionPlan } = user;
@@ -325,7 +326,7 @@ export const getGroupDetail = async (userId: string, slug: string) => {
   });
 
   if (!group) {
-    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
   return {
@@ -342,4 +343,16 @@ export const getGroupDetail = async (userId: string, slug: string) => {
     currentUserRole: group.members[0]?.role,
     createdAt: group.createdAt,
   };
+};
+
+export const getGroupMembers = async (groupId: string, search?: string) => {
+  const members = await groupMembersRepository.getByGroupId(groupId, search);
+
+  const active = members.filter((m) => m.status === 'active');
+  const pending = members.filter((m) => m.status === 'pending');
+  const banned = members.filter((m) => m.status === 'banned');
+  const invited = members.filter((m) => m.status === 'invited');
+  const rejected = members.filter((m) => m.status === 'rejected');
+
+  return { active, pending, banned, invited, rejected };
 };

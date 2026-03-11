@@ -1,3 +1,5 @@
+import { SubscriptionPlan } from '@/features/users/users.types';
+
 export interface UserGroupsResponse {
   data: UserGroup[];
   metadata: UserGroupsMetadata;
@@ -50,4 +52,24 @@ export interface GroupDetail {
   currentUserRole: GroupMemberRole;
   warningExpiresAt: string | null;
   createdAt: string;
+}
+
+export interface GroupMember {
+  id: string;
+  status: GroupMemberStatus;
+  userId: string;
+  memberName: string;
+  username: string;
+  alias: string | null;
+  subscriptionPlan: SubscriptionPlan;
+  memberRole: GroupMemberRole;
+  joinedAt: string;
+}
+
+export interface GroupMembersResponse {
+  active: GroupMember[];
+  pending: GroupMember[];
+  banned: GroupMember[];
+  invited: GroupMember[];
+  rejected: GroupMember[];
 }

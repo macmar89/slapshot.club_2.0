@@ -1,19 +1,17 @@
 'use client';
 
-import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
+import { useAppParams } from '@/hooks/use-app-params';
 
-interface GroupNotFoundProps {
-  competitionSlug: string;
-}
-
-export const GroupNotFound = ({ competitionSlug }: GroupNotFoundProps) => {
+export const GroupNotFound = () => {
   const t = useTranslations('Groups');
   const router = useRouter();
+
+  const { slug } = useAppParams(['slug']);
 
   return (
     <div className="container mx-auto flex min-h-[50vh] flex-col items-center justify-center px-4 py-12">
@@ -33,7 +31,7 @@ export const GroupNotFound = ({ competitionSlug }: GroupNotFoundProps) => {
         </div>
 
         <Button
-          onClick={() => router.push(`/${competitionSlug}/groups`)}
+          onClick={() => router.push(`/${slug}/groups`)}
           variant="outline"
           className="group hover:bg-warning hover:border-warning mt-2 w-full gap-2 transition-all duration-300 hover:text-black"
         >

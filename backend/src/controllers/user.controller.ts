@@ -6,14 +6,14 @@ import {
   changePassword,
   requestEmailChange,
 } from '../services/user.service.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { logActivity } from '../services/audit.service.js';
 
 export const updatePreferredLanguageHandler = catchAsync(async (req: Request, res: Response) => {
   await updateUserPreferredLanguage(req.user!.id, req.body.preferredLanguage as 'sk' | 'en' | 'cs');
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.UPDATE_SUCCESS,
   });
@@ -24,7 +24,7 @@ export const updateUsernameHandler = catchAsync(async (req: Request, res: Respon
 
   await logActivity(req, 'USERNAME_CHANGE', { type: 'user' }, { newUsername: req.body.username });
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.UPDATE_SUCCESS,
   });
@@ -37,7 +37,7 @@ export const changePasswordHandler = catchAsync(async (req: Request, res: Respon
 
   await logActivity(req, 'PASSWORD_CHANGE', { type: 'user' });
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.UPDATE_SUCCESS,
   });
@@ -48,7 +48,7 @@ export const requestEmailChangeHandler = catchAsync(async (req: Request, res: Re
 
   await logActivity(req, 'EMAIL_CHANGE_REQUEST', { type: 'user' }, { message: req.body.message });
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.UPDATE_SUCCESS,
   });

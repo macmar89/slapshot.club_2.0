@@ -1,6 +1,6 @@
 import { and, count, eq, ne, sql } from 'drizzle-orm';
 import { db } from '../db';
-import type { AppLocale } from '../types/global';
+import type { AppLocale } from '../types/global.types';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
 import {
   competitions,

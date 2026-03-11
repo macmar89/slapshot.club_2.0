@@ -1,6 +1,6 @@
 import { ZodError, type ZodObject } from 'zod';
 import type { Request, Response, NextFunction } from 'express';
-import { HttpStatus } from '../utils/httpStatusCodes';
+import { HttpStatusCode } from '../utils/httpStatusCodes';
 
 export const validate =
   (schema: ZodObject<any, any>) => async (req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +24,7 @@ export const validate =
     } catch (error) {
       console.log(error);
       if (error instanceof ZodError || (error as any)?.name === 'ZodError') {
-        return res.status(HttpStatus.BAD_REQUEST).json({
+        return res.status(HttpStatusCode.BAD_REQUEST).json({
           status: 'error',
           message: 'Validation failed',
           errors: (error as any).issues.map((issue: any) => ({
@@ -34,7 +34,7 @@ export const validate =
         });
       }
       return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
         .json({ status: 'error', message: 'Internal server error' });
     }
   };

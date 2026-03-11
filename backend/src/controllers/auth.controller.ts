@@ -26,11 +26,11 @@ import {
   REFRESH_TOKEN_CLEAR_OPTIONS,
   CLEAR_COOKIE_OPTIONS,
 } from '../utils/cookie.util.js';
-import { HttpStatus } from '../utils/httpStatusCodes.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { generateAccessToken } from '../utils/jwt.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { logActivity } from '../services/audit.service.js';
-import type { AvailabilityCheckType } from '../types/global.js';
+import type { AvailabilityCheckType } from '../types/global.types.js';
 import { emailQueue } from '../queues/email.queue.js';
 
 export const login = catchAsync(async (req: Request, res: Response) => {
@@ -42,7 +42,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   const refreshToken = await createSession(user.id, userAgent);
 
   if (!refreshToken) {
-    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
   }
 
   const accessToken = generateAccessToken({
@@ -64,7 +64,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     { userId: user.id },
   );
 
-  res.status(HttpStatus.CREATED).json({
+  res.status(HttpStatusCode.CREATED).json({
     status: 'success',
     data: {
       user,
@@ -76,7 +76,7 @@ export const refreshTokenHandler = catchAsync(async (req: Request, res: Response
   const oldRefreshToken = req.cookies.refresh_token;
 
   if (!oldRefreshToken) {
-    throw new AppError(AuthErrors.MISSING_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED);
+    throw new AppError(AuthErrors.MISSING_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
   }
 
   const { accessToken, newRefreshToken, user } = await rotateRefreshToken(oldRefreshToken);
@@ -106,7 +106,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 
   res.clearCookie('refresh_token', REFRESH_TOKEN_CLEAR_OPTIONS);
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.LOGOUT_SUCCESS,
   });
@@ -115,7 +115,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 export const getMe = catchAsync(async (req: Request, res: Response) => {
   const { user } = await getUserProfile(req.user!.id);
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     data: {
       user,
@@ -130,7 +130,7 @@ export const registerHandler = catchAsync(async (req: Request, res: Response) =>
   const refreshToken = await createSession(user.id, userAgent);
 
   if (!refreshToken) {
-    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
   }
 
   const accessToken = generateAccessToken({
@@ -167,7 +167,7 @@ export const registerHandler = catchAsync(async (req: Request, res: Response) =>
     },
   });
 
-  res.status(HttpStatus.CREATED).json({
+  res.status(HttpStatusCode.CREATED).json({
     status: 'success',
     data: {
       user: {
@@ -189,7 +189,7 @@ export const checkAvailabilityHandler = catchAsync(async (req: Request, res: Res
 
   const isAvailable = await checkAvailability(type as AvailabilityCheckType, value as string);
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     data: {
       available: isAvailable,
@@ -206,7 +206,7 @@ export const verifyEmailHandler = catchAsync(async (req: Request, res: Response)
   const refreshToken = await createSession(user.id, userAgent);
 
   if (!refreshToken) {
-    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
   }
 
   const accessToken = generateAccessToken({
@@ -227,7 +227,7 @@ export const verifyEmailHandler = catchAsync(async (req: Request, res: Response)
     { userId: user.id },
   );
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.VERIFY_SUCCESS,
     data: {
@@ -265,7 +265,7 @@ export const resendVerificationHandler = catchAsync(async (req: Request, res: Re
     },
   });
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.VERIFICATION_SENT,
   });
@@ -291,7 +291,7 @@ export const forgotPasswordHandler = catchAsync(async (req: Request, res: Respon
     },
   });
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.FORGOT_PASSWORD_SUCCESS,
   });
@@ -306,7 +306,7 @@ export const resetPasswordHandler = catchAsync(async (req: Request, res: Respons
   const refreshToken = await createSession(user.id, userAgent);
 
   if (!refreshToken) {
-    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new AppError(AuthErrors.SESSION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
   }
 
   const accessToken = generateAccessToken({
@@ -327,7 +327,7 @@ export const resetPasswordHandler = catchAsync(async (req: Request, res: Respons
     { userId: user.id },
   );
 
-  res.status(HttpStatus.OK).json({
+  res.status(HttpStatusCode.OK).json({
     status: 'success',
     message: AuthMessages.RESET_PASSWORD_SUCCESS,
     data: {

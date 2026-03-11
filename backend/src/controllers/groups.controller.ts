@@ -3,11 +3,12 @@ import type { Request, Response } from 'express';
 import {
   createGroup,
   getGroupDetail,
+  getGroupMembers,
   getUserGroupsByCompetitionSlug,
   joinGroup,
 } from '../services/groups.service.js';
-import type { UserSubscriptionPlan } from '../types/user';
-import { HttpStatus } from '../utils/httpStatusCodes';
+import type { UserSubscriptionPlan } from '../types/user.types';
+import { HttpStatusCode } from '../utils/httpStatusCodes';
 import { GroupMessages } from '../shared/constants/messages/group.messages';
 import { logActivity } from '../services/audit.service';
 import { logger } from '../utils/logger';
@@ -32,7 +33,7 @@ export const createGroupHandler = catchAsync(async (req: Request, res: Response)
   ).catch((err) => logger.error(err));
 
   res
-    .status(HttpStatus.CREATED)
+    .status(HttpStatusCode.CREATED)
     .json({ status: 'success', data: { message: GroupMessages.GROUP_CREATED } });
 });
 
@@ -56,7 +57,7 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
   ).catch((err) => logger.error(err));
 
   return res
-    .status(HttpStatus.CREATED)
+    .status(HttpStatusCode.CREATED)
     .json({ status: 'success', data: GroupMessages.JOIN_GROUP_SUCCESS });
 });
 
@@ -67,7 +68,7 @@ export const getUserGroupsByCompetitionSlugHandler = catchAsync(
 
     const data = await getUserGroupsByCompetitionSlug(user, competitionSlug);
 
-    return res.status(HttpStatus.OK).json({ status: 'success', data });
+    return res.status(HttpStatusCode.OK).json({ status: 'success', data });
   },
 );
 
@@ -77,5 +78,14 @@ export const getGroupDetailHandler = catchAsync(async (req: Request, res: Respon
 
   const response = await getGroupDetail(userId, slug);
 
-  return res.status(HttpStatus.OK).json({ status: 'success', data: response });
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data: response });
+});
+
+export const getGroupMembersHandler = catchAsync(async (req: Request, res: Response) => {
+  const groupId = req.group!.groupId as string;
+  const search = req.query.search as string;
+
+  const data = await getGroupMembers(groupId, search);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data });
 });

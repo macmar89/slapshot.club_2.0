@@ -444,7 +444,8 @@
     "tabs": {
       "ranking": "Žebříček",
       "cabin": "Kabina",
-      "office": "Kancelář"
+      "roster": "Soupiska",
+      "settings": "Nastavení"
     },
     "cabin": {
       "title": "Kabina & Hecování",

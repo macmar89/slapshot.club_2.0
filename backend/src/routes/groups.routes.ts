@@ -6,7 +6,9 @@ import {
   getUserGroupsByCompetitionSlugSchema,
   joinGroupHandlerSchema,
   getGroupDetailSchema,
+  getGroupMembersSchema,
 } from '../shared/constants/schema/group.schema.js';
+import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
 const router = Router();
 
@@ -18,5 +20,11 @@ router.get(
 );
 router.post('/join', validate(joinGroupHandlerSchema), groupController.joinGroupHandler);
 router.get('/:slug', validate(getGroupDetailSchema), groupController.getGroupDetailHandler);
+router.get(
+  '/:slug/members',
+  validate(getGroupMembersSchema),
+  validateGroupRole(['owner', 'admin']),
+  groupController.getGroupMembersHandler,
+);
 
 export default router;

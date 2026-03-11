@@ -444,7 +444,8 @@
     "tabs": {
       "ranking": "Rebríček",
       "cabin": "Kabína",
-      "office": "Kancelária"
+      "roster": "Súpiska",
+      "settings": "Nastavenia"
     },
     "cabin": {
       "title": "Kabína & Podpichovanie",
