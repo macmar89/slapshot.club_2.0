@@ -3,6 +3,7 @@ import { UserGroup, UserGroupsMetadata } from '../group.types';
 import { GroupCard } from './group-card';
 import { useTranslations } from 'next-intl';
 import { Users } from 'lucide-react';
+import { GroupsSkeleton } from './groups-skeleton';
 
 interface GroupListProps {
   data: UserGroup[] | undefined;
@@ -18,7 +19,9 @@ export const GroupList = ({ data, isLoading }: GroupListProps) => {
     <div className="order-1 lg:col-span-8">
       <IceGlassCard className="h-full" backdropBlur="lg">
         <div className="p-6 sm:p-8">
-          {isEmpty ? (
+          {isLoading ? (
+            <GroupsSkeleton />
+          ) : isEmpty ? (
             <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
                 <Users className="h-8 w-8 text-white/30" />

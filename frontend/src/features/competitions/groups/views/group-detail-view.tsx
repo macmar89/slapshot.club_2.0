@@ -13,7 +13,7 @@ import { TabsContent } from '@/components/ui/tabs';
 import { GroupDetailCabinTab } from '../components/group-detail-cabin-tab';
 import { GroupDetailLeaderboardTab } from '../components/group-detail-leaderboard-tab';
 import { GroupDetailSettingsTab } from '../components/group-detail-settings-tab';
-import { GroupDataLoader } from '../components/group-data-loader';
+import { GroupDetailDataLoader } from '../components/group-detail-data-loader';
 
 export const GroupDetailView = () => {
   const t = useTranslations('Groups');
@@ -22,7 +22,7 @@ export const GroupDetailView = () => {
   const { data, isLoading, error } = useSWR<GroupDetail>(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
 
   return (
-    <GroupDataLoader data={data} isLoading={isLoading} error={error}>
+    <GroupDetailDataLoader data={data} isLoading={isLoading} error={error}>
       {(data) => {
         const isOwner = data.currentUserRole === 'owner';
         const isAdmin = data.currentUserRole === 'owner' || data.currentUserRole === 'admin';
@@ -73,7 +73,7 @@ export const GroupDetailView = () => {
                 <GroupDetailCabinTab />
               </TabsContent>
               <TabsContent value="roster" className="mt-0">
-                <GroupDetailRosterTab />
+                <GroupDetailRosterTab groupSlug={groupSlug} />
               </TabsContent>
               <TabsContent value="settings" className="mt-0">
                 <GroupDetailSettingsTab />
@@ -82,6 +82,6 @@ export const GroupDetailView = () => {
           </div>
         );
       }}
-    </GroupDataLoader>
+    </GroupDetailDataLoader>
   );
 };

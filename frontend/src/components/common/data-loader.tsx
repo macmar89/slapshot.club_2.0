@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { ErrorView } from './error-view';
 
 interface DataLoaderProps<T> {
   data: T | undefined;
@@ -20,25 +21,7 @@ export function DataLoader<T>({
   if (isLoading) return <>{skeleton}</>;
 
   if (error) {
-    if (error.status === 404) {
-      return <>{notFound}</>;
-    }
-
-    if (error.status === 403) {
-      return (
-        <div className="p-8 text-center">
-          <h2 className="text-xl font-bold">Prístup zamietnutý</h2>
-          <p>Na zobrazenie tejto skupiny nemáte oprávnenie.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="bg-destructive/10 border-destructive rounded-lg border p-8 text-center">
-        <h2 className="text-destructive text-xl font-bold">Ups! Niečo vybuchlo</h2>
-        <p>Na serveri nastala chyba (kód {error.status}). Skúste to neskôr.</p>
-      </div>
-    );
+    return <ErrorView status={error.status} />;
   }
 
   if (!data) return <>{notFound}</>;

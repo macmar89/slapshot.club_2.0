@@ -19,11 +19,16 @@ router.get(
   groupController.getUserGroupsByCompetitionSlugHandler,
 );
 router.post('/join', validate(joinGroupHandlerSchema), groupController.joinGroupHandler);
-router.get('/:slug', validate(getGroupDetailSchema), groupController.getGroupDetailHandler);
+router.get(
+  '/:slug',
+  validateGroupRole(),
+  validate(getGroupDetailSchema),
+  groupController.getGroupDetailHandler,
+);
 router.get(
   '/:slug/members',
-  validate(getGroupMembersSchema),
   validateGroupRole(['owner', 'admin']),
+  validate(getGroupMembersSchema),
   groupController.getGroupMembersHandler,
 );
 

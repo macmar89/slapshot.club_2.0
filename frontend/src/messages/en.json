@@ -748,5 +748,27 @@
     "winner_diff": "Winner + Diff",
     "winner": "Winner",
     "miss": "Miss"
+  },
+  "Errors": {
+    "403": {
+      "title": "Penalty Box!",
+      "description": "You don't have permission to view this content. The referee sent you to the penalty box.",
+      "button": "Back to Arena"
+    },
+    "404": {
+      "title": "Icing!",
+      "description": "The puck got lost in the corner. This page is not on the roster.",
+      "button": "Back to Locker Room"
+    },
+    "500": {
+      "title": "Broken Plexiglass!",
+      "description": "A technical error occurred at the stadium. Our tech team is sharpening their skates to fix it.",
+      "button": "Try Again"
+    },
+    "generic": {
+      "title": "Oops! Something Blew Up",
+      "description": "An unexpected error occurred on the server. Please try again later.",
+      "button": "Back Home"
+    }
   }
 }

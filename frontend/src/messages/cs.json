@@ -746,5 +746,27 @@
     "winner_diff": "Vítěz + Rozdíl",
     "winner": "Vítěz",
     "miss": "Mimo"
+  },
+  "Errors": {
+    "403": {
+      "title": "Trestná lavice!",
+      "description": "K zobrazení tohoto obsahu nemáte oprávnění. Rozhodčí vás poslal na trestnou lavici.",
+      "button": "Návrat do arény"
+    },
+    "404": {
+      "title": "Zakázané uvolnění!",
+      "description": "Puk se ztratil v rohu kluziště. Tato stránka na soupisce není.",
+      "button": "Zpět do šatny"
+    },
+    "500": {
+      "title": "Rozbité plexisklo!",
+      "description": "Nastala technická chyba na stadionu. Naši technici už brousí brusle, aby to opravili.",
+      "button": "Zkusit znovu"
+    },
+    "generic": {
+      "title": "Ups! Něco vybuchlo",
+      "description": "Na serveru nastala neočekávaná chyba. Zkuste to později.",
+      "button": "Návrat domů"
+    }
   }
 }
