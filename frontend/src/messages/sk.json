@@ -493,7 +493,16 @@
     "validation": {
       "name_min": "Názov musí mať aspoň 3 znaky.",
       "name_max": "Názov môže mať najviac 100 znakov."
-    }
+    },
+    "group_updated_success": "Nastavenia boli úspešne uložené",
+    "require_approval": "Vyžadovať schválenie",
+    "require_approval_desc": "Každý nový člen musí byť najskôr schválený kapitánom.",
+    "allow_member_invites": "Povoliť pozvánky členom",
+    "allow_invites_desc": "Ostatní členovia môžu vidieť a zdieľať pozývací kód.",
+    "lock_group_title": "Uzamknúť skupinu",
+    "lock_group_desc": "Zabráni novým členom v pripojení sa k skupine.",
+    "require_alias": "Vyžadovať prezývku",
+    "require_alias_desc": "Členovia si musia pri vstupe zvoliť prezývku špecifickú pre túto skupinu."
   },
   "NotFound": {
     "title": "Zakázané uvoľnenie!",

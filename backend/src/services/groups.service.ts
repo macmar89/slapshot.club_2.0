@@ -1,6 +1,7 @@
 import { db } from '../db/index.js';
 import type {
   CreateGroupInput,
+  GroupMemberStatus,
   GroupType,
   JoinGroupInput,
 } from '../shared/constants/schema/group.schema.js';
@@ -20,6 +21,8 @@ import { groupRepository } from '../repositories/groups.repository.js';
 import { leaderboardEntriesRepository } from '../repositories/leaderboardEntries.repository.js';
 import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers.js';
+import { userRepository } from '../repositories/user.repository.js';
+import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 
 export const createGroup = async (
   userId: string,
@@ -364,3 +367,65 @@ export const getGroupSettings = async (groupId: string) => {
 
   return { ...rest, ...settings };
 };
+
+export const updateMemberStatus = async (
+  memberId: string,
+  groupId: string,
+  status: GroupMemberStatus,
+) => {
+  const { targetId } = await db.transaction(async (tx) => {
+    const [updatedMember] = await tx
+      .update(groupMembers)
+      .set({
+        alias: 'Pinokio',
+      })
+      // .set({ status, joinedAt: status === 'active' ? new Date().toString() : null })
+      .where(and(eq(groupMembers.id, memberId), eq(groupMembers.groupId, groupId)))
+      .returning({ targetId: groupMembers.userId });
+
+    console.log(updatedMember);
+    const targetId = updatedMember?.targetId;
+
+    if (!targetId) {
+      throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+    }
+
+    if (status === 'active') {
+      await handleMemberActivation(tx, targetId, groupId);
+    }
+    if (status === 'rejected') {
+      await handleMemberRejection(tx, targetId, groupId);
+    }
+    if (status === 'banned') {
+      await handleMemberBanned(tx, targetId, groupId);
+    }
+
+    return { targetId };
+  });
+  return { targetId };
+};
+
+async function handleMemberActivation(tx: any, targetId: string, groupId: string) {
+  const subscriptionPlan = await userRepository.getSubscriptionPlanById(targetId);
+
+  if (!subscriptionPlan) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  //  zdvihnut maxMembers podla planu targetId
+  //  zdvihnut statsMemberCount + 1
+  //  odpocitat statsPendingMemberCount
+  //  zmenit groupMember status na active
+  // await groupRepository.incrementMemberCount(groupId, tx);
+}
+
+async function handleMemberRejection(tx: any, memberId: string, groupId: string) {
+  //  odpocitat statsPendingMemberCount
+  //  zmenit groupMember status na rejected
+}
+
+async function handleMemberBanned(tx: any, memberId: string, groupId: string) {
+  //  odpocitat statsMemberCount - 1
+  //  zmenit groupMember status na banned
+  //  zmenšiť maxMembers podla plánu targetId
+}

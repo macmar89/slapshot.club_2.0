@@ -495,7 +495,16 @@
     "validation": {
       "name_min": "Name must be at least 3 characters.",
       "name_max": "Name can be at most 100 characters."
-    }
+    },
+    "group_updated_success": "Settings updated successfully",
+    "require_approval": "Require approval",
+    "require_approval_desc": "New members must be approved by the captain.",
+    "allow_member_invites": "Allow member invites",
+    "allow_invites_desc": "Other members can see and share the invite code.",
+    "lock_group_title": "Lock group",
+    "lock_group_desc": "Prevent new members from joining.",
+    "require_alias": "Require alias",
+    "require_alias_desc": "Members must choose a group-specific nickname when joining."
   },
   "NotFound": {
     "title": "Icing!",

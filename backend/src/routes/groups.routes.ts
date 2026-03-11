@@ -7,6 +7,7 @@ import {
   joinGroupHandlerSchema,
   getGroupDetailSchema,
   getGroupMembersSchema,
+  updateMemberStatusHandlerSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
@@ -30,6 +31,12 @@ router.get(
   validate(getGroupMembersSchema),
   validateGroupRole(['owner', 'admin']),
   groupController.getGroupMembersHandler,
+);
+router.patch(
+  '/:slug/members/:memberId/status',
+  validate(updateMemberStatusHandlerSchema),
+  validateGroupRole(['owner', 'admin']),
+  groupController.updateMemberStatusHandler,
 );
 router.get(
   '/:slug/settings',

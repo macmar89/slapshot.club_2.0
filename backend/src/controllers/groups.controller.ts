@@ -7,18 +7,19 @@ import {
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
   joinGroup,
+  updateMemberStatus,
 } from '../services/groups.service.js';
 import type { UserSubscriptionPlan } from '../types/user.types';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
 import { GroupMessages } from '../shared/constants/messages/group.messages';
 import { logActivity } from '../services/audit.service';
 import { logger } from '../utils/logger';
+import { id } from 'zod/locales';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
-  const userSubscriptionPlan = req.user!.subscriptionPlan as UserSubscriptionPlan;
+  const { id: userId, subscriptionPlan } = req.user!;
 
-  const response = await createGroup(userId, userSubscriptionPlan, req.body);
+  const response = await createGroup(userId, subscriptionPlan, req.body);
 
   logActivity(
     req,
@@ -26,7 +27,7 @@ export const createGroupHandler = catchAsync(async (req: Request, res: Response)
     { type: 'group', id: response.groupId },
     {
       userId,
-      userSubscriptionPlan,
+      subscriptionPlan,
       name: req.body.name,
       type: req.body.type,
       competitionId: response.competitionId,
@@ -39,10 +40,9 @@ export const createGroupHandler = catchAsync(async (req: Request, res: Response)
 });
 
 export const joinGroupHandler = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
-  const userSubscriptionPlan = req.user!.subscriptionPlan as UserSubscriptionPlan;
+  const { id: userId, subscriptionPlan } = req.user!;
 
-  const response = await joinGroup(userId, userSubscriptionPlan, req.body);
+  const response = await joinGroup(userId, subscriptionPlan, req.body);
 
   logActivity(
     req,
@@ -50,7 +50,7 @@ export const joinGroupHandler = catchAsync(async (req: Request, res: Response) =
     { type: 'group', id: response!.group.id },
     {
       userId,
-      userSubscriptionPlan,
+      subscriptionPlan,
       name: response!.group.name,
       type: response!.group.type,
       competitionId: response!.competitionId,
@@ -74,7 +74,7 @@ export const getUserGroupsByCompetitionSlugHandler = catchAsync(
 );
 
 export const getGroupDetailHandler = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const { id: userId } = req.user!;
   const slug = req.params.slug as string;
 
   const response = await getGroupDetail(userId, slug);
@@ -83,8 +83,8 @@ export const getGroupDetailHandler = catchAsync(async (req: Request, res: Respon
 });
 
 export const getGroupMembersHandler = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
-  const groupId = req.group!.groupId as string;
+  const { id: userId } = req.user!;
+  const { groupId } = req.group!;
   const search = req.query.search as string;
 
   const data = await getGroupMembers(groupId, userId, search);
@@ -93,9 +93,36 @@ export const getGroupMembersHandler = catchAsync(async (req: Request, res: Respo
 });
 
 export const getGroupSettingsHandler = catchAsync(async (req: Request, res: Response) => {
-  const groupId = req.group!.groupId;
+  const { groupId } = req.group!;
 
   const data = await getGroupSettings(groupId);
 
   return res.status(HttpStatusCode.OK).json({ status: 'success', data });
+});
+
+export const updateMemberStatusHandler = catchAsync(async (req: Request, res: Response) => {
+  const { memberId } = req.params;
+  const { groupId } = req.group!;
+  const { status } = req.body;
+  const { id: userId } = req.user!;
+
+  const response = await updateMemberStatus(memberId as string, groupId, status);
+
+  logActivity(
+    req,
+    'GROUP_STATUS_CHANGE',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      targetId: response.targetId,
+      action: 'GROUP_STATUS_CHANGE',
+      metadata: {
+        oldStatus: 'pending',
+        newStatus: status,
+        memberId: memberId,
+      },
+    },
+  ).catch((err) => logger.error(err));
+
+  return res.status(HttpStatusCode.CREATED).json({ status: 'success', response });
 });

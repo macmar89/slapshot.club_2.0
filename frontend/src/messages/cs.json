@@ -492,8 +492,17 @@
     "status_banned": "Zablokovaní",
     "validation": {
       "name_min": "Název musí mít alespoň 3 znaky.",
-      "name_max": "Název může mít nejvýše 100 znaků."
-    }
+      "name_max": "Název může mít nejvýše 100 znakov."
+    },
+    "group_updated_success": "Nastavení bylo úspěšně uloženo",
+    "require_approval": "Vyžadovat schválení",
+    "require_approval_desc": "Každý nový člen musí být nejdříve schválen kapitánem.",
+    "allow_member_invites": "Povolit pozvánky členům",
+    "allow_invites_desc": "Ostatní členové mohou vidět a sdílet pozývací kód.",
+    "lock_group_title": "Uzamknout skupinu",
+    "lock_group_desc": "Zabrání novým členům v připojení se ke skupině.",
+    "require_alias": "Vyžadovat přezdívku",
+    "require_alias_desc": "Členové si musí při vstupu zvolit přezdívku specifickou pro tuto skupinu."
   },
   "NotFound": {
     "title": "Zakázané uvolnění!",
