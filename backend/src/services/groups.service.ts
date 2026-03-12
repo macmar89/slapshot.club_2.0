@@ -135,6 +135,10 @@ export const joinGroup = async (
     throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
+  if (isGroupMember?.status === 'rejected') {
+    throw new AppError(GroupMessages.ERRORS.JOIN_REQUEST_REJECTED, HttpStatusCode.FORBIDDEN);
+  }
+
   if (isGroupMember) {
     throw new AppError(GroupMessages.ERRORS.USER_ALREADY_JOINED, HttpStatusCode.CONFLICT);
   }
@@ -376,14 +380,10 @@ export const updateMemberStatus = async (
   const { targetId } = await db.transaction(async (tx) => {
     const [updatedMember] = await tx
       .update(groupMembers)
-      .set({
-        alias: 'Pinokio',
-      })
-      // .set({ status, joinedAt: status === 'active' ? new Date().toString() : null })
+      .set({ status, joinedAt: status === 'active' ? new Date().toISOString() : null })
       .where(and(eq(groupMembers.id, memberId), eq(groupMembers.groupId, groupId)))
       .returning({ targetId: groupMembers.userId });
 
-    console.log(updatedMember);
     const targetId = updatedMember?.targetId;
 
     if (!targetId) {
@@ -391,10 +391,10 @@ export const updateMemberStatus = async (
     }
 
     if (status === 'active') {
-      await handleMemberActivation(tx, targetId, groupId);
+      await handleMemberActivation(tx, targetId, memberId, groupId);
     }
     if (status === 'rejected') {
-      await handleMemberRejection(tx, targetId, groupId);
+      await handleMemberRejection(tx, memberId, groupId);
     }
     if (status === 'banned') {
       await handleMemberBanned(tx, targetId, groupId);
@@ -405,27 +405,75 @@ export const updateMemberStatus = async (
   return { targetId };
 };
 
-async function handleMemberActivation(tx: any, targetId: string, groupId: string) {
+const handleMemberActivation = async (
+  tx: any,
+  targetId: string,
+  memberId: string,
+  groupId: string,
+) => {
   const subscriptionPlan = await userRepository.getSubscriptionPlanById(targetId);
 
   if (!subscriptionPlan) {
     throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
-  //  zdvihnut maxMembers podla planu targetId
-  //  zdvihnut statsMemberCount + 1
-  //  odpocitat statsPendingMemberCount
-  //  zmenit groupMember status na active
-  // await groupRepository.incrementMemberCount(groupId, tx);
-}
+  await groupRepository.incrementMaxMembers(
+    groupId,
+    APP_CONFIG.groups.memberCapacityBoost[subscriptionPlan],
+    tx,
+  );
+  await groupRepository.incrementMemberCount(groupId, tx);
+  await groupRepository.decrementPendingMembersCount(groupId, tx);
+};
 
-async function handleMemberRejection(tx: any, memberId: string, groupId: string) {
-  //  odpocitat statsPendingMemberCount
-  //  zmenit groupMember status na rejected
-}
+const handleMemberRejection = async (tx: any, memberId: string, groupId: string) => {
+  await groupRepository.decrementPendingMembersCount(groupId, tx);
+};
 
-async function handleMemberBanned(tx: any, memberId: string, groupId: string) {
+const handleMemberBanned = async (tx: any, memberId: string, groupId: string) => {
   //  odpocitat statsMemberCount - 1
   //  zmenit groupMember status na banned
   //  zmenšiť maxMembers podla plánu targetId
-}
+};
+
+export const transferOwnership = async (memberId: string, userId: string, groupId: string) => {
+  const targetId = await groupMembersRepository.getUserById(memberId);
+
+  if (!targetId) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  const targetSubscriptionPlan = await userRepository.getSubscriptionPlanById(targetId);
+
+  if (!targetSubscriptionPlan) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  if (targetSubscriptionPlan === 'free' || targetSubscriptionPlan === 'starter') {
+    throw new AppError(
+      GroupMessages.ERRORS.INSUFFICIENT_PLAN_FOR_OWNERSHIP,
+      HttpStatusCode.FORBIDDEN,
+    );
+  }
+
+  const { newOwnerId } = await db.transaction(async (tx) => {
+    const [updatedMember] = await groupMembersRepository.updateMemberRole(
+      memberId,
+      groupId,
+      'owner',
+      tx,
+    );
+
+    const newOwnerId = updatedMember?.userId;
+
+    if (!newOwnerId) {
+      throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+    }
+
+    await groupRepository.updateGroupOwner(groupId, newOwnerId, tx);
+    await groupMembersRepository.updateMemberRoleByUserId(userId, groupId, 'admin', tx);
+
+    return { newOwnerId };
+  });
+  return { newOwnerId };
+};

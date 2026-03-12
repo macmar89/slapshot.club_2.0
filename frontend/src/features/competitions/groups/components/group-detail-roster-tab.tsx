@@ -16,7 +16,7 @@ interface GroupDetailRosterTabProps {
 export const GroupDetailRosterTab = ({ groupSlug }: GroupDetailRosterTabProps) => {
   const t = useTranslations('Groups');
   const { data, isLoading, error } = useSWR<GroupMembersResponse>(
-    API_ROUTES.GROUPS.DETAIL.MEMBERS(groupSlug),
+    API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug),
   );
 
   return (
@@ -36,11 +36,11 @@ export const GroupDetailRosterTab = ({ groupSlug }: GroupDetailRosterTabProps) =
               className="space-y-0 overflow-hidden border-white/10 p-0 shadow-xl"
               backdropBlur="lg"
             >
-              <GroupDetailMembersList title={t('status_active')} data={active} />
-              <GroupDetailMembersList title={t('status_pending')} data={pending} />
-              <GroupDetailMembersList title={t('status_invited')} data={invited} />
-              <GroupDetailMembersList title={t('status_rejected')} data={rejected} />
-              <GroupDetailMembersList title={t('status_banned')} data={banned} />
+              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_active')} data={active} />
+              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_pending')} data={pending} />
+              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_invited')} data={invited} />
+              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_rejected')} data={rejected} />
+              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_banned')} data={banned} />
             </IceGlassCard>
           </div>
         );

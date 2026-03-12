@@ -1,8 +1,10 @@
 import { db as defaultDb } from '../db';
-import { groupMembers } from '../db/schema';
-import { sql } from 'drizzle-orm';
+import { groupMembers, users } from '../db/schema';
+import { and, eq, sql } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers';
 import { mapGroupMembers } from '../utils/mappers/group.mappers';
+import type { GroupMemberStatus } from '../shared/constants/schema/group.schema';
+import type { GroupRole } from '../types/group.types';
 
 export const groupMembersRepository = {
   async addMember(
@@ -18,6 +20,32 @@ export const groupMembersRepository = {
       groupId,
       status,
     });
+  },
+
+  async updateStatus(memberId: string, status: GroupMemberStatus, tx?: any) {
+    const db = tx ?? defaultDb;
+
+    await db.update(groupMembers).set({ status }).where(eq(groupMembers.id, memberId));
+  },
+
+  async updateMemberRole(memberId: string, groupId: string, role: GroupRole, tx: any) {
+    const db = tx ?? defaultDb;
+
+    return await db
+      .update(groupMembers)
+      .set({ role })
+      .where(and(eq(groupMembers.id, memberId), eq(groupMembers.groupId, groupId)))
+      .returning({ userId: groupMembers.userId });
+  },
+
+  async updateMemberRoleByUserId(userId: string, groupId: string, role: GroupRole, tx: any) {
+    const db = tx ?? defaultDb;
+
+    return await db
+      .update(groupMembers)
+      .set({ role })
+      .where(and(eq(groupMembers.userId, userId), eq(groupMembers.groupId, groupId)))
+      .returning({ userId: groupMembers.userId });
   },
 
   async getByGroupId(groupId: string, userId: string, search?: string) {
@@ -47,5 +75,14 @@ export const groupMembersRepository = {
     });
 
     return mapGroupMembers(result, userId);
+  },
+
+  async getUserById(memberId: string): Promise<string | null> {
+    const result = await defaultDb.query.groupMembers.findFirst({
+      columns: { userId: true },
+      where: (table, { eq }) => eq(table.id, memberId),
+    });
+
+    return result?.userId ?? null;
   },
 };

@@ -7,7 +7,9 @@ import {
   joinGroupHandlerSchema,
   getGroupDetailSchema,
   getGroupMembersSchema,
-  updateMemberStatusHandlerSchema,
+  updateMemberStatusSchema,
+  transferOwnershipSchema,
+  updateMemberRoleSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
@@ -34,9 +36,21 @@ router.get(
 );
 router.patch(
   '/:slug/members/:memberId/status',
-  validate(updateMemberStatusHandlerSchema),
+  validate(updateMemberStatusSchema),
   validateGroupRole(['owner', 'admin']),
   groupController.updateMemberStatusHandler,
+);
+router.patch(
+  '/:slug/members/:memberId/role',
+  validate(updateMemberRoleSchema),
+  validateGroupRole(['owner']),
+  groupController.updateMemberRoleHandler,
+);
+router.post(
+  '/:slug/transfer-ownership',
+  validate(transferOwnershipSchema),
+  validateGroupRole(['owner']),
+  groupController.transferOwnershipHandler,
 );
 router.get(
   '/:slug/settings',

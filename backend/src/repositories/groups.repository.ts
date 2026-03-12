@@ -96,4 +96,10 @@ export const groupRepository = {
       where: (g, { eq }) => eq(g.id, groupId),
     });
   },
+
+  async updateGroupOwner(groupId: string, ownerId: string, tx: any) {
+    const db = tx ?? defaultDb;
+
+    await db.update(groups).set({ ownerId }).where(eq(groups.id, groupId));
+  },
 };

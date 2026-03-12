@@ -1,6 +1,6 @@
 import { api } from '@/lib/api';
 import { API_ROUTES } from '@/lib/api-routes';
-import { GroupDetailSettings } from './group.types';
+import { GroupDetailSettings, GroupMemberStatus } from '@/features/competitions/groups/group.types';
 
 export const postCreatePrivateGroup = async (slug: string, name: string) => {
   try {
@@ -47,6 +47,23 @@ export const deleteGroup = async (groupSlug: string) => {
     const response = await api.delete(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
 
     return { success: response.status === 200 || response.status === 204 };
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
+    return { success: false, error: errorMessage };
+  }
+};
+
+export const patchGroupMemberStatus = async (
+  groupSlug: string,
+  memberId: string,
+  status: GroupMemberStatus,
+) => {
+  try {
+    const response = await api.patch(API_ROUTES.GROUPS.DETAIL.MEMBERS.STATUS(groupSlug, memberId), {
+      status,
+    });
+
+    return { success: response.status === 201 };
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
     return { success: false, error: errorMessage };

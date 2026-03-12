@@ -7,6 +7,7 @@ import {
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
   joinGroup,
+  transferOwnership,
   updateMemberStatus,
 } from '../services/groups.service.js';
 import type { UserSubscriptionPlan } from '../types/user.types';
@@ -14,7 +15,6 @@ import { HttpStatusCode } from '../utils/httpStatusCodes';
 import { GroupMessages } from '../shared/constants/messages/group.messages';
 import { logActivity } from '../services/audit.service';
 import { logger } from '../utils/logger';
-import { id } from 'zod/locales';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;
@@ -124,5 +124,55 @@ export const updateMemberStatusHandler = catchAsync(async (req: Request, res: Re
     },
   ).catch((err) => logger.error(err));
 
-  return res.status(HttpStatusCode.CREATED).json({ status: 'success', response });
+  return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
+});
+
+export const transferOwnershipHandler = catchAsync(async (req: Request, res: Response) => {
+  const { memberId } = req.body;
+  const { groupId } = req.group!;
+  const { id: userId } = req.user!;
+
+  const response = await transferOwnership(memberId as string, userId, groupId);
+
+  logActivity(
+    req,
+    'GROUP_OWNERSHIP_TRANSFER',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      metadata: {
+        oldOwnerId: userId,
+        newOwnerId: response.newOwnerId,
+      },
+    },
+  ).catch((err) => logger.error(err));
+
+  return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
+});
+
+export const updateMemberRoleHandler = catchAsync(async (req: Request, res: Response) => {
+  const { memberId } = req.params;
+  const { groupId } = req.group!;
+  const { role } = req.body;
+  const { id: userId } = req.user!;
+
+  // const response = await updateMemberRole(memberId as string, groupId, role);
+
+  // logActivity(
+  //   req,
+  //   'GROUP_ROLE_CHANGE',
+  //   { type: 'group', id: groupId },
+  //   {
+  //     actorId: userId,
+  //     targetId: response.targetId,
+  //     action: 'GROUP_ROLE_CHANGE',
+  //     metadata: {
+  //       oldRole: 'member',
+  //       newRole: role,
+  //       memberId: memberId,
+  //     },
+  //   },
+  // ).catch((err) => logger.error(err));
+
+  return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
 });

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const groupType = ['private', 'vip', 'business', 'pub', 'partner'] as const;
 const groupMemberStatus = ['active', 'pending', 'banned', 'rejected', 'invited'] as const;
+const groupMemberRole = ['owner', 'admin', 'member'] as const;
 
 export const createGroupSchema = z
   .object({
@@ -48,18 +49,43 @@ export const getGroupMembersSchema = z.object({
   }),
 });
 
-export const updateMemberStatusSchema = z
+export const updateMemberStatusBodySchema = z
   .object({
     status: z.enum(groupMemberStatus),
   })
   .strict();
 
-export const updateMemberStatusHandlerSchema = z.object({
+export const updateMemberStatusSchema = z.object({
   params: z.object({
     slug: z.string().min(1),
     memberId: z.string().min(1),
   }),
-  body: updateMemberStatusSchema,
+  body: updateMemberStatusBodySchema,
+});
+
+export const transferOwnershipBodySchema = z
+  .object({
+    memberId: z.string().min(1),
+  })
+  .strict();
+
+export const transferOwnershipSchema = z.object({
+  params: z.object({
+    slug: z.string().min(1),
+  }),
+  body: transferOwnershipBodySchema,
+});
+
+export const updateMemberRoleBodySchema = z.object({
+  role: z.enum(groupMemberRole),
+});
+
+export const updateMemberRoleSchema = z.object({
+  params: z.object({
+    groupSlug: z.string().min(1),
+    memberId: z.string().min(1),
+  }),
+  body: updateMemberRoleBodySchema,
 });
 
 export type GroupType = z.infer<typeof createGroupSchema>['type'];
@@ -67,3 +93,4 @@ export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type JoinGroupInput = z.infer<typeof joinGroupSchema>;
 
 export type GroupMemberStatus = z.infer<typeof updateMemberStatusSchema>['status'];
+export type GroupMemberRole = z.infer<typeof updateMemberRoleBodySchema>['role'];

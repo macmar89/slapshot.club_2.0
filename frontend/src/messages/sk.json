@@ -483,6 +483,7 @@
       "user_already_joined": "Už si členom tejto skupiny.",
       "group_full": "Skupina je plná. Nie je možné sa pridať.",
       "group_locked": "Skupina je uzamknutá a momentálne neprijíma nových členov.",
+      "join_request_rejected": "Tvoja žiadost o pripojenie bola zamietnutá.",
       "unexpected": "Nastala neočakávaná chyba. Skús znova."
     },
     "status_active": "Aktívni",
@@ -502,7 +503,12 @@
     "lock_group_title": "Uzamknúť skupinu",
     "lock_group_desc": "Zabráni novým členom v pripojení sa k skupine.",
     "require_alias": "Vyžadovať prezývku",
-    "require_alias_desc": "Členovia si musia pri vstupe zvoliť prezývku špecifickú pre túto skupinu."
+    "require_alias_desc": "Členovia si musia pri vstupe zvoliť prezývku špecifickú pre túto skupinu.",
+    "status_updated_active": "Člen bol úspešne schválený.",
+    "status_updated_rejected": "Člen bol odmietnutý/vylúčený.",
+    "status_updated_banned": "Člen bol zablokovaný.",
+    "status_updated_invited": "Pozvánka bola úspešne odoslaná.",
+    "status_updated_pending": "Žiadosť o vstup bola odoslaná."
   },
   "NotFound": {
     "title": "Zakázané uvoľnenie!",

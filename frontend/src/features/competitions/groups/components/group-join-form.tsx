@@ -29,6 +29,7 @@ export function GroupJoinForm() {
     'max_joined_groups_reached',
     'max_owned_groups_reached',
     'max_groups_reached',
+    'join_request_rejected',
   ] as const;
 
   type KnownError = (typeof KNOWN_ERRORS)[number];

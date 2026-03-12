@@ -1,17 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Check, Crown, X, MoreVertical, LogOut, Shield } from 'lucide-react';
-import type { GroupMember } from '../group.types';
+import type { GroupMember, GroupMemberStatus } from '@/features/competitions/groups/group.types';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { PlanBadge } from '@/components/ui/plan-badge';
+import { useSWRConfig } from 'swr';
+import { toast } from 'sonner';
+import { patchGroupMemberStatus } from '../groups.api';
+import { API_ROUTES } from '@/lib/api-routes';
 
 interface GroupDetailMembersListProps {
+  groupSlug: string;
   title: string;
   data: GroupMember[];
 }
 
-export const GroupDetailMembersList = ({ title, data }: GroupDetailMembersListProps) => {
+export const GroupDetailMembersList = ({ groupSlug, title, data }: GroupDetailMembersListProps) => {
   const t = useTranslations('Groups');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
@@ -27,10 +32,11 @@ export const GroupDetailMembersList = ({ title, data }: GroupDetailMembersListPr
       </div>
 
       {data.length > 0 && (
-        <div className="rounded-app divide-y divide-white/5 overflow-hidden bg-white/[0.02]">
+        <div className="rounded-app divide-y divide-white/5 bg-white/[0.02]">
           {data.map((member) => (
             <MemberRow
               key={member.id}
+              groupSlug={groupSlug}
               member={member}
               t={t}
               isOpen={openMenuId === member.id}
@@ -44,6 +50,7 @@ export const GroupDetailMembersList = ({ title, data }: GroupDetailMembersListPr
 };
 
 interface MemberRowProps {
+  groupSlug: string;
   member: GroupMember;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: any;
@@ -51,7 +58,7 @@ interface MemberRowProps {
   onToggle: () => void;
 }
 
-const MemberRow = ({ member, t, isOpen, onToggle }: MemberRowProps) => {
+const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) => {
   const isPending = member.status === 'pending';
   const isCaptain = member.memberRole === 'owner';
   const isAssistant = member.memberRole === 'admin';
@@ -69,10 +76,32 @@ const MemberRow = ({ member, t, isOpen, onToggle }: MemberRowProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onToggle]);
 
+  const { mutate } = useSWRConfig();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleChangeStatus = async (status: GroupMemberStatus) => {
+    setIsUpdating(true);
+    try {
+      const res = await patchGroupMemberStatus(groupSlug, member.id, status);
+      if (res.success) {
+        toast.success(t(`status_updated_${status}`));
+        await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
+        await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+      } else {
+        toast.error(t('errors.unexpected'));
+      }
+    } catch {
+      toast.error(t('errors.unexpected'));
+    } finally {
+      setIsUpdating(false);
+      if (isOpen) onToggle();
+    }
+  };
+
   return (
     <div
       className={cn(
-        'group flex transition-all duration-300',
+        'group flex transition-all duration-300 first:rounded-t-app last:rounded-b-app',
         isPending
           ? 'bg-primary/5 flex-col items-stretch gap-4 p-4 md:flex-row md:items-center md:justify-between'
           : 'flex-row items-center justify-between p-4 hover:bg-white/[0.04]',
@@ -139,19 +168,21 @@ const MemberRow = ({ member, t, isOpen, onToggle }: MemberRowProps) => {
         {isPending ? (
           <div className="flex w-full items-center gap-2 md:w-auto">
             <Button
-              size="sm"
-              variant="ghost"
-              className="h-9 flex-1 border border-emerald-500/20 bg-emerald-500/10 px-3 text-[10px] font-bold text-emerald-500 transition-colors hover:bg-emerald-500/20 md:flex-initial"
+              size="xs"
+              variant="success"
               title={t('approve')}
+              onClick={() => handleChangeStatus('active')}
+              disabled={isUpdating}
             >
               <Check className="mr-1.5 h-3.5 w-3.5" />
               {t('approve')}
             </Button>
             <Button
-              size="sm"
-              variant="ghost"
-              className="border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20 h-9 flex-1 border px-3 text-[10px] font-bold transition-colors md:flex-initial"
+              size="xs"
+              variant="destructive"
               title={t('reject')}
+              onClick={() => handleChangeStatus('rejected')}
+              disabled={isUpdating}
             >
               <X className="mr-1.5 h-3.5 w-3.5" />
               {t('reject')}
@@ -174,16 +205,24 @@ const MemberRow = ({ member, t, isOpen, onToggle }: MemberRowProps) => {
 
               {/* Action Dropdown */}
               {isOpen && (
-                <div className="animate-in fade-in zoom-in absolute right-0 z-50 mt-2 w-48 origin-top-right duration-200">
+                <div className="animate-in fade-in zoom-in absolute top-full right-0 z-50 mt-2 w-48 origin-top-right duration-200">
                   <div className="rounded-app border border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl">
                     <div className="py-1.5">
-                      <button className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5">
+                      <button
+                        onClick={() => handleChangeStatus('active')}
+                        disabled={isUpdating}
+                        className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                      >
                         <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
                         <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
                           {t('make_captain_tooltip')}
                         </span>
                       </button>
-                      <button className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5">
+                      <button
+                        onClick={() => handleChangeStatus('rejected')}
+                        disabled={isUpdating}
+                        className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                      >
                         <LogOut className="group-hover:text-destructive h-4 w-4 text-white/30 transition-colors" />
                         <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
                           {t('kick_tooltip')}

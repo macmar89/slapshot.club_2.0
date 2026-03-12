@@ -14,5 +14,7 @@ export const GroupMessages = {
     INSUFFICIENT_PERMISSIONS: 'insufficient_permissions',
     NOT_ACTIVE: 'not_active',
     SLUG_REQUIRED: 'slug_required',
+    JOIN_REQUEST_REJECTED: 'join_request_rejected',
+    INSUFFICIENT_PLAN_FOR_OWNERSHIP: 'insufficient_plan_for_ownership',
   },
 } as const;

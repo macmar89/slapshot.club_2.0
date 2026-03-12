@@ -28,6 +28,7 @@ export const auditActionEnum = pgEnum('audit_action', [
   'GROUP_KICK',
   'GROUP_ROLE_CHANGE',
   'GROUP_STATUS_CHANGE',
+  'GROUP_OWNERSHIP_TRANSFER',
   'GROUP_ALIAS_CHANGE',
 ]);
 

@@ -485,6 +485,7 @@
       "user_already_joined": "You are already a member of this group.",
       "group_full": "This group is full. You cannot join at this time.",
       "group_locked": "This group is locked and not accepting new members.",
+      "join_request_rejected": "Your request to join has been rejected.",
       "unexpected": "An unexpected error occurred. Please try again."
     },
     "status_active": "Active",
@@ -504,7 +505,12 @@
     "lock_group_title": "Lock group",
     "lock_group_desc": "Prevent new members from joining.",
     "require_alias": "Require alias",
-    "require_alias_desc": "Members must choose a group-specific nickname when joining."
+    "require_alias_desc": "Members must choose a group-specific nickname when joining.",
+    "status_updated_active": "Member has been successfully approved.",
+    "status_updated_rejected": "Member has been rejected/kicked.",
+    "status_updated_banned": "Member has been banned.",
+    "status_updated_invited": "Invitation has been successfully sent.",
+    "status_updated_pending": "Join request has been sent."
   },
   "NotFound": {
     "title": "Icing!",

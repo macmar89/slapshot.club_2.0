@@ -1,3 +1,5 @@
+import { SUBSCRIPTION_CONFIG } from './subscription.config';
+
 export const APP_CONFIG = {
   dashboard: {
     upcomingDaysRange: 3,
@@ -7,6 +9,14 @@ export const APP_CONFIG = {
     defaultLimit: 10,
   },
   groups: {
+    eligibleForOwnership: [SUBSCRIPTION_CONFIG.PLANS.PRO, SUBSCRIPTION_CONFIG.PLANS.VIP],
+
+    canCreateGroups: [
+      SUBSCRIPTION_CONFIG.PLANS.STARTER,
+      SUBSCRIPTION_CONFIG.PLANS.PRO,
+      SUBSCRIPTION_CONFIG.PLANS.VIP,
+    ],
+
     maxGroupMembers: {
       private: 30,
       business: 50,

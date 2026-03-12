@@ -11,7 +11,7 @@ export type GroupMemberRole = 'owner' | 'admin' | 'member';
 
 export type GroupStatus = 'active' | 'warning' | 'locked';
 
-export type GroupMemberStatus = 'pending' | 'invited' | 'active' | 'rejecte' | 'banned';
+export type GroupMemberStatus = 'pending' | 'invited' | 'active' | 'rejected' | 'banned';
 
 export interface UserGroup {
   id: string;
