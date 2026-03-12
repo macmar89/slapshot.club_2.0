@@ -1,6 +1,6 @@
 import { db as defaultDb } from '../db';
 import { groupMembers, users } from '../db/schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, sql, inArray } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers';
 import { mapGroupMembers } from '../utils/mappers/group.mappers';
 import type { GroupMemberStatus } from '../shared/constants/schema/group.schema';
@@ -28,7 +28,7 @@ export const groupMembersRepository = {
     await db.update(groupMembers).set({ status }).where(eq(groupMembers.id, memberId));
   },
 
-  async updateMemberRole(memberId: string, groupId: string, role: GroupRole, tx: any) {
+  async updateMemberRole(memberId: string, groupId: string, role: GroupRole, tx?: any) {
     const db = tx ?? defaultDb;
 
     return await db
@@ -77,10 +77,18 @@ export const groupMembersRepository = {
     return mapGroupMembers(result, userId);
   },
 
-  async getUserById(memberId: string): Promise<string | null> {
+  async getUserById(memberId: string, status?: GroupMemberStatus[]): Promise<string | null> {
     const result = await defaultDb.query.groupMembers.findFirst({
       columns: { userId: true },
-      where: (table, { eq }) => eq(table.id, memberId),
+      where: (table, { eq, inArray, and }) => {
+        const filters = [eq(table.id, memberId)];
+
+        if (status) {
+          filters.push(inArray(table.status, status));
+        }
+
+        return and(...filters);
+      },
     });
 
     return result?.userId ?? null;

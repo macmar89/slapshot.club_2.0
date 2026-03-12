@@ -1,22 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Check, Crown, X, MoreVertical, LogOut, Shield } from 'lucide-react';
-import type { GroupMember, GroupMemberStatus } from '@/features/competitions/groups/group.types';
+import type {
+  GroupMember,
+  GroupMemberRole,
+  GroupMemberStatus,
+} from '@/features/competitions/groups/group.types';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { PlanBadge } from '@/components/ui/plan-badge';
 import { useSWRConfig } from 'swr';
 import { toast } from 'sonner';
-import { patchGroupMemberStatus } from '../groups.api';
+import {
+  patchGroupMemberStatus,
+  postTransferOwnership,
+  patchGroupMemberRole,
+} from '@/features/competitions/groups/groups.api';
 import { API_ROUTES } from '@/lib/api-routes';
+import {
+  canActorManageTarget,
+  isPlanEligibleForOwnership,
+} from '@/features/competitions/groups/groups.util';
 
 interface GroupDetailMembersListProps {
   groupSlug: string;
   title: string;
   data: GroupMember[];
+  myMemberRole: GroupMemberRole;
 }
 
-export const GroupDetailMembersList = ({ groupSlug, title, data }: GroupDetailMembersListProps) => {
+export const GroupDetailMembersList = ({
+  groupSlug,
+  title,
+  data,
+  myMemberRole,
+}: GroupDetailMembersListProps) => {
   const t = useTranslations('Groups');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
@@ -38,6 +56,7 @@ export const GroupDetailMembersList = ({ groupSlug, title, data }: GroupDetailMe
               key={member.id}
               groupSlug={groupSlug}
               member={member}
+              myMemberRole={myMemberRole}
               t={t}
               isOpen={openMenuId === member.id}
               onToggle={() => setOpenMenuId(openMenuId === member.id ? null : member.id)}
@@ -52,13 +71,14 @@ export const GroupDetailMembersList = ({ groupSlug, title, data }: GroupDetailMe
 interface MemberRowProps {
   groupSlug: string;
   member: GroupMember;
+  myMemberRole: GroupMemberRole;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: any;
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) => {
+const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: MemberRowProps) => {
   const isPending = member.status === 'pending';
   const isCaptain = member.memberRole === 'owner';
   const isAssistant = member.memberRole === 'admin';
@@ -79,6 +99,12 @@ const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) =
   const { mutate } = useSWRConfig();
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const isTransferDisabled =
+    isUpdating ||
+    myMemberRole !== 'owner' ||
+    !isPlanEligibleForOwnership(member.subscriptionPlan) ||
+    member.memberRole === 'owner';
+
   const handleChangeStatus = async (status: GroupMemberStatus) => {
     setIsUpdating(true);
     try {
@@ -98,10 +124,40 @@ const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) =
     }
   };
 
+  const handleChangeMemberRole = async (role: GroupMemberRole) => {
+    setIsUpdating(true);
+    try {
+      if (role === 'owner') {
+        const res = await postTransferOwnership(groupSlug, member.id);
+        if (res.success) {
+          toast.success(t('status_updated_owner'));
+          await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
+          await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+        } else {
+          toast.error(t('errors.unexpected'));
+        }
+      } else {
+        const res = await patchGroupMemberRole(groupSlug, member.id, role);
+        if (res.success) {
+          toast.success(t('role_updated_success'));
+          await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
+          await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+        } else {
+          toast.error(t('errors.unexpected'));
+        }
+      }
+    } catch {
+      toast.error(t('errors.unexpected'));
+    } finally {
+      setIsUpdating(false);
+      if (isOpen) onToggle();
+    }
+  };
+
   return (
     <div
       className={cn(
-        'group flex transition-all duration-300 first:rounded-t-app last:rounded-b-app',
+        'group first:rounded-t-app last:rounded-b-app flex transition-all duration-300',
         isPending
           ? 'bg-primary/5 flex-col items-stretch gap-4 p-4 md:flex-row md:items-center md:justify-between'
           : 'flex-row items-center justify-between p-4 hover:bg-white/[0.04]',
@@ -148,7 +204,7 @@ const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) =
                   isCaptain ? 'bg-primary/20 text-primary' : 'bg-blue-500/20 text-blue-400',
                 )}
               >
-                {isCaptain ? 'KAPITÁN' : 'ASISTENT'}
+                {isCaptain ? t('captain') : t('assistant')}
               </span>
             )}
           </div>
@@ -208,20 +264,41 @@ const MemberRow = ({ groupSlug, member, t, isOpen, onToggle }: MemberRowProps) =
                 <div className="animate-in fade-in zoom-in absolute top-full right-0 z-50 mt-2 w-48 origin-top-right duration-200">
                   <div className="rounded-app border border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl">
                     <div className="py-1.5">
-                      <button
-                        onClick={() => handleChangeStatus('active')}
-                        disabled={isUpdating}
-                        className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
-                      >
-                        <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
-                        <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
-                          {t('make_captain_tooltip')}
-                        </span>
-                      </button>
+                      {myMemberRole === 'owner' && (
+                        <>
+                          <button
+                            onClick={() => handleChangeMemberRole('owner')}
+                            disabled={isTransferDisabled}
+                            className={cn(
+                              'group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50',
+                              isTransferDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+                            )}
+                          >
+                            <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
+                            <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
+                              {t('make_captain_tooltip')}
+                            </span>
+                          </button>
+                          <button
+                            onClick={() => handleChangeMemberRole(isAssistant ? 'member' : 'admin')}
+                            disabled={isUpdating}
+                            className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                          >
+                            <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
+                            <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
+                              {isAssistant
+                                ? t('remove_assistant_tooltip')
+                                : t('make_assistant_tooltip')}
+                            </span>
+                          </button>
+                        </>
+                      )}
                       <button
                         onClick={() => handleChangeStatus('rejected')}
-                        disabled={isUpdating}
-                        className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                        disabled={
+                          isUpdating || !canActorManageTarget(myMemberRole, member.memberRole)
+                        }
+                        className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
                       >
                         <LogOut className="group-hover:text-destructive h-4 w-4 text-white/30 transition-colors" />
                         <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">

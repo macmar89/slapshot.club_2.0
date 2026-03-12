@@ -82,7 +82,7 @@ export const updateMemberRoleBodySchema = z.object({
 
 export const updateMemberRoleSchema = z.object({
   params: z.object({
-    groupSlug: z.string().min(1),
+    slug: z.string().min(1),
     memberId: z.string().min(1),
   }),
   body: updateMemberRoleBodySchema,
@@ -92,5 +92,5 @@ export type GroupType = z.infer<typeof createGroupSchema>['type'];
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type JoinGroupInput = z.infer<typeof joinGroupSchema>;
 
-export type GroupMemberStatus = z.infer<typeof updateMemberStatusSchema>['status'];
+export type GroupMemberStatus = z.infer<typeof updateMemberStatusBodySchema>['status'];
 export type GroupMemberRole = z.infer<typeof updateMemberRoleBodySchema>['role'];

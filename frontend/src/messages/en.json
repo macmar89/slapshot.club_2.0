@@ -465,6 +465,8 @@
     "approve": "Approve",
     "reject": "Reject",
     "make_captain_tooltip": "Make captain",
+    "make_assistant_tooltip": "Add assistant",
+    "remove_assistant_tooltip": "Remove assistant",
     "kick_tooltip": "Kick from league",
     "delete_league_action": "Delete league",
     "delete_league_short": "Delete",
@@ -510,7 +512,9 @@
     "status_updated_rejected": "Member has been rejected/kicked.",
     "status_updated_banned": "Member has been banned.",
     "status_updated_invited": "Invitation has been successfully sent.",
-    "status_updated_pending": "Join request has been sent."
+    "status_updated_pending": "Join request has been sent.",
+    "status_updated_owner": "Captain's armband has been successfully transferred.",
+    "role_updated_success": "Member role has been successfully updated."
   },
   "NotFound": {
     "title": "Icing!",

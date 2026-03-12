@@ -1,6 +1,7 @@
 import { db } from '../db/index.js';
 import type {
   CreateGroupInput,
+  GroupMemberRole,
   GroupMemberStatus,
   GroupType,
   JoinGroupInput,
@@ -367,7 +368,14 @@ export const getGroupMembers = async (groupId: string, userId: string, search?: 
   const invited = members.filter((m) => m.status === 'invited');
   const rejected = members.filter((m) => m.status === 'rejected');
 
-  return { active, pending, banned, invited, rejected };
+  return {
+    active,
+    pending,
+    banned,
+    invited,
+    rejected,
+    metadata: { myMemberRole: members.find((m) => m.userId === userId)?.memberRole },
+  };
 };
 
 export const getGroupSettings = async (groupId: string) => {
@@ -443,7 +451,7 @@ const handleMemberBanned = async (tx: any, memberId: string, groupId: string) =>
 };
 
 export const transferOwnership = async (memberId: string, userId: string, groupId: string) => {
-  const targetId = await groupMembersRepository.getUserById(memberId);
+  const targetId = await groupMembersRepository.getUserById(memberId, ['active']);
 
   if (!targetId) {
     throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
@@ -476,14 +484,26 @@ export const transferOwnership = async (memberId: string, userId: string, groupI
 
     const newOwnerId = updatedMember?.userId;
 
-    if (!newOwnerId) {
-      throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
-    }
-
     await groupRepository.updateGroupOwner(groupId, newOwnerId, tx);
     await groupMembersRepository.updateMemberRoleByUserId(userId, groupId, 'admin', tx);
 
     return { newOwnerId };
   });
   return { newOwnerId };
+};
+
+export const updateMemberRole = async (
+  memberId: string,
+  groupId: string,
+  role: GroupMemberRole,
+) => {
+  const targetId = await groupMembersRepository.getUserById(memberId, ['active']);
+
+  if (!targetId) {
+    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  await groupMembersRepository.updateMemberRole(memberId, groupId, role);
+
+  return { targetId };
 };

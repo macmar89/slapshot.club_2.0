@@ -73,6 +73,9 @@ export interface GroupMembersResponse {
   banned: GroupMember[];
   invited: GroupMember[];
   rejected: GroupMember[];
+  metadata: {
+    myMemberRole: GroupMemberRole;
+  };
 }
 
 export interface GroupDetailSettings {

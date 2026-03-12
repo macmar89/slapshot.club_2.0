@@ -8,6 +8,7 @@ import {
   getUserGroupsByCompetitionSlug,
   joinGroup,
   transferOwnership,
+  updateMemberRole,
   updateMemberStatus,
 } from '../services/groups.service.js';
 import type { UserSubscriptionPlan } from '../types/user.types';
@@ -156,23 +157,22 @@ export const updateMemberRoleHandler = catchAsync(async (req: Request, res: Resp
   const { role } = req.body;
   const { id: userId } = req.user!;
 
-  // const response = await updateMemberRole(memberId as string, groupId, role);
+  const response = await updateMemberRole(memberId as string, groupId, role);
 
-  // logActivity(
-  //   req,
-  //   'GROUP_ROLE_CHANGE',
-  //   { type: 'group', id: groupId },
-  //   {
-  //     actorId: userId,
-  //     targetId: response.targetId,
-  //     action: 'GROUP_ROLE_CHANGE',
-  //     metadata: {
-  //       oldRole: 'member',
-  //       newRole: role,
-  //       memberId: memberId,
-  //     },
-  //   },
-  // ).catch((err) => logger.error(err));
+  logActivity(
+    req,
+    'GROUP_ROLE_CHANGE',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      action: 'GROUP_ROLE_CHANGE',
+      metadata: {
+        oldRole: 'member',
+        newRole: role,
+        memberId: response.targetId,
+      },
+    },
+  ).catch((err) => logger.error(err));
 
   return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
 });

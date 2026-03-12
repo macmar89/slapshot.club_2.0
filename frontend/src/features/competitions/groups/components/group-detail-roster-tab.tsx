@@ -28,7 +28,14 @@ export const GroupDetailRosterTab = ({ groupSlug }: GroupDetailRosterTabProps) =
       notFound={<div>No members found</div>}
     >
       {(members: GroupMembersResponse) => {
-        const { active, pending, banned, rejected, invited } = members;
+        const {
+          active,
+          pending,
+          banned,
+          rejected,
+          invited,
+          metadata: { myMemberRole },
+        } = members;
 
         return (
           <div className="flex flex-col gap-4">
@@ -36,11 +43,36 @@ export const GroupDetailRosterTab = ({ groupSlug }: GroupDetailRosterTabProps) =
               className="space-y-0 overflow-hidden border-white/10 p-0 shadow-xl"
               backdropBlur="lg"
             >
-              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_active')} data={active} />
-              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_pending')} data={pending} />
-              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_invited')} data={invited} />
-              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_rejected')} data={rejected} />
-              <GroupDetailMembersList groupSlug={groupSlug} title={t('status_banned')} data={banned} />
+              <GroupDetailMembersList
+                groupSlug={groupSlug}
+                title={t('status_active')}
+                data={active}
+                myMemberRole={myMemberRole}
+              />
+              <GroupDetailMembersList
+                groupSlug={groupSlug}
+                title={t('status_pending')}
+                data={pending}
+                myMemberRole={myMemberRole}
+              />
+              <GroupDetailMembersList
+                groupSlug={groupSlug}
+                title={t('status_invited')}
+                data={invited}
+                myMemberRole={myMemberRole}
+              />
+              <GroupDetailMembersList
+                groupSlug={groupSlug}
+                title={t('status_rejected')}
+                data={rejected}
+                myMemberRole={myMemberRole}
+              />
+              <GroupDetailMembersList
+                groupSlug={groupSlug}
+                title={t('status_banned')}
+                data={banned}
+                myMemberRole={myMemberRole}
+              />
             </IceGlassCard>
           </div>
         );

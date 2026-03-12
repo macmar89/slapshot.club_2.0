@@ -72,12 +72,16 @@ export const GroupDetailView = () => {
               <TabsContent value="cabin" className="mt-0">
                 <GroupDetailCabinTab />
               </TabsContent>
-              <TabsContent value="roster" className="mt-0">
-                <GroupDetailRosterTab groupSlug={groupSlug} />
-              </TabsContent>
-              <TabsContent value="settings" className="mt-0">
-                <GroupDetailSettingsTab groupSlug={groupSlug} />
-              </TabsContent>
+              {isAdmin && (
+                <TabsContent value="roster" className="mt-0">
+                  <GroupDetailRosterTab groupSlug={groupSlug} />
+                </TabsContent>
+              )}
+              {isOwner && (
+                <TabsContent value="settings" className="mt-0">
+                  <GroupDetailSettingsTab groupSlug={groupSlug} />
+                </TabsContent>
+              )}
             </CustomTabs>
           </div>
         );

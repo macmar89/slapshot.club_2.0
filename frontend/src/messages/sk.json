@@ -463,6 +463,8 @@
     "approve": "Schváliť",
     "reject": "Zamietnuť",
     "make_captain_tooltip": "Zmeniť na kapitána",
+    "make_assistant_tooltip": "Pridať asistenta",
+    "remove_assistant_tooltip": "Odobrať asistenta",
     "kick_tooltip": "Vyhodiť z ligy",
     "delete_league_action": "Zrušiť ligu",
     "delete_league_short": "Zrušiť",
@@ -508,7 +510,9 @@
     "status_updated_rejected": "Člen bol odmietnutý/vylúčený.",
     "status_updated_banned": "Člen bol zablokovaný.",
     "status_updated_invited": "Pozvánka bola úspešne odoslaná.",
-    "status_updated_pending": "Žiadosť o vstup bola odoslaná."
+    "status_updated_pending": "Žiadosť o vstup bola odoslaná.",
+    "status_updated_owner": "Kapitánska páska bola úspešne odovzdaná.",
+    "role_updated_success": "Rola člena bola úspešne upravená."
   },
   "NotFound": {
     "title": "Zakázané uvoľnenie!",
