@@ -7,7 +7,7 @@ export interface PlayerStats {
   createdAt: string;
   currentRank: number;
   totalPoints: number;
-  totalMatches: number;
+  totalPredictions: number;
   exactGuesses: number;
   correctTrends: number;
   correctDiffs: number;

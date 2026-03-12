@@ -4,7 +4,7 @@ export interface LeaderboardEntry {
   totalPoints: number;
   currentRank: number;
   rankChange: number;
-  totalMatches: number;
+  totalPredictions: number;
   exactGuesses: number;
   correctDiffs: number;
   correctTrends: number;

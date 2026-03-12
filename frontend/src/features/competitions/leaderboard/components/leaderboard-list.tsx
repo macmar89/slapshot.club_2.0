@@ -6,12 +6,18 @@ import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { CompetitionLeaderboardEntry } from '@/features/competitions/leaderboard/leaderboard.types';
 import { RankRow } from '@/features/competitions/leaderboard/components/rank-row';
+import { GroupLeaderboardEntry } from '@/features/competitions/groups/group.types';
+import { cn } from '@/lib/utils';
 
 interface LeaderboardListProps {
-  entries: CompetitionLeaderboardEntry[];
+  entries: CompetitionLeaderboardEntry[] | GroupLeaderboardEntry[];
+  isCurrentUserRowVisible?: boolean;
 }
 
-export const LeaderboardList = ({ entries }: LeaderboardListProps) => {
+export const LeaderboardList = ({
+  entries,
+  isCurrentUserRowVisible = true,
+}: LeaderboardListProps) => {
   const t = useTranslations('Dashboard.leaderboard');
   const router = useRouter();
 
@@ -35,7 +41,12 @@ export const LeaderboardList = ({ entries }: LeaderboardListProps) => {
     >
       <RankRow isHeader entry={{} as CompetitionLeaderboardEntry} className="bg-white/[0.05]" />
 
-      <div className="flex-1 divide-y divide-white/[0.05] overflow-y-auto scroll-smooth pb-28 md:pb-24">
+      <div
+        className={cn(
+          'flex-1 divide-y divide-white/[0.05] overflow-y-auto scroll-smooth',
+          isCurrentUserRowVisible ? 'pb-28 md:pb-24' : 'pb-0',
+        )}
+      >
         {entries?.map((entry, index) => {
           const isDuplicateRank = index > 0 && entry.currentRank === entries[index - 1].currentRank;
           return (
@@ -61,7 +72,7 @@ export const LeaderboardList = ({ entries }: LeaderboardListProps) => {
         )}
       </div>
 
-      {currentUserEntry && (
+      {isCurrentUserRowVisible && currentUserEntry && (
         <div className="absolute right-0 bottom-0 left-0 z-20 block shrink-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-2 pt-8 md:p-4 md:pt-12">
           <div className="absolute top-2 left-1/2 -translate-x-1/2 md:top-6">
             <span className="animate-pulse text-[7px] font-black tracking-[0.3em] text-[#eab308] uppercase md:text-[8px]">

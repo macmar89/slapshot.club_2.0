@@ -18,7 +18,7 @@ export function PlayerStatsGrid({ playerStats, className }: PlayerStatsGridProps
   const remainingItems = [
     {
       label: t('tips_count'),
-      value: playerStats?.totalMatches.toString() || '0',
+      value: playerStats?.totalPredictions.toString() || '0',
       icon: ClipboardCheck,
       color: 'text-blue-400',
       desc: t('desc_tips'),

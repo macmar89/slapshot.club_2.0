@@ -4,6 +4,7 @@ import { User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CompetitionLeaderboardEntry } from '@/features/competitions/leaderboard/leaderboard.types';
 import { useTranslations } from 'next-intl';
+import { GroupLeaderboardEntry } from '@/features/competitions/groups/group.types';
 
 const getRankDisplay = (rank: number) => {
   switch (rank) {
@@ -44,7 +45,7 @@ const getRankDisplay = (rank: number) => {
 };
 
 interface RankRowProps {
-  entry: CompetitionLeaderboardEntry;
+  entry: CompetitionLeaderboardEntry | GroupLeaderboardEntry;
   className?: string;
   onClick?: () => void;
   isHeader?: boolean;
@@ -106,10 +107,25 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
       </div>
 
       <div className="flex min-w-0 items-center gap-2 md:gap-3">
-        <div className="relative hidden h-6 w-6 shrink-0 sm:block md:h-9 md:w-9">
-          <div className="flex h-full w-full items-center justify-center border border-white/10 bg-white/5">
-            <UserIcon className="h-3 w-3 text-white/10 md:h-4 md:w-4" />
+        <div className="relative shrink-0">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 md:h-10 md:w-10">
+            <span className="text-[10px] font-black text-white/40 md:text-xs">
+              {entry.username?.slice(0, 2).toUpperCase() || (
+                <UserIcon className="h-3 w-3 text-white/10 md:h-4 md:w-4" />
+              )}
+            </span>
           </div>
+
+          {'memberRole' in entry && entry.memberRole && entry.memberRole !== 'member' && (
+            <div
+              className={cn(
+                'absolute -right-1 -bottom-1 flex h-4 w-4 items-center justify-center rounded-full border border-black text-[8px] font-black md:h-5 md:w-5 md:text-[10px]',
+                entry.memberRole === 'owner' ? 'bg-[#eab308] text-black' : 'bg-blue-500 text-white',
+              )}
+            >
+              {entry.memberRole === 'owner' ? 'C' : 'A'}
+            </div>
+          )}
         </div>
         <div className="flex min-w-0 flex-col">
           <div className="flex items-center gap-2">
@@ -121,6 +137,11 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
             >
               {entry.username}
             </span>
+            {'globalCurrentRank' in entry && entry.globalCurrentRank && (
+              <span className="text-[10px] font-medium text-white/30 lowercase md:text-[11px]">
+                (#{entry.globalCurrentRank})
+              </span>
+            )}
           </div>
 
           <div className="mt-1.5 flex w-fit items-center gap-3 rounded-sm border border-white/[0.05] bg-white/5 px-2 py-1 md:hidden">

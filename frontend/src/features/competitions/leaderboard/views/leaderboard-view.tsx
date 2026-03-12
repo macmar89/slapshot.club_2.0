@@ -9,7 +9,7 @@ import { API_ROUTES } from '@/lib/api-routes';
 import { useAuthStore } from '@/store/use-auth-store';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCompetitionStore } from '@/store/use-competition-store';
-import { CompetitionLeaderboardEntry } from '@/features/competitions/leaderboard/leaderboard.types';
+import { GroupLeaderboardEntry } from '@/features/competitions/groups/group.types';
 
 export const LeaderboardView = () => {
   const t = useTranslations('Dashboard.leaderboard');
@@ -20,7 +20,7 @@ export const LeaderboardView = () => {
 
   const competitionName = useCompetitionStore((state) => state.competition?.name);
 
-  const { data: entries, isLoading } = useSWR<CompetitionLeaderboardEntry[]>(
+  const { data: entries, isLoading } = useSWR<GroupLeaderboardEntry[]>(
     API_ROUTES.COMPETITIONS.LEADERBOARD.LIST(slug),
   );
 

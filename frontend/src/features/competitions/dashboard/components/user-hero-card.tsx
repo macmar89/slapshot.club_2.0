@@ -103,7 +103,7 @@ export function UserHeroCard() {
           <div className="mb-0.5 text-[8px] font-bold text-white/30 uppercase">
             {t('stats.tips')}
           </div>
-          <div className="text-sm font-black text-white">{data?.totalMatches || 0}</div>
+          <div className="text-sm font-black text-white">{data?.totalPredictions || 0}</div>
         </div>
         <div>
           <div className="mb-0.5 text-[8px] font-bold text-white/30 uppercase">

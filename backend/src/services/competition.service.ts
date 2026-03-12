@@ -164,7 +164,7 @@ export const getPlayerStats = async (username: string, slug: string) => {
     columns: {
       currentRank: true,
       totalPoints: true,
-      totalMatches: true,
+      totalPredictions: true,
       exactGuesses: true,
       correctTrends: true,
       correctDiffs: true,
@@ -183,7 +183,7 @@ export const getPlayerStats = async (username: string, slug: string) => {
   }
 
   const points = leaderboardEntry.totalPoints || 0;
-  const games = leaderboardEntry.totalMatches || 0;
+  const games = leaderboardEntry.totalPredictions || 0;
 
   const totalCorrect =
     (leaderboardEntry.exactGuesses || 0) +

@@ -21,7 +21,7 @@ export const getLeaderboard = async (slug: string, userId: string) => {
       userId: true,
       currentRank: true,
       totalPoints: true,
-      totalMatches: true,
+      totalPredictions: true,
       exactGuesses: true,
       correctTrends: true,
       correctDiffs: true,
@@ -46,7 +46,7 @@ export const getLeaderboard = async (slug: string, userId: string) => {
       isCurrentUser: entry.userId === userId,
       currentRank: entry.currentRank,
       totalPoints: entry.totalPoints,
-      totalPredictions: entry.totalMatches,
+      totalPredictions: entry.totalPredictions,
       exactGuesses: entry.exactGuesses,
       correctTrends: entry.correctTrends,
       correctDiffs: entry.correctDiffs,
@@ -70,7 +70,7 @@ export const getMemberStatsBySlug = async (userId: string, slug: string) => {
   const leaderboardEntry = await db.query.leaderboardEntries.findFirst({
     columns: {
       totalPoints: true,
-      totalMatches: true,
+      totalPredictions: true,
       currentRank: true,
       exactGuesses: true,
       correctTrends: true,
@@ -90,7 +90,7 @@ export const getMemberStatsBySlug = async (userId: string, slug: string) => {
   }
 
   const points = leaderboardEntry.totalPoints || 0;
-  const games = leaderboardEntry.totalMatches || 0;
+  const games = leaderboardEntry.totalPredictions || 0;
 
   const totalCorrect =
     (leaderboardEntry.exactGuesses || 0) +

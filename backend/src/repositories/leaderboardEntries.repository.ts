@@ -57,21 +57,42 @@ export const leaderboardEntriesRepository = {
       );
   },
 
-  async getStatsByUserIds(userIds: string[], competitionId: string) {
-    const data = await defaultDb.query.leaderboardEntries.findMany({
+  async getGroupStatsByUserIds(userIds: string[], competitionId: string, groupId: string) {
+    return await defaultDb.query.leaderboardEntries.findMany({
       columns: {
+        id: true,
         userId: true,
         currentRank: true,
-        totalMa,
+        totalPoints: true,
+        totalPredictions: true,
+        exactGuesses: true,
+        correctTrends: true,
+        correctDiffs: true,
+        wrongGuesses: true,
+        currentForm: true,
       },
       where: (leaderboardEntries, { and, eq }) =>
         and(
           eq(leaderboardEntries.competitionId, competitionId),
           inArray(leaderboardEntries.userId, userIds),
         ),
+      with: {
+        user: {
+          columns: {
+            username: true,
+          },
+          with: {
+            memberships: {
+              columns: {
+                role: true,
+                alias: true,
+              },
+              where: (gm, { eq }) => eq(gm.groupId, groupId),
+            },
+          },
+        },
+      },
       orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
     });
-
-    return data;
   },
 };

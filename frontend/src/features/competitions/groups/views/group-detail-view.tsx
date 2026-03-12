@@ -67,7 +67,7 @@ export const GroupDetailView = () => {
 
             <CustomTabs items={tabItems} defaultValue="members">
               <TabsContent value="members" className="mt-0">
-                <GroupDetailLeaderboardTab />
+                <GroupDetailLeaderboardTab groupSlug={groupSlug} />
               </TabsContent>
               <TabsContent value="cabin" className="mt-0">
                 <GroupDetailCabinTab />

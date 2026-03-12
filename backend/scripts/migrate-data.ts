@@ -393,7 +393,7 @@ async function migrate() {
             competitionId: le.competition_id,
             seasonYear: seasonYear,
             totalPoints: parseInt(le.total_points || '0'),
-            totalMatches: parseInt(le.total_matches || '0'),
+            totalPredictions: parseInt(le.total_matches || '0'),
             exactGuesses: parseInt(le.exact_guesses || '0'),
             correctTrends: parseInt(le.correct_trends || '0'),
             correctDiffs: parseInt(le.correct_diffs || '0'),

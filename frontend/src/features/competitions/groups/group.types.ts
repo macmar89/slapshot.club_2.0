@@ -1,4 +1,5 @@
 import { SubscriptionPlan } from '@/features/users/users.types';
+import { CompetitionLeaderboardEntry } from '@/features/competitions/leaderboard/leaderboard.types';
 
 export interface UserGroupsResponse {
   data: UserGroup[];
@@ -90,4 +91,9 @@ export interface GroupDetailSettings {
   isLocked: boolean;
   requireApproval: boolean;
   allowMemberInvites: boolean;
+}
+
+export interface GroupLeaderboardEntry extends CompetitionLeaderboardEntry {
+  globalCurrentRank: number;
+  memberRole: GroupMemberRole;
 }

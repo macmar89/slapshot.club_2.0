@@ -23,7 +23,7 @@ export const leaderboardEntries = pgTable(
     seasonYear: integer('season_year').notNull(),
 
     totalPoints: integer('total_points').default(0),
-    totalMatches: integer('total_matches').default(0),
+    totalPredictions: integer('total_predictions').default(0),
     exactGuesses: integer('exact_guesses').default(0),
     correctTrends: integer('correct_trends').default(0),
     correctDiffs: integer('correct_diffs').default(0),

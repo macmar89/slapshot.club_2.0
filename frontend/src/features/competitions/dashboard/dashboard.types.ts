@@ -2,7 +2,7 @@ import { DashboardMatchPreview } from '../matches/matches.types';
 
 export interface UserCompetitionStats {
   totalPoints: number;
-  totalMatches: number;
+  totalPredictions: number;
   currentRank: number;
   exactGuesses: number;
   correctTrends: number;

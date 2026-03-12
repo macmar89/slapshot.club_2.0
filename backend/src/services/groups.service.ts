@@ -24,7 +24,7 @@ import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers.js';
 import { userRepository } from '../repositories/user.repository.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
-import { leaderboardEntries } from '../db/schema/leaderboardEntries.js';
+import { mapGroupLeaderboardEntries } from '../utils/mappers/group.mappers.js';
 
 export const createGroup = async (
   userId: string,
@@ -321,12 +321,26 @@ export const getGroupLeaderboard = async (groupId: string, userId: string) => {
 
   if (!membersIds.length || !competitionId) return [];
 
-  const leaderboardEntries = await leaderboardEntriesRepository.getStatsByUserIds(
+  const rawEntries = await leaderboardEntriesRepository.getGroupStatsByUserIds(
     membersIds,
     competitionId,
+    groupId,
   );
 
-  return leaderboardEntries;
+  let currentRank = 1;
+  const entriesWithGroupRank = rawEntries.map((entry, index, array) => {
+    if (index > 0 && entry.currentRank === array[index - 1]!.currentRank) {
+    } else {
+      currentRank = index + 1;
+    }
+
+    return {
+      ...entry,
+      groupRank: currentRank,
+    };
+  });
+
+  return mapGroupLeaderboardEntries(entriesWithGroupRank, userId);
 };
 
 export const getGroupDetail = async (userId: string, slug: string) => {
