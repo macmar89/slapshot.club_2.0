@@ -1,40 +1,40 @@
 import { SUBSCRIPTION_CONFIG } from './subscription.config';
 
 export const APP_CONFIG = {
-  dashboard: {
-    upcomingDaysRange: 3,
-    maxMatchCards: 3,
+  DASHBOARD: {
+    UPCOMING_DAYS_RANGE: 3,
+    MAX_MATCH_CARDS: 3,
   },
-  pagination: {
-    defaultLimit: 10,
+  PAGINATION: {
+    DEFAULT_LIMIT: 10,
   },
-  groups: {
-    eligibleForOwnership: [SUBSCRIPTION_CONFIG.PLANS.PRO, SUBSCRIPTION_CONFIG.PLANS.VIP],
+  GROUPS: {
+    ELIGIBLE_FOR_OWNERSHIP: [SUBSCRIPTION_CONFIG.PLANS.PRO, SUBSCRIPTION_CONFIG.PLANS.VIP],
 
-    canCreateGroups: [
+    CAN_CREATE_GROUPS: [
       SUBSCRIPTION_CONFIG.PLANS.STARTER,
       SUBSCRIPTION_CONFIG.PLANS.PRO,
       SUBSCRIPTION_CONFIG.PLANS.VIP,
     ],
 
-    maxGroupMembers: {
+    MAX_GROUP_MEMBERS: {
       private: 30,
       business: 50,
       vip: 100,
     },
-    memberCapacityBoost: {
+    MEMBER_CAPACITY_BOOST: {
       free: 0,
       starter: 0,
       pro: 5,
       vip: 10,
     },
-    maxCreatedPrivateGroups: {
+    MAX_CREATED_PRIVATE_GROUPS: {
       free: 0,
       starter: 1,
       pro: 2,
       vip: 5,
     },
-    maxJoinedPrivateGroups: {
+    MAX_JOINED_PRIVATE_GROUPS: {
       free: 1,
       starter: 2,
       pro: 5,

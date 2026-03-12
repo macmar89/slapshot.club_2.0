@@ -24,7 +24,7 @@ export const getUpcomingMatches = async (userId: string, slug: string, locale: A
   const now = new Date().toISOString();
   const upcomingMatchesLimit = addDays(
     new Date(),
-    APP_CONFIG.dashboard.upcomingDaysRange,
+    APP_CONFIG.DASHBOARD.UPCOMING_DAYS_RANGE,
   ).toISOString();
 
   const { homeTeam, awayTeam, homeLocales, awayLocales, homeLogo, awayLogo } = createTeamAliases();

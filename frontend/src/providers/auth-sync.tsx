@@ -5,7 +5,7 @@ import { handleGetMe } from '@/features/auth/auth.api';
 import { usePathname } from '@/i18n/routing';
 import { APP_CONFIG } from '@/config/app';
 
-const PUBLIC_PATHS = APP_CONFIG.publicPaths;
+const PUBLIC_PATHS = APP_CONFIG.PUBLIC_PATHS;
 
 export const AuthSync = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();

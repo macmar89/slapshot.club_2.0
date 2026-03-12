@@ -43,11 +43,15 @@ export const createGroup = async (
 
   const { statsJoinedPrivateGroups, statsOwnedPrivateGroups } = leadeboardEntry;
 
-  if (statsJoinedPrivateGroups >= APP_CONFIG.groups.maxJoinedPrivateGroups[userSubscriptionPlan]) {
+  if (
+    statsJoinedPrivateGroups >= APP_CONFIG.GROUPS.MAX_JOINED_PRIVATE_GROUPS[userSubscriptionPlan]
+  ) {
     throw new AppError(GroupMessages.ERRORS.MAX_JOINED_GROUPS_REACHED, HttpStatusCode.FORBIDDEN);
   }
 
-  if (statsOwnedPrivateGroups >= APP_CONFIG.groups.maxCreatedPrivateGroups[userSubscriptionPlan]) {
+  if (
+    statsOwnedPrivateGroups >= APP_CONFIG.GROUPS.MAX_CREATED_PRIVATE_GROUPS[userSubscriptionPlan]
+  ) {
     throw new AppError(GroupMessages.ERRORS.MAX_OWNED_GROUPS_REACHED, HttpStatusCode.FORBIDDEN);
   }
 
@@ -67,8 +71,8 @@ export const createGroup = async (
       creditCost: 0,
       maxMembers:
         userSubscriptionPlan === 'vip'
-          ? APP_CONFIG.groups.memberCapacityBoost.vip
-          : APP_CONFIG.groups.memberCapacityBoost.pro,
+          ? APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.vip
+          : APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.pro,
       statsMembersCount: 1,
       isAliasRequired: body.isAliasRequired ?? false,
     });
@@ -202,7 +206,9 @@ export const joinPrivateGroup = async (
 
   const { statsJoinedPrivateGroups } = leadeboardEntry;
 
-  if (statsJoinedPrivateGroups >= APP_CONFIG.groups.maxJoinedPrivateGroups[userSubscriptionPlan]) {
+  if (
+    statsJoinedPrivateGroups >= APP_CONFIG.GROUPS.MAX_JOINED_PRIVATE_GROUPS[userSubscriptionPlan]
+  ) {
     throw new AppError(GroupMessages.ERRORS.MAX_GROUPS_REACHED);
   }
 
@@ -215,7 +221,7 @@ export const joinPrivateGroup = async (
     if (isImmediatelyActive) {
       await groupRepository.incrementMaxMembers(
         group.id,
-        APP_CONFIG.groups.memberCapacityBoost[userSubscriptionPlan],
+        APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[userSubscriptionPlan],
         tx,
       );
       await groupRepository.incrementMemberCount(group.id, tx);
@@ -288,20 +294,20 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
   const ownedCount = userGroups.filter((g) => g.role === 'owner').length ?? 0;
   const joinedCount = userGroups.filter((g) => g.role !== 'owner').length ?? 0;
 
-  const groupLimits = APP_CONFIG.groups;
+  const groupLimits = APP_CONFIG.GROUPS;
 
   return {
     data: userGroups,
     metadata: {
-      canCreateMore: ownedCount < groupLimits.maxCreatedPrivateGroups[subscriptionPlan],
-      canJoinMore: joinedCount < groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
-      maxOwned: groupLimits.maxCreatedPrivateGroups[subscriptionPlan],
-      maxJoined: groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
+      canCreateMore: ownedCount < groupLimits.MAX_CREATED_PRIVATE_GROUPS[subscriptionPlan],
+      canJoinMore: joinedCount < groupLimits.MAX_JOINED_PRIVATE_GROUPS[subscriptionPlan],
+      maxOwned: groupLimits.MAX_CREATED_PRIVATE_GROUPS[subscriptionPlan],
+      maxJoined: groupLimits.MAX_JOINED_PRIVATE_GROUPS[subscriptionPlan],
       currentOwned: ownedCount,
       currentJoined: joinedCount,
       isOverLimit:
-        ownedCount > groupLimits.maxCreatedPrivateGroups[subscriptionPlan] ||
-        joinedCount > groupLimits.maxJoinedPrivateGroups[subscriptionPlan],
+        ownedCount > groupLimits.MAX_CREATED_PRIVATE_GROUPS[subscriptionPlan] ||
+        joinedCount > groupLimits.MAX_JOINED_PRIVATE_GROUPS[subscriptionPlan],
     },
   };
 };
@@ -419,7 +425,7 @@ const handleMemberActivation = async (
 
   await groupRepository.incrementMaxMembers(
     groupId,
-    APP_CONFIG.groups.memberCapacityBoost[subscriptionPlan],
+    APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[subscriptionPlan],
     tx,
   );
   await groupRepository.incrementMemberCount(groupId, tx);
@@ -449,7 +455,11 @@ export const transferOwnership = async (memberId: string, userId: string, groupI
     throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
-  if (targetSubscriptionPlan === 'free' || targetSubscriptionPlan === 'starter') {
+  const isEligible = (APP_CONFIG.GROUPS.ELIGIBLE_FOR_OWNERSHIP as readonly string[]).includes(
+    targetSubscriptionPlan,
+  );
+
+  if (!isEligible) {
     throw new AppError(
       GroupMessages.ERRORS.INSUFFICIENT_PLAN_FOR_OWNERSHIP,
       HttpStatusCode.FORBIDDEN,
