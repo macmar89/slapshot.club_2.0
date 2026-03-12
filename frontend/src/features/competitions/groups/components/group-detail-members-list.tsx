@@ -293,18 +293,20 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
                           </button>
                         </>
                       )}
-                      <button
-                        onClick={() => handleChangeStatus('rejected')}
-                        disabled={
-                          isUpdating || !canActorManageTarget(myMemberRole, member.memberRole)
-                        }
-                        className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
-                      >
-                        <LogOut className="group-hover:text-destructive h-4 w-4 text-white/30 transition-colors" />
-                        <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
-                          {t('kick_tooltip')}
-                        </span>
-                      </button>
+                      {member.status === 'active' && (
+                        <button
+                          onClick={() => handleChangeStatus('rejected')}
+                          disabled={
+                            isUpdating || !canActorManageTarget(myMemberRole, member.memberRole)
+                          }
+                          className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                        >
+                          <LogOut className="group-hover:text-destructive h-4 w-4 text-white/30 transition-colors" />
+                          <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
+                            {t('kick_tooltip')}
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

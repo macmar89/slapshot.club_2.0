@@ -40,8 +40,9 @@ export const GroupDetailRosterTab = ({ groupSlug }: GroupDetailRosterTabProps) =
         return (
           <div className="flex flex-col gap-4">
             <IceGlassCard
-              className="space-y-0 overflow-hidden border-white/10 p-0 shadow-xl"
+              className="space-y-0 border-white/10 p-0 shadow-xl"
               backdropBlur="lg"
+              allowOverflow={true}
             >
               <GroupDetailMembersList
                 groupSlug={groupSlug}

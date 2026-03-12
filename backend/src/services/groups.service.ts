@@ -24,6 +24,7 @@ import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers.js';
 import { userRepository } from '../repositories/user.repository.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
+import { leaderboardEntries } from '../db/schema/leaderboardEntries.js';
 
 export const createGroup = async (
   userId: string,
@@ -311,6 +312,21 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
         joinedCount > groupLimits.MAX_JOINED_PRIVATE_GROUPS[subscriptionPlan],
     },
   };
+};
+
+export const getGroupLeaderboard = async (groupId: string, userId: string) => {
+  const competitionId = await groupRepository.getCompetitionIdByGroupId(groupId);
+
+  const membersIds = await groupMembersRepository.getUserIdsByGroupId(groupId, ['active']);
+
+  if (!membersIds.length || !competitionId) return [];
+
+  const leaderboardEntries = await leaderboardEntriesRepository.getStatsByUserIds(
+    membersIds,
+    competitionId,
+  );
+
+  return leaderboardEntries;
 };
 
 export const getGroupDetail = async (userId: string, slug: string) => {

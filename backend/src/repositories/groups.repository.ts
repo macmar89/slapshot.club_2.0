@@ -102,4 +102,12 @@ export const groupRepository = {
 
     await db.update(groups).set({ ownerId }).where(eq(groups.id, groupId));
   },
+
+  async getCompetitionIdByGroupId(groupId: string): Promise<string | null> {
+    const result = await defaultDb.query.groups.findFirst({
+      columns: { competitionId: true },
+      where: (table, { eq }) => eq(table.id, groupId),
+    });
+    return result?.competitionId ?? null;
+  },
 };

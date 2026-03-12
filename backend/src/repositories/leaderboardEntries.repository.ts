@@ -1,6 +1,6 @@
 import { db as defaultDb } from '../db';
 import { leaderboardEntries } from '../db/schema';
-import { sql, and, eq } from 'drizzle-orm';
+import { sql, and, eq, inArray } from 'drizzle-orm';
 
 export const leaderboardEntriesRepository = {
   async getStatsByUser(
@@ -55,5 +55,23 @@ export const leaderboardEntriesRepository = {
           eq(leaderboardEntries.userId, userId),
         ),
       );
+  },
+
+  async getStatsByUserIds(userIds: string[], competitionId: string) {
+    const data = await defaultDb.query.leaderboardEntries.findMany({
+      columns: {
+        userId: true,
+        currentRank: true,
+        totalMa,
+      },
+      where: (leaderboardEntries, { and, eq }) =>
+        and(
+          eq(leaderboardEntries.competitionId, competitionId),
+          inArray(leaderboardEntries.userId, userIds),
+        ),
+      orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
+    });
+
+    return data;
   },
 };

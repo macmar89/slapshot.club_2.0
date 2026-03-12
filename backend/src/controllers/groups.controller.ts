@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import {
   createGroup,
   getGroupDetail,
+  getGroupLeaderboard,
   getGroupMembers,
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
@@ -73,6 +74,14 @@ export const getUserGroupsByCompetitionSlugHandler = catchAsync(
     return res.status(HttpStatusCode.OK).json({ status: 'success', data });
   },
 );
+
+export const getGroupLeaderboardHandler = catchAsync(async (req: Request, res: Response) => {
+  const { id: userId } = req.user!;
+
+  const response = await getGroupLeaderboard(req.group!.groupId, userId);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data: response });
+});
 
 export const getGroupDetailHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId } = req.user!;

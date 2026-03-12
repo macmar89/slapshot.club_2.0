@@ -29,6 +29,12 @@ router.get(
   groupController.getGroupDetailHandler,
 );
 router.get(
+  '/:slug/leaderboard',
+  validate(getGroupDetailSchema),
+  validateGroupRole(),
+  groupController.getGroupLeaderboardHandler,
+);
+router.get(
   '/:slug/members',
   validate(getGroupMembersSchema),
   validateGroupRole(['owner', 'admin']),

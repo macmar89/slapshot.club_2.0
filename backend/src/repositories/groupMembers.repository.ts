@@ -80,11 +80,11 @@ export const groupMembersRepository = {
   async getUserById(memberId: string, status?: GroupMemberStatus[]): Promise<string | null> {
     const result = await defaultDb.query.groupMembers.findFirst({
       columns: { userId: true },
-      where: (table, { eq, inArray, and }) => {
-        const filters = [eq(table.id, memberId)];
+      where: (gm, { eq, inArray, and }) => {
+        const filters = [eq(gm.id, memberId), notDeleted(gm)];
 
         if (status) {
-          filters.push(inArray(table.status, status));
+          filters.push(inArray(gm.status, status));
         }
 
         return and(...filters);
@@ -92,5 +92,22 @@ export const groupMembersRepository = {
     });
 
     return result?.userId ?? null;
+  },
+
+  async getUserIdsByGroupId(groupId: string, status?: GroupMemberStatus[]) {
+    const result = await defaultDb.query.groupMembers.findMany({
+      columns: { userId: true },
+      where: (gm, { eq, and, inArray }) => {
+        const filters = [eq(gm.groupId, groupId), notDeleted(gm)];
+
+        if (status) {
+          filters.push(inArray(gm.status, status));
+        }
+
+        return and(...filters);
+      },
+    });
+
+    return result.map((item) => item.userId);
   },
 };
