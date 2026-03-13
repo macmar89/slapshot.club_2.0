@@ -37,10 +37,10 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
     const res = await patchUpdateGroupSettings(groupSlug, { [key]: value });
 
     if (res.success) {
-      toast.success(t('group_updated_success') || 'Settings updated');
+      toast.success(t('group_updated_success'));
       mutate(API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug));
     } else {
-      toast.error(res.error || 'Failed to update settings');
+      toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
     }
     setIsSaving(false);
   };
@@ -52,10 +52,10 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
     const res = await deleteGroup(groupSlug);
 
     if (res.success) {
-      toast.success(t('league_deleted') || 'Group deleted');
+      toast.success(t('league_deleted'));
       router.push('/arena');
     } else {
-      toast.error(res.error || 'Failed to delete group');
+      toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       setIsDeleting(false);
     }
   };

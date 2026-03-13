@@ -52,17 +52,6 @@ export function CreateGroupForm() {
 
   const schema = createGroupFormSchema(t);
 
-  // Maps backend error message keys → translation keys
-  const BACKEND_ERROR_KEYS: Record<string, string> = {
-    competition_not_found: 'errors.competition_not_found',
-    user_not_pro_or_vip: 'errors.user_not_pro_or_vip',
-    max_joined_groups_reached: 'errors.max_joined_groups_reached',
-    max_owned_groups_reached: 'errors.max_owned_groups_reached',
-    max_groups_reached: 'errors.max_groups_reached',
-    group_not_found: 'errors.group_not_found',
-    user_already_joined: 'errors.user_already_joined',
-  };
-
   const form = useForm<CreateGroupFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -78,14 +67,13 @@ export function CreateGroupForm() {
     const res = await postCreatePrivateGroup(slug!, values.name);
 
     if (res.success) {
-      toast.success(t('group_created'));
+      toast.success(t('group_created_successfully'));
       form.reset();
       setOpen(false);
       mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug!));
       router.refresh();
     } else {
-      const errorKey = res.error && BACKEND_ERROR_KEYS[res.error];
-      toast.error(errorKey ? t(errorKey as Parameters<typeof t>[0]) : t('errors.unexpected'));
+      toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
     }
   };
 

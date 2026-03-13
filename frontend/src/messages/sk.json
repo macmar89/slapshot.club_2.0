@@ -486,6 +486,14 @@
       "group_full": "Skupina je plná. Nie je možné sa pridať.",
       "group_locked": "Skupina je uzamknutá a momentálne neprijíma nových členov.",
       "join_request_rejected": "Tvoja žiadost o pripojenie bola zamietnutá.",
+      "not_a_member": "Nie ste členom tejto skupiny.",
+      "insufficient_permissions": "Nemáte dostatočné oprávnenia na túto akciu.",
+      "not_active": "Vaše členstvo v skupine nie je aktívne.",
+      "slug_required": "Slug skupiny je povinný.",
+      "insufficient_plan_for_ownership": "Tento hráč nemá dostatočný balík na to, aby sa stal kapitánom.",
+      "member_not_found": "Hráč nebol nájdený.",
+      "user_not_competition_member": "Nie ste členom tejto súťaže.",
+      "user_not_found": "Používateľ nebol nájdený.",
       "unexpected": "Nastala neočakávaná chyba. Skús znova."
     },
     "status_active": "Aktívni",
@@ -513,7 +521,10 @@
     "status_updated_invited": "Pozvánka bola úspešne odoslaná.",
     "status_updated_pending": "Žiadosť o vstup bola odoslaná.",
     "status_updated_owner": "Kapitánska páska bola úspešne odovzdaná.",
-    "role_updated_success": "Rola člena bola úspešne upravená."
+    "status_updated_removed": "Hráč bol úspešne vyhodený zo skupiny.",
+    "role_updated_success": "Rola člena bola úspešne upravená.",
+    "group_created_successfully": "Skupina bola úspešne vytvorená! 🏒",
+    "join_group_success": "Úspešne ste sa pripojili k skupine."
   },
   "NotFound": {
     "title": "Zakázané uvoľnenie!",

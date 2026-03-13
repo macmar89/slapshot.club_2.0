@@ -486,6 +486,14 @@
       "group_full": "Skupina je plná. Není možné se připojit.",
       "group_locked": "Skupina je uzamčena a momentálně nepřijímá nové členy.",
       "join_request_rejected": "Tvoje žádost o připojení byla zamítnuta.",
+      "not_a_member": "Nejste členem této skupiny.",
+      "insufficient_permissions": "Nemáte dostatečná oprávnění k této akci.",
+      "not_active": "Vaše členství ve skupině není aktivní.",
+      "slug_required": "Slug skupiny je povinný.",
+      "insufficient_plan_for_ownership": "Tento hráč nemá dostatečný balíček na to, aby se stal kapitánem.",
+      "member_not_found": "Hráč nebyl nalezen.",
+      "user_not_competition_member": "Nejste členem této soutěže.",
+      "user_not_found": "Uživatel nebyl nalezen.",
       "unexpected": "Nastala neočekávaná chyba. Zkus znovu."
     },
     "status_active": "Aktivní",
@@ -513,7 +521,10 @@
     "status_updated_invited": "Pozvánka byla úspěšně odeslána.",
     "status_updated_pending": "Žádost o vstup byla odeslána.",
     "status_updated_owner": "Kapitánská páska byla úspěšně předána.",
-    "role_updated_success": "Role člena byla úspěšně upravena."
+    "status_updated_removed": "Hráč byl úspěšně vyhozen ze skupiny.",
+    "role_updated_success": "Role člena byla úspěšně upravena.",
+    "group_created_successfully": "Skupina byla úspěšně vytvořena! 🏒",
+    "join_group_success": "Úspěšně jste se připojili ke skupině."
   },
   "NotFound": {
     "title": "Zakázané uvolnění!",

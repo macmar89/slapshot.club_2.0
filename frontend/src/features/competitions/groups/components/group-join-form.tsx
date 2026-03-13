@@ -49,12 +49,12 @@ export function GroupJoinForm() {
     try {
       const res = await postJoinGroup(code, slug);
       if (res.success) {
-        toast.success(t('join_request_sent'));
+        toast.success(t('join_group_success'));
         setCode('');
         await mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug));
         router.refresh();
       } else {
-        toast.error(getErrorMessage(res.error));
+        toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }
     } catch {
       toast.error(t('errors.unexpected'));

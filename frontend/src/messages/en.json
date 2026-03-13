@@ -488,6 +488,14 @@
       "group_full": "This group is full. You cannot join at this time.",
       "group_locked": "This group is locked and not accepting new members.",
       "join_request_rejected": "Your request to join has been rejected.",
+      "not_a_member": "You are not a member of this group.",
+      "insufficient_permissions": "You have insufficient permissions for this action.",
+      "not_active": "Your group membership is not active.",
+      "slug_required": "Group slug is required.",
+      "insufficient_plan_for_ownership": "This player does not have a sufficient plan to become a captain.",
+      "member_not_found": "Member not found.",
+      "user_not_competition_member": "You are not a member of this competition.",
+      "user_not_found": "User not found.",
       "unexpected": "An unexpected error occurred. Please try again."
     },
     "status_active": "Active",
@@ -515,7 +523,10 @@
     "status_updated_invited": "Invitation has been successfully sent.",
     "status_updated_pending": "Join request has been sent.",
     "status_updated_owner": "Captain's armband has been successfully transferred.",
-    "role_updated_success": "Member role has been successfully updated."
+    "status_updated_removed": "Member has been successfully removed from the group.",
+    "role_updated_success": "Member role has been successfully updated.",
+    "group_created_successfully": "Group created successfully! 🏒",
+    "join_group_success": "You have successfully joined the group."
   },
   "NotFound": {
     "title": "Icing!",

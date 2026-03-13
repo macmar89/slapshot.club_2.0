@@ -188,7 +188,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
         await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
         await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
       } else {
-        toast.error(t('errors.unexpected'));
+        toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }
     } catch {
       toast.error(t('errors.unexpected'));
@@ -207,7 +207,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
           await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
           await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
         } else {
-          toast.error(t('errors.unexpected'));
+          toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
         }
       } else {
         const res = await patchGroupMemberRole(groupSlug, member.id, role);
@@ -216,7 +216,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
           await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
           await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
         } else {
-          toast.error(t('errors.unexpected'));
+          toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
         }
       }
     } catch {
@@ -231,11 +231,11 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
     try {
       const res = await deleteGroupMember(groupSlug, member.id);
       if (res.success) {
-        toast.success(t('status_updated_removed') || 'Hráč bol vyhodený');
+        toast.success(t('status_updated_removed'));
         await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
         await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
       } else {
-        toast.error(t('errors.unexpected'));
+        toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }
     } catch {
       toast.error(t('errors.unexpected'));
@@ -315,7 +315,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
         actions.push({
           label: t('kick_tooltip'),
           icon: LogOut,
-          onClick: () => handleChangeStatus('rejected'),
+          onClick: handleDeleteMember,
           variant: 'destructive',
         });
       }
