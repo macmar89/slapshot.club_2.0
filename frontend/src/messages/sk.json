@@ -493,6 +493,7 @@
     "status_invited": "Pozvaní",
     "status_rejected": "Odmietnutí",
     "status_banned": "Zablokovaní",
+    "status_others": "Ostatné",
     "validation": {
       "name_min": "Názov musí mať aspoň 3 znaky.",
       "name_max": "Názov môže mať najviac 100 znakov."

@@ -107,7 +107,7 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
       </div>
 
       <div className="flex min-w-0 items-center gap-2 md:gap-3">
-        <div className="relative shrink-0">
+        <div className="relative hidden shrink-0 md:block">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 md:h-10 md:w-10">
             <span className="text-[10px] font-black text-white/40 md:text-xs">
               {entry.username?.slice(0, 2).toUpperCase() || (
@@ -129,6 +129,16 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
         </div>
         <div className="flex min-w-0 flex-col">
           <div className="flex items-center gap-2">
+            {'memberRole' in entry && entry.memberRole && entry.memberRole !== 'member' && (
+              <span
+                className={cn(
+                  'flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[8px] font-black md:hidden',
+                  entry.memberRole === 'owner' ? 'bg-[#eab308] text-black' : 'bg-blue-500 text-white',
+                )}
+              >
+                {entry.memberRole === 'owner' ? 'C' : 'A'}
+              </span>
+            )}
             <span
               className={cn(
                 'truncate text-[12px] font-black tracking-tight uppercase md:text-sm',

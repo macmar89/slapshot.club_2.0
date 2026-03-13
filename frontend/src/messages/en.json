@@ -495,6 +495,7 @@
     "status_invited": "Invited",
     "status_rejected": "Rejected",
     "status_banned": "Banned",
+    "status_others": "Others",
     "validation": {
       "name_min": "Name must be at least 3 characters.",
       "name_max": "Name can be at most 100 characters."

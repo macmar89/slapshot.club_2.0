@@ -27,6 +27,7 @@ interface GroupDetailMembersListProps {
   title: string;
   data: GroupMember[];
   myMemberRole: GroupMemberRole;
+  hideHeader?: boolean;
 }
 
 export const GroupDetailMembersList = ({
@@ -34,20 +35,22 @@ export const GroupDetailMembersList = ({
   title,
   data,
   myMemberRole,
+  hideHeader = false,
 }: GroupDetailMembersListProps) => {
   const t = useTranslations('Groups');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
+  if (data.length === 0) return null;
+
   return (
-    <div className="mt-4 flex flex-col gap-4 px-4">
-      <div className="flex items-center justify-between py-2">
-        <h3 className="text-sm font-black tracking-widest text-white/50 uppercase italic">
-          {title}
-        </h3>
-        <div className="rounded-app flex h-6 min-w-6 items-center justify-center bg-white/5 px-1.5 text-[10px] font-bold text-white/40 ring-1 ring-white/10 ring-inset">
-          {data.length}
+    <div className={cn('flex flex-col gap-4 px-4', !hideHeader && 'mt-4')}>
+      {!hideHeader && title && (
+        <div className="flex items-center justify-between py-2">
+          <h3 className="text-sm font-black tracking-widest text-white/50 uppercase italic">
+            {title} <span className="ml-1 text-white/20">({data.length})</span>
+          </h3>
         </div>
-      </div>
+      )}
 
       {data.length > 0 && (
         <div className="rounded-app divide-y divide-white/5 bg-white/[0.02]">
