@@ -137,8 +137,8 @@ export const groupMembersRepository = {
     return result.map((item) => item.userId);
   },
 
-  async removeMember(memberId: string, groupId: string) {
-    const db = defaultDb;
+  async removeMember(memberId: string, groupId: string, tx?: any) {
+    const db = tx ?? defaultDb;
 
     await db
       .delete(groupMembers)

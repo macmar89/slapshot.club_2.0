@@ -21,6 +21,7 @@ import { userRepository } from '../../repositories/user.repository.js';
 import { AuthMessages } from '../../shared/constants/messages/auth.messages.js';
 import { groupsValidationService } from './groupsValidation.service.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
+import { calculateGroupCapacity } from './groupsCore.service.js';
 
 export const joinGroup = async (
   userId: string,
@@ -319,48 +320,41 @@ export const removeMember = async (memberId: string, groupId: string, userId: st
     throw new AppError(GroupMessages.ERRORS.MEMBER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
   }
 
-  if (member.status !== 'active') {
-    await groupMembersRepository.removeMember(memberId, groupId);
+  return await db.transaction(async (tx) => {
+    if (member.status !== 'active') {
+      await groupMembersRepository.removeMember(memberId, groupId, tx);
 
-    if (member.status === 'pending') {
-      await groupRepository.decrementPendingMembersCount(groupId);
+      if (member.status === 'pending') {
+        await groupRepository.decrementPendingMembersCount(groupId, tx);
+      }
+
+      return { targetId: member.userId };
     }
 
-    return { targetId: member.userId };
-  }
-  console.log('\n\n\n\n\n\n\n');
-  console.log(member.userId);
+    const targetSubscriptionPlan = await userRepository.getSubscriptionPlanById(member.userId);
 
-  const targetSubscriptionPlan = await userRepository.getSubscriptionPlanById(member.userId);
+    if (!targetSubscriptionPlan) {
+      throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+    }
 
-  if (!targetSubscriptionPlan) {
-    throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
-  }
+    await groupMembersRepository.removeMember(memberId, groupId, tx);
+    await groupRepository.decrementMemberCount(groupId, tx);
+    await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
+      groupId,
+      member.userId,
+      tx,
+    );
 
-  const isEligible = (APP_CONFIG.GROUPS.ELIGIBLE_FOR_OWNERSHIP as readonly string[]).includes(
-    targetSubscriptionPlan,
-  );
-  console.log(targetSubscriptionPlan);
-  console.log(!isEligible);
+    const isEligible = (APP_CONFIG.GROUPS.ELIGIBLE_FOR_OWNERSHIP as readonly string[]).includes(
+      targetSubscriptionPlan,
+    );
+    if (!isEligible) {
+      return { targetId: member.userId };
+    }
 
-  if (!isEligible) {
-    await groupMembersRepository.removeMember(memberId, groupId);
-    await groupRepository.decrementMemberCount(groupId);
-    await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(groupId, member.userId);
+    const groupCapacity = await calculateGroupCapacity(groupId, member.userId);
+    await groupRepository.updateGroup(groupId, { maxMembers: groupCapacity }, tx);
 
-    return { targetId: member.userId };
-  }
-
-  const memberSubscriptions =
-    await groupMembersRepository.getMembersWithSubscriptionPlanById(groupId);
-
-  const currentPlans = memberSubscriptions
-    .filter((ms) => ms.userId !== member.userId)
-    .map((ms) => ms.user.subscriptionPlan);
-
-  let memberCapacity = 0;
-
-  currentPlans.forEach((plan) => (memberCapacity += APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[plan]));
-  console.log('\n\n\n\n\n\n\n');
-  return { targetId: member.userId, memberCapacity };
+    return { targetId: member.userId, groupCapacity };
+  });
 };

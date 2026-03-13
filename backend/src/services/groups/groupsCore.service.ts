@@ -200,14 +200,17 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
   };
 };
 
-export const calculateGroupCapacity = async (groupId: string, userId: string): Promise<number> => {
+export const calculateGroupCapacity = async (
+  groupId: string,
+  removedUserId?: string,
+): Promise<number> => {
   const [group, memberSubscriptions] = await Promise.all([
     groupRepository.getById(groupId, ['absoluteMaxCapacity']),
     groupMembersRepository.getMembersWithSubscriptionPlanById(groupId),
   ]);
 
   const totalBoost = memberSubscriptions
-    .filter((ms) => ms.userId !== userId)
+    .filter((ms) => ms.userId !== removedUserId)
     .reduce((acc, ms) => {
       const plan = ms.user.subscriptionPlan as keyof typeof APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST;
       return acc + (APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[plan] ?? 0);

@@ -23,6 +23,12 @@ export const groupRepository = {
     return result?.id ?? null;
   },
 
+  async updateGroup(groupId: string, updates: Partial<typeof groups.$inferInsert>, tx?: any) {
+    const db = tx ?? defaultDb;
+
+    return await db.update(groups).set(updates).where(eq(groups.id, groupId));
+  },
+
   async updateGroupMaxCapacity(groupId: string, direction: 'inc' | 'dec', boost: number, tx?: any) {
     const db = tx ?? defaultDb;
     const isInc = direction === 'inc';
