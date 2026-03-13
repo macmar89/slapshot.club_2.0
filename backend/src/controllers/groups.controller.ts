@@ -19,7 +19,7 @@ import {
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
 } from '../services/groups/groupsCore.service';
-import { getGroupLeaderboard } from '../services/groups/groupLeaderboard.service';
+import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;

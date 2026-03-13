@@ -16,6 +16,7 @@ import { leaderboardEntriesRepository } from '../../repositories/leaderboardEntr
 import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../../db/helpers.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
+import { groupMembersRepository } from '../../repositories/groupMembers.repository.js';
 
 export const createGroup = async (
   userId: string,
@@ -197,4 +198,20 @@ export const getUserGroupsByCompetitionSlug = async (user: User, competitionSlug
         joinedCount > groupLimits.MAX_JOINED_PRIVATE_GROUPS[subscriptionPlan],
     },
   };
+};
+
+export const calculateGroupCapacity = async (groupId: string, userId: string): Promise<number> => {
+  const [group, memberSubscriptions] = await Promise.all([
+    groupRepository.getById(groupId, ['absoluteMaxCapacity']),
+    groupMembersRepository.getMembersWithSubscriptionPlanById(groupId),
+  ]);
+
+  const totalBoost = memberSubscriptions
+    .filter((ms) => ms.userId !== userId)
+    .reduce((acc, ms) => {
+      const plan = ms.user.subscriptionPlan as keyof typeof APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST;
+      return acc + (APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[plan] ?? 0);
+    }, 0);
+
+  return Math.min(totalBoost, group!.absoluteMaxCapacity);
 };

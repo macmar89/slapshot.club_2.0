@@ -4,6 +4,17 @@ import { groups } from '../db/schema';
 import { notDeleted } from '../db/helpers';
 
 export const groupRepository = {
+  async getById(groupId: string, columns?: string[]) {
+    const result = await defaultDb.query.groups.findFirst({
+      columns: columns
+        ? columns.reduce((acc, column) => ({ ...acc, [column]: true }), {})
+        : undefined,
+      where: (g, { eq }) => eq(g.id, groupId),
+    });
+
+    return result ?? null;
+  },
+
   async getIdBySlug(slug: string): Promise<string | null> {
     const result = await defaultDb.query.groups.findFirst({
       columns: { id: true },

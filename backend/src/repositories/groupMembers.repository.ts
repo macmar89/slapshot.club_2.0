@@ -59,7 +59,7 @@ export const groupMembersRepository = {
       .returning({ userId: groupMembers.userId });
   },
 
-  async getByGroupId(groupId: string, userId: string, search?: string) {
+  async getByGroupId(groupId: string, userId: string) {
     const result = await defaultDb.query.groupMembers.findMany({
       columns: {
         id: true,
@@ -74,7 +74,7 @@ export const groupMembersRepository = {
           columns: { id: true, username: true, subscriptionPlan: true },
         },
       },
-      where: (table, { eq, and }) => and(eq(table.groupId, groupId), notDeleted(table)),
+      where: (table, { eq, and }) => eq(table.groupId, groupId),
       orderBy: (table, { asc }) => [
         asc(sql`CASE 
           WHEN ${table.role} = 'owner' THEN 1 
@@ -86,6 +86,21 @@ export const groupMembersRepository = {
     });
 
     return mapGroupMembers(result, userId);
+  },
+
+  async getMembersWithSubscriptionPlanById(groupId: string) {
+    return await defaultDb.query.groupMembers.findMany({
+      columns: {
+        id: true,
+        userId: true,
+      },
+      with: {
+        user: {
+          columns: { subscriptionPlan: true },
+        },
+      },
+      where: (table, { eq, and }) => and(eq(table.groupId, groupId), eq(table.status, 'active')),
+    });
   },
 
   async getUserById(memberId: string, status?: GroupMemberStatus[]): Promise<string | null> {

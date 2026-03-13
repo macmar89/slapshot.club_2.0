@@ -19,7 +19,7 @@ import { leaderboardEntriesRepository } from '../../repositories/leaderboardEntr
 import { eq, and } from 'drizzle-orm';
 import { userRepository } from '../../repositories/user.repository.js';
 import { AuthMessages } from '../../shared/constants/messages/auth.messages.js';
-import { groupsValidationService } from './groups-validation.service.js';
+import { groupsValidationService } from './groupsValidation.service.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
 
 export const joinGroup = async (
@@ -350,8 +350,17 @@ export const removeMember = async (memberId: string, groupId: string, userId: st
 
     return { targetId: member.userId };
   }
-  // await groupMembersRepository.removeMember(memberId, groupId);
 
+  const memberSubscriptions =
+    await groupMembersRepository.getMembersWithSubscriptionPlanById(groupId);
+
+  const currentPlans = memberSubscriptions
+    .filter((ms) => ms.userId !== member.userId)
+    .map((ms) => ms.user.subscriptionPlan);
+
+  let memberCapacity = 0;
+
+  currentPlans.forEach((plan) => (memberCapacity += APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[plan]));
   console.log('\n\n\n\n\n\n\n');
-  return { targetId: member.userId, member };
+  return { targetId: member.userId, memberCapacity };
 };
