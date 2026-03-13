@@ -15,6 +15,7 @@ import {
   patchGroupMemberStatus,
   postTransferOwnership,
   patchGroupMemberRole,
+  deleteGroupMember,
 } from '@/features/competitions/groups/groups.api';
 import { API_ROUTES } from '@/lib/api-routes';
 import {
@@ -37,7 +38,6 @@ export const GroupDetailMembersList = ({
   myMemberRole,
   hideHeader = false,
 }: GroupDetailMembersListProps) => {
-  const t = useTranslations('Groups');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   if (data.length === 0) return null;
@@ -46,45 +46,49 @@ export const GroupDetailMembersList = ({
     <div className={cn('flex flex-col gap-4 px-4', !hideHeader && 'mt-4')}>
       {!hideHeader && title && (
         <div className="flex items-center justify-between py-2">
-          <h3 className="text-sm font-black tracking-widest text-white/50 uppercase italic">
+          <h3 className="text-md font-black tracking-widest text-white/50 uppercase italic">
             {title} <span className="ml-1 text-white/20">({data.length})</span>
           </h3>
         </div>
       )}
 
-      {data.length > 0 && (
-        <div className="rounded-app divide-y divide-white/5 bg-white/[0.02]">
-          {data.map((member) => (
-            <MemberRow
-              key={member.id}
-              groupSlug={groupSlug}
-              member={member}
-              myMemberRole={myMemberRole}
-              t={t}
-              isOpen={openMenuId === member.id}
-              onToggle={() => setOpenMenuId(openMenuId === member.id ? null : member.id)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="rounded-app divide-y divide-white/5 bg-white/[0.02]">
+        {data.map((member) => (
+          <MemberRow
+            key={member.id}
+            groupSlug={groupSlug}
+            member={member}
+            myMemberRole={myMemberRole}
+            isOpen={openMenuId === member.id}
+            onToggle={() => setOpenMenuId(openMenuId === member.id ? null : member.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
 
-interface MemberRowProps {
-  groupSlug: string;
-  member: GroupMember;
-  myMemberRole: GroupMemberRole;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any;
-  isOpen: boolean;
-  onToggle: () => void;
+interface MemberAction {
+  label: string;
+  icon: React.ElementType;
+  onClick: () => void;
+  variant?: 'default' | 'destructive' | 'success' | 'primary';
+  disabled?: boolean;
 }
 
-const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: MemberRowProps) => {
-  const isPending = member.status === 'pending';
-  const isCaptain = member.memberRole === 'owner';
-  const isAssistant = member.memberRole === 'admin';
+interface MemberActionDropdownProps {
+  actions: MemberAction[];
+  isOpen: boolean;
+  onToggle: () => void;
+  isUpdating?: boolean;
+}
+
+const MemberActionDropdown = ({
+  actions,
+  isOpen,
+  onToggle,
+  isUpdating,
+}: MemberActionDropdownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -99,9 +103,76 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onToggle]);
 
+  if (actions.length === 0) return null;
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onToggle}
+        className={cn(
+          'h-9 w-9 text-white/40 transition-all hover:bg-white/5 hover:text-white',
+          isOpen && 'bg-white/10 text-white',
+        )}
+      >
+        <MoreVertical className="h-4.5 w-4.5" />
+      </Button>
+
+      {isOpen && (
+        <div className="animate-in fade-in zoom-in absolute top-full right-0 z-50 mt-2 w-48 origin-top-right duration-200">
+          <div className="rounded-app border border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl">
+            <div className="py-1.5">
+              {actions.map((action, idx) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      action.onClick();
+                      onToggle();
+                    }}
+                    disabled={action.disabled || isUpdating}
+                    className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
+                  >
+                    <Icon
+                      className={cn(
+                        'h-4 w-4 text-white/30 transition-colors',
+                        action.variant === 'destructive' && 'group-hover:text-destructive',
+                        action.variant === 'success' && 'group-hover:text-success',
+                        (action.variant === 'primary' || action.variant === 'default') &&
+                          'group-hover:text-primary',
+                      )}
+                    />
+                    <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
+                      {action.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface MemberRowProps {
+  groupSlug: string;
+  member: GroupMember;
+  myMemberRole: GroupMemberRole;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: MemberRowProps) => {
+  const t = useTranslations('Groups');
   const { mutate } = useSWRConfig();
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const isCaptain = member.memberRole === 'owner';
+  const isAssistant = member.memberRole === 'admin';
   const isTransferDisabled =
     isUpdating ||
     myMemberRole !== 'owner' ||
@@ -123,7 +194,6 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
       toast.error(t('errors.unexpected'));
     } finally {
       setIsUpdating(false);
-      if (isOpen) onToggle();
     }
   };
 
@@ -153,26 +223,117 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
       toast.error(t('errors.unexpected'));
     } finally {
       setIsUpdating(false);
-      if (isOpen) onToggle();
     }
   };
 
+  const handleDeleteMember = async () => {
+    setIsUpdating(true);
+    try {
+      const res = await deleteGroupMember(groupSlug, member.id);
+      if (res.success) {
+        toast.success(t('status_updated_removed') || 'Hráč bol vyhodený');
+        await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
+        await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+      } else {
+        toast.error(t('errors.unexpected'));
+      }
+    } catch {
+      toast.error(t('errors.unexpected'));
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const getActions = (): MemberAction[] => {
+    if (member.isMe) return [];
+
+    const actions: MemberAction[] = [];
+
+    if (member.status === 'pending') {
+      actions.push(
+        {
+          label: t('approve'),
+          icon: Check,
+          onClick: () => handleChangeStatus('active'),
+          variant: 'success',
+        },
+        {
+          label: t('reject'),
+          icon: X,
+          onClick: () => handleChangeStatus('rejected'),
+          variant: 'destructive',
+        },
+      );
+    }
+
+    if (member.status === 'invited') {
+      actions.push({
+        label: t('kick_tooltip'),
+        icon: X,
+        onClick: handleDeleteMember,
+        variant: 'destructive',
+      });
+    }
+
+    if (member.status === 'rejected' || member.status === 'banned') {
+      actions.push(
+        {
+          label: t('approve'),
+          icon: Check,
+          onClick: () => handleChangeStatus('active'),
+          variant: 'success',
+        },
+        {
+          label: t('kick_tooltip'),
+          icon: X,
+          onClick: handleDeleteMember,
+          variant: 'destructive',
+        },
+      );
+    }
+
+    if (member.status === 'active') {
+      if (myMemberRole === 'owner') {
+        actions.push(
+          {
+            label: t('make_captain_tooltip'),
+            icon: Shield,
+            onClick: () => handleChangeMemberRole('owner'),
+            disabled: isTransferDisabled,
+            variant: 'primary',
+          },
+          {
+            label: isAssistant ? t('remove_assistant_tooltip') : t('make_assistant_tooltip'),
+            icon: Shield,
+            onClick: () => handleChangeMemberRole(isAssistant ? 'member' : 'admin'),
+            variant: 'primary',
+          },
+        );
+      }
+
+      if (canActorManageTarget(myMemberRole, member.memberRole)) {
+        actions.push({
+          label: t('kick_tooltip'),
+          icon: LogOut,
+          onClick: () => handleChangeStatus('rejected'),
+          variant: 'destructive',
+        });
+      }
+    }
+
+    return actions;
+  };
+
   return (
-    <div
-      className={cn(
-        'group first:rounded-t-app last:rounded-b-app flex transition-all duration-300',
-        isPending
-          ? 'bg-primary/5 flex-col items-stretch gap-4 p-4 md:flex-row md:items-center md:justify-between'
-          : 'flex-row items-center justify-between p-4 hover:bg-white/[0.04]',
-      )}
-    >
+    <div className="group first:rounded-t-app last:rounded-b-app flex flex-row items-center justify-between p-4 transition-all duration-300 hover:bg-white/[0.04]">
       <div className="flex items-center gap-4">
-        {/* Avatar Area */}
         <div className="relative aspect-square h-11 w-11 shrink-0">
           <div
             className={cn(
               'flex aspect-square h-11 w-11 shrink-0 items-center justify-center rounded-full text-xs font-black text-white ring-1 transition-transform group-hover:scale-105',
-              isPending ? 'bg-primary/20 ring-primary/30' : 'bg-white/5 ring-white/10',
+              member.status === 'pending'
+                ? 'bg-primary/20 ring-primary/30'
+                : 'bg-white/5 ring-white/10',
             )}
           >
             {member.memberName.slice(0, 2).toUpperCase()}
@@ -182,14 +343,13 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
               <Crown className="h-3 w-3 fill-current" />
             </div>
           )}
-          {isPending && (
+          {member.status === 'pending' && (
             <div className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 animate-pulse items-center justify-center rounded-full border border-black text-[10px] font-black text-black">
               !
             </div>
           )}
         </div>
 
-        {/* Info Area */}
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
             <span
@@ -212,7 +372,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
             )}
           </div>
           <div className="flex items-center gap-2">
-            {isPending && (
+            {member.status === 'pending' && (
               <span className="text-primary text-[10px] font-bold tracking-wider uppercase italic">
                 {t('pending_status')}
               </span>
@@ -222,102 +382,12 @@ const MemberRow = ({ groupSlug, member, myMemberRole, t, isOpen, onToggle }: Mem
         </div>
       </div>
 
-      {/* Actions Area */}
-      <div className="relative flex items-center" ref={dropdownRef}>
-        {isPending ? (
-          <div className="flex w-full items-center gap-2 md:w-auto">
-            <Button
-              size="xs"
-              variant="success"
-              title={t('approve')}
-              onClick={() => handleChangeStatus('active')}
-              disabled={isUpdating}
-            >
-              <Check className="mr-1.5 h-3.5 w-3.5" />
-              {t('approve')}
-            </Button>
-            <Button
-              size="xs"
-              variant="destructive"
-              title={t('reject')}
-              onClick={() => handleChangeStatus('rejected')}
-              disabled={isUpdating}
-            >
-              <X className="mr-1.5 h-3.5 w-3.5" />
-              {t('reject')}
-            </Button>
-          </div>
-        ) : (
-          !member.isMe && (
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onToggle}
-                className={cn(
-                  'h-9 w-9 text-white/40 transition-all hover:bg-white/5 hover:text-white',
-                  isOpen && 'bg-white/10 text-white',
-                )}
-              >
-                <MoreVertical className="h-4.5 w-4.5" />
-              </Button>
-
-              {/* Action Dropdown */}
-              {isOpen && (
-                <div className="animate-in fade-in zoom-in absolute top-full right-0 z-50 mt-2 w-48 origin-top-right duration-200">
-                  <div className="rounded-app border border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl">
-                    <div className="py-1.5">
-                      {myMemberRole === 'owner' && (
-                        <>
-                          <button
-                            onClick={() => handleChangeMemberRole('owner')}
-                            disabled={isTransferDisabled}
-                            className={cn(
-                              'group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50',
-                              isTransferDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
-                            )}
-                          >
-                            <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
-                            <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
-                              {t('make_captain_tooltip')}
-                            </span>
-                          </button>
-                          <button
-                            onClick={() => handleChangeMemberRole(isAssistant ? 'member' : 'admin')}
-                            disabled={isUpdating}
-                            className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
-                          >
-                            <Shield className="group-hover:text-primary h-4 w-4 text-white/30 transition-colors" />
-                            <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
-                              {isAssistant
-                                ? t('remove_assistant_tooltip')
-                                : t('make_assistant_tooltip')}
-                            </span>
-                          </button>
-                        </>
-                      )}
-                      {member.status === 'active' && (
-                        <button
-                          onClick={() => handleChangeStatus('rejected')}
-                          disabled={
-                            isUpdating || !canActorManageTarget(myMemberRole, member.memberRole)
-                          }
-                          className="group flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/5 disabled:opacity-50"
-                        >
-                          <LogOut className="group-hover:text-destructive h-4 w-4 text-white/30 transition-colors" />
-                          <span className="text-xs font-bold tracking-tight text-white/60 uppercase group-hover:text-white">
-                            {t('kick_tooltip')}
-                          </span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )
-        )}
-      </div>
+      <MemberActionDropdown
+        actions={getActions()}
+        isOpen={isOpen}
+        onToggle={onToggle}
+        isUpdating={isUpdating}
+      />
     </div>
   );
 };

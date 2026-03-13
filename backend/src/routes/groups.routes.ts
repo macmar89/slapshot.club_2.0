@@ -10,6 +10,7 @@ import {
   updateMemberStatusSchema,
   transferOwnershipSchema,
   updateMemberRoleSchema,
+  removeMemberSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
@@ -40,6 +41,12 @@ router.get(
   validateGroupRole(['owner', 'admin']),
   groupController.getGroupMembersHandler,
 );
+router.delete(
+  '/:slug/members/:memberId',
+  validate(removeMemberSchema),
+  validateGroupRole(['owner', 'admin']),
+  groupController.removeMemberHandler,
+);
 router.patch(
   '/:slug/members/:memberId/status',
   validate(updateMemberStatusSchema),
@@ -65,3 +72,9 @@ router.get(
   groupController.getGroupSettingsHandler,
 );
 export default router;
+
+// // Ban (zmena na status banned)
+// router.patch('/:groupId/members/:memberId/ban', groupController.banMember);
+
+// // Unban (zmena z banned späť na active/invited)
+// router.patch('/:groupId/members/:memberId/unban', groupController.unbanMember);

@@ -25,36 +25,13 @@ export const leaderboardEntriesRepository = {
     };
   },
 
-  async updateStats(
-    userId: string,
-    competitionId: string,
-    direction: 'inc' | 'dec',
-    targets: { owned?: boolean; joined?: boolean },
-    tx?: any,
-  ) {
-    const db = tx ?? defaultDb;
-    const value = direction === 'inc' ? 1 : -1;
-    const updateFields: any = {};
-
-    if (targets.owned) {
-      updateFields.statsOwnedPrivateGroups = sql`${leaderboardEntries.statsOwnedPrivateGroups} + ${value}`;
-    }
-
-    if (targets.joined) {
-      updateFields.statsJoinedPrivateGroups = sql`${leaderboardEntries.statsJoinedPrivateGroups} + ${value}`;
-    }
-
-    if (Object.keys(updateFields).length === 0) return;
-
-    await db
-      .update(leaderboardEntries)
-      .set(updateFields)
-      .where(
-        and(
-          eq(leaderboardEntries.competitionId, competitionId),
-          eq(leaderboardEntries.userId, userId),
-        ),
-      );
+  async isMember(competitionId: string, userId: string): Promise<boolean> {
+    const result = await defaultDb.query.leaderboardEntries.findFirst({
+      columns: { id: true },
+      where: (table, { eq, and }) =>
+        and(eq(table.userId, userId), eq(table.competitionId, competitionId)),
+    });
+    return !!result;
   },
 
   async getGroupStatsByUserIds(userIds: string[], competitionId: string, groupId: string) {
@@ -94,5 +71,69 @@ export const leaderboardEntriesRepository = {
       },
       orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
     });
+  },
+
+  async updateLeaderboardEntriesJoinedPrivateGroups(
+    competitionId: string,
+    userId: string,
+    direction: 'inc' | 'dec',
+    tx?: any,
+  ) {
+    const db = tx ?? defaultDb;
+    const isInc = direction === 'inc';
+
+    return await db
+      .update(leaderboardEntries)
+      .set({
+        statsJoinedPrivateGroups: isInc
+          ? sql`${leaderboardEntries.statsJoinedPrivateGroups} + 1`
+          : sql`GREATEST(${leaderboardEntries.statsJoinedPrivateGroups} - 1, 0)`,
+      })
+      .where(
+        and(
+          eq(leaderboardEntries.competitionId, competitionId),
+          eq(leaderboardEntries.userId, userId),
+        ),
+      );
+  },
+
+  async incrementJoinedPrivateGroupsCount(competitionId: string, userId: string, tx?: any) {
+    return await this.updateLeaderboardEntriesJoinedPrivateGroups(competitionId, userId, 'inc', tx);
+  },
+
+  async decrementJoinedPrivateGroupsCount(competitionId: string, userId: string, tx?: any) {
+    return await this.updateLeaderboardEntriesJoinedPrivateGroups(competitionId, userId, 'dec', tx);
+  },
+
+  async updateLeaderboardEntriesOwnedPrivateGroups(
+    competitionId: string,
+    userId: string,
+    direction: 'inc' | 'dec',
+    tx?: any,
+  ) {
+    const db = tx ?? defaultDb;
+    const isInc = direction === 'inc';
+
+    return await db
+      .update(leaderboardEntries)
+      .set({
+        statsOwnedPrivateGroups: isInc
+          ? sql`${leaderboardEntries.statsOwnedPrivateGroups} + 1`
+          : sql`GREATEST(${leaderboardEntries.statsOwnedPrivateGroups} - 1, 0)`,
+      })
+      .where(
+        and(
+          eq(leaderboardEntries.competitionId, competitionId),
+          eq(leaderboardEntries.userId, userId),
+        ),
+      );
+  },
+
+  async incrementOwnedPrivateGroupsCount(competitionId: string, userId: string, tx?: any) {
+    return await this.updateLeaderboardEntriesOwnedPrivateGroups(competitionId, userId, 'inc', tx);
+  },
+
+  async decrementOwnedPrivateGroupsCount(competitionId: string, userId: string, tx?: any) {
+    return await this.updateLeaderboardEntriesOwnedPrivateGroups(competitionId, userId, 'dec', tx);
   },
 };

@@ -52,6 +52,7 @@ export const API_ROUTES = {
         LIST: (slug: string) => `/groups/${slug}/members`,
         STATUS: (slug: string, memberId: string) => `/groups/${slug}/members/${memberId}/status`,
         ROLE: (slug: string, memberId: string) => `/groups/${slug}/members/${memberId}/role`,
+        DELETE: (slug: string, memberId: string) => `/groups/${slug}/members/${memberId}`,
       },
       SETTINGS: (slug: string) => `/groups/${slug}/settings`,
       TRANSFER_OWNERSHIP: (slug: string) => `/groups/${slug}/transfer-ownership`,

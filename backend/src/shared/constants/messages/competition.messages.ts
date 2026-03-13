@@ -4,5 +4,6 @@ export const CompetitionMessages = {
     USER_ALREADY_JOINED_COMPETITION: 'user_already_joined_competition',
     COMPETITION_NOT_OPEN_FOR_REGISTRATION: 'competition_not_open_for_registration',
     USER_NOT_MEMBER_OF_COMPETITION: 'user_not_member_of_competition',
+    USER_NOT_COMPETITION_MEMBER: 'user_not_competition_member',
   },
 } as const;

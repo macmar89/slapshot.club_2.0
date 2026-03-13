@@ -4,6 +4,15 @@ const groupType = ['private', 'vip', 'business', 'pub', 'partner'] as const;
 const groupMemberStatus = ['active', 'pending', 'banned', 'rejected', 'invited'] as const;
 const groupMemberRole = ['owner', 'admin', 'member'] as const;
 
+export const groupParamsSchema = z.object({
+  slug: z.string().min(1),
+});
+
+export const groupMemberParamsSchema = z.object({
+  slug: z.string().min(1),
+  memberId: z.string().min(1),
+});
+
 export const createGroupSchema = z
   .object({
     name: z.string().min(3).max(100),
@@ -35,15 +44,11 @@ export const getUserGroupsByCompetitionSlugSchema = z.object({
 });
 
 export const getGroupDetailSchema = z.object({
-  params: z.object({
-    slug: z.string(),
-  }),
+  params: groupParamsSchema,
 });
 
 export const getGroupMembersSchema = z.object({
-  params: z.object({
-    slug: z.string(),
-  }),
+  params: groupParamsSchema,
   query: z.object({
     search: z.string().optional(),
   }),
@@ -56,10 +61,7 @@ export const updateMemberStatusBodySchema = z
   .strict();
 
 export const updateMemberStatusSchema = z.object({
-  params: z.object({
-    slug: z.string().min(1),
-    memberId: z.string().min(1),
-  }),
+  params: groupMemberParamsSchema,
   body: updateMemberStatusBodySchema,
 });
 
@@ -70,9 +72,7 @@ export const transferOwnershipBodySchema = z
   .strict();
 
 export const transferOwnershipSchema = z.object({
-  params: z.object({
-    slug: z.string().min(1),
-  }),
+  params: groupParamsSchema,
   body: transferOwnershipBodySchema,
 });
 
@@ -81,11 +81,12 @@ export const updateMemberRoleBodySchema = z.object({
 });
 
 export const updateMemberRoleSchema = z.object({
-  params: z.object({
-    slug: z.string().min(1),
-    memberId: z.string().min(1),
-  }),
+  params: groupMemberParamsSchema,
   body: updateMemberRoleBodySchema,
+});
+
+export const removeMemberSchema = z.object({
+  params: groupMemberParamsSchema,
 });
 
 export type GroupType = z.infer<typeof createGroupSchema>['type'];

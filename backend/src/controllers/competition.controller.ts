@@ -6,7 +6,7 @@ import {
   findPublicCompetitionName,
   getPlayerStats,
   getPlayerPredictions,
-} from '../services/competition.service';
+} from '../services/competitions/competitions.service';
 import { getCompetitionTeams } from '../services/team.service';
 import type { AppLocale } from '../types/global.types';
 import {

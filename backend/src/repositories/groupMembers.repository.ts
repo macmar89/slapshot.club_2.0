@@ -7,6 +7,17 @@ import type { GroupMemberStatus } from '../shared/constants/schema/group.schema'
 import type { GroupRole } from '../types/group.types';
 
 export const groupMembersRepository = {
+  async getMemberById(memberId: string, columns?: string[]) {
+    const result = await defaultDb.query.groupMembers.findFirst({
+      columns: columns
+        ? columns.reduce((acc, column) => ({ ...acc, [column]: true }), {})
+        : undefined,
+      where: (gm, { eq }) => eq(gm.id, memberId),
+    });
+
+    return result ?? null;
+  },
+
   async addMember(
     userId: string,
     groupId: string,
@@ -109,5 +120,13 @@ export const groupMembersRepository = {
     });
 
     return result.map((item) => item.userId);
+  },
+
+  async removeMember(memberId: string, groupId: string) {
+    const db = defaultDb;
+
+    await db
+      .delete(groupMembers)
+      .where(and(eq(groupMembers.id, memberId), eq(groupMembers.groupId, groupId)));
   },
 };

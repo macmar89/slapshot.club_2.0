@@ -1,22 +1,25 @@
 import { catchAsync } from '../utils/catchAsync';
 import type { Request, Response } from 'express';
 import {
-  createGroup,
-  getGroupDetail,
-  getGroupLeaderboard,
   getGroupMembers,
-  getGroupSettings,
-  getUserGroupsByCompetitionSlug,
   joinGroup,
+  removeMember,
   transferOwnership,
   updateMemberRole,
   updateMemberStatus,
-} from '../services/groups.service.js';
+} from '../services/groups/groupsMember.service.js';
 import type { UserSubscriptionPlan } from '../types/user.types';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
 import { GroupMessages } from '../shared/constants/messages/group.messages';
 import { logActivity } from '../services/audit.service';
 import { logger } from '../utils/logger';
+import {
+  createGroup,
+  getGroupDetail,
+  getGroupSettings,
+  getUserGroupsByCompetitionSlug,
+} from '../services/groups/groupsCore.service';
+import { getGroupLeaderboard } from '../services/groups/groupLeaderboard.service';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;
@@ -184,4 +187,28 @@ export const updateMemberRoleHandler = catchAsync(async (req: Request, res: Resp
   ).catch((err) => logger.error(err));
 
   return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
+});
+
+export const removeMemberHandler = catchAsync(async (req: Request, res: Response) => {
+  const { memberId } = req.params;
+  const { groupId } = req.group!;
+  const { id: userId } = req.user!;
+
+  const response = await removeMember(memberId as string, groupId, userId);
+
+  logActivity(
+    req,
+    'GROUP_KICK',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      targetId: response.targetId,
+      action: 'GROUP_KICK',
+      metadata: {
+        memberId: memberId,
+      },
+    },
+  ).catch((err) => logger.error(err));
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', response });
 });

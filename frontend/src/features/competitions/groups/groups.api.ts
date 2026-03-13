@@ -102,3 +102,13 @@ export const patchGroupMemberRole = async (
     return { success: false, error: errorMessage };
   }
 };
+export const deleteGroupMember = async (groupSlug: string, memberId: string) => {
+  try {
+    const response = await api.delete(API_ROUTES.GROUPS.DETAIL.MEMBERS.DELETE(groupSlug, memberId));
+
+    return { success: response.status === 200 || response.status === 204 };
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
+    return { success: false, error: errorMessage };
+  }
+};

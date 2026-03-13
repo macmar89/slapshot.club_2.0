@@ -16,5 +16,6 @@ export const GroupMessages = {
     SLUG_REQUIRED: 'slug_required',
     JOIN_REQUEST_REJECTED: 'join_request_rejected',
     INSUFFICIENT_PLAN_FOR_OWNERSHIP: 'insufficient_plan_for_ownership',
+    MEMBER_NOT_FOUND: 'member_not_found',
   },
 } as const;

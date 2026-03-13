@@ -41,11 +41,11 @@ const RosterAccordionSection = ({
         onClick={onToggle}
         className="flex w-full items-center justify-between px-4 py-4 text-left transition-colors hover:bg-white/5"
       >
-        <span className="text-xs font-black tracking-widest text-white uppercase italic">
+        <span className="text-md font-black tracking-widest text-white uppercase italic">
           {title}
         </span>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-white/80">({count})</span>
+          <span className="text-sm font-bold text-white/80">({count})</span>
           {isOpen ? (
             <ChevronUp className="h-4 w-4 text-white/60" />
           ) : (
