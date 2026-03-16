@@ -23,9 +23,6 @@ router.use('/groups', isAuth, groupRoutes);
 router.use('/matches', isAuth, matchRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
 
-// Public Routes
-if (process.env.NODE_ENV === 'development') {
-  router.use('/public/matches', publicMatchRoutes);
-}
+router.use('/public/matches', isAuth, isAdmin, publicMatchRoutes);
 
 export default router;
