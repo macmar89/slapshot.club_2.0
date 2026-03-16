@@ -6,10 +6,11 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   async rewrites() {
+    const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://localhost:4800';
     return [
       {
         source: '/api/v1/:path*',
-        destination: 'http://localhost:4800/api/v1/:path*',
+        destination: `${backendUrl}/api/v1/:path*`,
       },
     ];
   },
