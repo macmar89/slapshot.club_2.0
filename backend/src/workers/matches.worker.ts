@@ -4,6 +4,8 @@ import { logger } from '../utils/logger.js';
 import { competitionRepository } from '../repositories/competitions.repository.js';
 import { matchesQueue } from '../queues/matches.queue.js';
 import { syncFutureMatches } from '../services/matches/matchesSync.service.js';
+import { handleLiveUpdates } from '../services/matches/matchesLive.service.js';
+import { evaluateMatch } from '../services/predictions/predictionsLogic.service.js';
 
 export const matchesWorker = new Worker(
   'matches-queue',
@@ -12,9 +14,9 @@ export const matchesWorker = new Worker(
 
     if (name === 'masterScheduleSync') {
       logger.info('[MATCHES WORKER] Starting master schedule sync for active competitions.');
-      
+
       const activeCompetitions = await competitionRepository.getActive();
-      
+
       if (!activeCompetitions || activeCompetitions.length === 0) {
         logger.info('[MATCHES WORKER] No active competitions found to sync.');
         return;
@@ -28,14 +30,18 @@ export const matchesWorker = new Worker(
         });
       }
 
-      logger.info(`[MATCHES WORKER] Queued syncs for ${activeCompetitions.length} active competitions.`);
+      logger.info(
+        `[MATCHES WORKER] Queued syncs for ${activeCompetitions.length} active competitions.`,
+      );
     }
 
     if (name === 'syncCompetitionMatches') {
       const { competitionId, apiSportId, slug } = data;
 
-      logger.info(`[MATCHES WORKER] Starting sync routine for competition ${slug} (${competitionId})`);
-      
+      logger.info(
+        `[MATCHES WORKER] Starting sync routine for competition ${slug} (${competitionId})`,
+      );
+
       // We know apiSportId is set because of getActive() filter
       const result = await syncFutureMatches(Number(apiSportId), 14);
 
@@ -44,6 +50,17 @@ export const matchesWorker = new Worker(
       } else {
         throw new Error(`Sync failed for ${slug}: ${result.message}`);
       }
+    }
+
+    if (name === 'checkLiveMatches') {
+      logger.info('[MATCHES WORKER] Checking for live matches.');
+      await handleLiveUpdates();
+    }
+
+    if (name === 'evaluatePredictions') {
+      const { matchId } = data;
+      logger.info(`[MATCHES WORKER] Evaluating predictions for match ${matchId}`);
+      await evaluateMatch(matchId);
     }
   },
   {

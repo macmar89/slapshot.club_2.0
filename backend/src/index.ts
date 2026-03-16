@@ -11,7 +11,7 @@ import { AppError } from './utils/appError.js';
 import { HttpStatusCode } from './utils/httpStatusCodes.js';
 import './workers/email.worker.js';
 import './workers/matches.worker.js';
-import { scheduleMatchesSyncMasterJob } from './queues/matches.queue.js';
+import { scheduleMatchesSyncMasterJob, scheduleLiveMatchesTicker } from './queues/matches.queue.js';
 import { env } from './config/env';
 
 const app = express();
@@ -44,4 +44,5 @@ app.listen(env.PORT, async () => {
 
   // Schedule the recurring matches sync job
   await scheduleMatchesSyncMasterJob();
+  await scheduleLiveMatchesTicker();
 });
