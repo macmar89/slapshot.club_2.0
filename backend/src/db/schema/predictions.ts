@@ -33,7 +33,7 @@ export const predictions = pgTable(
 
     points: integer('points').default(0).notNull(),
     status: enumPredictionsStatus('status').default('pending').notNull(),
-    evaluatedAt: timestamp('evaluated_at', { withTimezone: true }),
+    evaluatedAt: timestamp('evaluated_at', { precision: 3, withTimezone: true, mode: 'string' }),
 
     isExact: boolean('is_exact').default(false).notNull(),
     isTrend: boolean('is_trend').default(false).notNull(),
