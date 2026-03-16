@@ -36,10 +36,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
     e.stopPropagation();
 
     if (isFinished || isJoined) {
-      router.push({
-        pathname: '/[slug]/dashboard',
-        params: { slug: competition.slug || '' },
-      });
+      router.push(`${competition.slug}/dashboard`);
       return;
     }
 

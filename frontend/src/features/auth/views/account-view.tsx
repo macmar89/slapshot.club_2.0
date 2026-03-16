@@ -8,10 +8,10 @@ import { Container } from '@/components/ui/container';
 import { ProfileOverview } from '../../account/components/profile-overview';
 import { UsernameForm } from '../../account/components/username-form';
 import { EmailSection } from '../../account/components/email-section';
-import { LocationForm } from './sections/LocationForm';
+// import { LocationForm } from './sections/LocationForm';
 import { SecurityForm } from '../../account/components/security-form';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { NotificationSection } from '@/features/notifications/components/NotificationSection';
+// import { NotificationSection } from '@/features/notifications/components/NotificationSection';
 
 interface AccountViewProps {
   user: {
@@ -95,7 +95,7 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <TabsContent value="profile">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-                  <ProfileOverview user={user} />
+                  <ProfileOverview />
 
                   <UsernameForm
                     initialUsername={user.username}
@@ -104,18 +104,18 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
 
                   <EmailSection email={user.email} />
 
-                  <LocationForm
+                  {/* <LocationForm
                     initialCountry={user.location?.country}
                     initialRegion={user.location?.region}
                     initialCustomCountry={user.location?.customCountry}
                     countries={countries}
-                  />
+                  /> */}
 
                   <SecurityForm />
                 </div>
               </TabsContent>
 
-              {isAdmin && (
+              {/* {isAdmin && (
                 <TabsContent value="notifications">
                   <div className="mx-auto w-full max-w-2xl">
                     <NotificationSection
@@ -124,7 +124,7 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
                     />
                   </div>
                 </TabsContent>
-              )}
+              )} */}
             </div>
           </Tabs>
         </div>

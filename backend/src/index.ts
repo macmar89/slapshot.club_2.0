@@ -13,7 +13,7 @@ import './workers/email.worker.js';
 import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
 import { scheduleMatchesSyncMasterJob, scheduleLiveMatchesTicker } from './queues/matches.queue.js';
-import { env } from './config/env';
+import { env } from './config/env.js';
 
 const app = express();
 

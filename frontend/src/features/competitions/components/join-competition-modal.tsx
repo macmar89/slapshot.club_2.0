@@ -33,10 +33,7 @@ export function JoinCompetitionModal({ isOpen, onClose, competition }: JoinCompe
       const res = await handleJoinCompetition(id);
       if (res.success) {
         onClose();
-        router.push({
-          pathname: '/[slug]/dashboard',
-          params: { slug: slug || '' },
-        });
+        router.push(`${slug}/dashboard`);
       } else {
         toast.error(res.error || t('error_generic'));
       }
