@@ -10,6 +10,8 @@ import { IS_PRODUCTION } from './config/env.js';
 import { AppError } from './utils/appError.js';
 import { HttpStatusCode } from './utils/httpStatusCodes.js';
 import './workers/email.worker.js';
+import './workers/matches.worker.js';
+import { scheduleMatchesSyncMasterJob } from './queues/matches.queue.js';
 import { env } from './config/env';
 
 const app = express();
@@ -37,6 +39,9 @@ app.all('{*path}', (req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(env.PORT, () => {
+app.listen(env.PORT, async () => {
   console.log(`Server running on http://localhost:${env.PORT}`);
+
+  // Schedule the recurring matches sync job
+  await scheduleMatchesSyncMasterJob();
 });
