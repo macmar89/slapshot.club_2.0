@@ -59,7 +59,7 @@ async function seed() {
             email: user.email,
             password: hashedPassword,
             lastActiveAt: new Date().toISOString(),
-            role: user.role,
+            role: user.role as any,
             subscriptionPlan: 'pro',
             subscriptionActiveUntil: addYears(new Date(), 50).toISOString(),
             isActive: true,

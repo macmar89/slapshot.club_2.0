@@ -12,7 +12,7 @@ export const basePasswordSchema = z
   .regex(/[0-9]/, VALIDATION.PASSWORD_NO_NUMBER)
   .regex(/[@$!%*?&#^()._+\-=\[\]{};:,.]/, VALIDATION.PASSWORD_NO_SPECIAL);
 
-const isTurnstileEnabled = process.env.NEXT_PUBLIC_ENABLE_TURNSTILE === 'true';
+const isTurnstileEnabled = (process.env.NEXT_PUBLIC_ENABLE_TURNSTILE as any) === 'true';
 const turnstileField = isTurnstileEnabled
   ? z.string().min(1, VALIDATION.TURNISTILE_ERROR)
   : z.string().optional();

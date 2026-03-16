@@ -1,6 +1,6 @@
 import { db as defaultDb } from '../db';
 import { groupMembers, users } from '../db/schema';
-import { and, eq, sql, inArray } from 'drizzle-orm';
+import { and, eq, sql, inArray, ilike } from 'drizzle-orm';
 import { notDeleted } from '../db/helpers';
 import { mapGroupMembers } from '../utils/mappers/group.mappers';
 import type { GroupMemberStatus } from '../shared/constants/schema/group.schema';
@@ -59,7 +59,7 @@ export const groupMembersRepository = {
       .returning({ userId: groupMembers.userId });
   },
 
-  async getByGroupId(groupId: string, userId: string) {
+  async getByGroupId(groupId: string, userId: string, search?: string) {
     const result = await defaultDb.query.groupMembers.findMany({
       columns: {
         id: true,
@@ -74,7 +74,22 @@ export const groupMembersRepository = {
           columns: { id: true, username: true, subscriptionPlan: true },
         },
       },
-      where: (table, { eq, and }) => eq(table.groupId, groupId),
+      where: (table, { eq, and, exists }) => {
+        const conditions = [eq(table.groupId, groupId)];
+
+        if (search) {
+          conditions.push(
+            exists(
+              defaultDb
+                .select()
+                .from(users)
+                .where(and(eq(users.id, table.userId), ilike(users.username, `%${search}%`))),
+            ),
+          );
+        }
+
+        return and(...conditions);
+      },
       orderBy: (table, { asc }) => [
         asc(sql`CASE 
           WHEN ${table.role} = 'owner' THEN 1 
