@@ -1,5 +1,4 @@
-import { db } from '../db';
-import { isNotNull, and, eq } from 'drizzle-orm';
+import { db } from '../db/index.js';
 
 export const competitionRepository = {
   async getIdBySlug(slug: string): Promise<string | null> {
