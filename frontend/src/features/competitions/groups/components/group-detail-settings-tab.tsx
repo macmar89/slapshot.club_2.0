@@ -34,7 +34,7 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
 
   const handleToggle = async (key: keyof GroupDetailSettings, value: boolean) => {
     setIsSaving(true);
-    const res = await patchUpdateGroupSettings(groupSlug, { [key]: value });
+    const res = await patchUpdateGroupSettings(groupSlug, key, value);
 
     if (res.success) {
       toast.success(t('group_updated_success'));

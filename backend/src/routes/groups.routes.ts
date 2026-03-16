@@ -11,6 +11,7 @@ import {
   transferOwnershipSchema,
   updateMemberRoleSchema,
   removeMemberSchema,
+  updateGroupSettingsSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
@@ -70,6 +71,12 @@ router.get(
   validate(getGroupDetailSchema),
   validateGroupRole(['owner']),
   groupController.getGroupSettingsHandler,
+);
+router.patch(
+  '/:slug/settings',
+  validate(updateGroupSettingsSchema),
+  validateGroupRole(['owner']),
+  groupController.updateGroupSettingsHandler,
 );
 export default router;
 

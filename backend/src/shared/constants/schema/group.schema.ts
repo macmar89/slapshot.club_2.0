@@ -3,6 +3,12 @@ import { z } from 'zod';
 const groupType = ['private', 'vip', 'business', 'pub', 'partner'] as const;
 const groupMemberStatus = ['active', 'pending', 'banned', 'rejected', 'invited'] as const;
 const groupMemberRole = ['owner', 'admin', 'member'] as const;
+const groupSettingKey = [
+  'isAliasRequired',
+  'isLocked',
+  'allowMemberInvites',
+  'requireApproval',
+] as const;
 
 export const groupParamsSchema = z.object({
   slug: z.string().min(1),
@@ -45,6 +51,14 @@ export const getUserGroupsByCompetitionSlugSchema = z.object({
 
 export const getGroupDetailSchema = z.object({
   params: groupParamsSchema,
+});
+
+export const updateGroupSettingsSchema = z.object({
+  params: groupParamsSchema,
+  body: z.object({
+    type: z.enum(groupSettingKey),
+    value: z.boolean(),
+  }),
 });
 
 export const getGroupMembersSchema = z.object({
@@ -95,3 +109,4 @@ export type JoinGroupInput = z.infer<typeof joinGroupSchema>;
 
 export type GroupMemberStatus = z.infer<typeof updateMemberStatusBodySchema>['status'];
 export type GroupMemberRole = z.infer<typeof updateMemberRoleBodySchema>['role'];
+export type GroupSettingKey = z.infer<typeof updateGroupSettingsSchema>['body']['type'];

@@ -17,6 +17,7 @@ import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../../db/helpers.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
 import { groupMembersRepository } from '../../repositories/groupMembers.repository.js';
+import type { GroupSettingKey } from '../../shared/constants/schema/group.schema.js';
 
 export const createGroup = async (
   userId: string,
@@ -217,4 +218,18 @@ export const calculateGroupCapacity = async (
     }, 0);
 
   return Math.min(totalBoost, group!.absoluteMaxCapacity);
+};
+
+export const updateGroupSettings = async (
+  groupId: string,
+  type: GroupSettingKey,
+  value: boolean,
+) => {
+  if (type === 'isAliasRequired') {
+    await groupRepository.updateGroup(groupId, { isAliasRequired: value });
+  }
+
+  await groupRepository.updateGroup(groupId, {
+    settings: sql`COALESCE(settings, '{}'::jsonb) || ${JSON.stringify({ [type]: value })}::jsonb` as any,
+  });
 };

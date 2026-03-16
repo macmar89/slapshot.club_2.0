@@ -34,12 +34,13 @@ export const postJoinGroup = async (code: string, competitionSlug: string) => {
 
 export const patchUpdateGroupSettings = async (
   groupSlug: string,
-  settings: Partial<GroupDetailSettings>,
+  type: keyof GroupDetailSettings,
+  value: boolean,
 ) => {
   try {
-    const response = await api.patch(API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug), settings);
+    const response = await api.patch(API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug), { type, value });
 
-    return { success: response.status === 200, data: response.data };
+    return { success: response.status === 201, data: response.data };
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
     return { success: false, error: errorMessage };
