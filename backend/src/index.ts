@@ -32,6 +32,10 @@ app.use(
 
 app.use(pinoHttp({ logger }));
 
+app.get('/health', (req, res) => {
+  res.status(HttpStatusCode.OK).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/api/v1', apiRouter);
 
 app.all('{*path}', (req, res, next) => {
