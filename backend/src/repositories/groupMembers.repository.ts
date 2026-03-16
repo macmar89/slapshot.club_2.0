@@ -1,10 +1,10 @@
-import { db as defaultDb } from '../db';
-import { groupMembers, users } from '../db/schema';
+import { db as defaultDb } from '../db/index.js';
+import { groupMembers, users } from '../db/schema/index.js';
 import { and, eq, sql, inArray, ilike } from 'drizzle-orm';
-import { notDeleted } from '../db/helpers';
-import { mapGroupMembers } from '../utils/mappers/group.mappers';
-import type { GroupMemberStatus } from '../shared/constants/schema/group.schema';
-import type { GroupRole } from '../types/group.types';
+import { notDeleted } from '../db/helpers.js';
+import { mapGroupMembers } from '../utils/mappers/group.mappers.js';
+import type { GroupMemberStatus } from '../shared/constants/schema/group.schema.js';
+import type { GroupRole } from '../types/group.types.js';
 
 export const groupMembersRepository = {
   async getMemberById(memberId: string, columns?: string[]) {

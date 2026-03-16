@@ -1,7 +1,7 @@
 import { and, count, eq, ne, sql } from 'drizzle-orm';
-import { db } from '../../db';
-import type { AppLocale } from '../../types/global.types';
-import { CompetitionErrors } from '../../shared/constants/errors/competition.errors';
+import { db } from '../../db/index.js';
+import type { AppLocale } from '../../types/global.types.js';
+import { CompetitionErrors } from '../../shared/constants/errors/competition.errors.js';
 import {
   competitions,
   leaderboardEntries,
@@ -9,10 +9,10 @@ import {
   matches,
   predictions,
   teamsLocales,
-} from '../../db/schema';
-import { calculateRate, roundTo } from '../../utils/math';
-import { AppError } from '../../utils/appError';
-import { PlayerMessages } from '../../shared/constants/messages/player.messages';
+} from '../../db/schema/index.js';
+import { calculateRate, roundTo } from '../../utils/math.js';
+import { AppError } from '../../utils/appError.js';
+import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
 
 export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
   const competitions = await db.query.competitions.findMany({

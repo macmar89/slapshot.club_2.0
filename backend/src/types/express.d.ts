@@ -1,5 +1,5 @@
-import { users } from '../db/schema/users';
-import { GroupRequest } from './group.types';
+import { users } from '../db/schema/users.js';
+import { GroupRequest } from './group.types.js';
 
 declare global {
   namespace Express {

@@ -1,5 +1,5 @@
 import { alias } from 'drizzle-orm/pg-core';
-import { assets, teams, teamsLocales } from '../db/schema';
+import { assets, teams, teamsLocales } from '../db/schema/index.js';
 
 export const createTeamAliases = () => {
   const homeTeam = alias(teams, 'homeTeams');

@@ -7,7 +7,7 @@ import {
   uniqueIndex,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { generateCuid, withUpdatesFields } from '../helpers';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
 
 export const assets = pgTable(
   'assets',

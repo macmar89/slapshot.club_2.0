@@ -1,6 +1,6 @@
 import { boolean, pgTable, timestamp, foreignKey, varchar } from 'drizzle-orm/pg-core';
-import { generateCuid, withUpdatesFields } from '../helpers';
-import { users } from './users';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
+import { users } from './users.js';
 
 export const userSettings = pgTable(
   'user_settings',

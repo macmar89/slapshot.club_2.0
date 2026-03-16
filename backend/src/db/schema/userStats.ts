@@ -1,6 +1,6 @@
 import { pgTable, index, foreignKey, varchar, integer, uniqueIndex } from 'drizzle-orm/pg-core';
-import { users } from './users';
-import { generateCuid } from '../helpers';
+import { users } from './users.js';
+import { generateCuid } from '../helpers.js';
 
 export const userStats = pgTable(
   'user_stats',

@@ -1,6 +1,6 @@
-import { db } from '../db';
-import { matches } from '../db/schema';
-import { and, or, eq, ne, gte, sql } from 'drizzle-orm';
+import { db } from '../db/index.js';
+import { matches } from '../db/schema/index.js';
+import { eq, sql } from 'drizzle-orm';
 
 export const matchesRepository = {
   async getPotentialLiveMatches() {

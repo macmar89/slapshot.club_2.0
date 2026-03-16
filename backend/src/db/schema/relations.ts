@@ -22,7 +22,7 @@ import {
   competitionsLocales,
   generalSettings,
   generalSettingsLocales,
-} from './index';
+} from './index.js';
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   refreshTokens: many(refreshTokens),

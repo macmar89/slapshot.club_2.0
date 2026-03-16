@@ -1,4 +1,4 @@
-import { catchAsync } from '../utils/catchAsync';
+import { catchAsync } from '../utils/catchAsync.js';
 import { type Request, type Response } from 'express';
 import {
   findAllCompetitions,
@@ -6,14 +6,14 @@ import {
   findPublicCompetitionName,
   getPlayerStats,
   getPlayerPredictions,
-} from '../services/competitions/competitions.service';
-import { getCompetitionTeams } from '../services/team.service';
-import type { AppLocale } from '../types/global.types';
+} from '../services/competitions/competitions.service.js';
+import { getCompetitionTeams } from '../services/team.service.js';
+import type { AppLocale } from '../types/global.types.js';
 import {
   getCompetitionMatches,
   getMatchDatesByCompetition,
   getUpcomingMatches,
-} from '../services/matches/matches.service';
+} from '../services/matches/matches.service.js';
 
 export const getPlayerStatsHandler = catchAsync(async (req: Request, res: Response) => {
   const username = req.params.username as string;

@@ -1,5 +1,5 @@
-import { db as dbDefault } from '../db';
-import { notDeleted } from '../db/helpers';
+import { db as dbDefault } from '../db/index.js';
+import { notDeleted } from '../db/helpers.js';
 
 export const userRepository = {
   async getSubscriptionPlanById(userId: string) {

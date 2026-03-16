@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
-import { db as defaultDb } from '../db';
-import { groups } from '../db/schema';
-import { notDeleted } from '../db/helpers';
+import { db as defaultDb } from '../db/index.js';
+import { groups } from '../db/schema/index.js';
+import { notDeleted } from '../db/helpers.js';
 
 export const groupRepository = {
   async getById(groupId: string, columns?: string[]) {

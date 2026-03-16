@@ -1,6 +1,6 @@
-import { catchAsync } from '../utils/catchAsync';
+import { catchAsync } from '../utils/catchAsync.js';
 import { type Request, type Response } from 'express';
-import { getLeaderboard, getMemberStatsBySlug } from '../services/leaderboard.service';
+import { getLeaderboard, getMemberStatsBySlug } from '../services/leaderboard.service.js';
 
 export const getLeaderboardHandler = catchAsync(async (req: Request, res: Response) => {
   const slug = req.params.slug as string;

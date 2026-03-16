@@ -10,8 +10,8 @@ import {
   integer,
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
-import { generateCuid, withUpdatesFields } from '../helpers';
-import { enumUsersSubscriptionPlan } from './subscriptions';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
+import { enumUsersSubscriptionPlan } from './subscriptions.js';
 
 export const enumUsersPreferredLanguage = pgEnum('enum_users_preferred_language', [
   'sk',

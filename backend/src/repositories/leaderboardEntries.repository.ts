@@ -1,5 +1,5 @@
-import { db as defaultDb } from '../db';
-import { leaderboardEntries } from '../db/schema';
+import { db as defaultDb } from '../db/index.js';
+import { leaderboardEntries } from '../db/schema/index.js';
 import { sql, and, eq, inArray } from 'drizzle-orm';
 
 export const leaderboardEntriesRepository = {

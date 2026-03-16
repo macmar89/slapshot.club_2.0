@@ -1,5 +1,5 @@
 import { type CookieOptions } from 'express';
-import { IS_PRODUCTION } from '../config/env';
+import { IS_PRODUCTION } from '../config/env.js';
 
 const BASE_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,

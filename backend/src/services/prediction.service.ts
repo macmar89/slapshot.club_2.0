@@ -1,9 +1,9 @@
-import type { CreatePredictionInput } from '../shared/constants/schema/prediction.schema';
-import { db } from '../db';
+import type { CreatePredictionInput } from '../shared/constants/schema/prediction.schema.js';
+import { db } from '../db/index.js';
 import { eq, sql, and, ilike } from 'drizzle-orm';
-import { matches, predictions, users } from '../db/schema';
-import { AppError } from '../utils/appError';
-import { MatchMessages } from '../shared/constants/messages/matches.messages';
+import { matches, predictions, users } from '../db/schema/index.js';
+import { AppError } from '../utils/appError.js';
+import { MatchMessages } from '../shared/constants/messages/matches.messages.js';
 
 export const createPrediction = async (userId: string, data: CreatePredictionInput) => {
   const match = await db.query.matches.findFirst({

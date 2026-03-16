@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../db/index.js';
 import type { Request } from 'express';
 import { auditActionEnum, auditLogs } from '../db/schema/index.js';
 

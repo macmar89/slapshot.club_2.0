@@ -1,6 +1,6 @@
 import { pgEnum, pgTable, timestamp, varchar, foreignKey, text, index } from 'drizzle-orm/pg-core';
-import { generateCuid, withUpdatesFields } from '../helpers';
-import { users } from './users';
+import { generateCuid, withUpdatesFields } from '../helpers.js';
+import { users } from './users.js';
 
 export const enumUsersSubscriptionPlan = pgEnum('enum_users_subscription_plan', [
   'free',

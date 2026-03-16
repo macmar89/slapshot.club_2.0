@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, jsonb, pgEnum, index, varchar } from 'drizzle-orm/pg-core';
-import { generateCuid } from '../helpers';
+import { generateCuid } from '../helpers.js';
 
 export const auditActionEnum = pgEnum('audit_action', [
   'LOGIN_SUCCESS',

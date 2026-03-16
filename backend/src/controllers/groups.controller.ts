@@ -1,4 +1,4 @@
-import { catchAsync } from '../utils/catchAsync';
+import { catchAsync } from '../utils/catchAsync.js';
 import type { Request, Response } from 'express';
 import {
   getGroupMembers,
@@ -8,11 +8,11 @@ import {
   updateMemberRole,
   updateMemberStatus,
 } from '../services/groups/groupsMember.service.js';
-import type { UserSubscriptionPlan } from '../types/user.types';
-import { HttpStatusCode } from '../utils/httpStatusCodes';
-import { GroupMessages } from '../shared/constants/messages/group.messages';
-import { logActivity } from '../services/audit.service';
-import { logger } from '../utils/logger';
+import type { UserSubscriptionPlan } from '../types/user.types.js';
+import { HttpStatusCode } from '../utils/httpStatusCodes.js';
+import { GroupMessages } from '../shared/constants/messages/group.messages.js';
+import { logActivity } from '../services/audit.service.js';
+import { logger } from '../utils/logger.js';
 import {
   createGroup,
   getGroupDetail,
@@ -20,8 +20,8 @@ import {
   getUserGroupsByCompetitionSlug,
   updateGroupSettings,
   deleteGroup,
-} from '../services/groups/groupsCore.service';
-import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service';
+} from '../services/groups/groupsCore.service.js';
+import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service.js';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;

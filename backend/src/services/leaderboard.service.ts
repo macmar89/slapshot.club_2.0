@@ -1,8 +1,8 @@
-import { eq, and, sql, desc } from 'drizzle-orm';
-import { db } from '../db';
-import { predictions, leaderboardEntries } from '../db/schema';
-import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
-import { calculateRate, roundTo } from '../utils/math';
+import { eq, and, sql } from 'drizzle-orm';
+import { db } from '../db/index.js';
+import { predictions, leaderboardEntries } from '../db/schema/index.js';
+import { CompetitionErrors } from '../shared/constants/errors/competition.errors.js';
+import { calculateRate, roundTo } from '../utils/math.js';
 
 export const getLeaderboard = async (slug: string, userId: string) => {
   const competition = await db.query.competitions.findFirst({

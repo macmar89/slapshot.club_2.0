@@ -1,4 +1,4 @@
-import { SUBSCRIPTION_CONFIG } from './subscription.config';
+import { SUBSCRIPTION_CONFIG } from './subscription.config.js';
 
 export const APP_CONFIG = {
   DASHBOARD: {
