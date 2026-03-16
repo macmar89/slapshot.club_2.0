@@ -36,6 +36,12 @@ router.get(
   validateGroupRole(),
   groupController.getGroupLeaderboardHandler,
 );
+router.delete(
+  '/:slug',
+  validate(getGroupDetailSchema),
+  validateGroupRole(['owner']),
+  groupController.deleteGroupHandler,
+);
 router.get(
   '/:slug/members',
   validate(getGroupMembersSchema),

@@ -79,7 +79,7 @@ export const GroupDetailView = () => {
               )}
               {isOwner && (
                 <TabsContent value="settings" className="mt-0">
-                  <GroupDetailSettingsTab groupSlug={groupSlug} />
+                  <GroupDetailSettingsTab groupSlug={groupSlug} competitionSlug={competitionSlug} />
                 </TabsContent>
               )}
             </CustomTabs>

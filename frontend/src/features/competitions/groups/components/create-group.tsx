@@ -128,6 +128,7 @@ export function CreateGroupForm() {
                         <Input
                           placeholder={t('create_modal.name_placeholder')}
                           disabled={isFree || isLoading}
+                          autoComplete="off"
                           className="focus:border-warning/50 focus:ring-warning/50 font-display h-auto rounded-lg border border-white/10 bg-black/40 p-4 text-lg text-white transition-all placeholder:text-white/10 focus:ring-1 focus:outline-none"
                           {...field}
                         />

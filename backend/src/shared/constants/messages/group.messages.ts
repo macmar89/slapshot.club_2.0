@@ -1,6 +1,7 @@
 export const GroupMessages = {
   GROUP_CREATED: 'group_created_successfully',
   JOIN_GROUP_SUCCESS: 'join_group_success',
+  GROUP_DELETED: 'group_deleted_successfully',
 
   ERRORS: {
     GROUP_NOT_FOUND: 'group_not_found',

@@ -1,5 +1,5 @@
 import useSWR, { useSWRConfig } from 'swr';
-import { GroupDetailSettings } from '../group.types';
+import { GroupDetailSettings } from '@/features/competitions/groups/group.types';
 import { API_ROUTES } from '@/lib/api-routes';
 import { ListSkeleton } from '@/components/common/skeletons';
 import { useTranslations } from 'next-intl';
@@ -10,16 +10,31 @@ import { Copy, Trash2, Shield, UserPlus, Lock, Key } from 'lucide-react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import React from 'react';
+import { useState } from 'react';
 import { patchUpdateGroupSettings, deleteGroup } from '../groups.api';
 import { toast } from 'sonner';
 import { useRouter } from '@/i18n/routing';
+import dynamic from 'next/dynamic';
+
+const GroupDeleteDialog = dynamic(
+  () =>
+    import('@/features/competitions/groups/components/group-delete-dialog').then(
+      (m) => m.GroupDeleteDialog,
+    ),
+  {
+    ssr: false,
+  },
+);
 
 interface GroupDetailSettingsTabProps {
   groupSlug: string;
+  competitionSlug: string;
 }
 
-export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProps) => {
+export const GroupDetailSettingsTab = ({
+  groupSlug,
+  competitionSlug,
+}: GroupDetailSettingsTabProps) => {
   const t = useTranslations('Groups');
   const { copy } = useCopyToClipboard();
   const { mutate } = useSWRConfig();
@@ -29,8 +44,9 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
     API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug),
   );
 
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const handleToggle = async (key: keyof GroupDetailSettings, value: boolean) => {
     setIsSaving(true);
@@ -46,18 +62,18 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
   };
 
   const handleDelete = async () => {
-    if (!confirm(t('delete_confirm_desc') || 'Are you sure you want to delete this group?')) return;
-
     setIsDeleting(true);
     const res = await deleteGroup(groupSlug);
 
     if (res.success) {
       toast.success(t('league_deleted'));
-      router.push('/arena');
+      router.push(`/${competitionSlug}/groups`);
+      await mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(competitionSlug));
     } else {
       toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       setIsDeleting(false);
     }
+    setIsDeleteDialogOpen(false);
   };
 
   return (
@@ -112,12 +128,12 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
                 <div className="flex justify-start lg:justify-end">
                   <Button
                     variant="destructive"
-                    onClick={handleDelete}
+                    onClick={() => setIsDeleteDialogOpen(true)}
                     disabled={isDeleting || isSaving}
                     className="shadow-destructive/20 h-9 shrink-0 cursor-pointer gap-2 px-4 shadow-lg"
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span>{isDeleting ? t('deleting_league') : t('delete_league_action')}</span>
+                    <span>{t('delete_league_action')}</span>
                   </Button>
                 </div>
               </div>
@@ -214,6 +230,13 @@ export const GroupDetailSettingsTab = ({ groupSlug }: GroupDetailSettingsTabProp
                 </div>
               </div>
             </IceGlassCard>
+
+            <GroupDeleteDialog
+              isOpen={isDeleteDialogOpen}
+              setIsOpen={setIsDeleteDialogOpen}
+              onDelete={handleDelete}
+              isDeleting={isDeleting}
+            />
           </div>
         );
       }}

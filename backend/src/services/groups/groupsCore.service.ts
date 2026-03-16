@@ -230,6 +230,39 @@ export const updateGroupSettings = async (
   }
 
   await groupRepository.updateGroup(groupId, {
-    settings: sql`COALESCE(settings, '{}'::jsonb) || ${JSON.stringify({ [type]: value })}::jsonb` as any,
+    settings:
+      sql`COALESCE(settings, '{}'::jsonb) || ${JSON.stringify({ [type]: value })}::jsonb` as any,
+  });
+};
+
+export const deleteGroup = async (groupId: string, userId: string) => {
+  const group = await groupRepository.getById(groupId, [
+    'id',
+    'ownerId',
+    'deletedAt',
+    'competitionId',
+  ]);
+
+  if (!group || group.deletedAt) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  if (group.ownerId !== userId) {
+    throw new AppError(GroupMessages.ERRORS.INSUFFICIENT_PERMISSIONS, HttpStatusCode.FORBIDDEN);
+  }
+
+  await db.transaction(async (tx) => {
+    await groupRepository.deleteGroup(groupId, tx);
+
+    await leaderboardEntriesRepository.decrementOwnedPrivateGroupsCount(
+      group.competitionId,
+      userId,
+      tx,
+    );
+    await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
+      group.competitionId,
+      userId,
+      tx,
+    );
   });
 };

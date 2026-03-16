@@ -313,7 +313,7 @@ export const updateMemberRole = async (
   return { targetId };
 };
 
-export const removeMember = async (memberId: string, groupId: string, userId: string) => {
+export const removeMember = async (memberId: string, groupId: string) => {
   const member = await groupMembersRepository.getMemberById(memberId, ['userId', 'status']);
 
   if (!member) {
@@ -337,10 +337,12 @@ export const removeMember = async (memberId: string, groupId: string, userId: st
       throw new AppError(AuthMessages.ERRORS.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
     }
 
+    const competitionId = await groupRepository.getCompetitionIdByGroupId(groupId);
+
     await groupMembersRepository.removeMember(memberId, groupId, tx);
     await groupRepository.decrementMemberCount(groupId, tx);
     await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
-      groupId,
+      competitionId!,
       member.userId,
       tx,
     );

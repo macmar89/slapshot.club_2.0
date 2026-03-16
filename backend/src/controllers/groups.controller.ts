@@ -19,6 +19,7 @@ import {
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
   updateGroupSettings,
+  deleteGroup,
 } from '../services/groups/groupsCore.service';
 import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service';
 
@@ -195,7 +196,7 @@ export const removeMemberHandler = catchAsync(async (req: Request, res: Response
   const { groupId } = req.group!;
   const { id: userId } = req.user!;
 
-  const response = await removeMember(memberId as string, groupId, userId);
+  const response = await removeMember(memberId as string, groupId);
 
   logActivity(
     req,
@@ -211,7 +212,7 @@ export const removeMemberHandler = catchAsync(async (req: Request, res: Response
     },
   ).catch((err) => logger.error(err));
 
-  return res.status(HttpStatusCode.OK).json({ status: 'success', response });
+  return res.status(HttpStatusCode.OK).json({ status: 'success' });
 });
 
 export const updateGroupSettingsHandler = catchAsync(async (req: Request, res: Response) => {
@@ -236,4 +237,25 @@ export const updateGroupSettingsHandler = catchAsync(async (req: Request, res: R
   ).catch((err) => logger.error(err));
 
   return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
+});
+
+export const deleteGroupHandler = catchAsync(async (req: Request, res: Response) => {
+  const { groupId } = req.group!;
+  const { id: userId } = req.user!;
+
+  await deleteGroup(groupId, userId);
+
+  logActivity(
+    req,
+    'GROUP_DELETE',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      action: 'GROUP_DELETE',
+    },
+  ).catch((err) => logger.error(err));
+
+  return res
+    .status(HttpStatusCode.OK)
+    .json({ status: 'success', data: { message: GroupMessages.GROUP_DELETED } });
 });
