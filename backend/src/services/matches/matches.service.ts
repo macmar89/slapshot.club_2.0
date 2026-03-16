@@ -1,13 +1,13 @@
 import { eq, isNull, and, gte, asc, count, lt, sql } from 'drizzle-orm';
-import { matches, predictions } from '../db/schema';
-import type { AppLocale } from '../types/global.types';
-import { db } from '../db';
-import { CompetitionErrors } from '../shared/constants/errors/competition.errors';
+import { matches, predictions } from '../../db/schema';
+import type { AppLocale } from '../../types/global.types';
+import { db } from '../../db';
+import { CompetitionErrors } from '../../shared/constants/errors/competition.errors';
 import { addDays } from 'date-fns';
-import { APP_CONFIG } from '../config/app';
-import { createTeamAliases } from '../utils/helpers';
-import { MatchMessages } from '../shared/constants/messages/matches.messages';
-import { mapMatchToPreview } from '../utils/mappers/matches.mappers';
+import { APP_CONFIG } from '../../config/app';
+import { createTeamAliases } from '../../utils/helpers';
+import { MatchMessages } from '../../shared/constants/messages/matches.messages';
+import { mapMatchToPreview } from '../../utils/mappers/matches.mappers';
 
 export const getUpcomingMatches = async (userId: string, slug: string, locale: AppLocale) => {
   const competition = await db.query.competitions.findFirst({

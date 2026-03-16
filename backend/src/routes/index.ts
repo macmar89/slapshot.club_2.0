@@ -8,6 +8,7 @@ import competitionRoutes from './competition.routes.js';
 import feedbackRoutes from './feedback.routes.js';
 import predictionRoutes from './prediction.routes.js';
 import matchRoutes from './matches.routes.js';
+import publicMatchRoutes from './matches.public.routes.js';
 import groupRoutes from './groups.routes.js';
 
 const router = Router();
@@ -21,5 +22,10 @@ router.use('/feedback', isAuth, feedbackRoutes);
 router.use('/groups', isAuth, groupRoutes);
 router.use('/matches', isAuth, matchRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
+
+// Public Routes
+if (process.env.NODE_ENV === 'development') {
+  router.use('/public/matches', publicMatchRoutes);
+}
 
 export default router;

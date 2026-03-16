@@ -13,7 +13,7 @@ import {
   getCompetitionMatches,
   getMatchDatesByCompetition,
   getUpcomingMatches,
-} from '../services/matches.service';
+} from '../services/matches/matches.service';
 
 export const getPlayerStatsHandler = catchAsync(async (req: Request, res: Response) => {
   const username = req.params.username as string;
