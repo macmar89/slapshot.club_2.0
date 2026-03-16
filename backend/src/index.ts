@@ -11,6 +11,7 @@ import { AppError } from './utils/appError.js';
 import { HttpStatusCode } from './utils/httpStatusCodes.js';
 import './workers/email.worker.js';
 import './workers/matches.worker.js';
+import './workers/competitions.worker.js';
 import { scheduleMatchesSyncMasterJob, scheduleLiveMatchesTicker } from './queues/matches.queue.js';
 import { env } from './config/env';
 

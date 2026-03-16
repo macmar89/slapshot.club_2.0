@@ -8,6 +8,8 @@ import { userStats } from '../../db/schema/userStats.js';
 import { logger } from '../../utils/logger.js';
 import { APP_CONFIG } from '../../config/app.js';
 import { type ScoringResult } from '../../types/prediction.types.js';
+import { predictionsRepository } from '../../repositories/predictions.repository.js';
+import { competitionsQueue } from '../../queues/competitions.queue.js';
 
 export function calculatePoints(
   prediction: { homeGoals: number | null; awayGoals: number | null },
@@ -91,10 +93,7 @@ export async function evaluateMatch(matchId: string) {
     return;
   }
 
-  const allPredictions = await db
-    .select()
-    .from(predictions)
-    .where(and(eq(predictions.matchId, matchId), not(eq(predictions.status, 'evaluated'))));
+  const allPredictions = await predictionsRepository.getPredictionsByMatchId(matchId);
 
   logger.info(
     `[EVALUATE] Processing ${allPredictions.length} predictions for ${match.displayTitle}...`,
@@ -205,6 +204,10 @@ export async function evaluateMatch(matchId: string) {
             lifetimePoints: (uStats.lifetimePoints || 0) + stats.points,
             lifetimePossiblePoints:
               (uStats.lifetimePossiblePoints || 0) + stats.count * APP_CONFIG.POINTS.EXACT,
+            lifeTimeExactGuesses: (uStats.lifeTimeExactGuesses || 0) + stats.exact,
+            lifeTimeCorrectTrends: (uStats.lifeTimeCorrectTrends || 0) + stats.trend,
+            lifeTimeCorrectDiffs: (uStats.lifeTimeCorrectDiffs || 0) + stats.diff,
+            lifeTimeWrongGuesses: (uStats.lifeTimeWrongGuesses || 0) + stats.wrong,
           })
           .where(eq(userStats.id, uStats.id));
       } else {
@@ -213,6 +216,10 @@ export async function evaluateMatch(matchId: string) {
           totalPredictions: stats.count,
           lifetimePoints: stats.points,
           lifetimePossiblePoints: stats.count * APP_CONFIG.POINTS.EXACT,
+          lifeTimeExactGuesses: stats.exact,
+          lifeTimeCorrectTrends: stats.trend,
+          lifeTimeCorrectDiffs: stats.diff,
+          lifeTimeWrongGuesses: stats.wrong,
           currentOvr: 0,
           maxOvrEver: 0,
         });
@@ -223,7 +230,12 @@ export async function evaluateMatch(matchId: string) {
     }
   }
 
-  logger.info(`[EVALUATE] Finished in ${Date.now() - startTime}ms.`);
+  logger.info(`[EVALUATE] Finished in ${Date.now() - startTime}ms. Queueing rank recalculation.`);
+
+  // 4. Trigger rank recalculation for the competition
+  await competitionsQueue.add('recalculateCompetitionRanks', {
+    competitionId: competition.id,
+  });
 }
 
 export async function revertMatchEvaluation(matchId: string) {
@@ -345,6 +357,10 @@ export async function revertMatchEvaluation(matchId: string) {
               0,
               (uStats.lifetimePossiblePoints || 0) - stats.count * APP_CONFIG.POINTS.EXACT,
             ),
+            lifeTimeExactGuesses: Math.max(0, (uStats.lifeTimeExactGuesses || 0) - stats.exact),
+            lifeTimeCorrectTrends: Math.max(0, (uStats.lifeTimeCorrectTrends || 0) - stats.trend),
+            lifeTimeCorrectDiffs: Math.max(0, (uStats.lifeTimeCorrectDiffs || 0) - stats.diff),
+            lifeTimeWrongGuesses: Math.max(0, (uStats.lifeTimeWrongGuesses || 0) - stats.wrong),
           })
           .where(eq(userStats.id, uStats.id));
       }
