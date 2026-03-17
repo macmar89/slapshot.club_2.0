@@ -29,3 +29,7 @@ export const generateSlug = (name: string, suffix?: string) => {
 
   return suffix ? `${base}-${suffix}` : base;
 };
+
+export const slugifyRoundLabel = (label: string): string => {
+  return slugify(label, { separator: '_', lowercase: true });
+};

@@ -810,5 +810,13 @@
       "description": "An unexpected error occurred on the server. Please try again later.",
       "button": "Back Home"
     }
+  },
+  "Matches": {
+    "apiHockeyRound": {
+      "quarter_finals": "Quarter-finals",
+      "semi_finals": "Semi-finals",
+      "finals": "Finals",
+      "round_format": "Round {count}"
+    }
   }
 }

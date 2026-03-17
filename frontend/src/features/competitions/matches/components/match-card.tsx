@@ -11,8 +11,9 @@ import { Match } from '@/features/competitions/matches/matches.types';
 import { usePredictionStore } from '@/features/competitions/predictions/store/use-prediction-store';
 import { useAuthStore } from '@/store/use-auth-store';
 import { useRouter } from '@/i18n/routing';
-import { MatchTeamDisplay } from './match-team-display';
-import { MatchPredictionsBar } from './match-predictions-bar';
+import { MatchTeamDisplay } from '@/features/competitions/matches/components/match-team-display';
+import { MatchPredictionsBar } from '@/features/competitions/matches/components/match-predictions-bar';
+import { translateRound } from '@/features/competitions/matches/matches.utils';
 
 interface MatchCardProps {
   match: Match;
@@ -21,6 +22,7 @@ interface MatchCardProps {
 
 export function MatchCard({ match, refresh }: MatchCardProps) {
   const t = useTranslations('Dashboard.matches');
+  const tm = useTranslations('Matches.apiHockeyRound');
   const router = useRouter();
   const { slug } = useParams();
 
@@ -69,30 +71,30 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         match.status === 'cancelled' && 'opacity-40 grayscale-[0.5]',
       )}
     >
-      <div className="absolute top-4 right-4 md:top-6 md:right-6">
-        <div
-          className={cn(
-            'rounded-app flex items-center gap-2 border px-3 py-1 text-[0.6rem] font-black tracking-widest uppercase',
-            statusStyles[match.status as keyof typeof statusStyles] || statusStyles.scheduled,
-          )}
-        >
-          {match.status === 'live' && (
-            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
-          )}
-          {t(match.status)}
-        </div>
-      </div>
-
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-warning mb-1 text-[0.65rem] font-black tracking-[0.2em] uppercase">
-            {match.roundLabel || match.groupName}
-          </span>
-          <span className="text-xs font-bold text-white/80">
+      <div className="mb-6 flex flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-bold text-white">
             {matchDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} •{' '}
             {matchDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
-          </span>
+          </p>
+          <div
+            className={cn(
+              'rounded-app flex items-center gap-2 border px-3 py-1 text-[0.6rem] font-black tracking-widest uppercase',
+              statusStyles[match.status as keyof typeof statusStyles] || statusStyles.scheduled,
+            )}
+          >
+            {match.status === 'live' && (
+              <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+            )}
+            {t(match.status)}
+          </div>
         </div>
+
+        {match.roundLabel && (
+          <p className="text-xs font-bold tracking-[0.2em] text-white/80 uppercase">
+            {translateRound(match.roundLabel, tm)}
+          </p>
+        )}
       </div>
 
       <div className="mb-8 flex items-center justify-between gap-4">

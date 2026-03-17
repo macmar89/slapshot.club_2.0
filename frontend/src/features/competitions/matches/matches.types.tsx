@@ -54,3 +54,9 @@ export interface Match {
 
   userPrediction: UserPrediction | null;
 }
+
+export enum MatchRound {
+  QUARTER_FINALS = 'quarter_finals',
+  SEMI_FINALS = 'semi_finals',
+  FINALS = 'finals',
+}

@@ -808,5 +808,13 @@
       "description": "Na serveru nastala neočekávaná chyba. Zkuste to později.",
       "button": "Návrat domů"
     }
+  },
+  "Matches": {
+    "apiHockeyRound": {
+      "quarter_finals": "Čtvrtfinále",
+      "semi_finals": "Semifinále",
+      "finals": "Finále",
+      "round_format": "{count}. kolo"
+    }
   }
 }
