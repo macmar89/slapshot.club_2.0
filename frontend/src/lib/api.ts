@@ -1,10 +1,15 @@
 import axios from 'axios';
 import { API_ROUTES } from './api-routes';
 
-let isRefreshing = false;
-let failedQueue: any[] = [];
+interface FailedRequest {
+  resolve: (token: string | null) => void;
+  reject: (error: any) => void;
+}
 
-const processQueue = (error: any, token: string | null = null) => {
+let isRefreshing = false;
+let failedQueue: FailedRequest[] = [];
+
+const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) prom.reject(error);
     else prom.resolve(token);
@@ -53,7 +58,7 @@ api.interceptors.response.use(
         await api.post(API_ROUTES.AUTH.REFRESH);
         processQueue(null);
         return api(originalRequest);
-      } catch (refreshError) {
+      } catch (refreshError: any) {
         processQueue(refreshError, null);
         return Promise.reject(refreshError);
       } finally {
