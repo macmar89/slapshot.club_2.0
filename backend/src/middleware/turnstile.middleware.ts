@@ -6,7 +6,7 @@ import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { env } from '../config/env.js';
 
 export const verifyTurnstile = async (req: Request, res: Response, next: NextFunction) => {
-  if (!env.NEXT_PUBLIC_ENABLE_TURNSTILE) {
+  if (env.DISABLE_TURNSTILE) {
     return next();
   }
 

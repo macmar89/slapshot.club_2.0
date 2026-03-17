@@ -16,7 +16,7 @@ export interface TurnstileResponse {
  * @returns boolean indicating if the verification was successful.
  */
 export const verifyTurnstileToken = async (token: string, ip?: string): Promise<boolean> => {
-  if (!env.NEXT_PUBLIC_ENABLE_TURNSTILE) {
+  if (env.DISABLE_TURNSTILE) {
     return true;
   }
 
