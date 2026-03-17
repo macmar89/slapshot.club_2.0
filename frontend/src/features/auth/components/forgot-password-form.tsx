@@ -48,7 +48,7 @@ export const ForgotPasswordForm = () => {
         setError(t(`errors.${res.message}`));
       }
     } catch {
-      setError(t('error_generic'));
+      setError(t('errors.unexpected_error'));
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +116,7 @@ export const ForgotPasswordForm = () => {
 
         <Turnstile
           onSuccess={(token: string) => setValue('turnstileToken', token)}
-          onError={() => setError(t('turnstile_error'))}
+          onError={() => setError(t('errors.turnstile_error'))}
           onExpire={() => setValue('turnstileToken', '')}
         />
         {errors.turnstileToken && (

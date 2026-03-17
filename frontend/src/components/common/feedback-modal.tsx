@@ -19,6 +19,7 @@ import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { submitFeedbackAction } from '@/actions/feedback';
+import { Turnstile } from '@/components/common/turnstile';
 
 interface FeedbackModalProps {
   children?: React.ReactNode;
@@ -40,6 +41,7 @@ export function FeedbackModal({
   const [open, setOpen] = useState(defaultOpen || false);
   const [type, setType] = useState<'bug' | 'idea' | 'other'>('idea');
   const [message, setMessage] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -50,6 +52,7 @@ export function FeedbackModal({
       setTimeout(() => {
         setType('idea');
         setMessage('');
+        setTurnstileToken('');
       }, 300);
     }
   };
@@ -59,7 +62,7 @@ export function FeedbackModal({
     if (!message.trim()) return;
 
     setIsSubmitting(true);
-    const result = await submitFeedbackAction(type, message, pathname);
+    const result = await submitFeedbackAction(type, message, pathname, turnstileToken);
     setIsSubmitting(false);
 
     if (result.ok) {
@@ -148,6 +151,12 @@ export function FeedbackModal({
               disabled={isSubmitting}
             />
           </div>
+
+          <Turnstile
+            onSuccess={setTurnstileToken}
+            onError={() => toast.error(t('turnstile_error'))}
+            onExpire={() => setTurnstileToken('')}
+          />
 
           <Button type="submit" disabled={isSubmitting || !message.trim()}>
             {isSubmitting ? (

@@ -28,6 +28,7 @@ const envSchema = z.object({
   // Business Logic & Config
   DEFAULT_USER_PLAN: z.enum(['free', 'starter', 'pro']),
   NEXT_PUBLIC_ENABLE_TURNSTILE: z.coerce.boolean().default(false),
+  TURNSTILE_SECRET_KEY: z.string().optional(),
 
   // Email (Brevo)
   BREVO_API_KEY: z.string().min(1, 'Brevo API key is required'),

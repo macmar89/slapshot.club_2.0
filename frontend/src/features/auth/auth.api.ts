@@ -1,7 +1,13 @@
 import { API_ROUTES } from '@/lib/api-routes';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/use-auth-store';
-import { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput } from './auth.schema';
+import {
+  LoginInput,
+  RegisterInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
+  ResendVerificationInput,
+} from './auth.schema';
 
 export const handlePostRegister = async (values: RegisterInput) => {
   const { setUser } = useAuthStore.getState();
@@ -121,9 +127,9 @@ export const handlePostVerify = async (token: string) => {
   }
 };
 
-export const handlePostResendVerification = async (email: string) => {
+export const handlePostResendVerification = async (values: ResendVerificationInput) => {
   try {
-    const { data } = await api.post(API_ROUTES.AUTH.RESEND_VERIFICATION, { email });
+    const { data } = await api.post(API_ROUTES.AUTH.RESEND_VERIFICATION, values);
 
     return {
       success: true,

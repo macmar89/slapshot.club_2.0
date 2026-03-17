@@ -7,6 +7,7 @@ import { handlePostVerify, handlePostResendVerification } from '@/features/auth/
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { Loader2, CheckCircle2, XCircle, Send } from 'lucide-react';
+import { Turnstile } from '@/components/common/turnstile';
 
 import { useAuthStore } from '@/store/use-auth-store';
 
@@ -22,6 +23,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [isResending, setIsResending] = useState<boolean>(false);
   const [resendDone, setResendDone] = useState<boolean>(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
   const [email] = useState<string | null>(initialEmail || null);
   const hasStartedVerification = useRef(false);
 
@@ -57,7 +59,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
     if (!email) return;
     setIsResending(true);
     try {
-      const res = await handlePostResendVerification(email);
+      const res = await handlePostResendVerification({ email, turnstileToken });
       if (res.success) {
         setResendDone(true);
       }
@@ -119,25 +121,32 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
                       {t('verification_sent')}
                     </div>
                   ) : email ? (
-                    <Button
-                      color="gold"
-                      variant="ghost"
-                      className="border-gold/20 hover:bg-gold/10 w-full border"
-                      onClick={handleResend}
-                      disabled={isResending}
-                    >
-                      {isResending ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t('resending')}
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4" />
-                          {t('resend_verification')}
-                        </>
-                      )}
-                    </Button>
+                    <>
+                      <Turnstile
+                        onSuccess={setTurnstileToken}
+                        onError={() => console.error('Turnstile error')}
+                        onExpire={() => setTurnstileToken('')}
+                      />
+                      <Button
+                        color="gold"
+                        variant="ghost"
+                        className="border-gold/20 hover:bg-gold/10 w-full border"
+                        onClick={handleResend}
+                        disabled={isResending}
+                      >
+                        {isResending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {t('resending')}
+                          </>
+                        ) : (
+                          <>
+                            <Send className="mr-2 h-4 w-4" />
+                            {t('resend_verification')}
+                          </>
+                        )}
+                      </Button>
+                    </>
                   ) : (
                     <Button
                       color="gold"

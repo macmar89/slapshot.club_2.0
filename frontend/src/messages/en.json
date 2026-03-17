@@ -242,7 +242,6 @@
     "reset_password_button": "Reset password",
     "sending": "Sending...",
     "back_to_login": "Back to login",
-    "turnstile_error": "Please confirm you are not a robot.",
     "register_success_title": "Account Created!",
     "register_success_description": "We've sent a verification link to your email. Please check your inbox and confirm your roster spot before signing in.",
     "verifying_roster": "Verifying your roster spot...",
@@ -258,6 +257,9 @@
     "gdpr_label_link": "personal data (GDPR)",
     "marketing_label": "I want to be in the first line! 🏒 Send me news from the locker room about new leagues and tweaks so I have the game under control.",
     "errors": {
+      "turnstile_error": "Please confirm you are not a robot.",
+      "registration_failed": "Registration failed. Please try again.",
+      "unexpected_error": "An unexpected error occurred. Please try again.",
       "wrong_credentials": "Invalid username or password",
       "username_too_short": "Username must be at least 2 characters long",
       "password_too_short": "Password must be at least 8 characters long",

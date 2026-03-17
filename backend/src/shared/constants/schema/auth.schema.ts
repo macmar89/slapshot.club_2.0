@@ -12,10 +12,7 @@ export const basePasswordSchema = z
   .regex(/[0-9]/, VALIDATION.PASSWORD_NO_NUMBER)
   .regex(/[@$!%*?&#^()._+\-=\[\]{};:,.]/, VALIDATION.PASSWORD_NO_SPECIAL);
 
-const isTurnstileEnabled = (process.env.NEXT_PUBLIC_ENABLE_TURNSTILE as any) === 'true';
-const turnstileField = isTurnstileEnabled
-  ? z.string().min(1, VALIDATION.TURNISTILE_ERROR)
-  : z.string().optional();
+const turnstileField = z.string().optional();
 
 export const RegisterSchema = z.object({
   username: z
@@ -41,6 +38,7 @@ export const RegisterHandlerSchema = z.object({
 export const LoginSchema = z.object({
   identifier: z.string().min(2, AuthErrors.VALIDATION.USERNAME_TOO_SHORT),
   password: z.string().min(8, AuthErrors.VALIDATION.PASSWORD_TOO_SHORT),
+  turnstileToken: turnstileField,
 });
 
 export const CheckAvailabilitySchema = z.object({
@@ -60,6 +58,7 @@ export const VerifyEmailHandlerSchema = z.object({
 
 export const ResendVerificationSchema = z.object({
   email: z.email(VALIDATION.INVALID_EMAIL),
+  turnstileToken: turnstileField,
 });
 
 export const ResendVerificationHandlerSchema = z.object({
@@ -67,7 +66,8 @@ export const ResendVerificationHandlerSchema = z.object({
 });
 
 export const ForgotPasswordSchema = z.object({
-  email: z.string().email(VALIDATION.INVALID_EMAIL),
+  email: z.email(VALIDATION.INVALID_EMAIL),
+  turnstileToken: turnstileField,
 });
 
 export const ForgotPasswordHandlerSchema = z.object({

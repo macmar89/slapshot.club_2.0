@@ -7,12 +7,14 @@ export async function submitFeedbackAction(
   type: 'bug' | 'idea' | 'other',
   message: string,
   pageUrl: string,
+  turnstileToken?: string,
 ) {
   try {
     const response = await api.post(API_ROUTES.FEEDBACK, {
       type,
       message,
       pageUrl,
+      turnstileToken,
     });
 
     return { ok: true, data: response.data };

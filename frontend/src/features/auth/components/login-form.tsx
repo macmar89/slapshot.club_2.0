@@ -53,11 +53,11 @@ export const LoginForm = () => {
         router.refresh();
         router.push('/arena');
       } else {
-        setError(res.message || 'Prihlásenie zlyhalo');
+        setError(res.message || 'registration_failed');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Nastala neočakávaná chyba');
+      setError('unexpected_error');
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +131,7 @@ export const LoginForm = () => {
                   <Turnstile
                     onSuccess={field.onChange}
                     onError={() =>
-                      form.setError('turnstileToken', { message: t('turnstile_error') })
+                      form.setError('turnstileToken', { message: t('errors.turnstile_error') })
                     }
                     onExpire={() => field.onChange('')}
                   />

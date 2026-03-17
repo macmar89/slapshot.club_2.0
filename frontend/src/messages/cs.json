@@ -240,7 +240,6 @@
     "reset_password_button": "Resetovat heslo",
     "sending": "Odesílám...",
     "back_to_login": "Zpět na přihlášení",
-    "turnstile_error": "Potvrďte prosím, že nejste robot.",
     "register_success_title": "Účet byl vytvořen!",
     "register_success_description": "Na tvůj email jsme poslali ověřovací odkaz. Před přihlášením si prosím zkontroluj schránku a potvrď svou soupisku.",
     "verifying_roster": "Ověřuji tvou soupisku...",
@@ -253,6 +252,9 @@
     "verification_sent": "Nový ověřovací e-mail byl odeslán",
     "resending": "Odesílám...",
     "errors": {
+      "turnstile_error": "Potvrďte prosím, že nejste robot.",
+      "registration_failed": "Registrace selhala. Zkuste to prosím znovu.",
+      "unexpected_error": "Nastala neočekávaná chyba. Zkuste to prosím znovu.",
       "wrong_credentials": "Nesprávné jméno nebo heslo",
       "username_too_short": "Uživatelské jméno musí mít alespoň 2 znaky",
       "password_too_short": "Heslo musí mít alespoň 8 znaků",

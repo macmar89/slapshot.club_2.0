@@ -9,22 +9,30 @@ import {
   ForgotPasswordHandlerSchema,
   ResetPasswordHandlerSchema,
 } from '../shared/constants/schema/auth.schema.js';
+import { verifyTurnstile } from '../middleware/turnstile.middleware.js';
 
 const router = Router();
 
 router.get('/check-availability', authController.checkAvailabilityHandler);
-router.post('/login', authController.login);
+router.post('/login', verifyTurnstile, authController.login);
 router.post('/logout', authController.logout);
 router.get('/me', isAuth, authController.getMe);
 router.post('/refresh', authController.refreshTokenHandler);
-router.post('/register', validate(RegisterHandlerSchema), authController.registerHandler);
+router.post(
+  '/register',
+  verifyTurnstile,
+  validate(RegisterHandlerSchema),
+  authController.registerHandler,
+);
 router.post(
   '/resend-verification',
+  verifyTurnstile,
   validate(ResendVerificationHandlerSchema),
   authController.resendVerificationHandler,
 );
 router.post(
   '/forgot-password',
+  verifyTurnstile,
   validate(ForgotPasswordHandlerSchema),
   authController.forgotPasswordHandler,
 );
