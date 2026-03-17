@@ -39,7 +39,7 @@
       "leaderboard": "Rebríček",
       "groups": "Skupiny",
       "leagues": "Mini-ligy",
-      "rules": "Pravidlá",
+      "manual": "Príručka",
       "profile": "Môj Účet",
       "settings": "Nastavenia",
       "management": "Manažment",
@@ -537,8 +537,8 @@
     "description": "Puk sa nám niekde stratil v rohu klziska a tvoj útok skončil skôr, než začal. Táto stránka na súpiske nie je.",
     "button": "NASPÄŤ DO ŠATNE (ARÉNA)"
   },
-  "Rules": {
-    "title": "Pravidlá hry",
+  "UserManual": {
+    "title": "Užívateľská príručka",
     "description": "Tu nájdeš všetko podstatné, aby si mohol začať zbierať body.",
     "scoring_title": "Bodovanie",
     "exact_score": "Presný výsledok",
@@ -556,6 +556,7 @@
     },
     "no_competitions": "Momentálne nie sú aktívne žiadne súťaže s vlastným bodovaním.",
     "tabs_rules": "Pravidlá",
+    "tabs_groups": "Skupiny",
     "tabs_minileagues": "Mini ligy",
     "tabs_gdpr": "GDPR"
   },

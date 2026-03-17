@@ -39,7 +39,7 @@
       "leaderboard": "Leaderboard",
       "groups": "Groups",
       "leagues": "Mini Leagues",
-      "rules": "Rules",
+      "manual": "Manual",
       "profile": "My Account",
       "settings": "Settings",
       "management": "Management",
@@ -536,7 +536,7 @@
     "description": "The puck got lost somewhere in the corner and your attack ended before it even started. This page isn't on the roster.",
     "button": "BACK TO LOCKER ROOM (ARENA)"
   },
-  "Rules": {
+  "UserManual": {
     "title": "Game Rules",
     "description": "Here you'll find everything you need to start collecting points.",
     "scoring_title": "Scoring",
@@ -555,6 +555,7 @@
     },
     "no_competitions": "There are currently no active competitions with custom scoring.",
     "tabs_rules": "Rules",
+    "tabs_groups": "Groups",
     "tabs_minileagues": "Mini Leagues",
     "tabs_gdpr": "GDPR"
   },

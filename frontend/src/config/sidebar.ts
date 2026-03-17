@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Trophy, FileText, User } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Trophy } from 'lucide-react';
 
 export interface DashboardItem {
   labelKey: string;
@@ -27,16 +27,6 @@ export const dashboardConfig = {
       labelKey: 'groups',
       href: '/[slug]/groups',
       icon: Users,
-    },
-    {
-      labelKey: 'rules',
-      href: '/rules',
-      icon: FileText,
-    },
-    {
-      labelKey: 'profile',
-      href: '/account',
-      icon: User,
     },
   ] as DashboardItem[],
 };

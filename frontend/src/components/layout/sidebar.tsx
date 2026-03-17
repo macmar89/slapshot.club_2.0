@@ -1,82 +1,76 @@
 'use client';
 
-import { dashboardConfig } from '@/config/sidebar';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/i18n/routing';
-import { useParams } from 'next/navigation';
-import { LayoutDashboard } from 'lucide-react';
-import { CompetitionPublicInfo } from '@/features/competitions/competitions.types';
+import { FileText, User, MessageSquarePlus } from 'lucide-react';
+import { FeedbackModal } from '@/components/common/feedback-modal';
 
-interface SidebarProps {
-  competition: CompetitionPublicInfo;
+interface SidebarItemProps {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  isActive?: boolean;
 }
 
-export const Sidebar = ({ competition }: SidebarProps) => {
+export const SidebarItem = ({ href, icon: Icon, label, isActive }: SidebarItemProps) => (
+  <Link
+    href={href as any}
+    className={cn(
+      'group relative flex gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
+      isActive ? 'text-white' : 'text-white/70 hover:text-white',
+    )}
+  >
+    {isActive && (
+      <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
+    )}
+    <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
+    <Icon className="relative z-10 h-5 w-5" />
+    <span className="relative z-10 text-shadow-sm">{label}</span>
+  </Link>
+);
+
+interface SidebarProps {
+  children?: React.ReactNode;
+}
+
+export const Sidebar = ({ children }: SidebarProps) => {
   const t = useTranslations('Dashboard.nav');
-  const params = useParams();
   const pathname = usePathname();
-  const slug = params?.slug as string | undefined;
-  const { name: competitionName } = competition;
 
   return (
-    <nav className="mt-4 flex flex-col gap-2">
-      <Link
-        href="/arena"
-        className={cn(
-          'group relative flex gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
-          pathname === '/arena' ? 'text-white' : 'text-white/70 hover:text-white',
-        )}
-      >
-        {pathname === '/arena' && (
-          <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
-        )}
-        <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
-        <LayoutDashboard className="relative z-10 h-5 w-5" />
-        <span className="relative z-10 text-shadow-sm">{t('arena')}</span>
-      </Link>
+    <nav className="flex h-full flex-col">
+      <div className="mt-4 flex flex-col gap-2">{children}</div>
 
-      {slug && (
-        <>
-          <div className="px-4 py-2">
-            <div className="h-px w-full bg-white/10" />
-          </div>
+      <div className="mt-auto pt-4">
+        <div className="mb-4 px-4">
+          <div className="h-px w-full bg-white/10" />
+        </div>
 
-          {competitionName && (
-            <div className="px-4 py-2 text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase">
-              {competitionName}
+        <div className="flex flex-col gap-2">
+          <SidebarItem
+            href="/user-manual"
+            icon={FileText}
+            label={t('manual')}
+            isActive={pathname === '/user-manual'}
+          />
+          <SidebarItem
+            href="/account"
+            icon={User}
+            label={t('profile')}
+            isActive={pathname === '/account'}
+          />
+
+          <FeedbackModal triggerClassName="w-full">
+            <div className="rounded-app bg-warning/5 border-warning/10 text-warning/60 hover:text-warning hover:bg-warning/10 hover:border-warning/20 group/feedback flex cursor-pointer items-center gap-3 border px-4 py-3 transition-all">
+              <MessageSquarePlus className="h-5 w-5 transition-transform group-hover/feedback:scale-110" />
+              <span className="text-[10px] font-black tracking-widest uppercase italic">
+                Feedback
+              </span>
             </div>
-          )}
-        </>
-      )}
-
-      {dashboardConfig.sidebarNav.map((item) => {
-        const isSlugPath = item.href.includes('[slug]');
-
-        if (isSlugPath && !slug) return null;
-
-        const href = item.href.replace('[slug]', slug || '');
-        const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
-
-        return (
-          <Link
-            key={item.href}
-            href={href as any}
-            className={cn(
-              'group relative flex gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
-              isActive ? 'text-white' : 'text-white/70 hover:text-white',
-            )}
-          >
-            {isActive && (
-              <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
-            )}
-            <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
-
-            <item.icon className="relative z-10 h-5 w-5" />
-            <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
-          </Link>
-        );
-      })}
+          </FeedbackModal>
+        </div>
+      </div>
     </nav>
   );
 };

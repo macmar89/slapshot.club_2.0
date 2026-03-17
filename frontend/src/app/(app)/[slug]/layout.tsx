@@ -3,9 +3,8 @@ import { MobileTabNav } from '@/components/layout/MobileTabNav';
 import { Container } from '@/components/ui/container';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Sidebar } from '@/components/layout/sidebar';
-import { FeedbackModal } from '@/components/common/feedback-modal';
-import { MessageSquarePlus } from 'lucide-react';
 import { getPublicCompetition } from '@/features/competitions/competitions.server';
+import { CompetitionNav } from '@/features/competitions/components/competition-nav';
 
 import { notFound } from 'next/navigation';
 import { CompetitionStoreSync } from '@/providers/competition-store-sync';
@@ -38,15 +37,9 @@ export default async function CompetitionLayout({
       <aside className="fixed top-20 bottom-4 left-4 z-40 hidden w-64 lg:block">
         <IceGlassCard className="h-full w-full" backdropBlur="md">
           <div className="flex h-full flex-col p-4">
-            <Sidebar competition={data} />
-            <div className="mt-auto border-t border-white/5 pt-6">
-              <FeedbackModal triggerClassName="w-full">
-                <div className="rounded-app bg-warning/5 border-warning/10 text-warning/60 hover:text-warning hover:bg-warning/10 hover:border-warning/20 group/feedback flex cursor-pointer items-center gap-3 border px-4 py-3 transition-all">
-                  <MessageSquarePlus className="h-5 w-5 transition-transform group-hover/feedback:scale-110" />
-                  <span className="text-[10px] font-black tracking-widest uppercase">Feedback</span>
-                </div>
-              </FeedbackModal>
-            </div>
+            <Sidebar>
+              <CompetitionNav slug={slug} competition={data} />
+            </Sidebar>
           </div>
         </IceGlassCard>
       </aside>
