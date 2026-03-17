@@ -1,5 +1,4 @@
 import { Header } from '@/components/layout/Header';
-import { MobileTabNav } from '@/components/layout/MobileTabNav';
 import { Container } from '@/components/ui/container';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Sidebar } from '@/components/layout/sidebar';
@@ -28,11 +27,6 @@ export default async function CompetitionLayout({
   return (
     <div className="relative min-h-screen w-full">
       <Header />
-
-      <MobileTabNav />
-
-      {/* Bottom Fade Gradient for Mobile - Taller and Smoother */}
-      <div className="pointer-events-none fixed right-0 bottom-0 left-0 z-40 h-64 bg-gradient-to-t from-slate-950 via-slate-950/40 via-slate-950/80 to-transparent lg:hidden" />
 
       <aside className="fixed top-20 bottom-4 left-4 z-40 hidden w-64 lg:block">
         <IceGlassCard className="h-full w-full" backdropBlur="md">

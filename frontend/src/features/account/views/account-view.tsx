@@ -42,8 +42,8 @@ export function AccountView() {
   }
 
   return (
-    <div className="py-8 md:py-24">
-      <Container className="max-w-4xl">
+    <div className="py-8 md:py-0">
+      <Container className="max-w-6xl">
         <div className="flex flex-col gap-8 md:gap-12">
           <div className="flex flex-col gap-1.5 text-center md:text-left">
             <h1 className="flex items-center justify-center gap-3 text-2xl leading-none font-black tracking-tighter text-white uppercase italic md:justify-start md:gap-4 md:text-5xl">
