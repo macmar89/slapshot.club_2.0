@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { env } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 
@@ -31,19 +32,22 @@ export const verifyTurnstileToken = async (token: string, ip?: string): Promise<
   }
 
   try {
-    const formData = new FormData();
-    formData.append('secret', secretKey);
-    formData.append('response', token);
+    const params = new URLSearchParams();
+    params.append('secret', secretKey);
+    params.append('response', token);
     if (ip) {
-      formData.append('remoteip', ip);
+      params.append('remoteip', ip);
     }
 
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = (await response.json()) as TurnstileResponse;
+    const { data } = await axios.post<TurnstileResponse>(
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+      params,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
 
     if (!data.success) {
       logger.warn({ turnstileError: data['error-codes'] }, 'Turnstile verification failed');

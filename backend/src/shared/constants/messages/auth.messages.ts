@@ -38,7 +38,7 @@ export const AuthMessages = {
       PASSWORD_NO_LOWERCASE: 'password_no_lowercase',
       PASSWORD_NO_NUMBER: 'password_no_number',
       PASSWORD_NO_SPECIAL: 'password_no_special',
-      TURNISTILE_ERROR: 'turnistile_error',
+      TURNSTILE_ERROR: 'turnstile_error',
       GDPR_REQUIRED: 'gdpr_required',
       PASSWORDS_DONT_MATCH: 'passwords_dont_match',
       REQUIRED: 'required',

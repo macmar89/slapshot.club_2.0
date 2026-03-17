@@ -12,8 +12,11 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_VERSION = '/api/v1';
+
 export const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: `${API_URL}${API_VERSION}`,
   withCredentials: true,
 });
 

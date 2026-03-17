@@ -16,7 +16,7 @@ export const verifyTurnstile = async (req: Request, res: Response, next: NextFun
 
   if (!isValid) {
     return next(
-      new AppError(AuthMessages.ERRORS.VALIDATION.TURNISTILE_ERROR, HttpStatusCode.BAD_REQUEST),
+      new AppError(AuthMessages.ERRORS.VALIDATION.TURNSTILE_ERROR, HttpStatusCode.BAD_REQUEST),
     );
   }
 

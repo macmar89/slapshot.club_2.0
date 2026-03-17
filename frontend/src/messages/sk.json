@@ -256,8 +256,11 @@
     "marketing_label": "Chcem byť v prvej lajne! 🏒 Posielajte mi novinky z kabíny o nových ligách a vychytávkach, nech mám hru stále pod kontrolou.",
     "errors": {
       "turnstile_error": "Potvrďte prosím, že nie ste robot.",
+      "TURNSTILE_ERROR": "Potvrďte prosím, že nie ste robot.",
+      "TURNISTILE_ERROR": "Potvrďte prosím, že nie ste robot.",
       "registration_failed": "Registrácia zlyhala. Skúste to prosím znova.",
       "unexpected_error": "Nastala neočakávaná chyba. Skúste to prosím znova.",
+      "UNEXPECTED_ERROR": "Nastala neočakávaná chyba. Skúste to prosím znova.",
       "wrong_credentials": "Nesprávne meno alebo heslo",
       "username_too_short": "Používateľské meno musí mať aspoň 2 znaky",
       "password_too_short": "Heslo musí mať aspoň 8 znakov",
