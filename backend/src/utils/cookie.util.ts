@@ -5,6 +5,7 @@ const BASE_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: IS_PRODUCTION,
   sameSite: 'lax',
+  domain: process.env.COOKIE_DOMAIN || undefined,
 };
 
 export const REFRESH_TOKEN_COOKIE_OPTIONS: CookieOptions = {
@@ -21,6 +22,7 @@ export const CLEAR_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: IS_PRODUCTION,
   sameSite: 'lax',
+  domain: process.env.COOKIE_DOMAIN || undefined,
 };
 
 export const REFRESH_TOKEN_CLEAR_OPTIONS: CookieOptions = {

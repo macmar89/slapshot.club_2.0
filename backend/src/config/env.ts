@@ -24,6 +24,7 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES_IN: z.string(),
   COOKIE_ACCESS_MAX_AGE: z.coerce.number(),
   REFRESH_TOKEN_EXPIRES_IN_MS: z.coerce.number(),
+  COOKIE_DOMAIN: z.string().optional(),
 
   // Business Logic & Config
   DEFAULT_USER_PLAN: z.enum(['free', 'starter', 'pro']),
