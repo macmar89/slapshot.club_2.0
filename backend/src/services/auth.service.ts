@@ -142,8 +142,30 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       subscriptionActiveUntil: true,
       verifiedAt: true,
       referralCode: true,
+      isActive: true,
+      deletedAt: true,
     },
   });
+
+  if (!user) {
+    console.log('[DEBUG] Login: User not found for identifier:', data.identifier);
+    const checkAny = await db.query.users.findFirst({
+      where: (users, { or }) =>
+        or(
+          sql`LOWER(${users.email}) = LOWER(${data.identifier})`,
+          sql`LOWER(${users.username}) = LOWER(${data.identifier})`,
+        ),
+    });
+    if (checkAny) {
+      console.log('[DEBUG] Login: User found but is NOT active or is deleted:', {
+        username: checkAny.username,
+        isActive: checkAny.isActive,
+        deletedAt: checkAny.deletedAt,
+      });
+    }
+  } else {
+    console.log('[DEBUG] Login: User found:', user.username);
+  }
 
   if (!user) {
     await logActivity(
@@ -158,6 +180,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
 
   const isPasswordValid = await verifyPassword(user.password, data.password);
   if (!isPasswordValid) {
+    console.log('[DEBUG] Login: Invalid password for user:', user.username);
     await logActivity(
       req,
       'LOGIN_FAILED',
