@@ -122,4 +122,3 @@ const detectEndingType = (apiMatch: ApiHockeyMatch): 'regular' | 'ot' | 'so' => 
   if (apiMatch.periods.overtime !== null) return 'ot';
   return 'regular';
 };
-

@@ -14,6 +14,12 @@ import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
 import { scheduleMatchesSyncMasterJob, scheduleLiveMatchesTicker } from './queues/matches.queue.js';
 
+const allowedOrigins = [
+  'https://slapshot.club',
+  'https://app.slapshot.club',
+  'http://localhost:3800',
+];
+
 const app = express();
 
 app.set('trust proxy', 1);
@@ -24,18 +30,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: IS_PRODUCTION ? 'https://yourdomain.com' : 'http://localhost:3800',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );
 
 app.use(pinoHttp({ logger }));
 
+app.use('/api/v1', apiRouter);
+
 app.get('/health', (req, res) => {
   res.status(HttpStatusCode.OK).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
-
-app.use('/api/v1', apiRouter);
 
 app.all('{*path}', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, HttpStatusCode.NOT_FOUND));

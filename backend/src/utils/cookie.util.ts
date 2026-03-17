@@ -4,7 +4,7 @@ import { IS_PRODUCTION } from '../config/env.js';
 const BASE_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: IS_PRODUCTION,
-  sameSite: 'strict',
+  sameSite: 'lax',
 };
 
 export const REFRESH_TOKEN_COOKIE_OPTIONS: CookieOptions = {
@@ -20,7 +20,7 @@ export const ACCESS_TOKEN_COOKIE_OPTIONS: CookieOptions = {
 export const CLEAR_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: IS_PRODUCTION,
-  sameSite: 'strict',
+  sameSite: 'lax',
 };
 
 export const REFRESH_TOKEN_CLEAR_OPTIONS: CookieOptions = {
