@@ -230,6 +230,13 @@ export async function evaluateMatch(matchId: string) {
     }
   }
 
+  await db
+    .update(matches)
+    .set({
+      rankedAt: new Date().toISOString(),
+    })
+    .where(eq(matches.id, matchId));
+
   logger.info(`[EVALUATE] Finished in ${Date.now() - startTime}ms. Queueing rank recalculation.`);
 
   // 4. Trigger rank recalculation for the competition
@@ -369,6 +376,13 @@ export async function revertMatchEvaluation(matchId: string) {
       logger.error(`[REVERT] Failed to revert user ${userId}: ${err.message}`);
     }
   }
+
+  await db
+    .update(matches)
+    .set({
+      rankedAt: null,
+    })
+    .where(eq(matches.id, matchId));
 
   logger.info(`[REVERT] Finished in ${Date.now() - startTime}ms.`);
 }
