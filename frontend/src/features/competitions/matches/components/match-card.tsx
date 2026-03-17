@@ -156,8 +156,8 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         className="space-y-6 border-t border-white/5 pt-6"
       />
 
-      <div className="mt-4 flex items-center justify-between gap-2">
-        <div>
+      <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+        <div className="flex-1">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
               {match.userPrediction ? (
@@ -197,6 +197,7 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
                 match.status === 'scheduled' && (
                   <Button
                     size="lg"
+                    className="w-full sm:w-auto"
                     onClick={() => {
                       if (!user?.isVerified) {
                         router.push('/account');
@@ -215,8 +216,8 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href={`/${slug}/matches/${match.id}?tab=info`}>
-            <Button variant="outline">
+          <Link href={`/${slug}/matches/${match.id}?tab=info`} className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto">
               <Eye className="h-4 w-4 text-white" />
               {t('view_detail')}
             </Button>
