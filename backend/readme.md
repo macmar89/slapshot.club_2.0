@@ -3,6 +3,7 @@
 The Express.js backend API and background workers for Slapshot Club.
 
 ## Prerequisites
+
 - Node.js (v20+)
 - PostgreSQL instance running
 - Redis instance running (for BullMQ queues)
@@ -11,6 +12,7 @@ The Express.js backend API and background workers for Slapshot Club.
 ## Quick Start
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
@@ -20,12 +22,9 @@ The Express.js backend API and background workers for Slapshot Club.
 
 3. **Database Setup:**
    Apply the current schema to your database:
+
    ```bash
    npm run db:push
-   ```
-   *(Optional)* Seed development data:
-   ```bash
-   npm run seed:users
    ```
 
 4. **Start the development server:**
@@ -35,6 +34,7 @@ The Express.js backend API and background workers for Slapshot Club.
    The application will start using `tsx watch` for live-reloading.
 
 ## Available Scripts
+
 - `npm run dev` - Starts the development server.
 - `npm run build` - Cleans the `dist` folder and compiles the TypeScript code.
 - `npm run start` - Runs the compiled production code.
