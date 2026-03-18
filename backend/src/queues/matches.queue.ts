@@ -28,7 +28,7 @@ export const scheduleMatchesSyncMasterJob = async () => {
       {},
       {
         repeat: {
-          pattern: '15 08 * * *', // Run at 08:15 SEČ
+          pattern: '15 13 * * *', // Run at 08:15 SEČ
           tz: 'Europe/Bratislava',
         },
       },

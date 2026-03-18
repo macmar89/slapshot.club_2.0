@@ -16,7 +16,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "start": "node dist/index.js",
-    "start:prod": "npm run db:migrate && node dist/index.js",
+    "start:prod": "npm run db:migrate && npm run start",
     "test": "dotenv -e .env.test -- vitest",
     "seed:admin": "tsx --env-file=.env src/db/seed/index.ts",
     "seed:users": "tsx --env-file=.env src/db/seed/users.ts",
