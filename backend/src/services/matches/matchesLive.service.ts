@@ -86,17 +86,23 @@ export const processMatchUpdate = async (localMatch: any, apiMatch: ApiHockeyMat
   const newEndingType = detectEndingType(apiMatch);
 
   const statusChanged = localMatch.status !== internalStatus;
+  const apiStatusChanged = localMatch.apiHockeyStatus !== apiStatusShort;
   const scoreChanged =
     localMatch.resultHomeScore !== newHomeScore || localMatch.resultAwayScore !== newAwayScore;
   const endingTypeChanged = localMatch.resultEndingType !== newEndingType;
 
-  if (statusChanged || scoreChanged || endingTypeChanged) {
+  if (statusChanged || apiStatusChanged || scoreChanged || endingTypeChanged) {
     if (statusChanged && internalStatus === 'live') {
       logger.info(`Match ${localMatch.displayTitle}: Status changed to live`);
     }
     if (scoreChanged) {
       logger.info(
         `Match ${localMatch.displayTitle}: Score changed to ${newHomeScore}:${newAwayScore}`,
+      );
+    }
+    if (apiStatusChanged) {
+      logger.info(
+        `Match ${localMatch.displayTitle}: API Status changed to ${apiStatusShort} (${internalStatus})`,
       );
     }
     if (statusChanged && internalStatus === 'finished') {
