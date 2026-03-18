@@ -16,7 +16,7 @@ The Next.js frontend application for Slapshot Club.
    ```
 
 2. **Environment Variables:**
-   Create a `.env` file in the root of the `frontend` directory to define necessary variables (e.g., your Backend API URL, Cloudflare Turnstile required keys).
+   Copy `.env.example` to `.env` and fill in your values.
 
 3. **Start the development server:**
 
