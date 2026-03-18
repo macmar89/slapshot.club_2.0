@@ -47,7 +47,8 @@
       "share_app": "Sdílej appku",
       "more": "Více",
       "menu": "Menu",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "admin": "Admin"
     },
     "settings": {
       "title": "Nastavení",
@@ -815,6 +816,12 @@
       "semi_finals": "Semifinále",
       "finals": "Finále",
       "round_format": "{count}. kolo"
+    }
+  },
+  "Admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "matches": "Zápasy"
     }
   }
 }

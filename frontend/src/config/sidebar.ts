@@ -29,4 +29,16 @@ export const dashboardConfig = {
       icon: Users,
     },
   ] as DashboardItem[],
+  adminNav: [
+    {
+      labelKey: 'dashboard',
+      href: '/admin',
+      icon: LayoutDashboard,
+    },
+    {
+      labelKey: 'matches',
+      href: '/admin/matches',
+      icon: Calendar,
+    },
+  ],
 };

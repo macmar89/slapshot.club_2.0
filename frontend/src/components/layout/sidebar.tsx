@@ -3,8 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/i18n/routing';
-import { FileText, User, MessageSquarePlus } from 'lucide-react';
+import { FileText, User, MessageSquarePlus, Settings } from 'lucide-react';
 import { FeedbackModal } from '@/components/common/feedback-modal';
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface SidebarItemProps {
   href: string;
@@ -38,6 +39,9 @@ export const Sidebar = ({ children }: SidebarProps) => {
   const t = useTranslations('Dashboard.nav');
   const pathname = usePathname();
 
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === 'admin' || user?.role === 'editor';
+
   return (
     <nav className="flex h-full flex-col">
       <div className="mt-4 flex flex-col gap-2">{children}</div>
@@ -60,6 +64,15 @@ export const Sidebar = ({ children }: SidebarProps) => {
             label={t('profile')}
             isActive={pathname === '/account'}
           />
+
+          {isAdmin && (
+            <SidebarItem
+              href="/admin"
+              icon={Settings}
+              label={t('admin')}
+              isActive={pathname === '/admin'}
+            />
+          )}
 
           <FeedbackModal triggerClassName="w-full">
             <div className="rounded-app bg-warning/5 border-warning/10 text-warning/60 hover:text-warning hover:bg-warning/10 hover:border-warning/20 group/feedback flex cursor-pointer items-center gap-3 border px-4 py-3 transition-all">

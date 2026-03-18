@@ -47,7 +47,8 @@
       "share_app": "Share app",
       "more": "More",
       "menu": "Menu",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "admin": "Admin"
     },
     "settings": {
       "title": "Settings",
@@ -817,6 +818,12 @@
       "semi_finals": "Semi-finals",
       "finals": "Finals",
       "round_format": "Round {count}"
+    }
+  },
+  "Admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "matches": "Matches"
     }
   }
 }
