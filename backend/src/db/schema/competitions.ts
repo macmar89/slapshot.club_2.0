@@ -17,6 +17,7 @@ export const enumCompetitionsStatus = pgEnum('enum_competitions_status', [
   'upcoming',
   'active',
   'finished',
+  'archived',
 ]);
 
 export const competitions = pgTable(

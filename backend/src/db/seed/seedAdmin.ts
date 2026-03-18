@@ -1,16 +1,16 @@
-import { hashPassword } from '../utils/crypto.js';
-import { db } from './index.js';
-import { users } from './schema/index.js';
+import { hashPassword } from '../../utils/crypto.js';
+import { db } from '../index.js';
+import { users, userSettings, userStats } from '../schema/index.js';
 import { eq } from 'drizzle-orm';
 import { addYears } from 'date-fns';
 
-async function seed() {
+export const seedAdminUser = async () => {
   console.log('🌱 Starting seeding process...');
 
   const user = {
-    username: 'marian',
-    email: 'marian@slapshot.club',
-    password: 'silneheslo123',
+    username: 'admin',
+    email: 'admin@slapshot.club',
+    password: 'SilneHeslo123',
   };
 
   try {
@@ -28,7 +28,7 @@ async function seed() {
 
     await db.transaction(async (tx) => {
       console.log('👤 Creating superadmin user...');
-      await tx
+      const [createdUser] = await tx
         .insert(users)
         .values({
           username: user.username,
@@ -48,7 +48,17 @@ async function seed() {
 
           verifiedAt: new Date().toISOString(),
         })
-        .onConflictDoNothing();
+        .onConflictDoNothing()
+        .returning({ userId: users.id });
+
+      await tx.insert(userSettings).values({
+        userId: createdUser!.userId,
+        gdprConsent: true,
+      });
+
+      await tx.insert(userStats).values({
+        userId: createdUser!.userId,
+      });
     });
 
     console.log('✅ Seeding completed successfully!');
@@ -58,6 +68,4 @@ async function seed() {
   } finally {
     process.exit(0);
   }
-}
-
-seed();
+};

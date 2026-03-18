@@ -7,7 +7,6 @@ export const userSettings = pgTable(
   {
     id: generateCuid(),
     userId: varchar('user_id', { length: 24 }).notNull().unique(),
-    hasSeenOnboarding: boolean('has_seen_onboarding').default(false),
     gdprConsent: boolean('gdpr_consent').default(false).notNull(),
     marketingConsent: boolean('marketing_consent').default(false),
     marketingConsentDate: timestamp('marketing_consent_date', {

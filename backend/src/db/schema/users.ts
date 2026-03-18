@@ -65,6 +65,7 @@ export const users = pgTable(
     totalRegistered: integer('total_registered').default(0),
     totalPaid: integer('total_paid').default(0),
 
+    hasSeenOnboarding: boolean('has_seen_onboarding').default(false),
     notificationSettings: jsonb('notification_settings')
       .$type<UserNotificationSettings>()
       .default({

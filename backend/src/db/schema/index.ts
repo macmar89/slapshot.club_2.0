@@ -16,7 +16,6 @@ export * from './users.js';
 export * from './userReferrals.js';
 export * from './userSettings.js';
 export * from './userStats.js';
-export * from './notificationSettings.js';
 export * from './subscriptions.js';
 
 export * from './relations.js';

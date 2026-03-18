@@ -1,0 +1,15 @@
+{
+  "name": "slapshot-club-root",
+  "private": true,
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:down:delete": "docker-compose down -v",
+    "db:wait": "node -e \"setTimeout(() => process.exit(0), 3000)\"",
+    "backend:setup": "npm --prefix backend run db:migrate && npm --prefix backend run seed:admin",
+    "db:setup": "npm run docker:up && npm run db:wait && npm run backend:setup",
+    "be:dev": "npm --prefix backend run dev",
+    "fe:dev": "npm --prefix frontend run dev",
+    "dev": "npm run be:dev & npm run fe:dev"
+  }
+}

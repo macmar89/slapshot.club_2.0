@@ -7,7 +7,6 @@ import {
   predictions,
   userStats,
   userSettings,
-  notificationSettings,
   userReferrals,
   subscriptions,
   auditLogs,
@@ -37,19 +36,18 @@ export const usersRelations = relations(users, ({ many, one }) => ({
     fields: [users.id],
     references: [userSettings.userId],
   }),
-  notifications: one(notificationSettings, {
-    fields: [users.id],
-    references: [notificationSettings.userId],
-  }),
-  referral: one(userReferrals, {
-    fields: [users.id],
-    references: [userReferrals.referrerId],
-  }),
-  referredBy: one(userReferrals, {
+  referralsMade: many(userReferrals, { relationName: 'referrer' }),
+  referralReceived: one(userReferrals, {
     fields: [users.id],
     references: [userReferrals.referredUserId],
+    relationName: 'referredUser',
   }),
-  referralsReceived: many(userReferrals),
+  invitedBy: one(users, {
+    fields: [users.referredById],
+    references: [users.id],
+    relationName: 'invitedUsers',
+  }),
+  invitedUsers: many(users, { relationName: 'invitedUsers' }),
   subscriptions: many(subscriptions),
   auditLogs: many(auditLogs),
   feedback: many(feedback),
@@ -168,22 +166,16 @@ export const userSettingsRelations = relations(userSettings, ({ one }) => ({
   }),
 }));
 
-export const notificationSettingsRelations = relations(notificationSettings, ({ one }) => ({
-  user: one(users, {
-    fields: [notificationSettings.userId],
-    references: [users.id],
-  }),
-}));
-
 export const userReferralsRelations = relations(userReferrals, ({ one }) => ({
-  user: one(users, {
+  referrer: one(users, {
     fields: [userReferrals.referrerId],
     references: [users.id],
+    relationName: 'referrer',
   }),
-  referredBy: one(users, {
+  referredUser: one(users, {
     fields: [userReferrals.referredUserId],
     references: [users.id],
-    relationName: 'referredBy',
+    relationName: 'referredUser',
   }),
 }));
 

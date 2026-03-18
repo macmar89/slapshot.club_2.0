@@ -1,6 +1,6 @@
-import { hashPassword } from '../utils/crypto.js';
-import { db } from './index.js';
-import { users } from './schema/index.js';
+import { hashPassword } from '../../utils/crypto.js';
+import { db } from '../index.js';
+import { users } from '../schema/index.js';
 import { eq } from 'drizzle-orm';
 import { addYears } from 'date-fns';
 
