@@ -12,6 +12,7 @@ import {
 } from '../../db/schema/index.js';
 import { calculateRate, roundTo } from '../../utils/math.js';
 import { AppError } from '../../utils/appError.js';
+import { logger } from '../../utils/logger.js';
 import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
 
 export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
@@ -93,24 +94,33 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
     throw new AppError(CompetitionErrors.COMPETITION_NOT_OPEN_FOR_REGISTRATION);
   }
 
-  await db.transaction(async (tx) => {
-    await tx.insert(leaderboardEntries).values({
-      userId,
-      competitionId,
-      seasonYear: competition.seasonYear,
-      totalPoints: 0,
-      currentRank: 0,
+  try {
+    await db.transaction(async (tx) => {
+      await tx.insert(leaderboardEntries).values({
+        userId,
+        competitionId,
+        seasonYear: competition.seasonYear,
+        totalPoints: 0,
+        currentRank: 0,
+      });
+
+      await tx
+        .update(competitions)
+        .set({
+          totalParticipants: sql`${competitions.totalParticipants} + 1`,
+        })
+        .where(eq(competitions.id, competitionId));
     });
 
-    await tx
-      .update(competitions)
-      .set({
-        totalParticipants: sql`${competitions.totalParticipants} + 1`,
-      })
-      .where(eq(competitions.id, competitionId));
-  });
-
-  return competition;
+    logger.info(
+      { userId, competitionId, slug: competition.slug },
+      'User joined competition successfully',
+    );
+    return competition;
+  } catch (error: any) {
+    logger.error({ error: error.message, userId, competitionId }, 'Failed to join competition');
+    throw error;
+  }
 };
 
 export const findPublicCompetitionName = async (slug: string, locale: AppLocale) => {

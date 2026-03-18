@@ -22,6 +22,7 @@ import { AuthMessages } from '../../shared/constants/messages/auth.messages.js';
 import { groupsValidationService } from './groupsValidation.service.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
 import { calculateGroupCapacity } from './groupsCore.service.js';
+import { logger } from '../../utils/logger.js';
 
 export const joinGroup = async (
   userId: string,
@@ -109,12 +110,6 @@ export const joinGroup = async (
         },
         competitionId,
       );
-    // case 'business':
-    //   return await joinBusinessGroup(userId, plan, group);
-    // case 'vip':
-    //   return await joinVipGroup(userId, plan, group);
-    // default:
-    //   return await joinStandardGroup(userId, plan, group);
   }
 };
 
@@ -142,32 +137,42 @@ export const joinPrivateGroup = async (
   const finalStatus = group.settings?.requireApproval ? 'pending' : 'active';
   const isImmediatelyActive = finalStatus === 'active';
 
-  await db.transaction(async (tx) => {
-    await groupMembersRepository.addMember(userId, group.id, finalStatus, tx);
+  try {
+    await db.transaction(async (tx) => {
+      await groupMembersRepository.addMember(userId, group.id, finalStatus, tx);
 
-    if (isImmediatelyActive) {
-      await groupRepository.incrementMaxMembers(
-        group.id,
-        APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[userSubscriptionPlan],
-        tx,
-      );
-      await groupRepository.incrementMemberCount(group.id, tx);
-      await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
-        competitionId,
-        userId,
-        tx,
-      );
-    }
+      if (isImmediatelyActive) {
+        await groupRepository.incrementMaxMembers(
+          group.id,
+          APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST[userSubscriptionPlan],
+          tx,
+        );
+        await groupRepository.incrementMemberCount(group.id, tx);
+        await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
+          competitionId,
+          userId,
+          tx,
+        );
+      } else {
+        await groupRepository.incrementPendingMembersCount(group.id, tx);
+      }
+    });
 
-    if (!isImmediatelyActive) {
-      await groupRepository.incrementPendingMembersCount(group.id, tx);
-    }
-  });
-
-  return {
-    group,
-    competitionId,
-  };
+    logger.info(
+      { userId, groupId: group.id, name: group.name },
+      `User joined group with status: ${finalStatus}`,
+    );
+    return {
+      group,
+      competitionId,
+    };
+  } catch (error: any) {
+    logger.error(
+      { error: error.message, userId, groupId: group.id },
+      'Failed to join private group',
+    );
+    throw error;
+  }
 };
 
 export const getGroupMembers = async (groupId: string, userId: string, search?: string) => {
@@ -359,4 +364,23 @@ export const removeMember = async (memberId: string, groupId: string) => {
 
     return { targetId: member.userId, groupCapacity };
   });
+};
+
+export const activateGroupMember = async (userId: string, memberId: string) => {
+  try {
+    const member = await groupMembersRepository.getMemberById(memberId, ['groupId', 'userId']);
+
+    if (!member) {
+      throw new AppError(GroupMessages.ERRORS.MEMBER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+    }
+
+    await db.transaction(async (tx) => {
+      await handleMemberActivation(tx, member.userId, member.groupId);
+    });
+
+    logger.info({ userId, groupId: member.groupId }, 'User activated in group');
+  } catch (error: any) {
+    logger.error({ error: error.message, userId, memberId }, 'Failed to activate group member');
+    throw error;
+  }
 };

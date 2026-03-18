@@ -5,7 +5,7 @@ import { IS_PRODUCTION } from '../config/env.js';
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   logger.error({
     message: err.message,
-    stack: !IS_PRODUCTION ? err.stack : undefined,
+    stack: err.stack,
     url: req.url,
     method: req.method,
   });

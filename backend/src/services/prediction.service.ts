@@ -4,6 +4,7 @@ import { eq, sql, and, ilike } from 'drizzle-orm';
 import { matches, predictions, users } from '../db/schema/index.js';
 import { AppError } from '../utils/appError.js';
 import { MatchMessages } from '../shared/constants/messages/matches.messages.js';
+import { logger } from '../utils/logger.js';
 
 export const createPrediction = async (userId: string, data: CreatePredictionInput) => {
   const match = await db.query.matches.findFirst({
@@ -25,81 +26,94 @@ export const createPrediction = async (userId: string, data: CreatePredictionInp
     throw new AppError(MatchMessages.MATCH_ALREADY_STARTED, 400);
   }
 
-  await db.transaction(async (tx) => {
-    const existingPrediction = await tx.query.predictions.findFirst({
-      columns: {
-        homeGoals: true,
-        awayGoals: true,
-      },
-      where: and(eq(predictions.userId, userId), eq(predictions.matchId, data.matchId)),
-    });
+  try {
+    await db.transaction(async (tx) => {
+      const existingPrediction = await tx.query.predictions.findFirst({
+        columns: {
+          homeGoals: true,
+          awayGoals: true,
+        },
+        where: and(eq(predictions.userId, userId), eq(predictions.matchId, data.matchId)),
+      });
 
-    let homeDiff = 0;
-    let awayDiff = 0;
+      let homeDiff = 0;
+      let awayDiff = 0;
 
-    const newWinner = data.homeGoals > data.awayGoals ? 'home' : 'away';
+      const newWinner = data.homeGoals > data.awayGoals ? 'home' : 'away';
 
-    const newScoreKey = `${data.homeGoals}:${data.awayGoals}`;
-    let oldScoreKey: string | null = null;
+      const newScoreKey = `${data.homeGoals}:${data.awayGoals}`;
+      let oldScoreKey: string | null = null;
 
-    if (existingPrediction) {
-      oldScoreKey = `${existingPrediction.homeGoals}:${existingPrediction.awayGoals}`;
-      const oldWinner =
-        existingPrediction.homeGoals > existingPrediction.awayGoals ? 'home' : 'away';
+      if (existingPrediction) {
+        oldScoreKey = `${existingPrediction.homeGoals}:${existingPrediction.awayGoals}`;
+        const oldWinner =
+          existingPrediction.homeGoals > existingPrediction.awayGoals ? 'home' : 'away';
 
-      if (oldWinner !== newWinner) {
-        if (oldWinner === 'home') homeDiff--;
-        else awayDiff--;
+        if (oldWinner !== newWinner) {
+          if (oldWinner === 'home') homeDiff--;
+          else awayDiff--;
 
+          if (newWinner === 'home') homeDiff++;
+          else awayDiff++;
+        }
+      } else {
         if (newWinner === 'home') homeDiff++;
         else awayDiff++;
       }
-    } else {
-      if (newWinner === 'home') homeDiff++;
-      else awayDiff++;
-    }
 
-    if (newScoreKey !== oldScoreKey) {
+      if (newScoreKey !== oldScoreKey) {
+        await tx
+          .update(matches)
+          .set({
+            homePredictedCount: sql`${matches.homePredictedCount} + ${homeDiff}`,
+            awayPredictedCount: sql`${matches.awayPredictedCount} + ${awayDiff}`,
+
+            predictionStats: sql`
+              jsonb_set(
+                  coalesce(${matches.predictionStats}, '{"scores": {}}'::jsonb),
+                  '{scores}',
+                  (
+                      coalesce(${matches.predictionStats}->'scores', '{}'::jsonb)
+                      || jsonb_build_object(${newScoreKey}::text, (coalesce(${matches.predictionStats}->'scores'->>${newScoreKey}, '0')::int + 1))
+                      ${oldScoreKey ? sql`|| jsonb_build_object(${oldScoreKey}::text, (coalesce(${matches.predictionStats}->'scores'->>${oldScoreKey}, '1')::int - 1))` : sql``}
+                  )
+              )
+            `,
+          })
+          .where(eq(matches.id, data.matchId));
+      }
+
       await tx
-        .update(matches)
-        .set({
-          homePredictedCount: sql`${matches.homePredictedCount} + ${homeDiff}`,
-          awayPredictedCount: sql`${matches.awayPredictedCount} + ${awayDiff}`,
-
-          predictionStats: sql`
-            jsonb_set(
-                coalesce(${matches.predictionStats}, '{"scores": {}}'::jsonb),
-                '{scores}',
-                (
-                    coalesce(${matches.predictionStats}->'scores', '{}'::jsonb)
-                    || jsonb_build_object(${newScoreKey}::text, (coalesce(${matches.predictionStats}->'scores'->>${newScoreKey}, '0')::int + 1))
-                    ${oldScoreKey ? sql`|| jsonb_build_object(${oldScoreKey}::text, (coalesce(${matches.predictionStats}->'scores'->>${oldScoreKey}, '1')::int - 1))` : sql``}
-                )
-            )
-          `,
-        })
-        .where(eq(matches.id, data.matchId));
-    }
-
-    await tx
-      .insert(predictions)
-      .values({
-        userId,
-        competitionId: match.competitionId,
-        matchId: data.matchId,
-        homeGoals: data.homeGoals,
-        awayGoals: data.awayGoals,
-      })
-      .onConflictDoUpdate({
-        target: [predictions.userId, predictions.matchId],
-        set: {
+        .insert(predictions)
+        .values({
+          userId,
+          competitionId: match.competitionId,
+          matchId: data.matchId,
           homeGoals: data.homeGoals,
           awayGoals: data.awayGoals,
-          editCount: sql`${predictions.editCount} + 1`,
-          updatedAt: new Date().toISOString(),
-        },
-      });
-  });
+        })
+        .onConflictDoUpdate({
+          target: [predictions.userId, predictions.matchId],
+          set: {
+            homeGoals: data.homeGoals,
+            awayGoals: data.awayGoals,
+            editCount: sql`${predictions.editCount} + 1`,
+            updatedAt: new Date().toISOString(),
+          },
+        });
+    });
+
+    logger.info(
+      { userId, matchId: data.matchId, score: `${data.homeGoals}:${data.awayGoals}` },
+      'Prediction created/updated successfully',
+    );
+  } catch (error: any) {
+    logger.error(
+      { error: error.message, userId, matchId: data.matchId },
+      'Failed to create/update prediction',
+    );
+    throw error;
+  }
 };
 
 export const getMatchPredictions = async (

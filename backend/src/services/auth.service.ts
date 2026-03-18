@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import { db } from '../db/index.js';
 import { refreshTokens } from '../db/schema/auth.js';
 import { and, eq, sql } from 'drizzle-orm';
+import { logger } from '../utils/logger.js';
 import { AppError } from '../utils/appError.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
 import {
@@ -41,85 +42,96 @@ export const registerUser = async (data: RegisterInput) => {
     throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
-  return await db.transaction(async (tx) => {
-    const hashedPassword = await hashPassword(data.password);
+  try {
+    return await db.transaction(async (tx) => {
+      const hashedPassword = await hashPassword(data.password);
 
-    const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
-      (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
+      const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
+        (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
 
-    const subscriptionEndDate = getSubscriptionEndDate();
+      const subscriptionEndDate = getSubscriptionEndDate();
 
-    const [user] = await tx
-      .insert(users)
-      .values({
-        username: data.username,
-        password: hashedPassword,
-        email: data.email,
-        role: 'user',
-        subscriptionPlan: defaultPlan,
-        subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
-        isActive: true,
-        referralCode: generateReferralCode(),
-        preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
-        verificationToken: generateRandomToken(),
-      })
-      .returning();
+      const [user] = await tx
+        .insert(users)
+        .values({
+          username: data.username,
+          password: hashedPassword,
+          email: data.email,
+          role: 'user',
+          subscriptionPlan: defaultPlan,
+          subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
+          isActive: true,
+          referralCode: generateReferralCode(),
+          preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
+          verificationToken: generateRandomToken(),
+        })
+        .returning();
 
-    if (!user)
-      throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
+      if (!user)
+        throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
 
-    await tx.insert(subscriptions).values({
-      userId: user.id,
-      plan: defaultPlan,
-      planType: 'seasonal',
-      status: 'active',
-      activeFrom: new Date().toISOString(),
-      activeUntil: subscriptionEndDate,
-    });
-
-    await tx.insert(userSettings).values({
-      userId: user.id,
-      gdprConsent: data.gdprConsent,
-      marketingConsent: data.marketingConsent,
-      marketingConsentDate: data.marketingConsent ? new Date().toISOString() : null,
-    });
-
-    if (data.referralCode) {
-      const referrer = await tx.query.users.findFirst({
-        columns: {
-          id: true,
-          totalRegistered: true,
-        },
-        where: (users, { eq }) => eq(users.referralCode, data.referralCode!),
+      await tx.insert(subscriptions).values({
+        userId: user.id,
+        plan: defaultPlan,
+        planType: 'seasonal',
+        status: 'active',
+        activeFrom: new Date().toISOString(),
+        activeUntil: subscriptionEndDate,
       });
 
-      if (referrer) {
-        await tx
-          .update(users)
-          .set({
-            totalRegistered: (referrer.totalRegistered || 0) + 1,
-          })
-          .where(eq(users.id, referrer.id));
+      await tx.insert(userSettings).values({
+        userId: user.id,
+        gdprConsent: data.gdprConsent,
+        marketingConsent: data.marketingConsent,
+        marketingConsentDate: data.marketingConsent ? new Date().toISOString() : null,
+      });
 
-        await tx.insert(userReferrals).values({
-          referrerId: referrer.id,
-          referredUserId: user.id,
+      if (data.referralCode) {
+        const referrer = await tx.query.users.findFirst({
+          columns: {
+            id: true,
+            totalRegistered: true,
+          },
+          where: (users, { eq }) => eq(users.referralCode, data.referralCode!),
         });
-      }
-    }
 
-    return {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      subscriptionPlan: user.subscriptionPlan,
-      subscriptionActiveUntil: user.subscriptionActiveUntil,
-      isVerified: !!user.verifiedAt,
-      referralCode: user.referralCode,
-      verificationToken: user.verificationToken,
-    };
-  });
+        if (referrer) {
+          await tx
+            .update(users)
+            .set({
+              totalRegistered: (referrer.totalRegistered || 0) + 1,
+            })
+            .where(eq(users.id, referrer.id));
+
+          await tx.insert(userReferrals).values({
+            referrerId: referrer.id,
+            referredUserId: user.id,
+          });
+        }
+      }
+
+      const result = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        subscriptionPlan: user.subscriptionPlan,
+        subscriptionActiveUntil: user.subscriptionActiveUntil,
+        isVerified: !!user.verifiedAt,
+        referralCode: user.referralCode,
+        verificationToken: user.verificationToken,
+      };
+
+      logger.info({ userId: result.id, username: result.username }, 'User registered successfully');
+      return result;
+    });
+  } catch (error: any) {
+    logger.error(
+      { error: error.message, data: { username: data.username, email: data.email } },
+      'User registration failed',
+    );
+    throw error;
+  }
 };
 
 export const loginUser = async (data: LoginInput, req: Request) => {
@@ -145,35 +157,46 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     },
   });
 
-  if (!user) {
-    await logActivity(
-      req,
-      'LOGIN_FAILED',
-      { type: 'auth' },
-      { attemptedUsername: data.identifier, reason: 'USER_NOT_FOUND' },
+  try {
+    if (!user) {
+      await logActivity(
+        req,
+        'LOGIN_FAILED',
+        { type: 'auth' },
+        { attemptedUsername: data.identifier, reason: 'USER_NOT_FOUND' },
+      );
+
+      throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
+    }
+
+    const isPasswordValid = await verifyPassword(user.password, data.password);
+    if (!isPasswordValid) {
+      await logActivity(
+        req,
+        'LOGIN_FAILED',
+        { type: 'auth', id: user?.id },
+        { attemptedUsername: data.identifier, reason: 'INVALID_PASSWORD' },
+        { userId: user.id },
+      );
+
+      throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
+    }
+
+    const { password, verifiedAt, ...userWithoutPassword } = user;
+
+    const result = {
+      user: { ...userWithoutPassword, isVerified: !!verifiedAt },
+    };
+
+    logger.info(
+      { userId: result.user.id, username: result.user.username },
+      'User logged in successfully',
     );
-
-    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
+    return result;
+  } catch (error: any) {
+    logger.error({ error: error.message, identifier: data.identifier }, 'Login attempt failed');
+    throw error;
   }
-
-  const isPasswordValid = await verifyPassword(user.password, data.password);
-  if (!isPasswordValid) {
-    await logActivity(
-      req,
-      'LOGIN_FAILED',
-      { type: 'auth', id: user?.id },
-      { attemptedUsername: data.identifier, reason: 'INVALID_PASSWORD' },
-      { userId: user.id },
-    );
-
-    throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatusCode.UNAUTHORIZED);
-  }
-
-  const { password, verifiedAt, ...userWithoutPassword } = user;
-
-  return {
-    user: { ...userWithoutPassword, isVerified: !!verifiedAt },
-  };
 };
 
 export const rotateRefreshToken = async (tokenString: string) => {
@@ -185,6 +208,7 @@ export const rotateRefreshToken = async (tokenString: string) => {
     .where(eq(refreshTokens.token, hashedToken));
 
   if (!dbToken || new Date() > dbToken.expiresAt) {
+    logger.warn({ token: hashedToken }, 'Invalid or expired refresh token rotation attempt');
     throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
   }
 
@@ -423,22 +447,30 @@ export const forgotPassword = async (email: string) => {
   const hashedToken = hashToken(token);
   const expiration = new Date(Date.now() + 3600000).toISOString(); // 1 hour
 
-  await db
-    .update(users)
-    .set({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpiration: expiration,
-    })
-    .where(eq(users.id, user.id));
+  try {
+    await db
+      .update(users)
+      .set({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpiration: expiration,
+      })
+      .where(eq(users.id, user.id));
 
-  return {
-    token, // We send the raw token to the user via email
-    user: {
-      username: user.username,
-      email: user.email,
-      preferredLanguage: user.preferredLanguage,
-    },
-  };
+    const result = {
+      token, // We send the raw token to the user via email
+      user: {
+        username: user.username,
+        email: user.email,
+        preferredLanguage: user.preferredLanguage,
+      },
+    };
+
+    logger.info({ email, username: user.username }, 'Password reset requested');
+    return result;
+  } catch (error: any) {
+    logger.error({ error: error.message, email }, 'Password reset request failed');
+    throw error;
+  }
 };
 
 export const resetPassword = async (data: ResetPasswordInput) => {

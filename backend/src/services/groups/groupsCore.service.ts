@@ -1,4 +1,5 @@
 import { db } from '../../db/index.js';
+import { logger } from '../../utils/logger.js';
 import type { CreateGroupInput } from '../../shared/constants/schema/group.schema.js';
 import { competitionRepository } from '../../repositories/competitions.repository.js';
 import { AppError } from '../../utils/appError.js';
@@ -6,6 +7,7 @@ import { CompetitionMessages } from '../../shared/constants/messages/competition
 import { generateSlug } from '../../utils/slug.js';
 import { createId } from '@paralleldrive/cuid2';
 import { groupMembers, groups } from '../../db/schema/groups.js';
+import { auditLogs } from '../../db/schema/auditLogs.js';
 import type { User, UserSubscriptionPlan } from '../../types/user.types.js';
 import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
 import { HttpStatusCode } from '../../utils/httpStatusCodes.js';
@@ -52,35 +54,49 @@ export const createGroup = async (
   const slugSuffix = groupId.slice(-6);
   const inviteCode = `GROUP-${groupId.slice(3, 9).toUpperCase()}`;
 
-  await db.transaction(async (tx) => {
-    await tx.insert(groups).values({
-      id: groupId,
-      name: body.name,
-      slug: generateSlug(body.name, slugSuffix),
-      type: body.type,
-      ownerId: userId,
-      competitionId: competitionId,
-      code: inviteCode,
-      creditCost: 0,
-      maxMembers:
-        userSubscriptionPlan === 'vip'
-          ? APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.vip
-          : APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.pro,
-      statsMembersCount: 1,
-      isAliasRequired: body.isAliasRequired ?? false,
+  try {
+    await db.transaction(async (tx) => {
+      await tx.insert(groups).values({
+        id: groupId,
+        name: body.name,
+        slug: generateSlug(body.name, slugSuffix),
+        type: body.type,
+        ownerId: userId,
+        competitionId: competitionId,
+        code: inviteCode,
+        creditCost: 0,
+        maxMembers:
+          userSubscriptionPlan === 'vip'
+            ? APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.vip
+            : APP_CONFIG.GROUPS.MEMBER_CAPACITY_BOOST.pro,
+        statsMembersCount: 1,
+        isAliasRequired: body.isAliasRequired ?? false,
+      });
+
+      await tx.insert(groupMembers).values({
+        groupId,
+        userId,
+        role: 'owner',
+      });
+
+      await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
+        competitionId,
+        userId,
+        tx,
+      );
+      await leaderboardEntriesRepository.incrementOwnedPrivateGroupsCount(
+        competitionId,
+        userId,
+        tx,
+      );
     });
 
-    await tx.insert(groupMembers).values({
-      groupId,
-      userId,
-      role: 'owner',
-    });
-
-    await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(competitionId, userId, tx);
-    await leaderboardEntriesRepository.incrementOwnedPrivateGroupsCount(competitionId, userId, tx);
-  });
-
-  return { groupId, competitionId };
+    logger.info({ userId, name: body.name, groupId }, 'Group created successfully');
+    return { groupId, competitionId };
+  } catch (error: any) {
+    logger.error({ error: error.message, userId, name: body.name }, 'Failed to create group');
+    throw error;
+  }
 };
 
 export const getGroupDetail = async (userId: string, slug: string) => {
@@ -251,18 +267,25 @@ export const deleteGroup = async (groupId: string, userId: string) => {
     throw new AppError(GroupMessages.ERRORS.INSUFFICIENT_PERMISSIONS, HttpStatusCode.FORBIDDEN);
   }
 
-  await db.transaction(async (tx) => {
-    await groupRepository.deleteGroup(groupId, tx);
+  try {
+    await db.transaction(async (tx) => {
+      await groupRepository.deleteGroup(groupId, tx);
 
-    await leaderboardEntriesRepository.decrementOwnedPrivateGroupsCount(
-      group.competitionId,
-      userId,
-      tx,
-    );
-    await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
-      group.competitionId,
-      userId,
-      tx,
-    );
-  });
+      await leaderboardEntriesRepository.decrementOwnedPrivateGroupsCount(
+        group.competitionId,
+        userId,
+        tx,
+      );
+      await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
+        group.competitionId,
+        userId,
+        tx,
+      );
+    });
+
+    logger.info({ groupId, deletedBy: userId }, 'Group deleted successfully');
+  } catch (error: any) {
+    logger.error({ error: error.message, groupId, userId }, 'Failed to delete group');
+    throw error;
+  }
 };

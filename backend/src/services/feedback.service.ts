@@ -1,5 +1,6 @@
 import { db } from '../db/index.js';
 import { feedback } from '../db/schema/feedback.js';
+import { logger } from '../utils/logger.js';
 
 export const createFeedback = async (data: {
   type: 'bug' | 'idea' | 'other';
@@ -17,5 +18,11 @@ export const createFeedback = async (data: {
     })
     .returning();
 
+  if (newFeedback) {
+    logger.info(
+      { feedbackId: newFeedback.id, type: newFeedback.type, userId: data.userId },
+      'New feedback received',
+    );
+  }
   return newFeedback;
 };

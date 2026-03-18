@@ -41,7 +41,7 @@ app.use(
   }),
 );
 
-app.use(pinoHttp({ logger }));
+app.use(pinoHttp({ logger, autoLogging: false }));
 
 app.use('/api/v1', apiRouter);
 
