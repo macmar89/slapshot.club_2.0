@@ -8,10 +8,12 @@ import {
   pgEnum,
   text,
   integer,
+  jsonb,
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { generateCuid, withUpdatesFields } from '../helpers.js';
 import { enumUsersSubscriptionPlan } from './subscriptions.js';
+import type { UserNotificationSettings } from '../../types/user.types.js';
 
 export const enumUsersPreferredLanguage = pgEnum('enum_users_preferred_language', [
   'sk',
@@ -62,6 +64,15 @@ export const users = pgTable(
     ),
     totalRegistered: integer('total_registered').default(0),
     totalPaid: integer('total_paid').default(0),
+
+    notificationSettings: jsonb('notification_settings')
+      .$type<UserNotificationSettings>()
+      .default({
+        matchFinished: { inApp: true, push: true },
+        pointsAwarded: { inApp: true, push: true },
+        groupInvites: { inApp: true, push: true },
+        marketingNews: { inApp: true, push: false },
+      }),
 
     ...withUpdatesFields,
   },

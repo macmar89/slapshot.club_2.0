@@ -2,10 +2,12 @@ import { and, isNull } from 'drizzle-orm';
 import { timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 
+export const createCuid = () => createId();
+
 export const generateCuid = (name: string = 'id') =>
   varchar(name, { length: 24 })
     .primaryKey()
-    .$defaultFn(() => createId());
+    .$defaultFn(() => createCuid());
 
 export const baseTimestampsFields = {
   createdAt: timestamp('created_at', { precision: 3, withTimezone: true, mode: 'string' })

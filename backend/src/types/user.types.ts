@@ -10,3 +10,15 @@ export interface User {
   subscriptionActiveUntil: string;
   isVerified: boolean;
 }
+
+export type NotificationPreference = {
+  inApp: boolean;
+  push: boolean;
+};
+
+export type UserNotificationSettings = {
+  matchFinished: NotificationPreference;
+  pointsAwarded: NotificationPreference;
+  groupInvites: NotificationPreference;
+  marketingNews: NotificationPreference;
+};
