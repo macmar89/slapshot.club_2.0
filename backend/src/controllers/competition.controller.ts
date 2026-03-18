@@ -14,6 +14,7 @@ import {
   getMatchDatesByCompetition,
   getUpcomingMatches,
 } from '../services/matches/matches.service.js';
+import { logActivity } from '../services/audit.service.js';
 
 export const getPlayerStatsHandler = catchAsync(async (req: Request, res: Response) => {
   const username = req.params.username as string;
@@ -73,6 +74,14 @@ export const joinCompetitionHandler = catchAsync(async (req: Request, res: Respo
   const userId = req.user!.id;
 
   const competition = await joinCompetition(userId, competitionId);
+
+  await logActivity(
+    req,
+    'COMP_JOIN',
+    { type: 'competition', id: competitionId },
+    { competitionSlug: competition.slug },
+    { userId },
+  );
 
   res.status(201).json({
     status: 'success',

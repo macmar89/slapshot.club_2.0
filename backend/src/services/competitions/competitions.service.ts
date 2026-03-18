@@ -66,6 +66,7 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
   const competition = await db.query.competitions.findFirst({
     columns: {
       id: true,
+      slug: true,
       seasonYear: true,
       isRegistrationOpen: true,
     },
