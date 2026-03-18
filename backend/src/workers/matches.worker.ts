@@ -53,7 +53,6 @@ export const matchesWorker = new Worker(
     }
 
     if (name === 'checkLiveMatches') {
-      logger.info('[MATCHES WORKER] Checking for live matches.');
       await handleLiveUpdates();
     }
 
@@ -74,10 +73,6 @@ export const matchesWorker = new Worker(
     },
   },
 );
-
-matchesWorker.on('completed', (job: Job) => {
-  logger.info({ jobId: job.id, name: job.name }, 'Matches queue job completed successfully');
-});
 
 matchesWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Matches queue job failed');

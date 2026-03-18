@@ -95,10 +95,6 @@ export async function evaluateMatch(matchId: string) {
 
   const allPredictions = await predictionsRepository.getPredictionsByMatchId(matchId);
 
-  logger.info(
-    `[EVALUATE] Processing ${allPredictions.length} predictions for ${match.displayTitle}...`,
-  );
-
   const userUpdates = new Map<
     string,
     {
@@ -224,7 +220,6 @@ export async function evaluateMatch(matchId: string) {
           maxOvrEver: 0,
         });
       }
-      logger.info(`[EVALUATE] User ${userId} updated with +${stats.points} points.`);
     } catch (err: any) {
       logger.error(`[EVALUATE] Failed to update user ${userId}: ${err.message}`);
     }
@@ -236,8 +231,6 @@ export async function evaluateMatch(matchId: string) {
       rankedAt: new Date().toISOString(),
     })
     .where(eq(matches.id, matchId));
-
-  logger.info(`[EVALUATE] Finished in ${Date.now() - startTime}ms. Queueing rank recalculation.`);
 
   // 4. Trigger rank recalculation for the competition
   await competitionsQueue.add('recalculateCompetitionRanks', {
@@ -256,10 +249,6 @@ export async function revertMatchEvaluation(matchId: string) {
     .select()
     .from(predictions)
     .where(and(eq(predictions.matchId, matchId), eq(predictions.status, 'evaluated')));
-
-  logger.info(
-    `[REVERT] Reverting ${allPredictions.length} predictions for ${match.displayTitle}...`,
-  );
 
   const [competition] = await db
     .select()
@@ -371,7 +360,6 @@ export async function revertMatchEvaluation(matchId: string) {
           })
           .where(eq(userStats.id, uStats.id));
       }
-      logger.info(`[REVERT] User ${userId} points removed.`);
     } catch (err: any) {
       logger.error(`[REVERT] Failed to revert user ${userId}: ${err.message}`);
     }
@@ -383,6 +371,4 @@ export async function revertMatchEvaluation(matchId: string) {
       rankedAt: null,
     })
     .where(eq(matches.id, matchId));
-
-  logger.info(`[REVERT] Finished in ${Date.now() - startTime}ms.`);
 }

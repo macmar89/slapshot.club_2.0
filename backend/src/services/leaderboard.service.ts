@@ -3,6 +3,7 @@ import { db } from '../db/index.js';
 import { predictions, leaderboardEntries } from '../db/schema/index.js';
 import { CompetitionErrors } from '../shared/constants/errors/competition.errors.js';
 import { calculateRate, roundTo } from '../utils/math.js';
+import { logger } from '../utils/logger.js';
 
 export const getLeaderboard = async (slug: string, userId: string) => {
   const competition = await db.query.competitions.findFirst({
@@ -187,5 +188,8 @@ export const refreshCompetitionRankings = async (competitionId: string) => {
     `);
   });
 
-  console.log(`[RANKING] Refreshed competition ${competitionId} in ${Date.now() - startTime}ms`);
+  logger.info(
+    { competitionId, durationMs: Date.now() - startTime },
+    '[RANKING] Refreshed competition rankings',
+  );
 };
