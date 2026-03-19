@@ -1,0 +1,27 @@
+# Support Football and Knockout Phases
+
+Add support for football-specific features like draws and predicting the advancing team (winner) in knockout matches.
+
+## Proposed Changes
+
+### Configuration
+#### [MODIFY] [app.ts](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/config/app.ts)
+- Add `SPORT` to `APP_CONFIG` (from `process.env.APP_SPORT`).
+- Add `ADVANCER_BONUS` to `POINTS` section.
+
+### Schema Updates
+#### [MODIFY] [matches.ts](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/db/schema/matches.ts)
+- Add `isKnockout` (boolean) to the `matches` table.
+- Add `resultWinnerId` (varchar) to the `matches` table to store who actually advanced.
+
+#### [MODIFY] [predictions.ts](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/db/schema/predictions.ts)
+- Add `predictedWinnerId` (varchar) to the `predictions` table so users can pick who advances.
+
+### Scoring Logic
+#### [MODIFY] [predictionsLogic.service.ts](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/services/predictions/predictionsLogic.service.ts)
+- Update [calculatePoints](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/services/predictions/predictionsLogic.service.ts#14-75) to accept optional `winnerId` for both prediction and match.
+- Add `APP_CONFIG.POINTS.ADVANCER_BONUS` if `predictedWinnerId === resultWinnerId`.
+
+## Verification Plan
+- Unit tests for [calculatePoints](file:///Users/marian/Documents/work/apps/slapshot.club/slapshot.club_2.0/backend/src/services/predictions/predictionsLogic.service.ts#14-75) with the new logic.
+- Verify that `APP_SPORT` correctly influences the behavior.
