@@ -22,7 +22,7 @@ import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/logout-button';
 import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
 import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.png';
+import logo from '@/assets/images/logo/ssc_logo_2.webp';
 
 export function MobileTabNav() {
   const t = useTranslations('Dashboard.nav');

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.png';
+import logo from '@/assets/images/logo/ssc_logo_2.webp';
 
 import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
@@ -72,11 +72,12 @@ export function Header({ title }: HeaderProps) {
               <Image
                 src={logo}
                 alt="Slapshot Club"
-                width={240}
+                width={128}
                 height={128}
                 className="h-auto w-20 object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] md:h-24 md:w-24"
                 priority
                 sizes="(max-width: 768px) 80px, 240px"
+                quality={85}
               />
               <span className="bg-primary absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA

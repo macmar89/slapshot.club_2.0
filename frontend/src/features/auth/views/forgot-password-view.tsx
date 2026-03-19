@@ -6,7 +6,7 @@ import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import logo from '@/assets/images/logo/ssc_logo_2.png';
+import logo from '@/assets/images/logo/ssc_logo_2.webp';
 import { AuthFooter } from '@/features/auth/components/auth-footer';
 
 export const ForgotPasswordView = () => {
@@ -41,9 +41,11 @@ export const ForgotPasswordView = () => {
                 <Image
                   src={logo}
                   alt="Slapshot Club"
-                  fill
+                  width={256}
+                  height={128}
                   className="object-contain drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
                   priority
+                  quality={85}
                 />
               </div>
 

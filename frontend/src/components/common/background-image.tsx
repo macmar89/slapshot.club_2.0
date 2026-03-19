@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import bgImage from '@/assets/images/background/ssc_stick.png';
+import bgImage from '@/assets/images/background/ssc_stick.webp';
 
 export default function BackgroundImage() {
   return (
@@ -11,7 +11,8 @@ export default function BackgroundImage() {
           fill
           className="object-cover object-center"
           priority
-          quality={100}
+          sizes="100vw"
+          quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-slate-950/20 to-slate-950/40" />
       </div>

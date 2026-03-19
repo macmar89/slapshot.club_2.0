@@ -7,7 +7,7 @@ import { ResetPasswordForm } from '@/features/auth/components/reset-password-for
 import { Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import logo from '@/assets/images/logo/ssc_logo_2.png';
+import logo from '@/assets/images/logo/ssc_logo_2.webp';
 
 export function ResetPasswordView() {
   const t = useTranslations('Login');
@@ -26,9 +26,11 @@ export function ResetPasswordView() {
             <Image
               src={logo}
               alt="Slapshot Club"
-              fill
+              width={256}
+              height={128}
               className="object-contain drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
               priority
+              quality={85}
             />
           </div>
 

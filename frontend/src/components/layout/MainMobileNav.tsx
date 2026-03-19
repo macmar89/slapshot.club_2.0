@@ -19,7 +19,7 @@ import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/logout-button';
 import { ReferralLink } from '@/components/common/referral-link';
 import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.png';
+import logo from '@/assets/images/logo/ssc_logo_2.webp';
 
 export function MainMobileNav({ user }: { user: any }) {
   const t = useTranslations('Dashboard.nav');
@@ -68,6 +68,7 @@ export function MainMobileNav({ user }: { user: any }) {
                 height={80}
                 className="h-full w-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110"
                 priority
+                quality={85}
               />
               <span className="bg-primary pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA

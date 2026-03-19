@@ -1,17 +1,14 @@
 import Image from 'next/image';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import hockey1 from '@/assets/images/loader/hockey1.png';
-import hockey2 from '@/assets/images/loader/hockey2.png';
-import hockey3 from '@/assets/images/loader/hockey3.png';
-import hockey4 from '@/assets/images/loader/hockey4.png';
+import hockey1 from '@/assets/images/background/ssc_stick.webp';
 
 interface HockeyLoaderProps {
   className?: string;
   text?: string;
 }
 
-const IMAGES = [hockey1, hockey2, hockey3, hockey4];
+const IMAGES = [hockey1];
 
 export function HockeyLoader({ className, text }: HockeyLoaderProps) {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
