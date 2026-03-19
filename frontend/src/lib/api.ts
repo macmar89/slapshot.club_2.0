@@ -17,7 +17,8 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const isServer = typeof window === 'undefined';
+const API_URL = isServer ? process.env.NEXT_PUBLIC_API_URL || '' : '';
 const API_VERSION = '/api/v1';
 
 export const api = axios.create({
