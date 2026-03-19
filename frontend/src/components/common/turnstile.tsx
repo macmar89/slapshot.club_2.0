@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Turnstile as MarsiTurnstile, type TurnstileProps } from '@marsidev/react-turnstile';
+import Script from 'next/script';
 
 interface CustomTurnstileProps extends Omit<TurnstileProps, 'siteKey'> {
   siteKey?: string;
@@ -9,30 +10,37 @@ interface CustomTurnstileProps extends Omit<TurnstileProps, 'siteKey'> {
 
 export const Turnstile: React.FC<CustomTurnstileProps> = ({ siteKey, ...props }) => {
   const { onSuccess } = props;
-  const isEnabled =
-    process.env.NEXT_PUBLIC_ENABLE_TURNSTILE !== 'false' &&
-    process.env.NEXT_PUBLIC_DISABLE_TURNSTILE !== 'true';
 
-  React.useEffect(() => {
-    if (!isEnabled && onSuccess) {
-      onSuccess('mock-token');
-    }
-  }, [isEnabled, onSuccess]);
-
-  if (!isEnabled) {
-    return null;
-  }
+  const isEnabled = useMemo(() => process.env.NEXT_PUBLIC_DISABLE_TURNSTILE !== 'true', []);
 
   const finalSiteKey = siteKey || process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
+  React.useEffect(() => {
+    if (!isEnabled && onSuccess) {
+      const timer = setTimeout(() => onSuccess('mock-token'), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isEnabled, onSuccess]);
+
+  if (!isEnabled) return null;
+
   if (!finalSiteKey) {
-    console.warn('Turnstile: NEXT_PUBLIC_TURNSTILE_SITE_KEY is not defined');
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Turnstile: NEXT_PUBLIC_TURNSTILE_SITE_KEY is not defined');
+    }
     return null;
   }
 
   return (
     <div className="my-4 flex justify-center">
-      <MarsiTurnstile siteKey={finalSiteKey} {...props} />
+      <Script src="https://challenges.cloudflare.com/challenges.js" strategy="afterInteractive" />
+      <MarsiTurnstile
+        siteKey={finalSiteKey}
+        {...props}
+        options={{
+          execution: 'render',
+        }}
+      />
     </div>
   );
 };
