@@ -21,8 +21,7 @@ import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/logout-button';
 import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
-import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.webp';
+import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
 export function MobileTabNav() {
   const t = useTranslations('Dashboard.nav');
@@ -88,13 +87,10 @@ export function MobileTabNav() {
               href={slug ? (`/[slug]/dashboard`.replace('[slug]', slug) as any) : ('/arena' as any)}
               className="animate-in fade-in zoom-in group relative z-10 flex h-24 w-24 rotate-3 items-center justify-center duration-500"
             >
-              <Image
-                src={logo}
-                alt="Slapshot Club"
+              <SlapshotLogo
                 width={80}
                 height={80}
-                className="h-full w-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110"
-                priority
+                className="h-full w-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110"
               />
               <span className="bg-primary pointer-events-none absolute top-4 -right-2 rotate-12 rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA

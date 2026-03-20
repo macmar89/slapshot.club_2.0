@@ -66,7 +66,7 @@ export const ForgotPasswordForm = () => {
               'Skontrolujte si svoju e-mailovú schránku pre ďalší postup.'}
           </p>
         </div>
-        <Link href="/login" className="text-gold font-semibold hover:underline">
+        <Link href="/" className="text-gold font-semibold hover:underline">
           {t('back_to_login')}
         </Link>
       </div>

@@ -1,15 +1,11 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.webp';
+import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
-import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
 import { Container } from '@/components/ui/container';
-import { Button } from '@/components/ui/button';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
-import { Bell, Menu } from 'lucide-react';
 
 // Sub-components
 import { InitializationOverlay } from './header/InitializationOverlay';
@@ -69,15 +65,11 @@ export function Header({ title }: HeaderProps) {
         <Container className="max-w-auto flex h-full items-center justify-between gap-4">
           <div className="group relative mt-6 mr-8 flex h-16 w-60 items-center sm:-mt-4">
             <div className="pointer-events-none absolute left-0 flex h-32 items-center transition-all duration-300 md:-top-2 md:top-0">
-              <Image
-                src={logo}
-                alt="Slapshot Club"
+              <SlapshotLogo
                 width={128}
                 height={128}
-                className="h-auto w-20 object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] md:h-24 md:w-24"
-                priority
+                className="h-auto w-20 drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] md:h-24 md:w-24"
                 sizes="(max-width: 768px) 80px, 240px"
-                quality={85}
               />
               <span className="bg-primary absolute top-8 -right-4 rotate-12 rounded-md px-2 py-0.5 text-[10px] font-black tracking-normal text-black normal-case shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-transform duration-300">
                 BETA

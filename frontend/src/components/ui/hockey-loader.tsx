@@ -8,18 +8,7 @@ interface HockeyLoaderProps {
   text?: string;
 }
 
-const IMAGES = [hockey1];
-
 export function HockeyLoader({ className, text }: HockeyLoaderProps) {
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % IMAGES.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div
       className={cn(
@@ -27,27 +16,22 @@ export function HockeyLoader({ className, text }: HockeyLoaderProps) {
         className,
       )}
     >
-      {/* Cinematic Background Images */}
-      {IMAGES.map((src, index) => (
-        <div
-          key={index}
-          className={cn(
-            'absolute inset-0 transition-all duration-1000 ease-in-out',
-            index === currentImageIndex ? 'scale-105 opacity-40' : 'scale-100 opacity-0',
-          )}
-          style={{
-            transition: 'opacity 1s ease-in-out, transform 8s linear',
-          }}
-        >
-          <Image
-            src={src}
-            alt="Hockey Loader Background"
-            fill
-            priority={index === 0}
-            className="object-cover"
-          />
-        </div>
-      ))}
+      {/* Cinematic Background Image */}
+      <div
+        className="absolute inset-0 scale-105 opacity-40 transition-all duration-1000 ease-in-out"
+        style={{
+          transition: 'opacity 1s ease-in-out, transform 8s linear',
+        }}
+      >
+        <Image
+          src={hockey1}
+          alt="Hockey Loader Background"
+          fill
+          priority
+          className="object-cover"
+          fetchPriority="high"
+        />
+      </div>
 
       {/* Cinematic Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60" />

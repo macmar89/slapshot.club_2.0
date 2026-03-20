@@ -1,4 +1,4 @@
-import { ArenaView } from '@/features/arena/views/ArenaView';
+import { ArenaView } from '@/features/arena/views/arena-view';
 import { getActiveCompetitionsServer } from '@/features/competitions/competitions.server';
 
 export default async function ArenaPage() {

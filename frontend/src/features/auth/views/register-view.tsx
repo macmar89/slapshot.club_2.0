@@ -1,8 +1,7 @@
 import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
-import logo from '@/assets/images/logo/ssc_logo_2.webp';
+import { SlapshotLogo } from '@/components/common/slapshot-logo';
 import { AuthFooter } from '../components/auth-footer';
 import { RegisterForm } from '../components/register-form';
 
@@ -14,7 +13,7 @@ export const RegisterView = ({ referralCode }: RegisterViewProps) => {
   const t = useTranslations('Login');
 
   return (
-    <div className="selection:bg-gold/30 selection:text-gold-light relative flex min-h-screen overflow-hidden pb-12">
+    <div className="selection:bg-gold/30 selection:text-gold-light relative flex min-h-screen flex-col">
       <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/80 to-slate-950/40" />
       <div className="fixed top-6 right-6 z-50">
         <LanguageSwitcher />
@@ -34,15 +33,11 @@ export const RegisterView = ({ referralCode }: RegisterViewProps) => {
         <div className="relative order-1 min-h-[30vh] w-full overflow-hidden lg:order-2 lg:min-h-screen lg:w-1/2">
           <div className="relative z-20 flex h-full flex-col items-center justify-center p-6 pb-4 text-right sm:p-12 lg:items-end lg:p-24">
             <div className="animate-in fade-in slide-in-from-right flex flex-col space-y-2 duration-1000 sm:space-y-4">
-              <div className="animate-in fade-in slide-in-from-top-4 relative order-1 mx-auto mb-4 h-32 w-64 duration-700 sm:mb-8 lg:mx-0 lg:ml-auto">
-                <Image
-                  src={logo}
-                  alt="Slapshot Club"
-                  width={256}
-                  height={128}
-                  className="object-contain drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-                  priority
-                  quality={85}
+              <div className="animate-in fade-in slide-in-from-top-4 relative order-1 mx-auto mb-2 h-40 w-40 duration-700 sm:mb-4 lg:mx-0 lg:ml-auto">
+                <SlapshotLogo
+                  width={160}
+                  height={160}
+                  className="ml-auto drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
                 />
               </div>
 

@@ -209,7 +209,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
 
       <div className="mt-2 text-center text-sm text-white/50">
         {t('already_have_account')}{' '}
-        <Link href="/login" className="font-semibold text-white hover:underline">
+        <Link href="/" className="font-semibold text-white hover:underline">
           {t('login')}
         </Link>
       </div>

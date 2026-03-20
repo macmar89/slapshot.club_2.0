@@ -32,8 +32,8 @@ export const Turnstile: React.FC<CustomTurnstileProps> = ({ siteKey, ...props })
   }
 
   return (
-    <div className="my-4 flex justify-center">
-      <Script src="https://challenges.cloudflare.com/challenges.js" strategy="afterInteractive" />
+    <div className="my-4 flex min-h-[65px] justify-center">
+      <Script src="https://challenges.cloudflare.com/challenges.js" strategy="lazyOnload" />
       <MarsiTurnstile
         siteKey={finalSiteKey}
         {...props}

@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { ResetPasswordForm } from '@/features/auth/components/reset-password-form';
 import { Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
-import logo from '@/assets/images/logo/ssc_logo_2.webp';
+import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
 export function ResetPasswordView() {
   const t = useTranslations('Login');
@@ -22,15 +21,11 @@ export function ResetPasswordView() {
       <div className="relative z-10 flex w-full max-w-6xl flex-col items-center gap-16 px-6 py-12 lg:flex-row lg:gap-24">
         {/* Left Column: Marketing / Branding */}
         <div className="flex-1 text-center lg:text-left">
-          <div className="animate-in fade-in slide-in-from-top-4 relative mx-auto mb-8 h-32 w-64 duration-700 lg:mx-0">
-            <Image
-              src={logo}
-              alt="Slapshot Club"
-              width={256}
-              height={128}
-              className="object-contain drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-              priority
-              quality={85}
+          <div className="animate-in fade-in slide-in-from-top-4 relative order-1 mx-auto mb-2 h-40 w-40 duration-700 sm:mb-4 lg:mx-0 lg:ml-auto">
+            <SlapshotLogo
+              width={160}
+              height={160}
+              className="drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
             />
           </div>
 

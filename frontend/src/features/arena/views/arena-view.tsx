@@ -31,8 +31,6 @@ export function ArenaView({ initialCompetitions }: ArenaViewProps) {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.05),transparent),radial-gradient(circle_at_bottom_left,rgba(234,179,8,0.02),transparent)] p-4 pb-24 text-white md:p-6 md:pb-8 lg:p-8">
-      <div className="sm:pt-20 md:pt-16" />
-
       <h1 className="mb-8 text-center text-xl font-medium text-white md:text-3xl">
         {t('welcome', { username: user?.username ?? 'User' })}
       </h1>

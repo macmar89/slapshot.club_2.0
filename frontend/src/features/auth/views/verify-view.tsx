@@ -161,7 +161,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
                   <Button
                     variant="ghost"
                     className="w-full border border-white/10 text-white hover:bg-white/5"
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push('/')}
                   >
                     {t('back_to_login')}
                   </Button>
