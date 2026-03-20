@@ -35,6 +35,11 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${sora.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        {process.env.NEXT_PUBLIC_API_URL && (
+          <link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL} />
+        )}
+      </head>
       <NextIntlClientProvider messages={messages}>
         <body className="bg-background text-foreground relative min-h-screen font-sans antialiased">
           <Providers>

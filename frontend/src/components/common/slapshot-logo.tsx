@@ -19,7 +19,7 @@ export function SlapshotLogo({
   height = 256,
   className,
   priority = true,
-  quality = 85,
+  quality = 75,
   fetchPriority = 'high',
   alt = 'Slapshot Club',
   sizes,

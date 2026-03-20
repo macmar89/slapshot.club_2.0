@@ -37,7 +37,7 @@ export const MatchTeamDisplay = ({
             height={isLarge ? 80 : 60}
             className="rounded-app relative z-10 h-full w-auto object-contain drop-shadow-2xl"
             sizes={isLarge ? '120px' : '80px'}
-            quality={80}
+            quality={70}
             loading="lazy"
           />
         )}
