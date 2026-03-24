@@ -25,6 +25,11 @@ router.post(
   authController.registerHandler,
 );
 router.post(
+  '/verify-email',
+  validate(VerifyEmailHandlerSchema),
+  authController.verifyEmailHandler,
+);
+router.post(
   '/resend-verification',
   verifyTurnstile,
   validate(ResendVerificationHandlerSchema),

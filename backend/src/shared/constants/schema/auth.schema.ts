@@ -49,7 +49,7 @@ export const CheckAvailabilitySchema = z.object({
 });
 
 export const VerifyEmailSchema = z.object({
-  token: z.string().min(1, VALIDATION.TURNSTILE_ERROR),
+  token: z.string().min(1, VALIDATION.REQUIRED),
 });
 
 export const VerifyEmailHandlerSchema = z.object({

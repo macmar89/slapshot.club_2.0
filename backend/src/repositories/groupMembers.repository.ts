@@ -159,4 +159,18 @@ export const groupMembersRepository = {
       .delete(groupMembers)
       .where(and(eq(groupMembers.id, memberId), eq(groupMembers.groupId, groupId)));
   },
+
+  async getAdminsByGroupId(groupId: string) {
+    const result = await defaultDb.query.groupMembers.findMany({
+      columns: { userId: true },
+      where: (gm, { eq, and, or, inArray }) =>
+        and(
+          eq(gm.groupId, groupId),
+          eq(gm.status, 'active'),
+          inArray(gm.role, ['owner', 'admin']),
+        ),
+    });
+
+    return result.map((item) => item.userId);
+  },
 };

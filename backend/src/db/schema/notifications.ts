@@ -4,6 +4,7 @@ import { generateCuid } from '../helpers.js';
 export const notificationTypeEnum = pgEnum('notification_type', [
   'MATCH_FINISHED',
   'POINTS_AWARDED',
+
   'GROUP_INVITE',
   'GROUP_INVITE_ACCEPTED',
   'GROUP_INVITE_REJECTED',

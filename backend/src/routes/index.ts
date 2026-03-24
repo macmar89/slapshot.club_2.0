@@ -10,18 +10,20 @@ import predictionRoutes from './prediction.routes.js';
 import matchRoutes from './matches.routes.js';
 import publicMatchRoutes from './matches.public.routes.js';
 import groupRoutes from './groups.routes.js';
+import notificationRoutes from './notifications.routes.js';
 
 const router = Router();
 
 router.use('/admin', isAuth, isAdmin, adminRoutes);
 
 router.use('/auth', authRoutes);
-router.use('/user', isAuth, userRoutes);
 router.use('/competition', competitionRoutes);
 router.use('/feedback', isAuth, feedbackRoutes);
 router.use('/groups', isAuth, groupRoutes);
 router.use('/matches', isAuth, matchRoutes);
+router.use('/notifications', isAuth, notificationRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
+router.use('/user', isAuth, userRoutes);
 
 router.use('/public/matches', isAuth, isAdmin, publicMatchRoutes);
 

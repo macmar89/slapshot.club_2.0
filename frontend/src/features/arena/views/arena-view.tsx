@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { CompetitionCard } from '../../competitions/components/competition-card';
-import { MainMobileNav } from '@/components/layout/MainMobileNav';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
 import { useAuthStore } from '@/store/use-auth-store';
@@ -49,7 +48,6 @@ export function ArenaView({ initialCompetitions }: ArenaViewProps) {
           </div>
         )}
       </main>
-      <MainMobileNav user={user} />
     </div>
   );
 }

@@ -23,6 +23,7 @@ import { groupsValidationService } from './groupsValidation.service.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
 import { calculateGroupCapacity } from './groupsCore.service.js';
 import { logger } from '../../utils/logger.js';
+import { notify } from '../notifications.service.js';
 
 export const joinGroup = async (
   userId: string,
@@ -162,6 +163,15 @@ export const joinPrivateGroup = async (
       { userId, groupId: group.id, name: group.name },
       `User joined group with status: ${finalStatus}`,
     );
+    if (!isImmediatelyActive) {
+      const adminIds = await groupMembersRepository.getAdminsByGroupId(group.id);
+      await notify({
+        userIds: adminIds,
+        type: 'GROUP_PENDING',
+        payload: { groupId: group.id, groupName: group.name, requestingUserId: userId },
+      });
+    }
+
     return {
       group,
       competitionId,
@@ -224,6 +234,21 @@ export const updateMemberStatus = async (
 
     return { targetId };
   });
+
+  if (status === 'active') {
+    await notify({
+      userId: targetId,
+      type: 'GROUP_PENDING_ACCEPTED',
+      payload: { groupId },
+    });
+  } else if (status === 'rejected') {
+    await notify({
+      userId: targetId,
+      type: 'GROUP_PENDING_REJECTED',
+      payload: { groupId },
+    });
+  }
+
   return { targetId };
 };
 

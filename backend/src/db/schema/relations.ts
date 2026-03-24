@@ -21,6 +21,7 @@ import {
   competitionsLocales,
   generalSettings,
   generalSettingsLocales,
+  notifications,
 } from './index.js';
 
 export const usersRelations = relations(users, ({ many, one }) => ({
@@ -53,6 +54,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   feedback: many(feedback),
   leaderboardEntries: many(leaderboardEntries),
   competitionSnapshots: many(competitionSnapshots),
+  notifications: many(notifications),
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -238,5 +240,12 @@ export const generalSettingsLocalesRelations = relations(generalSettingsLocales,
   parentSettings: one(generalSettings, {
     fields: [generalSettingsLocales.parentId],
     references: [generalSettings.id],
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
   }),
 }));
