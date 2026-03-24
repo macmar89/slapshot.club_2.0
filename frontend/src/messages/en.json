@@ -33,6 +33,7 @@
     "nav": {
       "overview": "Overview",
       "arena": "Arena",
+      "missing_tips": "My tips",
       "notifications": "Notifications",
       "matches": "Matches",
       "tables": "Tables",
@@ -904,6 +905,19 @@
     "nav": {
       "dashboard": "Dashboard",
       "matches": "Matches"
+    }
+  },
+  "MissingTips": {
+    "title": "My Tips",
+    "description": "List of all matches you haven't predicted yet across all your leagues.",
+    "all_done_title": "All done!",
+    "no_matches": "You have predicted everything for this day! Good job! 🏒",
+    "loading": "Loading your matches...",
+    "error": "Failed to load matches.",
+    "summary_card": {
+      "title": "Missing Tips",
+      "description": "{count, plural, one {You have # missing tip} other {You have # missing tips}} for the next 3 days",
+      "action": "Complete tips"
     }
   }
 }

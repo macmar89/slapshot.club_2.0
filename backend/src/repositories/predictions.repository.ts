@@ -1,5 +1,8 @@
-import { predictions, leaderboardEntries, matches, teams, assets } from '../db/schema/index.js';
+import { db } from '../db/index.js';
+import { predictions, leaderboardEntries, matches } from '../db/schema/index.js';
 import { eq, and, not, gte, lte, sql, inArray, notExists } from 'drizzle-orm';
+import { mapMatchToPreview } from '../utils/mappers/matches.mappers.js';
+import type { AppLocale } from '../types/global.types.js';
 
 export const predictionsRepository = {
   async getPredictionsByMatchId(matchId: string) {
@@ -11,8 +14,10 @@ export const predictionsRepository = {
         awayGoals: true,
         status: true,
       },
+      where: and(eq(predictions.matchId, matchId), not(eq(predictions.status, 'evaluated'))),
+    });
   },
-  
+
   async getMissingPredictionsCountByDateRange(userId: string, startDate: string, endDate: string) {
     // 1. Get competition IDs user is in
     const userCompetitions = await db
@@ -24,38 +29,37 @@ export const predictionsRepository = {
     if (compIds.length === 0) return [];
 
     // 2. Count matches without predictions grouped by date
-    // We use date_trunc or similar to group by day in DB timezone or local?
-    // Let's use simple string slicing for the date part YYYY-MM-DD
+    const startIso = `${startDate}T00:00:00.000Z`;
+    const endIso = `${endDate}T23:59:59.999Z`;
+
     return await db
       .select({
-        date: sql<string>`active_date`,
+        date: sql<string>`substring(${matches.date} from 1 for 10)`,
         count: sql<number>`count(*)::int`,
       })
-      .from(
-        db
-          .select({
-            active_date: sql<string>`substring(${matches.date} from 1 for 10)`.as('active_date'),
-          })
-          .from(matches)
-          .where(
-            and(
-              inArray(matches.competitionId, compIds),
-              gte(matches.date, startDate),
-              lte(matches.date, endDate),
-              notExists(
-                db
-                  .select()
-                  .from(predictions)
-                  .where(and(eq(predictions.matchId, matches.id), eq(predictions.userId, userId))),
-              ),
-            ),
-          )
-          .as('subquery'),
+      .from(matches)
+      .where(
+        and(
+          inArray(matches.competitionId, compIds),
+          gte(matches.date, startIso),
+          lte(matches.date, endIso),
+          notExists(
+            db
+              .select()
+              .from(predictions)
+              .where(and(eq(predictions.matchId, matches.id), eq(predictions.userId, userId))),
+          ),
+        ),
       )
-      .groupBy(sql`active_date`);
+      .groupBy(sql`substring(${matches.date} from 1 for 10)`);
   },
 
-  async getMissingPredictionsByDate(userId: string, date: string, timezone: string = 'UTC') {
+  async getMissingPredictionsByDate(
+    userId: string,
+    date: string,
+    locale: AppLocale,
+    timezone: string = 'UTC',
+  ) {
     const userCompetitions = await db
       .select({ id: leaderboardEntries.competitionId })
       .from(leaderboardEntries)
@@ -67,7 +71,7 @@ export const predictionsRepository = {
     const startOfDay = `${date}T00:00:00.000Z`;
     const endOfDay = `${date}T23:59:59.999Z`;
 
-    return await db.query.matches.findMany({
+    const result = await db.query.matches.findMany({
       where: and(
         inArray(matches.competitionId, compIds),
         gte(matches.date, startOfDay),
@@ -82,18 +86,27 @@ export const predictionsRepository = {
       with: {
         competition: {
           with: {
-            locales: true,
+            locales: {
+              where: (l, { eq }) => eq(l.locale, locale),
+              limit: 1,
+            },
           },
         },
         homeTeam: {
           with: {
-            locales: true,
+            locales: {
+              where: (l, { eq }) => eq(l.locale, locale),
+              limit: 1,
+            },
             logo: true,
           },
         },
         awayTeam: {
           with: {
-            locales: true,
+            locales: {
+              where: (l, { eq }) => eq(l.locale, locale),
+              limit: 1,
+            },
             logo: true,
           },
         },
@@ -103,5 +116,41 @@ export const predictionsRepository = {
       },
       orderBy: [matches.date],
     });
+
+    return result.map((match) => mapMatchToPreview(match, userId));
+  },
+
+  async getMissingPredictionsCountNext24Hours(userId: string) {
+    const userCompetitions = await db
+      .select({ id: leaderboardEntries.competitionId })
+      .from(leaderboardEntries)
+      .where(eq(leaderboardEntries.userId, userId));
+
+    const compIds = userCompetitions.map((c) => c.id);
+    if (compIds.length === 0) return 0;
+
+    const now = new Date().toISOString();
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+    const result = await db
+      .select({
+        count: sql<number>`count(*)::int`,
+      })
+      .from(matches)
+      .where(
+        and(
+          inArray(matches.competitionId, compIds),
+          gte(matches.date, now),
+          lte(matches.date, tomorrow),
+          notExists(
+            db
+              .select()
+              .from(predictions)
+              .where(and(eq(predictions.matchId, matches.id), eq(predictions.userId, userId))),
+          ),
+        ),
+      );
+
+    return result[0]?.count || 0;
   },
 };

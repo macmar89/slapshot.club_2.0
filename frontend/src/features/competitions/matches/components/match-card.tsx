@@ -63,6 +63,9 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
     );
   };
 
+  const activeSlug = (slug as string) || match.competition?.slug;
+  const competitionName = match.competitionName || match.competition?.locales?.find((l) => l.locale === locale)?.name;
+
   return (
     <IceGlassCard
       backdropBlur="md"
@@ -72,6 +75,14 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
       )}
     >
       <div className="mb-6 flex flex-col gap-1">
+        {competitionName && (
+          <div className="mb-1 flex items-center gap-1.5 opacity-60">
+            <Trophy className="text-warning h-3 w-3" />
+            <span className="text-[0.65rem] font-black tracking-widest text-white uppercase italic">
+              {competitionName}
+            </span>
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <p className="text-sm font-bold text-white">
             {matchDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} •{' '}
@@ -218,12 +229,14 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href={`/${slug}/matches/${match.id}?tab=info`} className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto">
-              <Eye className="h-4 w-4 text-white" />
-              {t('view_detail')}
-            </Button>
-          </Link>
+          {activeSlug && (
+            <Link href={`/${activeSlug}/matches/${match.id}?tab=info`} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
+                <Eye className="h-4 w-4 text-white" />
+                {t('view_detail')}
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </IceGlassCard>

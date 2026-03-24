@@ -3,12 +3,11 @@
 import React from 'react';
 import { dashboardConfig, DashboardItem } from '@/config/sidebar';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
-import { MoreHorizontal, MessageSquarePlus, LogOut, X, LayoutDashboard } from 'lucide-react';
+import { MoreHorizontal, MessageSquarePlus, X } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -27,8 +26,6 @@ import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
 export function MobileTabNav() {
   const t = useTranslations('Dashboard.nav');
-  const th = useTranslations('Header');
-  const ta = useTranslations('Auth');
   const params = useParams();
   const pathname = usePathname();
   const slug = params?.slug as string | undefined;
@@ -37,15 +34,11 @@ export function MobileTabNav() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [competitionName, setCompetitionName] = React.useState<string | null>(null);
 
-  const hasBadge = React.useMemo(
-    () => dashboardConfig.sidebarNav.some((item) => item.showBadge),
-    [],
-  );
+  const { data: unreadData } = useSWR<{ count: number }>(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT);
+  const { data: missingData } = useSWR<{ count: number }>(API_ROUTES.PREDICTION.SUMMARY);
 
-  const { data: unreadData } = useSWR<{ count: number }>(
-    hasBadge ? API_ROUTES.NOTIFICATIONS.UNREAD_COUNT : null,
-  );
   const unreadCount = unreadData?.count || 0;
+  const missingCount = missingData?.count || 0;
 
   React.useEffect(() => {
     async function fetchCompetition() {
@@ -89,10 +82,20 @@ export function MobileTabNav() {
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
-                {item.showBadge && unreadCount > 0 && (
-                  <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                    {unreadCount}
-                  </div>
+                {item.showBadge && (
+                  item.badgeType === 'notifications' ? (
+                    unreadCount > 0 && (
+                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                        {unreadCount}
+                      </div>
+                    )
+                  ) : item.badgeType === 'missing_tips' ? (
+                    missingCount > 0 && (
+                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                        {missingCount}
+                      </div>
+                    )
+                  ) : null
                 )}
               </Link>
             ))}
@@ -127,10 +130,20 @@ export function MobileTabNav() {
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
-                {item.showBadge && unreadCount > 0 && (
-                  <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                    {unreadCount}
-                  </div>
+                {item.showBadge && (
+                  item.badgeType === 'notifications' ? (
+                    unreadCount > 0 && (
+                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                        {unreadCount}
+                      </div>
+                    )
+                  ) : item.badgeType === 'missing_tips' ? (
+                    missingCount > 0 && (
+                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                        {missingCount}
+                      </div>
+                    )
+                  ) : null
                 )}
               </Link>
             ))}
@@ -171,22 +184,37 @@ export function MobileTabNav() {
 
                 <div className="custom-scrollbar flex-1 overflow-y-auto px-6 py-2">
                   <nav className="flex flex-col gap-2">
-                    {/* Global Aréna Link */}
-                    <Link
-                      href="/arena"
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        'group relative flex items-center gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
-                        pathname === '/arena' ? 'text-white' : 'text-white/70 hover:text-white',
-                      )}
-                    >
-                      {pathname === '/arena' && (
-                        <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
-                      )}
-                      <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
-                      <LayoutDashboard className="relative z-10 h-5 w-5" />
-                      <span className="relative z-10 text-shadow-sm">{t('arena')}</span>
-                    </Link>
+                    {/* Global Links (Aréna, Moje Tipy) */}
+                    {dashboardConfig.mobileNav.map((item) => {
+                      const isActive = pathname === item.href;
+                      const count = item.badgeType === 'missing_tips' ? missingCount : 
+                                  item.badgeType === 'notifications' ? unreadCount : 0;
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href as any}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            'group relative flex items-center gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
+                            isActive ? 'text-white' : 'text-white/70 hover:text-white',
+                          )}
+                        >
+                          {isActive && (
+                            <div className="via-primary absolute right-0 bottom-0 left-0 h-[2px] bg-gradient-to-r from-transparent to-transparent shadow-[0_-2px_10px_rgba(234,179,8,0.7)]" />
+                          )}
+                          <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
+                          <item.icon className="relative z-10 h-5 w-5" />
+                          <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
+
+                          {item.showBadge && count > 0 && (
+                            <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                              {count}
+                            </div>
+                          )}
+                        </Link>
+                      );
+                    })}
 
                     {(slug || competitionName) && (
                       <>
@@ -227,10 +255,20 @@ export function MobileTabNav() {
                           <item.icon className="relative z-10 h-5 w-5" />
                           <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
                           
-                          {item.showBadge && unreadCount > 0 && (
-                            <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
-                              {unreadCount}
-                            </div>
+                          {item.showBadge && (
+                            item.badgeType === 'notifications' ? (
+                              unreadCount > 0 && (
+                                <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                                  {unreadCount}
+                                </div>
+                              )
+                            ) : item.badgeType === 'missing_tips' ? (
+                              missingCount > 0 && (
+                                <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                                  {missingCount}
+                                </div>
+                              )
+                            ) : null
                           )}
                         </Link>
                       );

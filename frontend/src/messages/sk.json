@@ -33,6 +33,7 @@
     "nav": {
       "overview": "Prehľad",
       "arena": "Aréna",
+      "missing_tips": "Moje tipy",
       "notifications": "Oznámenia",
       "matches": "Zápasy",
       "tables": "Tabuľky",
@@ -905,6 +906,19 @@
     "nav": {
       "dashboard": "Dashboard",
       "matches": "Zápasy"
+    }
+  },
+  "MissingTips": {
+    "title": "Moje tipy",
+    "description": "Zoznam všetkých zápasov, ktoré ti chýba natipovať naprieč tvojimi ligami.",
+    "all_done_title": "Všetko máš!",
+    "no_matches": "Pre tento deň nemáš žiadne nenatipované zápasy.",
+    "loading": "Načítavam tvoje zápasy...",
+    "error": "Nepodarilo sa načítať zápasy.",
+    "summary_card": {
+      "title": "Chýbajúce tipy",
+      "description": "{count, plural, one {Máš # chýbajúci tip} few {# chýbajúce tipy} other {# chýbajúcich tipov}} na najbližšie 3 dni",
+      "action": "Doplniť tipy"
     }
   }
 }

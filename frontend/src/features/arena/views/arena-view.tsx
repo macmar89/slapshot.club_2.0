@@ -7,6 +7,7 @@ import { API_ROUTES } from '@/lib/api-routes';
 import { useAuthStore } from '@/store/use-auth-store';
 
 import { Competition } from '../../competitions/competitions.types';
+import { MissingTipsSummary } from '../components/missing-tips-summary';
 
 interface ArenaViewProps {
   initialCompetitions: Competition[];
@@ -35,6 +36,7 @@ export function ArenaView({ initialCompetitions }: ArenaViewProps) {
       </h1>
 
       <main className="mx-auto max-w-7xl">
+        <MissingTipsSummary />
         {data?.competitions?.length > 0 && (
           <div className="mb-10 md:mb-16 lg:mb-20">
             <div className="mb-12 flex items-center gap-6">

@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { useCompetitionStore } from '@/store/use-competition-store';
 import { useTranslations } from 'next-intl';
 import { CalendarDays } from 'lucide-react';
-import { DateSwitcher } from '../components/date-switcher';
+import { DateSwitcher } from '@/components/common/date-switcher/date-switcher';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useParams, useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
@@ -48,11 +48,11 @@ export const MatchesView = () => {
             description={t('description')}
             hideDescriptionOnMobile
             className="mb-4 md:mb-6"
-          >
-            <div className="flex w-full items-center gap-2 md:w-auto md:gap-4">
-              <DateSwitcher />
-            </div>
-          </PageHeader>
+          />
+
+          <div className="ms-auto mb-6 flex w-fit items-center gap-2 md:gap-4">
+            <DateSwitcher />
+          </div>
 
           <div className="animate-in fade-in slide-in-from-bottom-4 -mx-1 grid grid-cols-1 gap-3 duration-700 md:mx-0 md:gap-6 lg:grid-cols-2">
             {data && data?.length > 0 ? (

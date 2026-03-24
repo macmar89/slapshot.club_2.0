@@ -24,6 +24,7 @@ export interface Match {
   date: string;
   displayTitle: string;
   status: MatchStatus;
+  competitionName?: string;
 
   homeTeamId: string;
   homeTeamName: string;
@@ -53,6 +54,11 @@ export interface Match {
   rankedAt: string | null;
 
   userPrediction: UserPrediction | null;
+  competition?: {
+    id: string;
+    slug: string;
+    locales?: { name: string; locale: string }[];
+  };
 }
 
 export enum MatchRound {

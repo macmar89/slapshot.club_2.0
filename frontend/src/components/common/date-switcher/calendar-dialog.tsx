@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -15,6 +15,7 @@ interface CalendarDialogProps {
   onClose: () => void;
   selectedDate: string | null;
   availableDays: string[];
+  badges?: Record<string, number>;
   onSelectDate: (date: string) => void;
 }
 
@@ -37,6 +38,7 @@ export function CalendarDialog({
   selectedDate,
   availableDays,
   onSelectDate,
+  badges,
 }: CalendarDialogProps) {
   const locale = useLocale();
   const currentLocale = localeMap[locale as keyof typeof localeMap] || sk;
@@ -56,12 +58,13 @@ export function CalendarDialog({
     getInitialMonthIndex(activeMonths, selectedDate),
   );
 
+  // Synchronize state from props (React pattern for adjusting state)
   if (selectedDate !== lastSelectedDate) {
     setLastSelectedDate(selectedDate);
     if (selectedDate && activeMonths.length > 0) {
       const monthKey = format(parseISO(selectedDate), 'yyyy-MM');
       const index = activeMonths.indexOf(monthKey);
-      if (index !== -1) {
+      if (index !== -1 && index !== currentMonthIndex) {
         setCurrentMonthIndex(index);
       }
     }
@@ -96,11 +99,12 @@ export function CalendarDialog({
         hasMatches: availableDaysSet.has(dateStr),
         isSelected: selectedDate === dateStr,
         isToday: dateStr === todayStr,
+        badgeCount: badges?.[dateStr] || 0,
       });
     }
 
     return { monthName: name, calendarDays: days };
-  }, [activeMonths, currentMonthIndex, availableDays, selectedDate, currentLocale, todayStr]);
+  }, [activeMonths, currentMonthIndex, availableDays, selectedDate, currentLocale, todayStr, badges]);
 
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
@@ -190,6 +194,16 @@ export function CalendarDialog({
                   <span className="text-xs">{day.day}</span>
                   {day.hasMatches && !day.isSelected && (
                     <div className="bg-primary/50 absolute bottom-1.5 h-1 w-1 rounded-full" />
+                  )}
+                  {day.badgeCount > 0 && (
+                    <div
+                      className={cn(
+                        'bg-primary absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black ring-2 ring-slate-950 transition-transform group-hover:scale-110',
+                        day.isSelected && 'bg-black text-primary ring-primary',
+                      )}
+                    >
+                      {day.badgeCount}
+                    </div>
                   )}
                   {isToday && !day.isSelected && (
                     <div className="absolute top-1 right-1 h-1 w-1 rounded-full bg-blue-500" />

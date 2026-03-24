@@ -6,6 +6,7 @@ export const mapMatchToPreview = (match: any, userId?: string) => {
     date: match.date,
     displayTitle: match.displayTitle,
     status: match.status,
+    competitionName: match.competition?.locales[0]?.name,
     homeTeamName: match.homeTeam?.locales[0]?.name,
     homeTeamShortName: match.homeTeam?.locales[0]?.shortName,
     homeTeamLogo: match.homeTeam?.logo?.url,

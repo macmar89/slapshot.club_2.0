@@ -16,7 +16,17 @@ const CalendarDialog = dynamic(
   { ssr: false },
 );
 
-export const DateSwitcher = () => {
+interface DateSwitcherProps {
+  badges?: Record<string, number>;
+  availableDays?: string[];
+  onDateChange?: (date: string) => void;
+}
+
+export const DateSwitcher = ({
+  badges,
+  availableDays: customAvailableDays,
+  onDateChange,
+}: DateSwitcherProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
@@ -34,30 +44,33 @@ export const DateSwitcher = () => {
   const selectedDate = dateFromUrl || today;
 
   const { data: rawDates } = useSWR<string[]>(
-    API_ROUTES.COMPETITIONS.MATCHES.CALENDAR(slug, timezone),
+    !customAvailableDays && slug ? API_ROUTES.COMPETITIONS.MATCHES.CALENDAR(slug, timezone) : null,
   );
 
   const availableDays = useMemo(() => {
+    if (customAvailableDays) return customAvailableDays;
     if (!rawDates) return [];
     const localized = rawDates.map((iso) => format(new Date(iso), 'yyyy-MM-dd'));
     return [...new Set(localized)].sort();
-  }, [rawDates]);
+  }, [rawDates, customAvailableDays]);
 
   const handleDateChange = (direction: 'prev' | 'next') => {
-    const currentIndex = availableDays.indexOf(selectedDate);
     let newDate = '';
 
     if (direction === 'prev') {
-      const prevDay = availableDays.reverse().find((d) => d < selectedDate);
+      const prevDay = [...availableDays].reverse().find((d) => d < selectedDate);
       if (prevDay) newDate = prevDay;
-      availableDays.reverse();
     } else {
       const nextDay = availableDays.find((d) => d > selectedDate);
       if (nextDay) newDate = nextDay;
     }
 
     if (newDate) {
-      router.push(`${pathname}?date=${newDate}`, { scroll: false });
+      if (onDateChange) {
+        onDateChange(newDate);
+      } else {
+        router.push(`${pathname}?date=${newDate}`, { scroll: false });
+      }
     }
   };
 
@@ -91,7 +104,7 @@ export const DateSwitcher = () => {
           <Button
             variant="ghost"
             onClick={() => setIsCalendarOpen(true)}
-            className="rounded-app group/center flex h-10 min-w-[90px] flex-1 flex-col items-center px-3 py-1 hover:bg-white/5 sm:h-11 sm:px-6 md:min-w-[140px] md:flex-none"
+            className="rounded-app group/center relative flex h-10 min-w-[90px] flex-1 flex-col items-center px-3 py-1 hover:bg-white/5 sm:h-11 sm:px-6 md:min-w-[140px] md:flex-none"
           >
             <div className="mb-0.5 flex items-center gap-1.5">
               <CalendarDays className="text-primary h-3 w-3 transition-transform group-hover/center:scale-110" />
@@ -115,6 +128,12 @@ export const DateSwitcher = () => {
                   })
                 : '-'}
             </span>
+
+            {badges && badges[selectedDate] > 0 && (
+              <div className="bg-primary absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-black text-black ring-2 ring-slate-950">
+                {badges[selectedDate]}
+              </div>
+            )}
           </Button>
 
           <Button
@@ -148,8 +167,13 @@ export const DateSwitcher = () => {
           onClose={() => setIsCalendarOpen(false)}
           selectedDate={selectedDate}
           availableDays={availableDays}
+          badges={badges}
           onSelectDate={(date) => {
-            router.push(`${pathname}?date=${date}`, { scroll: false });
+            if (onDateChange) {
+              onDateChange(date);
+            } else {
+              router.push(`${pathname}?date=${date}`, { scroll: false });
+            }
             setIsCalendarOpen(false);
           }}
         />

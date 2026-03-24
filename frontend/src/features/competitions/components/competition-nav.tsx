@@ -1,7 +1,7 @@
 'use client';
 
 import { SidebarItem } from '@/components/layout/sidebar';
-import { dashboardConfig, DashboardItem } from '@/config/sidebar';
+import { dashboardConfig } from '@/config/sidebar';
 import { useTranslations } from 'next-intl';
 import { usePathname } from '@/i18n/routing';
 import useSWR from 'swr';
@@ -17,12 +17,11 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
   const t = useTranslations('Dashboard.nav');
   const pathname = usePathname();
 
-  const hasBadge = dashboardConfig.sidebarNav.some((item) => item.showBadge);
+  const { data: unreadData } = useSWR<{ count: number }>(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT);
+  const { data: missingData } = useSWR<{ count: number }>(API_ROUTES.PREDICTION.SUMMARY);
 
-  const { data: unreadData } = useSWR<{ count: number }>(
-    hasBadge ? API_ROUTES.NOTIFICATIONS.UNREAD_COUNT : null,
-  );
   const unreadCount = unreadData?.count || 0;
+  const missingCount = missingData?.count || 0;
 
   return (
     <>
@@ -31,6 +30,7 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
         icon={dashboardConfig.arenaNav[0].icon}
         label={t('arena')}
         isActive={pathname === '/arena'}
+        badge={dashboardConfig.arenaNav[0].showBadge && missingCount > 0 ? missingCount : undefined}
       />
 
       {slug && (
@@ -54,6 +54,18 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
         const href = item.href.replace('[slug]', slug || '');
         const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
 
+        const badge = item.showBadge
+          ? item.badgeType === 'notifications'
+            ? unreadCount > 0
+              ? unreadCount
+              : undefined
+            : item.badgeType === 'missing_tips'
+              ? missingCount > 0
+                ? missingCount
+                : undefined
+              : undefined
+          : undefined;
+
         return (
           <SidebarItem
             key={item.href}
@@ -61,7 +73,7 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
             icon={item.icon}
             label={t(item.labelKey)}
             isActive={isActive}
-            badge={item.showBadge && unreadCount > 0 ? unreadCount : undefined}
+            badge={badge}
           />
         );
       })}

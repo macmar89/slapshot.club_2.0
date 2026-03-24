@@ -76,6 +76,9 @@ export const API_ROUTES = {
   },
   PREDICTION: {
     CREATE: '/prediction',
+    MISSING: (date: string, timezone: string) => `/prediction/missing?date=${date}&timezone=${timezone}`,
+    MISSING_CALENDAR: (startDate: string, endDate: string) => `/prediction/missing-calendar?startDate=${startDate}&endDate=${endDate}`,
+    SUMMARY: '/prediction/summary',
   },
   NOTIFICATIONS: {
     ALL: (limit: number = 10, group: string = 'ALL', cursorDate?: string) => {

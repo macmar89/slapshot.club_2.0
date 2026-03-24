@@ -5,6 +5,7 @@ export interface DashboardItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   showBadge?: boolean;
+  badgeType?: 'notifications' | 'missing_tips';
 }
 
 export const dashboardConfig = {
@@ -14,6 +15,7 @@ export const dashboardConfig = {
       href: '/[slug]/dashboard',
       icon: LayoutDashboard,
     },
+
     {
       labelKey: 'matches',
       href: '/[slug]/matches',
@@ -33,6 +35,8 @@ export const dashboardConfig = {
       labelKey: 'notifications',
       href: '/notifications',
       icon: Bell,
+      showBadge: false,
+      badgeType: 'notifications',
     },
   ] as DashboardItem[],
 
@@ -43,9 +47,18 @@ export const dashboardConfig = {
       icon: LayoutDashboard,
     },
     {
+      labelKey: 'missing_tips',
+      href: '/arena/missing-tips',
+      icon: Trophy,
+      showBadge: true,
+      badgeType: 'missing_tips',
+    },
+    {
       labelKey: 'notifications',
       href: '/notifications',
       icon: Bell,
+      showBadge: false,
+      badgeType: 'notifications',
     },
   ] as DashboardItem[],
 
@@ -60,5 +73,20 @@ export const dashboardConfig = {
       href: '/admin/matches',
       icon: Calendar,
     },
-  ],
+  ] as DashboardItem[],
+
+  mobileNav: [
+    {
+      labelKey: 'arena',
+      href: '/arena',
+      icon: LayoutDashboard,
+    },
+    {
+      labelKey: 'missing_tips',
+      href: '/arena/missing-tips',
+      icon: Trophy,
+      showBadge: true,
+      badgeType: 'missing_tips',
+    },
+  ] as DashboardItem[],
 };
