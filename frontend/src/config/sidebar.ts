@@ -29,8 +29,13 @@ export const dashboardConfig = {
       href: '/[slug]/groups',
       icon: Users,
     },
+    {
+      labelKey: 'notifications',
+      href: '/notifications',
+      icon: Bell,
+    },
   ] as DashboardItem[],
-  
+
   arenaNav: [
     {
       labelKey: 'arena',
@@ -41,7 +46,6 @@ export const dashboardConfig = {
       labelKey: 'notifications',
       href: '/notifications',
       icon: Bell,
-      showBadge: true,
     },
   ] as DashboardItem[],
 

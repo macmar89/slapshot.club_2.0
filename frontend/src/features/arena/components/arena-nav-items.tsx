@@ -11,8 +11,10 @@ export const ArenaNavItems = () => {
   const t = useTranslations('Dashboard.nav');
   const pathname = usePathname();
 
+  const hasBadge = dashboardConfig.arenaNav.some((item) => item.showBadge);
+
   const { data: unreadData } = useSWR<{ count: number }>(
-    API_ROUTES.NOTIFICATIONS.UNREAD_COUNT,
+    hasBadge ? API_ROUTES.NOTIFICATIONS.UNREAD_COUNT : null,
   );
   const unreadCount = unreadData?.count || 0;
 

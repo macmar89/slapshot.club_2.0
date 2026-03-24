@@ -20,6 +20,8 @@ import { Button } from '@/components/ui/button';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { LogoutButton } from '@/features/auth/components/logout-button';
+import useSWR from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { handleGetCompetitionBySlug } from '@/features/competitions/competitions.api';
 import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
@@ -34,6 +36,16 @@ export function MobileTabNav() {
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [competitionName, setCompetitionName] = React.useState<string | null>(null);
+
+  const hasBadge = React.useMemo(
+    () => dashboardConfig.sidebarNav.some((item) => item.showBadge),
+    [],
+  );
+
+  const { data: unreadData } = useSWR<{ count: number }>(
+    hasBadge ? API_ROUTES.NOTIFICATIONS.UNREAD_COUNT : null,
+  );
+  const unreadCount = unreadData?.count || 0;
 
   React.useEffect(() => {
     async function fetchCompetition() {
@@ -71,12 +83,17 @@ export function MobileTabNav() {
               <Link
                 key={item.href}
                 href={getHref(item.href) as any}
-                className="flex flex-col items-center gap-1.5 text-white/50 transition-colors hover:text-white"
+                className="relative flex flex-col items-center gap-1.5 text-white/50 transition-colors hover:text-white"
               >
                 <item.icon className="h-5 w-5" />
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
+                {item.showBadge && unreadCount > 0 && (
+                  <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                    {unreadCount}
+                  </div>
+                )}
               </Link>
             ))}
           </div>
@@ -104,12 +121,17 @@ export function MobileTabNav() {
               <Link
                 key={item.href}
                 href={getHref(item.href) as any}
-                className="flex flex-col items-center gap-1.5 text-white/50 transition-colors hover:text-white"
+                className="relative flex flex-col items-center gap-1.5 text-white/50 transition-colors hover:text-white"
               >
                 <item.icon className="h-5 w-5" />
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
+                {item.showBadge && unreadCount > 0 && (
+                  <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                    {unreadCount}
+                  </div>
+                )}
               </Link>
             ))}
 
@@ -204,6 +226,12 @@ export function MobileTabNav() {
                           <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
                           <item.icon className="relative z-10 h-5 w-5" />
                           <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
+                          
+                          {item.showBadge && unreadCount > 0 && (
+                            <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                              {unreadCount}
+                            </div>
+                          )}
                         </Link>
                       );
                     })}

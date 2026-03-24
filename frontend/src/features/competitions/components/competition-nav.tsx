@@ -1,10 +1,11 @@
 'use client';
 
 import { SidebarItem } from '@/components/layout/sidebar';
-import { dashboardConfig } from '@/config/sidebar';
+import { dashboardConfig, DashboardItem } from '@/config/sidebar';
 import { useTranslations } from 'next-intl';
 import { usePathname } from '@/i18n/routing';
-import { LayoutDashboard } from 'lucide-react';
+import useSWR from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { CompetitionPublicInfo } from '@/features/competitions/competitions.types';
 
 interface CompetitionNavProps {
@@ -16,11 +17,18 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
   const t = useTranslations('Dashboard.nav');
   const pathname = usePathname();
 
+  const hasBadge = dashboardConfig.sidebarNav.some((item) => item.showBadge);
+
+  const { data: unreadData } = useSWR<{ count: number }>(
+    hasBadge ? API_ROUTES.NOTIFICATIONS.UNREAD_COUNT : null,
+  );
+  const unreadCount = unreadData?.count || 0;
+
   return (
     <>
       <SidebarItem
         href="/arena"
-        icon={LayoutDashboard}
+        icon={dashboardConfig.arenaNav[0].icon}
         label={t('arena')}
         isActive={pathname === '/arena'}
       />
@@ -53,6 +61,7 @@ export const CompetitionNav = ({ slug, competition }: CompetitionNavProps) => {
             icon={item.icon}
             label={t(item.labelKey)}
             isActive={isActive}
+            badge={item.showBadge && unreadCount > 0 ? unreadCount : undefined}
           />
         );
       })}
