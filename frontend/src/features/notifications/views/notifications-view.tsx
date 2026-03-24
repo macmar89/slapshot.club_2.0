@@ -2,7 +2,8 @@
 
 import React from 'react';
 import useSWR from 'swr';
-import { Bell, Check, Inbox } from 'lucide-react';
+import useSWRInfinite from 'swr/infinite';
+import { Bell, Check, Inbox, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -12,10 +13,23 @@ import { NotificationItem } from '../components/notification-item';
 import { useNotificationsSSE } from '@/hooks/use-notifications-sse';
 import { api } from '@/lib/api';
 import { API_ROUTES } from '@/lib/api-routes';
+import { APP_CONFIG } from '@/config/app';
 import type { AppNotification } from '../components/notification-bell';
+
+const PAGE_SIZE = APP_CONFIG.NOTIFICATIONS.PAGE_SIZE;
+
+const getKey = (pageIndex: number, previousPageData: AppNotification[] | null) => {
+  if (previousPageData && !previousPageData.length) return null;
+  
+  if (pageIndex === 0) return API_ROUTES.NOTIFICATIONS.ALL(PAGE_SIZE, 'ALL');
+  
+  const lastItem = previousPageData![previousPageData!.length - 1];
+  return API_ROUTES.NOTIFICATIONS.ALL(PAGE_SIZE, 'ALL', lastItem.createdAt.toString());
+};
 
 export function NotificationsView() {
   const t = useTranslations('AppNotifications');
+  const tCommon = useTranslations('Common');
   
   // Revalidates on SSE events automatically via the hook
   useNotificationsSSE();
@@ -25,13 +39,22 @@ export function NotificationsView() {
   );
   
   const {
-    data: notificationsData,
+    data,
     error,
     isLoading,
+    isValidating,
+    size,
+    setSize,
     mutate: mutateNotifications,
-  } = useSWR<AppNotification[]>(API_ROUTES.NOTIFICATIONS.ALL(50, 'ALL')); // Load more for full page
+  } = useSWRInfinite<AppNotification[]>(getKey, {
+    revalidateFirstPage: true,
+  });
 
+  const notifications = data ? data.flatMap((page) => page) : [];
   const unreadCount = unreadData?.count || 0;
+  const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined');
+  const isEmpty = data?.[0]?.length === 0;
+  const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
 
   const handleMarkAllRead = async () => {
     try {
@@ -75,40 +98,63 @@ export function NotificationsView() {
           </div>
 
           {/* List Wrapper */}
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md">
-            <DataLoader
-              data={notificationsData}
-              isLoading={isLoading}
-              error={error}
-              skeleton={
-                <div className="flex flex-col divide-y divide-white/5">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-24 w-full animate-pulse bg-white/[0.02]" />
-                  ))}
-                </div>
-              }
-              notFound={
-                <div className="flex flex-col items-center justify-center py-20 text-center opacity-40">
-                  <Inbox className="mb-4 h-12 w-12" />
-                  <p className="text-lg font-medium italic uppercase">{t('empty')}</p>
-                </div>
-              }
-            >
-              {(notifications) => (
-                <div className="flex flex-col divide-y divide-white/5">
-                  {notifications.map((notif) => (
-                    <NotificationItem 
-                      key={notif.id} 
-                      notification={notif}
-                      className="hover:bg-white/[0.03] transition-colors"
-                    />
-                  ))}
-                </div>
-              )}
-            </DataLoader>
+          <div className="flex flex-col gap-6">
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md">
+              <DataLoader
+                data={data}
+                isLoading={isLoading}
+                error={error}
+                skeleton={
+                  <div className="flex flex-col divide-y divide-white/5">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="h-24 w-full animate-pulse bg-white/[0.02]" />
+                    ))}
+                  </div>
+                }
+                notFound={
+                  <div className="flex flex-col items-center justify-center py-20 text-center opacity-40">
+                    <Inbox className="mb-4 h-12 w-12" />
+                    <p className="text-lg font-medium italic uppercase">{t('empty')}</p>
+                  </div>
+                }
+              >
+                {() => (
+                  <div className="flex flex-col divide-y divide-white/5">
+                    {notifications.map((notif) => (
+                      <NotificationItem 
+                        key={notif.id} 
+                        notification={notif}
+                        className="hover:bg-white/[0.03] transition-colors"
+                      />
+                    ))}
+                  </div>
+                )}
+              </DataLoader>
+            </div>
+
+            {/* Load More Button */}
+            {!isReachingEnd && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={() => setSize(size + 1)}
+                  disabled={isLoadingMore || isValidating}
+                  className="group flex w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 py-4 text-xs font-black tracking-widest text-white/80 uppercase italic shadow-xl backdrop-blur-md transition-all hover:border-white/40 hover:bg-white/20 disabled:opacity-50"
+                >
+                  {isLoadingMore || isValidating ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-white/60" />
+                      <span className="text-white/60">{tCommon('loading') || 'Loading...'}</span>
+                    </div>
+                  ) : (
+                    <span>{t('load_more') || 'Load more'}</span>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </Container>
     </div>
   );
 }
+

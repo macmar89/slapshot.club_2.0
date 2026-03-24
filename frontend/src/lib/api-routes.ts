@@ -78,8 +78,14 @@ export const API_ROUTES = {
     CREATE: '/prediction',
   },
   NOTIFICATIONS: {
-    ALL: (limit: number = 10, group: string = 'ALL') =>
-      `/notifications?limit=${limit}&group=${group}`,
+    ALL: (limit: number = 10, group: string = 'ALL', cursorDate?: string) => {
+      const params = new URLSearchParams({
+        limit: String(limit),
+        group,
+        ...(cursorDate && { cursorDate }),
+      });
+      return `/notifications?${params.toString()}`;
+    },
     UNREAD_COUNT: '/notifications/unread-count',
     READ_ALL: '/notifications/read/all',
     READ_ONE: (id: string) => `/notifications/read/${id}`,

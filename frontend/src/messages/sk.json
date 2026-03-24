@@ -33,6 +33,7 @@
     "nav": {
       "overview": "Prehľad",
       "arena": "Aréna",
+      "notifications": "Oznámenia",
       "matches": "Zápasy",
       "tables": "Tabuľky",
       "teams": "Tímy",
@@ -799,6 +800,7 @@
     "allRead": "Všetko máš prečítané!",
     "markAllAsReadError": "Nepodarilo sa označiť všetky správy ako prečítané",
     "markAllReadSuccess": "Všetky oznámenia boli označené ako prečítané",
+    "load_more": "Načítať ďalšie",
     "viewAll": "Zobraziť všetky oznámenia",
     "group_invite": {
       "title": "Pozvánka do skupiny",

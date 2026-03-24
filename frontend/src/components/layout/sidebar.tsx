@@ -12,13 +12,14 @@ interface SidebarItemProps {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   isActive?: boolean;
+  badge?: string | number;
 }
 
-export const SidebarItem = ({ href, icon: Icon, label, isActive }: SidebarItemProps) => (
+export const SidebarItem = ({ href, icon: Icon, label, isActive, badge }: SidebarItemProps) => (
   <Link
     href={href as any}
     className={cn(
-      'group relative flex gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
+      'group relative flex items-center gap-3 overflow-hidden px-4 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-200',
       isActive ? 'text-white' : 'text-white/70 hover:text-white',
     )}
   >
@@ -28,6 +29,12 @@ export const SidebarItem = ({ href, icon: Icon, label, isActive }: SidebarItemPr
     <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
     <Icon className="relative z-10 h-5 w-5" />
     <span className="relative z-10 text-shadow-sm">{label}</span>
+    
+    {badge !== undefined && (
+      <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+        {badge}
+      </div>
+    )}
   </Link>
 );
 

@@ -12,7 +12,7 @@ export function useNotificationsSSE() {
     if (!user) return;
 
     // Use full url path for EventSource (/api prefix is needed here unless overwritten by Next rewrites)
-    const eventSource = new EventSource(`/api${API_ROUTES.NOTIFICATIONS.STREAM}`);
+    const eventSource = new EventSource(`/api/v1${API_ROUTES.NOTIFICATIONS.STREAM}`);
 
     eventSource.onopen = () => {
       console.log('[SSE] Notifications stream connected');
@@ -29,8 +29,14 @@ export function useNotificationsSSE() {
     });
 
     eventSource.onerror = (err) => {
-      console.error('[SSE] Error occurred', err);
-      // EventSource tries to reconnect automatically
+      // readyState === 2 means CLOSED (it won't retry)
+      // readyState === 0 means CONNECTING (it is retrying)
+      if (eventSource.readyState === 2) {
+        console.error('[SSE] Connection failed or closed by server', err);
+      } else {
+        // Just a transient error, EventSource will retry
+        console.warn('[SSE] Connection lost, retrying...');
+      }
     };
 
     return () => {

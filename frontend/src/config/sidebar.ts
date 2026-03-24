@@ -1,9 +1,10 @@
-import { LayoutDashboard, Calendar, Users, Trophy } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Trophy, Bell } from 'lucide-react';
 
 export interface DashboardItem {
   labelKey: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  showBadge?: boolean;
 }
 
 export const dashboardConfig = {
@@ -29,6 +30,21 @@ export const dashboardConfig = {
       icon: Users,
     },
   ] as DashboardItem[],
+  
+  arenaNav: [
+    {
+      labelKey: 'arena',
+      href: '/arena',
+      icon: LayoutDashboard,
+    },
+    {
+      labelKey: 'notifications',
+      href: '/notifications',
+      icon: Bell,
+      showBadge: true,
+    },
+  ] as DashboardItem[],
+
   adminNav: [
     {
       labelKey: 'dashboard',

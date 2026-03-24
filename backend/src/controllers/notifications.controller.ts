@@ -25,8 +25,13 @@ export const getNotificationsStreamHandler = (req: Request, res: Response, next:
   // Send an initial connected event
   res.write(`event: connected\n`);
   res.write(`data: ${JSON.stringify({ timestamp: Date.now() })}\n\n`);
-
-  connectedClients.set(userId, res);
+  
+  let clients = connectedClients.get(userId);
+  if (!clients) {
+    clients = new Set<Response>();
+    connectedClients.set(userId, clients);
+  }
+  clients.add(res);
 
   // Send a heartbeat every 30 seconds to keep the connection alive
   const heartbeatIndex = setInterval(() => {
@@ -35,7 +40,13 @@ export const getNotificationsStreamHandler = (req: Request, res: Response, next:
 
   req.on('close', () => {
     clearInterval(heartbeatIndex);
-    connectedClients.delete(userId);
+    const clients = connectedClients.get(userId);
+    if (clients) {
+      clients.delete(res);
+      if (clients.size === 0) {
+        connectedClients.delete(userId);
+      }
+    }
   });
 };
 

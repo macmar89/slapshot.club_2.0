@@ -14,13 +14,19 @@ import type {
 import type { Response } from 'express';
 
 // ─── SSE Connections ──────────────────────────────────────────────────────────
-export const connectedClients = new Map<string, Response>();
+export const connectedClients = new Map<string, Set<Response>>();
 
 export const sendSSEEvent = (userId: string, eventType: string, data: any) => {
-  const client = connectedClients.get(userId);
-  if (client) {
-    client.write(`event: ${eventType}\n`);
-    client.write(`data: ${JSON.stringify(data)}\n\n`);
+  const clients = connectedClients.get(userId);
+  if (clients) {
+    clients.forEach((client) => {
+      try {
+        client.write(`event: ${eventType}\n`);
+        client.write(`data: ${JSON.stringify(data)}\n\n`);
+      } catch (err) {
+        logger.error({ err, userId }, '[SSE] Failed to write to client');
+      }
+    });
   }
 };
 

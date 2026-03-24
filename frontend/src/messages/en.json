@@ -33,6 +33,7 @@
     "nav": {
       "overview": "Overview",
       "arena": "Arena",
+      "notifications": "Notifications",
       "matches": "Matches",
       "tables": "Tables",
       "teams": "Teams",
@@ -798,6 +799,7 @@
     "allRead": "You are all caught up!",
     "markAllAsReadError": "Failed to mark all as read",
     "markAllReadSuccess": "All notifications marked as read",
+    "load_more": "Load more",
     "viewAll": "View all notifications",
     "group_invite": {
       "title": "Group Invitation",
