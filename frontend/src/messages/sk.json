@@ -917,7 +917,7 @@
     "error": "Nepodarilo sa načítať zápasy.",
     "summary_card": {
       "title": "Chýbajúce tipy",
-      "description": "{count, plural, one {Máš # chýbajúci tip} few {# chýbajúce tipy} other {# chýbajúcich tipov}} na najbližšie 3 dni",
+      "description": "{count, plural, one {# chýbajúci tip} few {# chýbajúce tipy} other {# chýbajúcich tipov}} na najbližších 24 hodín",
       "action": "Doplniť tipy"
     }
   }

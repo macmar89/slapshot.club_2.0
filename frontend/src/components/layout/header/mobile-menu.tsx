@@ -26,6 +26,8 @@ import {
 import { useTranslations } from 'next-intl';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useCompetitionStore } from '@/store/use-competition-store';
+import useSWR from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -38,6 +40,9 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
   const t = useTranslations('Header');
   const dt = useTranslations('Dashboard.nav');
   const competition = useCompetitionStore((state) => state.competition);
+
+  const { data: missingData } = useSWR<{ count: number }>(API_ROUTES.PREDICTION.SUMMARY);
+  const missingCount = missingData?.count || 0;
 
   return (
     <div className="ml-auto md:hidden">
@@ -84,6 +89,21 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
                 <span className="text-[10px] font-bold tracking-widest uppercase">
                   {dt('arena')}
                 </span>
+              </Link>
+              <Link
+                href="/arena/missing-tips"
+                onClick={() => onOpenChange(false)}
+                className="rounded-app group relative flex flex-col items-center justify-center gap-2 border border-white/20 bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
+              >
+                <Trophy className="h-5 w-5" />
+                <span className="text-[10px] font-bold tracking-widest uppercase">
+                  {dt('missing_tips')}
+                </span>
+                {missingCount > 0 && (
+                  <div className="bg-primary absolute top-2 right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                    {missingCount}
+                  </div>
+                )}
               </Link>
 
               {slug && (

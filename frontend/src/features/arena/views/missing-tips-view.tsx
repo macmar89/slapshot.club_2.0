@@ -15,22 +15,18 @@ import { MatchCard } from '@/features/competitions/matches/components/match-card
 import { MatchesSkeleton } from '@/features/competitions/matches/components/matches-skeleton';
 import { DataLoader } from '@/components/common/data-loader';
 import { ErrorView } from '@/components/common/error-view';
+import { useRouter } from '@/i18n/routing';
 
 export const MissingTipsView = () => {
   const t = useTranslations('MissingTips');
   const timezone = useUserTimezone();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const sevenDaysLater = format(addDays(new Date(), 7), 'yyyy-MM-dd');
   const selectedDate = searchParams.get('date') || today;
 
-  // 1. Fetch calendar counts for next 7 days
-  const { data: countsData } = useSWR<Record<string, number>>(
-    API_ROUTES.PREDICTION.MISSING_CALENDAR(today, sevenDaysLater),
-  );
-
-  // 2. Fetch matches for selected day
   const {
     data: matchesData,
     mutate: localMutate,
@@ -44,14 +40,20 @@ export const MissingTipsView = () => {
     globalMutate(API_ROUTES.PREDICTION.MISSING_CALENDAR(today, sevenDaysLater));
   };
 
+  const handleDateChange = (newDate: string) => {
+    router.push(`/arena/missing-tips?date=${newDate}`, { scroll: true });
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={t('title')} description={t('description')} />
 
       <div className="ms-auto mb-2 flex w-fit">
-        <DateSwitcher 
-          badges={countsData || {}} 
-          availableDays={Array.from({ length: 7 }).map((_, i) => format(addDays(new Date(), i), 'yyyy-MM-dd'))}
+        <DateSwitcher
+          availableDays={Array.from({ length: 7 }).map((_, i) =>
+            format(addDays(new Date(), i), 'yyyy-MM-dd'),
+          )}
+          onDateChange={handleDateChange}
         />
       </div>
 

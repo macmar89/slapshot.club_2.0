@@ -17,13 +17,11 @@ const CalendarDialog = dynamic(
 );
 
 interface DateSwitcherProps {
-  badges?: Record<string, number>;
   availableDays?: string[];
   onDateChange?: (date: string) => void;
 }
 
 export const DateSwitcher = ({
-  badges,
   availableDays: customAvailableDays,
   onDateChange,
 }: DateSwitcherProps) => {
@@ -128,12 +126,6 @@ export const DateSwitcher = ({
                   })
                 : '-'}
             </span>
-
-            {badges && badges[selectedDate] > 0 && (
-              <div className="bg-primary absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-black text-black ring-2 ring-slate-950">
-                {badges[selectedDate]}
-              </div>
-            )}
           </Button>
 
           <Button
@@ -167,7 +159,6 @@ export const DateSwitcher = ({
           onClose={() => setIsCalendarOpen(false)}
           selectedDate={selectedDate}
           availableDays={availableDays}
-          badges={badges}
           onSelectDate={(date) => {
             if (onDateChange) {
               onDateChange(date);

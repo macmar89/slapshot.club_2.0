@@ -916,7 +916,7 @@
     "error": "Failed to load matches.",
     "summary_card": {
       "title": "Missing Tips",
-      "description": "{count, plural, one {You have # missing tip} other {You have # missing tips}} for the next 3 days",
+      "description": "{count, plural, one {# missing tip} other {# missing tips}} for the next 24 hours",
       "action": "Complete tips"
     }
   }

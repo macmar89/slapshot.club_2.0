@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 import { api } from '@/lib/api';
 import { API_ROUTES } from '@/lib/api-routes';
-import type { AppNotification } from '@/components/common/notification-bell';
+import type { AppNotification } from '@/features/notifications/components/notification-bell';
 
 export function useNotificationActions() {
   const router = useRouter();

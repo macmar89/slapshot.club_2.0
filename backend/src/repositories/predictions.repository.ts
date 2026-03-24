@@ -34,7 +34,7 @@ export const predictionsRepository = {
 
     return await db
       .select({
-        date: sql<string>`substring(${matches.date} from 1 for 10)`,
+        date: sql<string>`to_char(${matches.date}, 'YYYY-MM-DD')`,
         count: sql<number>`count(*)::int`,
       })
       .from(matches)
@@ -51,7 +51,7 @@ export const predictionsRepository = {
           ),
         ),
       )
-      .groupBy(sql`substring(${matches.date} from 1 for 10)`);
+      .groupBy(sql`to_char(${matches.date}, 'YYYY-MM-DD')`);
   },
 
   async getMissingPredictionsByDate(
