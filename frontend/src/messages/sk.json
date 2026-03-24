@@ -791,6 +791,81 @@
     "winner": "Víťaz",
     "miss": "Mimo"
   },
+  "AppNotifications": {
+    "title": "Oznámenia",
+    "markAllAsRead": "Označiť všetko ako prečítané",
+    "unreadCount": "{count, plural, one {# nové} few {# nové} other {# nových}}",
+    "empty": "Žiadne nové oznámenia",
+    "viewAll": "Zobraziť všetky oznámenia",
+    "group_invite": {
+      "title": "Pozvánka do skupiny",
+      "message": "Bol si pozvaný do skupiny {groupName}"
+    },
+    "group_invite_accepted": {
+      "title": "Pozvánka prijatá",
+      "message": "{username} prijal tvoju pozvánku do {groupName}"
+    },
+    "group_invite_rejected": {
+      "title": "Pozvánka odmietnutá",
+      "message": "{username} odmietol tvoju pozvánku do {groupName}"
+    },
+    "group_pending": {
+      "title": "Žiadosť o pridanie",
+      "message": "{username} žiada o vstup do {groupName}"
+    },
+    "group_pending_accepted": {
+      "title": "Žiadosť prijatá",
+      "message": "Tvoja žiadosť o vstup do {groupName} bola prijatá"
+    },
+    "group_pending_rejected": {
+      "title": "Žiadosť zamietnutá",
+      "message": "Tvoja žiadosť o vstup do {groupName} bola zamietnutá"
+    },
+    "match_finished": {
+      "title": "Zápas sa skončil",
+      "message": "Zápas sa skončil. Získal si {points} bodov za svoj tip!"
+    },
+    "points_awarded": {
+      "title": "Získané body",
+      "message": "Získal si {points} bodov."
+    },
+    "match_reminder": {
+      "title": "Pripomienka zápasu",
+      "message": "Zápas čoskoro začína. Nezabudni natipovať!"
+    },
+    "daily_tips_reminder": {
+      "title": "Denná pripomienka",
+      "message": "Nezabudni poslať svoje tipy na dnešné zápasy!"
+    },
+    "new_competition": {
+      "title": "Nová súťaž",
+      "message": "Nová súťaž {competitionName} je k dispozícii!"
+    },
+    "competition_started": {
+      "title": "Súťaž začala",
+      "message": "Súťaž {competitionName} začala. Veľa šťastia!"
+    },
+    "competition_finished": {
+      "title": "Súťaž skončila",
+      "message": "Súťaž {competitionName} skončila. Pozri si finálny rebríček!"
+    },
+    "system_alert": {
+      "title": "Systémové upozornenie",
+      "message": "{message}"
+    },
+    "new_feature": {
+      "title": "Nová funkcia",
+      "message": "{message}"
+    },
+    "update_summary": {
+      "title": "Týždenné zhrnutie",
+      "message": "{message}"
+    },
+    "trial_expiring": {
+      "title": "Trial končí",
+      "message": "Trial účet ti končí o {days} dní."
+    }
+  },
   "Errors": {
     "403": {
       "title": "Trestná lavica!",

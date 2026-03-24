@@ -11,6 +11,7 @@ import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigat
 import { InitializationOverlay } from './header/InitializationOverlay';
 import { UserProfileDrawer } from './header/user-profile-drawer';
 import { MobileMenu } from './header/mobile-menu';
+import { NotificationBell } from '@/components/common/notification-bell';
 import { useAuthStore } from '@/store/use-auth-store';
 
 interface HeaderProps {
@@ -86,7 +87,7 @@ export function Header({ title }: HeaderProps) {
               leagues={leagues}
               onLeagueChange={handleLeagueChange}
             /> */}
-
+            <NotificationBell />
             <UserProfileDrawer
               user={user}
               isOpen={isProfileOpen}
@@ -99,10 +100,7 @@ export function Header({ title }: HeaderProps) {
 
           {/* Mobile View */}
           <div className="flex items-center gap-2 md:hidden">
-            {/* <Button variant="ghost" size="icon" className="relative text-white/70 hover:text-white">
-              <Bell className="h-5 w-5" />
-              <span className="bg-primary absolute top-2 right-2 flex h-2 w-2 rounded-full"></span>
-            </Button> */}
+            <NotificationBell />
 
             <MobileMenu isOpen={isMenuOpen} onOpenChange={setIsMenuOpen} user={user} slug={slug} />
           </div>

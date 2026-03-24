@@ -77,4 +77,12 @@ export const API_ROUTES = {
   PREDICTION: {
     CREATE: '/prediction',
   },
+  NOTIFICATIONS: {
+    ALL: (limit: number = 10, group: string = 'ALL') =>
+      `/notifications?limit=${limit}&group=${group}`,
+    UNREAD_COUNT: '/notifications/unread-count',
+    READ_ALL: '/notifications/read/all',
+    READ_ONE: (id: string) => `/notifications/read/${id}`,
+    STREAM: '/notifications/stream',
+  },
 } as const;

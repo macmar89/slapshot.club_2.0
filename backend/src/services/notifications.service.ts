@@ -11,6 +11,19 @@ import type {
   PushNotificationData,
   CreateNotificationData,
 } from '../types/notifications.types.js';
+import type { Response } from 'express';
+
+// ─── SSE Connections ──────────────────────────────────────────────────────────
+export const connectedClients = new Map<string, Response>();
+
+export const sendSSEEvent = (userId: string, eventType: string, data: any) => {
+  const client = connectedClients.get(userId);
+  if (client) {
+    client.write(`event: ${eventType}\n`);
+    client.write(`data: ${JSON.stringify(data)}\n\n`);
+  }
+};
+
 
 // ─── Push notification stub ───────────────────────────────────────────────────
 // TODO: When push tokens are stored in the schema (e.g. user.pushToken),
@@ -83,8 +96,12 @@ export const notify = async (params: NotifyParams): Promise<void> => {
     try {
       if (notificationData.length === 1) {
         await notificationsRepository.create(notificationData[0]!);
+        sendSSEEvent(notificationData[0]!.userId, 'new-notification', { timestamp: Date.now() });
       } else {
         await notificationsRepository.bulkCreate(notificationData);
+        for (const notif of notificationData) {
+          sendSSEEvent(notif.userId, 'new-notification', { timestamp: Date.now() });
+        }
       }
     } catch (err) {
       logger.error({ err, type, recipients }, '[Notify] Failed to persist in-app notification');

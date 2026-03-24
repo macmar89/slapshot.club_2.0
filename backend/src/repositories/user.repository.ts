@@ -10,4 +10,13 @@ export const userRepository = {
 
     return result?.subscriptionPlan ?? null;
   },
+
+  async getUsernameById(userId: string) {
+    const result = await dbDefault.query.users.findFirst({
+      columns: { username: true },
+      where: (u, { eq, and }) => and(eq(u.id, userId), notDeleted(u)),
+    });
+
+    return result?.username ?? null;
+  },
 };

@@ -8,6 +8,7 @@ export const competitionRepository = {
     });
     return result?.id ?? null;
   },
+
   async getActive() {
     return await db.query.competitions.findMany({
       columns: {
@@ -18,5 +19,15 @@ export const competitionRepository = {
       where: (table, { and, eq, isNotNull }) =>
         and(eq(table.status, 'active'), isNotNull(table.apiHockeyId)),
     });
+  },
+
+  async getNameById(id: string, locale: string = 'sk') {
+    const result = await db.query.competitionsLocales.findFirst({
+      columns: { name: true },
+      where: (table, { and, eq }) =>
+        and(eq(table.competitionId, id), eq(table.locale, locale as any)),
+    });
+
+    return result?.name ?? null;
   },
 };

@@ -790,6 +790,81 @@
     "winner": "Winner",
     "miss": "Miss"
   },
+  "AppNotifications": {
+    "title": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "unreadCount": "{count, plural, one {# new} other {# new}}",
+    "empty": "No new notifications",
+    "viewAll": "View all notifications",
+    "group_invite": {
+      "title": "Group Invitation",
+      "message": "You have been invited to group {groupName}"
+    },
+    "group_invite_accepted": {
+      "title": "Invitation Accepted",
+      "message": "{username} accepted your invitation to {groupName}"
+    },
+    "group_invite_rejected": {
+      "title": "Invitation Rejected",
+      "message": "{username} rejected your invitation to {groupName}"
+    },
+    "group_pending": {
+      "title": "Join Request",
+      "message": "{username} requested to join {groupName}"
+    },
+    "group_pending_accepted": {
+      "title": "Request Accepted",
+      "message": "Your request to join {groupName} was accepted"
+    },
+    "group_pending_rejected": {
+      "title": "Request Rejected",
+      "message": "Your request to join {groupName} was rejected"
+    },
+    "match_finished": {
+      "title": "Match Finished",
+      "message": "Match finished. You got {points} points for your tip!"
+    },
+    "points_awarded": {
+      "title": "Points Awarded",
+      "message": "You received {points} points."
+    },
+    "match_reminder": {
+      "title": "Match Reminder",
+      "message": "Match starts soon. Don't forget to tip!"
+    },
+    "daily_tips_reminder": {
+      "title": "Daily Tips Reminder",
+      "message": "Don't forget to submit your tips for today's matches!"
+    },
+    "new_competition": {
+      "title": "New Competition",
+      "message": "A new competition {competitionName} is available!"
+    },
+    "competition_started": {
+      "title": "Competition Started",
+      "message": "Competition {competitionName} has started. Good luck!"
+    },
+    "competition_finished": {
+      "title": "Competition Finished",
+      "message": "Competition {competitionName} has finished. Check the final leaderboard!"
+    },
+    "system_alert": {
+      "title": "System Alert",
+      "message": "{message}"
+    },
+    "new_feature": {
+      "title": "New Feature",
+      "message": "{message}"
+    },
+    "update_summary": {
+      "title": "Weekly Update",
+      "message": "{message}"
+    },
+    "trial_expiring": {
+      "title": "Trial Expiring",
+      "message": "Your trial expires in {days} days."
+    }
+  },
   "Errors": {
     "403": {
       "title": "Penalty Box!",

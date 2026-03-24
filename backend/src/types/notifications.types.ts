@@ -9,6 +9,10 @@ export interface NotificationPayload {
   score?: string;
   screen?: string;
   requestingUserId?: string;
+  username?: string;
+  groupSlug?: string;
+  competitionSlug?: string;
+  competitionName?: string;
 }
 
 export type NotificationGroup = (typeof NOTIFICATION_GROUPS)[keyof typeof NOTIFICATION_GROUPS];

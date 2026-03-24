@@ -47,6 +47,7 @@ export const joinGroup = async (
     columns: {
       id: true,
       name: true,
+      slug: true,
       competitionId: true,
       type: true,
       maxMembers: true,
@@ -99,18 +100,23 @@ export const joinGroup = async (
   }
 
   switch (groupResult.type) {
-    case 'private':
+    case 'private': {
+      const competitionName = await competitionRepository.getNameById(competitionId);
       return await joinPrivateGroup(
         userId,
         userSubscriptionPlan,
         {
           id: groupResult.id,
           name: groupResult.name,
+          slug: groupResult.slug,
           type: groupResult.type,
           settings: groupResult.settings,
         },
         competitionId,
+        body.competitionSlug,
+        competitionName || 'Competition',
       );
+    }
   }
 };
 
@@ -120,10 +126,13 @@ export const joinPrivateGroup = async (
   group: {
     id: string;
     name: string;
+    slug: string;
     type: GroupType;
     settings: { isLocked: boolean; allowMemberInvites: boolean; requireApproval: boolean };
   },
   competitionId: string,
+  competitionSlug: string,
+  competitionName: string,
 ) => {
   const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
 
@@ -165,10 +174,20 @@ export const joinPrivateGroup = async (
     );
     if (!isImmediatelyActive) {
       const adminIds = await groupMembersRepository.getAdminsByGroupId(group.id);
+      const requesterUsername = await userRepository.getUsernameById(userId);
+
       await notify({
         userIds: adminIds,
         type: 'GROUP_PENDING',
-        payload: { groupId: group.id, groupName: group.name, requestingUserId: userId },
+        payload: {
+          groupId: group.id,
+          groupName: group.name,
+          groupSlug: group.slug,
+          competitionSlug,
+          competitionName,
+          requestingUserId: userId,
+          username: requesterUsername || 'User',
+        },
       });
     }
 
@@ -235,18 +254,42 @@ export const updateMemberStatus = async (
     return { targetId };
   });
 
-  if (status === 'active') {
-    await notify({
-      userId: targetId,
-      type: 'GROUP_PENDING_ACCEPTED',
-      payload: { groupId },
-    });
-  } else if (status === 'rejected') {
-    await notify({
-      userId: targetId,
-      type: 'GROUP_PENDING_REJECTED',
-      payload: { groupId },
-    });
+  const groupResult = await db.query.groups.findFirst({
+    where: (g, { eq }) => eq(g.id, groupId),
+    columns: { name: true, slug: true, competitionId: true },
+    with: {
+      competition: {
+        columns: { slug: true },
+      },
+    },
+  });
+
+  if (groupResult) {
+    const competitionName = await competitionRepository.getNameById(groupResult.competitionId);
+
+    if (status === 'active') {
+      await notify({
+        userId: targetId,
+        type: 'GROUP_PENDING_ACCEPTED',
+        payload: {
+          groupId,
+          groupName: groupResult.name,
+          groupSlug: groupResult.slug,
+          competitionSlug: groupResult.competition.slug,
+          competitionName: competitionName || 'Competition',
+        },
+      });
+    } else if (status === 'rejected') {
+      await notify({
+        userId: targetId,
+        type: 'GROUP_PENDING_REJECTED',
+        payload: {
+          groupId,
+          groupName: groupResult.name,
+          competitionName: competitionName || 'Competition',
+        },
+      });
+    }
   }
 
   return { targetId };

@@ -7,16 +7,20 @@ export const markAsReadSchema = z.object({
   }),
 });
 
-export const getNotificationBodySchema = z.object({
-  group: z.enum(NOTIFICATION_GROUP),
+export const getNotificationsQuerySchema = z.object({
+  limit: z.coerce.number().optional(),
+  cursorDate: z.string().optional(),
+  group: z.union([z.string(), z.array(z.string())]).optional().default(NOTIFICATION_GROUP.ALL),
 });
 
 export const getNotificationsSchema = z.object({
-  query: z.object({
-    limit: z.number().optional(),
-    cursorDate: z.string().optional(),
-  }),
-  body: getNotificationBodySchema,
+  query: getNotificationsQuerySchema,
 });
 
-export type GetNotificationsInput = z.infer<typeof getNotificationBodySchema>;
+export const getUnreadCountSchema = z.object({
+  query: z.object({
+    group: z.union([z.string(), z.array(z.string())]).optional().default(NOTIFICATION_GROUP.ALL),
+  }),
+});
+
+export type GetNotificationsQuery = z.infer<typeof getNotificationsQuerySchema>;

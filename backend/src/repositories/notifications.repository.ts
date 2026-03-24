@@ -1,7 +1,22 @@
 import { db as defaultDb } from '../db/index.js';
 import { notifications } from '../db/schema/index.js';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, inArray, lt } from 'drizzle-orm';
 import type { NotificationPayload, CreateNotificationData } from '../types/notifications.types.js';
+import { NOTIFICATION_GROUPS } from '../constants/notifications.constants.js';
+
+function getTypesForGroups(groupParam: string | string[]): string[] {
+  if (!groupParam) return [];
+  const groups = Array.isArray(groupParam) ? groupParam : [groupParam];
+  if (groups.includes('ALL')) return [];
+
+  const types: string[] = [];
+  for (const g of groups) {
+    if (NOTIFICATION_GROUPS[g as keyof typeof NOTIFICATION_GROUPS]) {
+      types.push(...NOTIFICATION_GROUPS[g as keyof typeof NOTIFICATION_GROUPS]);
+    }
+  }
+  return types;
+}
 
 export const notificationsRepository = {
   async create(data: CreateNotificationData, tx?: any) {
@@ -16,12 +31,26 @@ export const notificationsRepository = {
     return await db.insert(notifications).values(data).returning();
   },
 
-  async getByUserId(userId: string, limit = 20, cursorDate?: string) {
+  async getByUserId(
+    userId: string,
+    limit = 20,
+    cursorDate?: string,
+    groupParam?: string | string[],
+  ) {
     return await defaultDb.query.notifications.findMany({
-      where: (n, { eq, and, lt }) => {
+      where: (n, { eq, and, lt, inArray }) => {
         const filters = [eq(n.userId, userId)];
         if (cursorDate) {
           filters.push(lt(n.createdAt, new Date(cursorDate)));
+        }
+        if (groupParam && groupParam !== 'ALL') {
+          const types = getTypesForGroups(groupParam);
+          if (types.length > 0) {
+            filters.push(inArray(n.type, types as any));
+          } else {
+            // Invalid group, block all
+            filters.push(eq(n.type, 'NONE' as any));
+          }
         }
         return and(...filters);
       },

@@ -15,6 +15,7 @@ export const NOTIFICATION_GROUPS = {
 } as const;
 
 export enum NOTIFICATION_GROUP {
+  ALL = 'ALL',
   GAME = 'GAME',
   SOCIAL = 'SOCIAL',
   COMPETITION = 'COMPETITION',
@@ -100,4 +101,3 @@ export const NOTIFICATION_KEYS = {
     message: 'notifications.trial_expiring.message',
   },
 } as const;
-
