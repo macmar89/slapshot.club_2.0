@@ -795,6 +795,9 @@
     "markAllAsRead": "Mark all as read",
     "unreadCount": "{count, plural, one {# new} other {# new}}",
     "empty": "No new notifications",
+    "allRead": "You are all caught up!",
+    "markAllAsReadError": "Failed to mark all as read",
+    "markAllReadSuccess": "All notifications marked as read",
     "viewAll": "View all notifications",
     "group_invite": {
       "title": "Group Invitation",

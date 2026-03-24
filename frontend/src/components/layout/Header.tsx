@@ -11,7 +11,7 @@ import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigat
 import { InitializationOverlay } from './header/InitializationOverlay';
 import { UserProfileDrawer } from './header/user-profile-drawer';
 import { MobileMenu } from './header/mobile-menu';
-import { NotificationBell } from '@/components/common/notification-bell';
+import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { useAuthStore } from '@/store/use-auth-store';
 
 interface HeaderProps {

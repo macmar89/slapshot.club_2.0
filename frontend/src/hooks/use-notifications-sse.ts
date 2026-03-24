@@ -20,7 +20,7 @@ export function useNotificationsSSE() {
 
     eventSource.addEventListener('new-notification', () => {
       // Invalidate both lists immediately to trigger automatic background refetch
-      mutate(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT('ALL'));
+      mutate(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT);
       mutate(API_ROUTES.NOTIFICATIONS.ALL(10, 'ALL')); // Assumes matching SWR limits
     });
 

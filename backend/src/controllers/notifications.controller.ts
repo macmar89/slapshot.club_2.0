@@ -16,9 +16,11 @@ export const getNotificationsStreamHandler = (req: Request, res: Response, next:
   const userId = req.user!.id;
 
   res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // Prevents Nginx/Nextjs from buffering SSE
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.flushHeaders(); // Explicitly flush headers to start stream
 
   // Send an initial connected event
   res.write(`event: connected\n`);
@@ -26,7 +28,13 @@ export const getNotificationsStreamHandler = (req: Request, res: Response, next:
 
   connectedClients.set(userId, res);
 
+  // Send a heartbeat every 30 seconds to keep the connection alive
+  const heartbeatIndex = setInterval(() => {
+    res.write(`:\n\n`); // SSE comment
+  }, 30000);
+
   req.on('close', () => {
+    clearInterval(heartbeatIndex);
     connectedClients.delete(userId);
   });
 };

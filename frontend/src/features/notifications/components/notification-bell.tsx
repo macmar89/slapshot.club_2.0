@@ -5,12 +5,14 @@ import useSWR from 'swr';
 import { Bell, Check, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { DataLoader } from '@/components/common/data-loader';
 import { NotificationItem } from './notification-item';
 import { useNotificationsSSE } from '@/hooks/use-notifications-sse';
+import { useDevice } from '@/hooks/use-device';
 import { api } from '@/lib/api';
 import { API_ROUTES } from '@/lib/api-routes';
 
@@ -28,6 +30,7 @@ export function NotificationBell() {
   const t = useTranslations('AppNotifications');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const { isMobile } = useDevice();
 
   // Revalidates on SSE events automatically via the hook
   useNotificationsSSE();
@@ -49,13 +52,22 @@ export function NotificationBell() {
       await api.patch(API_ROUTES.NOTIFICATIONS.READ_ALL);
       mutateUnread();
       mutateNotifications();
-    } catch (err) {
-      console.error('Failed to mark all as read', err);
+    } catch {
+      toast.error(t('markAllAsReadError') || 'Failed to mark all as read');
     }
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (isMobile && open) {
+          router.push('/notifications');
+          return;
+        }
+        setIsOpen(open);
+      }}
+    >
       <PopoverTrigger asChild>
         <button className="relative rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
           <Bell className="h-5 w-5" />
@@ -74,9 +86,9 @@ export function NotificationBell() {
         className="mt-2 mr-4 w-80 border-white/10 bg-black/95 p-0 text-white backdrop-blur-xl"
         align="end"
       >
-        <div className="flex flex-col border-b border-white/10 px-4 py-3 gap-2">
+        <div className="flex flex-col gap-2 border-b border-white/10 px-4 py-3">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-lg">{t('title')}</span>
+            <span className="text-lg font-semibold">{t('title')}</span>
             {unreadCount > 0 && (
               <Badge variant="secondary" className="bg-white/10 text-white hover:bg-white/20">
                 {t('unreadCount', { count: unreadCount })}
@@ -86,7 +98,7 @@ export function NotificationBell() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="flex items-center gap-1 text-xs text-white/50 transition-colors hover:text-white self-end"
+              className="flex items-center gap-1 self-end text-xs text-white/50 transition-colors hover:text-white"
             >
               <Check className="h-3 w-3" />
               {t('markAllAsRead')}

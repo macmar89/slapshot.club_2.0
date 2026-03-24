@@ -14,9 +14,10 @@ const dateLocales: Record<string, Locale> = { en: enUS, sk, cs };
 interface NotificationItemProps {
   notification: AppNotification;
   onAfterClick?: () => void;
+  className?: string;
 }
 
-export function NotificationItem({ notification, onAfterClick }: NotificationItemProps) {
+export function NotificationItem({ notification, onAfterClick, className }: NotificationItemProps) {
   const t = useTranslations('AppNotifications');
   const locale = useLocale();
   const { handleNotificationClick } = useNotificationActions();
@@ -30,6 +31,7 @@ export function NotificationItem({ notification, onAfterClick }: NotificationIte
       className={cn(
         'relative flex h-auto w-full flex-col items-start rounded-none pt-3 pr-4 pb-8 pl-8 text-left transition-colors hover:bg-white/5 hover:text-white whitespace-normal',
         !notification.isRead && 'bg-white/[0.02]',
+        className
       )}
     >
       <div className="flex w-full flex-col">

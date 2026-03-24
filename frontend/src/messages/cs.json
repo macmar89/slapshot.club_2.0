@@ -793,6 +793,9 @@
     "markAllAsRead": "Označit vše jako přečtené",
     "unreadCount": "{count, plural, one {# nové} few {# nové} other {# nových}}",
     "empty": "Žádná nová oznámení",
+    "allRead": "Všechno máš přečteno!",
+    "markAllAsReadError": "Nepodařilo se označit všechny zprávy jako přečtené",
+    "markAllReadSuccess": "Všechna oznámení byla označena jako přečtená",
     "viewAll": "Zobrazit všechna oznámení",
     "group_invite": {
       "title": "Pozvánka do skupiny",
