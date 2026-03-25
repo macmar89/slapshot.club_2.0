@@ -4,13 +4,7 @@ import React from 'react';
 import { dashboardConfig, DashboardItem } from '@/config/sidebar';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { MoreHorizontal, MessageSquarePlus, X } from 'lucide-react';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-  SheetClose,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
@@ -82,21 +76,20 @@ export function MobileTabNav() {
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
-                {item.showBadge && (
-                  item.badgeType === 'notifications' ? (
-                    unreadCount > 0 && (
-                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                        {unreadCount}
-                      </div>
-                    )
-                  ) : item.badgeType === 'missing_tips' ? (
-                    missingCount > 0 && (
-                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                        {missingCount}
-                      </div>
-                    )
-                  ) : null
-                )}
+                {item.showBadge &&
+                  (item.badgeType === 'notifications'
+                    ? unreadCount > 0 && (
+                        <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                          {unreadCount}
+                        </div>
+                      )
+                    : item.badgeType === 'missing_tips'
+                      ? missingCount > 0 && (
+                          <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                            {missingCount}
+                          </div>
+                        )
+                      : null)}
               </Link>
             ))}
           </div>
@@ -130,21 +123,20 @@ export function MobileTabNav() {
                 <span className="text-[10px] font-bold tracking-tight uppercase">
                   {t(item.labelKey)}
                 </span>
-                {item.showBadge && (
-                  item.badgeType === 'notifications' ? (
-                    unreadCount > 0 && (
-                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                        {unreadCount}
-                      </div>
-                    )
-                  ) : item.badgeType === 'missing_tips' ? (
-                    missingCount > 0 && (
-                      <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
-                        {missingCount}
-                      </div>
-                    )
-                  ) : null
-                )}
+                {item.showBadge &&
+                  (item.badgeType === 'notifications'
+                    ? unreadCount > 0 && (
+                        <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                          {unreadCount}
+                        </div>
+                      )
+                    : item.badgeType === 'missing_tips'
+                      ? missingCount > 0 && (
+                          <div className="bg-primary absolute -top-1 -right-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-black text-black">
+                            {missingCount}
+                          </div>
+                        )
+                      : null)}
               </Link>
             ))}
 
@@ -184,11 +176,14 @@ export function MobileTabNav() {
 
                 <div className="custom-scrollbar flex-1 overflow-y-auto px-6 py-2">
                   <nav className="flex flex-col gap-2">
-                    {/* Global Links (Aréna, Moje Tipy) */}
                     {dashboardConfig.mobileNav.map((item) => {
                       const isActive = pathname === item.href;
-                      const count = item.badgeType === 'missing_tips' ? missingCount : 
-                                  item.badgeType === 'notifications' ? unreadCount : 0;
+                      const count =
+                        item.badgeType === 'missing_tips'
+                          ? missingCount
+                          : item.badgeType === 'notifications'
+                            ? unreadCount
+                            : 0;
 
                       return (
                         <Link
@@ -254,22 +249,21 @@ export function MobileTabNav() {
                           <div className="via-primary animate-knight-rider pointer-events-none absolute right-0 bottom-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-transparent to-transparent opacity-0 blur-[1px] group-hover:opacity-100" />
                           <item.icon className="relative z-10 h-5 w-5" />
                           <span className="relative z-10 text-shadow-sm">{t(item.labelKey)}</span>
-                          
-                          {item.showBadge && (
-                            item.badgeType === 'notifications' ? (
-                              unreadCount > 0 && (
-                                <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
-                                  {unreadCount}
-                                </div>
-                              )
-                            ) : item.badgeType === 'missing_tips' ? (
-                              missingCount > 0 && (
-                                <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
-                                  {missingCount}
-                                </div>
-                              )
-                            ) : null
-                          )}
+
+                          {item.showBadge &&
+                            (item.badgeType === 'notifications'
+                              ? unreadCount > 0 && (
+                                  <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                                    {unreadCount}
+                                  </div>
+                                )
+                              : item.badgeType === 'missing_tips'
+                                ? missingCount > 0 && (
+                                    <div className="bg-primary relative z-10 ml-auto flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                                      {missingCount}
+                                    </div>
+                                  )
+                                : null)}
                         </Link>
                       );
                     })}
