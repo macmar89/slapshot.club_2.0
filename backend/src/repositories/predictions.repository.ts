@@ -140,6 +140,7 @@ export const predictionsRepository = {
       .from(matches)
       .where(
         and(
+          eq(matches.status, 'scheduled'),
           inArray(matches.competitionId, compIds),
           gte(matches.date, now),
           lte(matches.date, tomorrow),
