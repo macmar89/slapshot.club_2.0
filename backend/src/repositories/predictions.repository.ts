@@ -73,6 +73,7 @@ export const predictionsRepository = {
 
     const result = await db.query.matches.findMany({
       where: and(
+        eq(matches.status, 'scheduled'),
         inArray(matches.competitionId, compIds),
         gte(matches.date, startOfDay),
         lte(matches.date, endOfDay),
