@@ -40,6 +40,7 @@ export const predictionsRepository = {
       .from(matches)
       .where(
         and(
+          eq(matches.status, 'scheduled'),
           inArray(matches.competitionId, compIds),
           gte(matches.date, startIso),
           lte(matches.date, endIso),
@@ -130,7 +131,10 @@ export const predictionsRepository = {
     const compIds = userCompetitions.map((c) => c.id);
     if (compIds.length === 0) return 0;
 
-    const now = new Date().toISOString();
+    const now = new Date();
+    const startOfToday = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    ).toISOString();
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
     const result = await db
@@ -142,7 +146,7 @@ export const predictionsRepository = {
         and(
           eq(matches.status, 'scheduled'),
           inArray(matches.competitionId, compIds),
-          gte(matches.date, now),
+          gte(matches.date, startOfToday),
           lte(matches.date, tomorrow),
           notExists(
             db
