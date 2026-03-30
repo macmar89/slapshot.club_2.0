@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { Bell, Check, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -30,7 +30,12 @@ export function NotificationBell() {
   const t = useTranslations('AppNotifications');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { isMobile } = useDevice();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Revalidates on SSE events automatically via the hook
   useNotificationsSSE();
@@ -71,7 +76,7 @@ export function NotificationBell() {
       <PopoverTrigger asChild>
         <button className="relative rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
           <Bell className="h-5 w-5" />
-          {unreadCount > 0 && (
+          {isMounted && unreadCount > 0 && (
             <Badge
               variant="destructive"
               className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center p-0 text-[10px]"
