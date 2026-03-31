@@ -63,3 +63,28 @@ export const scheduleLiveMatchesTicker = async () => {
     logger.error(`[SCHEDULE ERROR] Failed to schedule live matches ticker: ${error.message}`);
   }
 };
+
+export const scheduleMissingTipsReminder = async () => {
+  try {
+    // Clean up previous repeatable jobs
+    const repeatableJobs = await matchesQueue.getRepeatableJobs();
+    for (const job of repeatableJobs) {
+      if (job.name === 'checkMissingTips') {
+        await matchesQueue.removeRepeatableByKey(job.key);
+      }
+    }
+
+    await matchesQueue.add(
+      'checkMissingTips',
+      {},
+      {
+        repeat: {
+          every: 2 * 60 * 1000, // Every 2 minutes
+        },
+      },
+    );
+    logger.info('[SCHEDULE] Missing tips reminder job scheduled every 2 minutes.');
+  } catch (error: any) {
+    logger.error(`[SCHEDULE ERROR] Failed to schedule missing tips reminder: ${error.message}`);
+  }
+};

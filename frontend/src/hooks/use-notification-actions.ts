@@ -31,8 +31,14 @@ export function useNotificationActions() {
       // 3. Handle Navigation based on type
       switch (notification.type) {
         case 'MATCH_FINISHED':
-        case 'MATCH_REMINDER':
           if (payload.matchId) router.push(`/matches/${payload.matchId}`);
+          break;
+        case 'MATCH_REMINDER':
+          if (payload.missingTipsCount) {
+            router.push('/arena/missing-tips');
+          } else if (payload.matchId) {
+            router.push(`/matches/${payload.matchId}`);
+          }
           break;
         case 'GROUP_INVITE':
         case 'GROUP_INVITE_ACCEPTED':

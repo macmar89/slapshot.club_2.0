@@ -159,7 +159,8 @@
         "FT": "KON",
         "AOT": "KON (PP)",
         "AP": "KON (SN)"
-      }
+      },
+      "last_chance": "Posledná šanca"
     },
     "leaderboard": {
       "title": "Rebríček",
@@ -837,7 +838,7 @@
     },
     "match_reminder": {
       "title": "Pripomienka zápasu",
-      "message": "Zápas čoskoro začína. Nezabudni natipovať!"
+      "message": "{missingTipsCount, select, undefined {Zápas čoskoro začína. Nezabudni natipovať!} other {{missingTipsCount, plural, one {Máš # chýbajúci tip na zápasy začínajúce o hodinu.} few {Máš # chýbajúce tipy na zápasy začínajúce o hodinu.} other {Máš # chýbajúcich tipov na zápasy začínajúce o hodinu.}}}}"
     },
     "daily_tips_reminder": {
       "title": "Denná pripomienka",

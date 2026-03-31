@@ -12,7 +12,11 @@ import { HttpStatusCode } from './utils/httpStatusCodes.js';
 import './workers/email.worker.js';
 import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
-import { scheduleMatchesSyncMasterJob, scheduleLiveMatchesTicker } from './queues/matches.queue.js';
+import {
+  scheduleMatchesSyncMasterJob,
+  scheduleLiveMatchesTicker,
+  scheduleMissingTipsReminder,
+} from './queues/matches.queue.js';
 
 const allowedOrigins = [
   'https://slapshot.club',
@@ -61,4 +65,5 @@ app.listen(env.PORT, async () => {
   // Schedule the recurring matches sync job
   await scheduleMatchesSyncMasterJob();
   await scheduleLiveMatchesTicker();
+  await scheduleMissingTipsReminder();
 });

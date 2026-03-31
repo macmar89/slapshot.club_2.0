@@ -35,6 +35,11 @@ export const notifications = pgTable('notifications', {
 
   payload: jsonb('payload').$type<{
     matchId?: string;
+    competitionSlug?: string;
+    homeId?: string;
+    awayId?: string;
+    matchIds?: string[];
+    missingTipsCount?: number;
     groupId?: string;
     points?: number;
     score?: string;

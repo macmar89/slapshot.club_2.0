@@ -33,6 +33,11 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
 
   const matchDate = new Date(match.date);
   const isStarted = new Date() >= matchDate || match.status !== 'scheduled';
+  const isUrgent =
+    !match.userPrediction &&
+    !isStarted &&
+    match.status === 'scheduled' &&
+    matchDate.getTime() - new Date().getTime() < 60 * 60 * 1000;
 
   const statusStyles = {
     scheduled: 'text-white/40 border-white/10 bg-white/5',
@@ -70,8 +75,10 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
     <IceGlassCard
       backdropBlur="md"
       className={cn(
-        'hover:border-warning/40 group relative p-3 transition-all duration-300 md:p-6',
+        'group relative flex h-full flex-col p-3 transition-all duration-300 md:p-6',
+        'hover:border-warning/40',
         match.status === 'cancelled' && 'opacity-40 grayscale-[0.5]',
+        isUrgent && 'border-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)] animate-pulse-subtle',
       )}
     >
       <div className="mb-6 flex flex-col gap-1">
@@ -91,13 +98,22 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
           <div
             className={cn(
               'rounded-app flex items-center gap-2 border px-3 py-1 text-[0.6rem] font-black tracking-widest uppercase',
-              statusStyles[match.status as keyof typeof statusStyles] || statusStyles.scheduled,
+              isUrgent
+                ? 'border-primary/50 bg-primary/20 text-primary animate-pulse'
+                : statusStyles[match.status as keyof typeof statusStyles] || statusStyles.scheduled,
             )}
           >
             {match.status === 'live' && (
               <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
             )}
-            {t(match.status)}
+            {isUrgent ? (
+              <>
+                <div className="bg-primary h-1.5 w-1.5 rounded-full" />
+                {t('last_chance')}
+              </>
+            ) : (
+              t(match.status)
+            )}
           </div>
         </div>
 
@@ -108,7 +124,7 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         )}
       </div>
 
-      <div className="mb-8 flex items-center justify-between gap-4">
+      <div className="flex-1 mb-8 flex items-center justify-between gap-4">
         <MatchTeamDisplay
           name={match.homeTeamName}
           shortName={match.homeTeamShortName}

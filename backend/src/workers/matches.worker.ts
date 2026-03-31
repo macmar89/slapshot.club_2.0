@@ -6,6 +6,7 @@ import { matchesQueue } from '../queues/matches.queue.js';
 import { syncFutureMatches } from '../services/matches/matchesSync.service.js';
 import { handleLiveUpdates } from '../services/matches/matchesLive.service.js';
 import { evaluateMatch } from '../services/predictions/predictionsLogic.service.js';
+import { sendMissingTipReminders } from '../services/matches/matchesReminder.service.js';
 
 export const matchesWorker = new Worker(
   'matches-queue',
@@ -54,6 +55,10 @@ export const matchesWorker = new Worker(
 
     if (name === 'checkLiveMatches') {
       await handleLiveUpdates();
+    }
+
+    if (name === 'checkMissingTips') {
+      await sendMissingTipReminders();
     }
 
     if (name === 'evaluatePredictions') {

@@ -13,6 +13,10 @@ export interface NotificationPayload {
   groupSlug?: string;
   competitionSlug?: string;
   competitionName?: string;
+  homeId?: string;
+  awayId?: string;
+  matchIds?: string[];
+  missingTipsCount?: number;
 }
 
 export type NotificationGroup = (typeof NOTIFICATION_GROUPS)[keyof typeof NOTIFICATION_GROUPS];

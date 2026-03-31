@@ -159,7 +159,8 @@
         "FT": "FT",
         "AOT": "FT (OT)",
         "AP": "FT (SO)"
-      }
+      },
+      "last_chance": "Last chance"
     },
     "leaderboard": {
       "title": "Leaderboard",
@@ -836,7 +837,7 @@
     },
     "match_reminder": {
       "title": "Match Reminder",
-      "message": "Match starts soon. Don't forget to tip!"
+      "message": "{missingTipsCount, select, undefined {Match starts soon. Don't forget to tip!} other {You have {missingTipsCount} missing {missingTipsCount, plural, one {tip} other {tips}} for matches starting within an hour.}}"
     },
     "daily_tips_reminder": {
       "title": "Daily Tips Reminder",
