@@ -79,11 +79,11 @@ export const scheduleMissingTipsReminder = async () => {
       {},
       {
         repeat: {
-          every: 2 * 60 * 1000, // Every 2 minutes
+          every: 10 * 60 * 1000, // Every 10 minutes
         },
       },
     );
-    logger.info('[SCHEDULE] Missing tips reminder job scheduled every 2 minutes.');
+    logger.info('[SCHEDULE] Missing tips reminder job scheduled every 10 minutes.');
   } catch (error: any) {
     logger.error(`[SCHEDULE ERROR] Failed to schedule missing tips reminder: ${error.message}`);
   }
