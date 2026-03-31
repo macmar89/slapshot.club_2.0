@@ -104,6 +104,7 @@ export async function evaluateMatch(matchId: string) {
       diff: number;
       wrong: number;
       count: number;
+      formLetter: string;
     }
   >();
 
@@ -125,6 +126,11 @@ export async function evaluateMatch(matchId: string) {
         .where(eq(predictions.id, pred.id));
 
       if (pred.userId) {
+        let formLetter = 'L';
+        if (isExact) formLetter = 'E';
+        else if (isDiff) formLetter = 'S';
+        else if (isTrend) formLetter = 'W';
+
         const stats = userUpdates.get(pred.userId) || {
           points: 0,
           exact: 0,
@@ -132,6 +138,7 @@ export async function evaluateMatch(matchId: string) {
           diff: 0,
           wrong: 0,
           count: 0,
+          formLetter: '',
         };
 
         userUpdates.set(pred.userId, {
@@ -141,6 +148,7 @@ export async function evaluateMatch(matchId: string) {
           diff: stats.diff + (isDiff ? 1 : 0),
           wrong: stats.wrong + (isWrong ? 1 : 0),
           count: stats.count + 1,
+          formLetter,
         });
       }
     } catch (err: any) {
@@ -171,6 +179,7 @@ export async function evaluateMatch(matchId: string) {
             correctTrends: (entry.correctTrends || 0) + stats.trend,
             correctDiffs: (entry.correctDiffs || 0) + stats.diff,
             wrongGuesses: (entry.wrongGuesses || 0) + stats.wrong,
+            currentForm: (stats.formLetter + (entry.currentForm || '')).slice(0, 5),
           })
           .where(eq(leaderboardEntries.id, entry.id));
       } else {
@@ -184,6 +193,7 @@ export async function evaluateMatch(matchId: string) {
           correctTrends: stats.trend,
           correctDiffs: stats.diff,
           wrongGuesses: stats.wrong,
+          currentForm: stats.formLetter,
           currentRank: 0,
           previousRank: 0,
           rankChange: 0,
