@@ -88,3 +88,30 @@ export const scheduleMissingTipsReminder = async () => {
     logger.error(`[SCHEDULE ERROR] Failed to schedule missing tips reminder: ${error.message}`);
   }
 };
+
+export const scheduleDailyMissingTipsReminder = async () => {
+  try {
+    const repeatableJobs = await matchesQueue.getRepeatableJobs();
+    for (const job of repeatableJobs) {
+      if (job.name === 'checkDailyMissingTips') {
+        await matchesQueue.removeRepeatableByKey(job.key);
+      }
+    }
+
+    await matchesQueue.add(
+      'checkDailyMissingTips',
+      {},
+      {
+        repeat: {
+          pattern: '15 10 * * *', // Run at 10:15 (for testing)
+          tz: 'Europe/Bratislava',
+        },
+      },
+    );
+    logger.info('[SCHEDULE] Daily missing tips reminder scheduled for 10:15 (Europe/Bratislava).');
+  } catch (error: any) {
+    logger.error(
+      `[SCHEDULE ERROR] Failed to schedule daily missing tips reminder: ${error.message}`,
+    );
+  }
+};

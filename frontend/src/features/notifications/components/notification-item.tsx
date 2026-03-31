@@ -53,7 +53,7 @@ export function NotificationItem({ notification, onAfterClick, className }: Noti
         >
           {t(
             getSubKey(notification.titleKey) as Parameters<typeof t>[0],
-            notification.payload as Parameters<typeof t>[1],
+            { missingTipsCount: 'undefined', ...notification.payload } as Parameters<typeof t>[1],
           )}
         </span>
       </div>
@@ -65,7 +65,7 @@ export function NotificationItem({ notification, onAfterClick, className }: Noti
       >
         {t(
           getSubKey(notification.messageKey) as Parameters<typeof t>[0],
-          notification.payload as Parameters<typeof t>[1],
+          { missingTipsCount: 'undefined', ...notification.payload } as Parameters<typeof t>[1],
         )}
       </span>
       <span className="absolute right-4 bottom-2 text-[10px] text-white/40 transition-colors group-hover:text-white/40">

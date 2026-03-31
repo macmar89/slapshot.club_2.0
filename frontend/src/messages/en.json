@@ -841,7 +841,7 @@
     },
     "daily_tips_reminder": {
       "title": "Daily Tips Reminder",
-      "message": "Don't forget to submit your tips for today's matches!"
+      "message": "{missingTipsCount, select, undefined {Don't forget to submit your tips for today's matches!} other {You have {missingTipsCount} missing {missingTipsCount, plural, one {tip} other {tips}} for the next 24 hours.}}"
     },
     "new_competition": {
       "title": "New Competition",

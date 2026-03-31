@@ -16,6 +16,7 @@ import {
   scheduleMatchesSyncMasterJob,
   scheduleLiveMatchesTicker,
   scheduleMissingTipsReminder,
+  scheduleDailyMissingTipsReminder,
 } from './queues/matches.queue.js';
 
 const allowedOrigins = [
@@ -66,4 +67,5 @@ app.listen(env.PORT, async () => {
   await scheduleMatchesSyncMasterJob();
   await scheduleLiveMatchesTicker();
   await scheduleMissingTipsReminder();
+  await scheduleDailyMissingTipsReminder();
 });

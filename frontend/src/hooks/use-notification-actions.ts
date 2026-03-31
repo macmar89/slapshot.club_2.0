@@ -34,6 +34,7 @@ export function useNotificationActions() {
           if (payload.matchId) router.push(`/matches/${payload.matchId}`);
           break;
         case 'MATCH_REMINDER':
+        case 'DAILY_TIPS_REMINDER':
           if (payload.missingTipsCount) {
             router.push('/arena/missing-tips');
           } else if (payload.matchId) {

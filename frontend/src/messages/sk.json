@@ -842,7 +842,7 @@
     },
     "daily_tips_reminder": {
       "title": "Denná pripomienka",
-      "message": "Nezabudni poslať svoje tipy na dnešné zápasy!"
+      "message": "{missingTipsCount, select, undefined {Nezabudni poslať svoje tipy na dnešné zápasy!} other {{missingTipsCount, plural, one {Máš # chýbajúci tip na najbližších 24 hodín.} few {Máš # chýbajúce tipy na najbližších 24 hodín.} other {Máš # chýbajúcich tipov na najbližších 24 hodín.}}}}"
     },
     "new_competition": {
       "title": "Nová súťaž",

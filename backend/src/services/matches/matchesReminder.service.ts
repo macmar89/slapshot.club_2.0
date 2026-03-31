@@ -127,3 +127,95 @@ export const sendMissingTipReminders = async () => {
     logger.error(`[REMINDER ERROR] Failed to send missing tip reminders: ${error.message}`);
   }
 };
+
+/**
+ * Checks for matches starting in the next 24 hours and sends a daily notification
+ * to users who are missing at least one tip.
+ */
+export const sendDailyTipsReminders = async () => {
+  const now = new Date();
+  const endRange = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+  logger.info(
+    `[DAILY REMINDER] Checking for missing tips for matches starting between ${now.toISOString()} and ${endRange.toISOString()}`,
+  );
+
+  try {
+    // 1. Find scheduled matches in active competitions starting in the next 24 hours
+    const potentialMatches = await db
+      .select({
+        id: matches.id,
+        competitionId: matches.competitionId,
+      })
+      .from(matches)
+      .innerJoin(competitions, eq(matches.competitionId, competitions.id))
+      .where(
+        and(
+          eq(matches.status, 'scheduled'),
+          eq(competitions.status, 'active'),
+          gte(matches.date, now.toISOString()),
+          lte(matches.date, endRange.toISOString()),
+        ),
+      );
+
+    if (potentialMatches.length === 0) {
+      logger.info('[DAILY REMINDER] No matches found for the next 24h.');
+      return;
+    }
+
+    // 2. Map users to missing tips
+    const userToMissingMatchIds = new Map<string, string[]>();
+
+    for (const match of potentialMatches) {
+      const usersToNotify = await db
+        .select({ userId: leaderboardEntries.userId })
+        .from(leaderboardEntries)
+        .where(
+          and(
+            eq(leaderboardEntries.competitionId, match.competitionId),
+            notExists(
+              db
+                .select()
+                .from(predictions)
+                .where(
+                  and(
+                    eq(predictions.matchId, match.id),
+                    eq(predictions.userId, leaderboardEntries.userId),
+                  ),
+                ),
+            ),
+          ),
+        );
+
+      for (const u of usersToNotify) {
+        if (!userToMissingMatchIds.has(u.userId)) {
+          userToMissingMatchIds.set(u.userId, []);
+        }
+        userToMissingMatchIds.get(u.userId)!.push(match.id);
+      }
+    }
+
+    if (userToMissingMatchIds.size === 0) {
+      logger.info('[DAILY REMINDER] No users found with missing tips.');
+      return;
+    }
+
+    // 3. Send notifications
+    for (const [userId, matchIds] of userToMissingMatchIds.entries()) {
+      logger.info(
+        `[DAILY REMINDER] Sending DAILY_TIPS_REMINDER to user ${userId} for ${matchIds.length} matches.`,
+      );
+
+      await notify({
+        userId,
+        type: 'DAILY_TIPS_REMINDER',
+        payload: {
+          missingTipsCount: matchIds.length,
+          matchIds: matchIds,
+        },
+      });
+    }
+  } catch (error: any) {
+    logger.error(`[DAILY REMINDER ERROR] ${error.message}`);
+  }
+};
