@@ -1,14 +1,14 @@
-import { logger } from '../../utils/logger';
-import { competitionRepository } from '../../repositories/competitions.repository';
-import { AppError } from '../../utils/appError';
-import { CompetitionErrors } from '../../shared/constants/errors/competition.errors';
-import { HttpStatusCode } from '../../utils/httpStatusCodes';
-import { API_HOCKEY_CONFIG } from '../../config/apiHockey';
+import { logger } from '../../utils/logger.js';
+import { competitionRepository } from '../../repositories/competitions.repository.js';
+import { AppError } from '../../utils/appError.js';
+import { CompetitionErrors } from '../../shared/constants/errors/competition.errors.js';
+import { HttpStatusCode } from '../../utils/httpStatusCodes.js';
+import { API_HOCKEY_CONFIG } from '../../config/apiHockey.js';
 import axios from 'axios';
 import type { ApiHockeyStanding } from '../../types/hockeyApiResponse.types';
-import { teamsRepository } from '../../repositories/teams.repository';
-import { createTeamLookupMap } from '../../utils/standings.utils';
-import { competitionStandingsRepository } from '../../repositories/competitionStandings.repository';
+import { teamsRepository } from '../../repositories/teams.repository.js';
+import { createTeamLookupMap } from '../../utils/standings.utils.js';
+import { competitionStandingsRepository } from '../../repositories/competitionStandings.repository.js';
 
 export const fetchStandingsFromApi = async (competitionId: string) => {
   const apiKey = process.env.SPORT_API_KEY;

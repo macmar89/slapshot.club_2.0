@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import competitionRoutes from './competition.routes';
+import competitionRoutes from './competition.routes.js';
 
 const router = Router();
 
