@@ -25,3 +25,9 @@ export const getPlayerPredictionsSchema = z.object({
     search: z.string().optional(),
   }),
 });
+
+export const syncStandingsSchema = z.object({
+  params: z.object({
+    competitionId: z.string().length(24),
+  }),
+});

@@ -1,6 +1,17 @@
 import { db } from '../db/index.js';
 
 export const competitionRepository = {
+  async getById(id: string, columns?: string[]) {
+    const result = await db.query.competitions.findFirst({
+      columns: columns
+        ? columns.reduce((acc, column) => ({ ...acc, [column]: true }), {})
+        : undefined,
+      where: (table, { eq }) => eq(table.id, id),
+    });
+
+    return result ?? null;
+  },
+
   async getIdBySlug(slug: string): Promise<string | null> {
     const result = await db.query.competitions.findFirst({
       columns: { id: true },

@@ -1,6 +1,7 @@
 export * from './auditLogs.js';
 export * from './auth.js';
 export * from './competitionSnapshots.js';
+export * from './competitionStandings.js';
 export * from './competitions.js';
 export * from './feedback.js';
 export * from './generalSettings.js';

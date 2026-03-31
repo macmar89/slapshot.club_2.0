@@ -88,3 +88,47 @@ export interface ApiHockeyResponse {
   results: number;
   response: ApiHockeyMatch[];
 }
+
+export interface ApiHockeyStandingGroup {
+  name: string;
+}
+
+export interface ApiHockeyStandingStats {
+  total: number | null;
+  percentage: string;
+}
+
+export interface ApiHockeyStandingGames {
+  played: number;
+  win: ApiHockeyStandingStats;
+  win_overtime: ApiHockeyStandingStats;
+  lose: ApiHockeyStandingStats;
+  lose_overtime: ApiHockeyStandingStats;
+}
+
+export interface ApiHockeyStandingGoals {
+  for: number;
+  against: number;
+}
+
+export interface ApiHockeyStanding {
+  position: number;
+  stage: string | null;
+  group: ApiHockeyStandingGroup;
+  team: ApiHockeyTeam;
+  league: ApiHockeyLeague;
+  country: ApiHockeyCountry;
+  games: ApiHockeyStandingGames;
+  goals: ApiHockeyStandingGoals;
+  points: number | null;
+  form: string | null;
+  description: string | null;
+}
+
+export interface ApiHockeyStandingResponse {
+  get: string;
+  parameters: Record<string, any>;
+  errors: any[];
+  results: number;
+  response: ApiHockeyStanding[][];
+}
