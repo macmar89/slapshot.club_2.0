@@ -54,7 +54,10 @@ export const fetchStandingsFromApi = async (competitionId: string) => {
       },
     );
 
-    return response.data.response;
+    return {
+      apiData: response.data.response,
+      competition,
+    };
   } catch (error: any) {
     logger.error(`[STANDINGS SYNC] API error: ${error.message}`);
     const status = error.response?.status || HttpStatusCode.INTERNAL_SERVER_ERROR;
@@ -105,14 +108,24 @@ const transformApiDataToDbSchema = async (competitionId: string, apiData: ApiHoc
 };
 
 export const syncStandings = async (competitionId: string) => {
-  const apiData = await fetchStandingsFromApi(competitionId);
+  const { apiData, competition } = await fetchStandingsFromApi(competitionId);
 
   if (!apiData || apiData.length === 0) {
     logger.warn(`[STANDINGS SYNC] No standings found for competition ${competitionId}`);
     return [];
   }
 
-  const transformedData = await transformApiDataToDbSchema(competitionId, apiData[0]);
+  const isNhl = String(competition.apiHockeyId) === String(API_HOCKEY_CONFIG.LEAGUES.NHL);
+  const groupsToProcess = isNhl ? apiData.slice(0, 2) : apiData.slice(0, 1);
+
+  const transformedDataPromises = groupsToProcess.map((group: ApiHockeyStanding[]) =>
+    transformApiDataToDbSchema(competitionId, group),
+  );
+
+  const transformedDataResults = await Promise.all(transformedDataPromises);
+  const transformedData = transformedDataResults
+    .flat()
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
   if (transformedData.length > 0) {
     await competitionStandingsRepository.upsertMany(transformedData);

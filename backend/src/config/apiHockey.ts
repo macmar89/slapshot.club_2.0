@@ -8,7 +8,10 @@ export const API_HOCKEY_CONFIG = {
   },
   LEAGUES: {
     SVK_EXTRALIGA: 91,
+    CZE_EXTRALIGA: 10,
+    NHL: 57,
     OLYMPIC_GAMES_2026: 131,
+    WORLD_CHAMPIONSHIP: 111,
   },
   GAME_STATUSES: {
     NS: 'scheduled', // Not Started
