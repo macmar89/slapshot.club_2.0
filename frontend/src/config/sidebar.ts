@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Trophy, Bell } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Trophy, Bell, FileText, User } from 'lucide-react';
 
 export interface DashboardItem {
   labelKey: string;
@@ -59,6 +59,31 @@ export const dashboardConfig = {
       icon: Bell,
       showBadge: false,
       badgeType: 'notifications',
+    },
+  ] as DashboardItem[],
+
+  arenaMobileNav: [
+    {
+      labelKey: 'arena',
+      href: '/arena',
+      icon: LayoutDashboard,
+    },
+    {
+      labelKey: 'missing_tips',
+      href: '/arena/missing-tips',
+      icon: Trophy,
+      showBadge: true,
+      badgeType: 'missing_tips',
+    },
+    {
+      labelKey: 'manual',
+      href: '/user-manual',
+      icon: FileText,
+    },
+    {
+      labelKey: 'profile',
+      href: '/account',
+      icon: User,
     },
   ] as DashboardItem[],
 

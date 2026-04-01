@@ -3,9 +3,9 @@
 import React from 'react';
 import { SlapshotLogo } from '@/components/common/slapshot-logo';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { Container } from '@/components/ui/container';
-import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 
 // Sub-components
 import { InitializationOverlay } from './header/InitializationOverlay';
@@ -13,29 +13,27 @@ import { UserProfileDrawer } from './header/user-profile-drawer';
 import { MobileMenu } from './header/mobile-menu';
 import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { useAuthStore } from '@/store/use-auth-store';
+import { useStandalone } from '@/hooks/use-standalone';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   title?: React.ReactNode;
 }
 
 export function Header({ title }: HeaderProps) {
-  const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams();
   const slug = params?.slug as string;
   const locale = useLocale();
 
   const { user } = useAuthStore();
-  const t = useTranslations('Header');
 
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const [leagues, setLeagues] = React.useState<any[]>([]);
-  const [savedActiveLeagueId, setSavedActiveLeagueId] = React.useState<string | null>(null);
+  const isStandalone = useStandalone();
+
   const [isInitializing, setIsInitializing] = React.useState(true);
-  const [selectedLeague, setSelectedLeague] = React.useState<any>(null);
 
   // Initialization
   React.useEffect(() => {
@@ -45,18 +43,8 @@ export function Header({ title }: HeaderProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Restore active league when navigating (if URL param is dropped)
-  React.useEffect(() => {
-    const currentLeagueParam = searchParams.get('leagueId');
-    if (!isInitializing && !currentLeagueParam && savedActiveLeagueId) {
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set('leagueId', savedActiveLeagueId);
-      router.replace(`${pathname}?${newParams.toString()}`);
-    }
-  }, [pathname, savedActiveLeagueId, searchParams, router, isInitializing]);
-
-  // Calculate the league ID to display: URL param takes precedence, fallback to saved state
-  const effectiveLeagueId = searchParams.get('leagueId') || savedActiveLeagueId;
+  // Calculate the league ID to display: URL param takes precedence
+  const effectiveLeagueId = searchParams.get('leagueId');
 
   return (
     <>
@@ -64,7 +52,12 @@ export function Header({ title }: HeaderProps) {
 
       <header className="fixed top-0 right-0 left-0 z-50 h-16 border-b border-white/10 bg-black/20 backdrop-blur-lg">
         <Container className="max-w-auto flex h-full items-center justify-between gap-4">
-          <div className="group relative mt-6 mr-8 flex h-16 w-60 items-center sm:-mt-4">
+          <div
+            className={cn(
+              'group relative mt-6 mr-8 flex h-16 w-60 items-center sm:-mt-4',
+              isStandalone && 'hidden md:flex',
+            )}
+          >
             <div className="pointer-events-none absolute left-0 flex h-32 items-center transition-all duration-300 md:-top-2 md:top-0">
               <SlapshotLogo
                 width={128}
@@ -80,13 +73,6 @@ export function Header({ title }: HeaderProps) {
 
           {/* Desktop View */}
           <div className="ml-auto hidden items-center gap-4 md:flex">
-            {/* <LeagueSwitcher
-              slug={slug}
-              effectiveLeagueId={effectiveLeagueId}
-              selectedLeague={selectedLeague}
-              leagues={leagues}
-              onLeagueChange={handleLeagueChange}
-            /> */}
             <NotificationBell />
             <UserProfileDrawer
               user={user}
@@ -99,10 +85,38 @@ export function Header({ title }: HeaderProps) {
           </div>
 
           {/* Mobile View */}
-          <div className="flex items-center gap-2 md:hidden">
-            <NotificationBell />
-
-            <MobileMenu isOpen={isMenuOpen} onOpenChange={setIsMenuOpen} user={user} slug={slug} />
+          <div
+            className={cn(
+              'flex items-center md:hidden',
+              isStandalone ? 'w-full justify-between' : 'ml-auto justify-end gap-2',
+            )}
+          >
+            {isStandalone ? (
+              <>
+                <MobileMenu
+                  isOpen={isMenuOpen}
+                  onOpenChange={setIsMenuOpen}
+                  user={user}
+                  slug={slug}
+                />
+                {title && (
+                  <h1 className="text-sm font-bold tracking-widest text-white uppercase">
+                    {title}
+                  </h1>
+                )}
+                <NotificationBell />
+              </>
+            ) : (
+              <>
+                <NotificationBell />
+                <MobileMenu
+                  isOpen={isMenuOpen}
+                  onOpenChange={setIsMenuOpen}
+                  user={user}
+                  slug={slug}
+                />
+              </>
+            )}
           </div>
         </Container>
       </header>

@@ -3,6 +3,7 @@ import { Container } from '@/components/ui/container';
 import { Sidebar } from '@/components/layout/sidebar';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { ArenaNavItems } from '@/features/arena/components/arena-nav-items';
+import { ArenaMobileNav } from '@/features/arena/components/arena-mobile-nav';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -22,6 +23,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="min-h-screen pt-20 pb-32 md:pb-0 lg:pl-72">
         <Container>{children}</Container>
       </main>
+
+      <ArenaMobileNav />
     </div>
   );
 }

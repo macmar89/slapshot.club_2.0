@@ -8,6 +8,8 @@ import { CompetitionNav } from '@/features/competitions/components/competition-n
 import { notFound } from 'next/navigation';
 import { CompetitionStoreSync } from '@/providers/competition-store-sync';
 
+import { CompetitionMobileNav } from '@/features/competitions/components/competition-mobile-nav';
+
 export default async function CompetitionLayout({
   children,
   params,
@@ -38,11 +40,12 @@ export default async function CompetitionLayout({
         </IceGlassCard>
       </aside>
 
-      <main className="min-h-screen pb-32 md:pb-0">
+      <main className="min-h-screen pt-20 pb-32 md:pb-0 lg:pl-72">
         <Container className="h-full">{children}</Container>
       </main>
 
       <CompetitionStoreSync name={data.name} />
+      <CompetitionMobileNav slug={slug} />
     </div>
   );
 }
