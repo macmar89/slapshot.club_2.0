@@ -18,6 +18,7 @@ import {
   scheduleMissingTipsReminder,
   scheduleDailyMissingTipsReminder,
 } from './queues/matches.queue.js';
+import { scheduleDailyStandingsSync } from './queues/competitions.queue.js';
 
 const allowedOrigins = [
   'https://slapshot.club',
@@ -68,4 +69,5 @@ app.listen(env.PORT, async () => {
   await scheduleLiveMatchesTicker();
   await scheduleMissingTipsReminder();
   await scheduleDailyMissingTipsReminder();
+  await scheduleDailyStandingsSync();
 });
