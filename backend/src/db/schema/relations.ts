@@ -22,6 +22,7 @@ import {
   generalSettings,
   generalSettingsLocales,
   notifications,
+  playoffSeries,
 } from './index.js';
 
 export const usersRelations = relations(users, ({ many, one }) => ({
@@ -55,6 +56,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   leaderboardEntries: many(leaderboardEntries),
   competitionSnapshots: many(competitionSnapshots),
   notifications: many(notifications),
+  checkedMatches: many(matches, { relationName: 'checkedBy' }),
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -72,6 +74,8 @@ export const teamsRelations = relations(teams, ({ one, many }) => ({
   locales: many(teamsLocales),
   homeMatches: many(matches, { relationName: 'homeTeam' }),
   awayMatches: many(matches, { relationName: 'awayTeam' }),
+  playoffSeries1: many(playoffSeries, { relationName: 'team1' }),
+  playoffSeries2: many(playoffSeries, { relationName: 'team2' }),
 }));
 
 export const teamsLocalesRelations = relations(teamsLocales, ({ one }) => ({
@@ -102,6 +106,11 @@ export const matchesRelations = relations(matches, ({ one, many }) => ({
     relationName: 'awayTeam',
   }),
   predictions: many(predictions),
+  checkedBy: one(users, {
+    fields: [matches.checkedBy],
+    references: [users.id],
+    relationName: 'checkedBy',
+  }),
 }));
 
 export const competitionsRelations = relations(competitions, ({ many }) => ({
@@ -110,6 +119,7 @@ export const competitionsRelations = relations(competitions, ({ many }) => ({
   groups: many(groups),
   leaderboardEntries: many(leaderboardEntries),
   snapshots: many(competitionSnapshots),
+  playoffSeries: many(playoffSeries),
 }));
 
 export const competitionsLocalesRelations = relations(competitionsLocales, ({ one }) => ({
@@ -247,5 +257,22 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
     references: [users.id],
+  }),
+}));
+
+export const playoffSeriesRelations = relations(playoffSeries, ({ one }) => ({
+  competition: one(competitions, {
+    fields: [playoffSeries.competitionId],
+    references: [competitions.id],
+  }),
+  team1: one(teams, {
+    fields: [playoffSeries.team1Id],
+    references: [teams.id],
+    relationName: 'team1',
+  }),
+  team2: one(teams, {
+    fields: [playoffSeries.team2Id],
+    references: [teams.id],
+    relationName: 'team2',
   }),
 }));

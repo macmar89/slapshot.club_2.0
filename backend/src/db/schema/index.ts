@@ -13,6 +13,7 @@ export * from './assets.js';
 export * from './predictions.js';
 export * from './rateLimits.js';
 export * from './teams.js';
+export * from './playoffSeries.js';
 export * from './users.js';
 export * from './userReferrals.js';
 export * from './userSettings.js';

@@ -20,6 +20,8 @@ export const enumCompetitionsStatus = pgEnum('enum_competitions_status', [
   'archived',
 ]);
 
+export const enumCompetitionsPhase = pgEnum('enum_competitions_type', ['regular', 'playoff']);
+
 export const competitions = pgTable(
   'competitions',
   {
@@ -32,6 +34,7 @@ export const competitions = pgTable(
     creditCost: integer('credit_cost').default(0).notNull(),
 
     status: enumCompetitionsStatus('status').default('upcoming').notNull(),
+    phase: enumCompetitionsPhase('phase').default('regular').notNull(),
 
     isRegistrationOpen: boolean('is_registration_open').default(false),
     startDate: timestamp('start_date', {

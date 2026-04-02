@@ -7,9 +7,11 @@ import {
   pgEnum,
   integer,
   jsonb,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { competitions } from './competitions.js';
 import { teams } from './teams.js';
+import { users } from './users.js';
 import { generateCuid, withUpdatesFields } from '../helpers.js';
 
 export const enumMatchesResultEndingType = pgEnum('enum_matches_result_ending_type', [
@@ -23,6 +25,8 @@ export const enumMatchesStageType = pgEnum('enum_matches_stage_type', [
   'group_phase',
   'playoffs',
   'pre_season',
+  'relegation',
+  'promotion',
 ]);
 
 export const enumMatchesStatus = pgEnum('enum_matches_status', [
@@ -74,6 +78,10 @@ export const matches = pgTable(
       }>()
       .default({ scores: {} }),
 
+    isChecked: boolean('is_checked').default(false),
+    checkedAt: timestamp('checked_at', { precision: 3, withTimezone: true, mode: 'string' }),
+    checkedBy: varchar('checked_by', { length: 24 }),
+
     ...withUpdatesFields,
   },
   (table) => [
@@ -81,6 +89,7 @@ export const matches = pgTable(
     index('matches_date_idx').on(table.date),
     index('matches_home_team_idx').on(table.homeTeamId),
     index('matches_away_team_idx').on(table.awayTeamId),
+    index('matches_checked_by_idx').on(table.checkedBy),
 
     foreignKey({
       columns: [table.competitionId],
@@ -99,5 +108,11 @@ export const matches = pgTable(
       foreignColumns: [teams.id],
       name: 'matches_away_team_id_fkey',
     }).onDelete('restrict'),
+
+    foreignKey({
+      columns: [table.checkedBy],
+      foreignColumns: [users.id],
+      name: 'matches_checked_by_fkey',
+    }).onDelete('set null'),
   ],
 );
