@@ -541,6 +541,11 @@
     "description": "The puck got lost somewhere in the corner and your attack ended before it even started. This page isn't on the roster.",
     "button": "BACK TO LOCKER ROOM (ARENA)"
   },
+  "AccessDenied": {
+    "title": "Access Denied",
+    "description": "Your role does not have permission to enter this section.",
+    "button": "Back to the arena"
+  },
   "UserManual": {
     "title": "Game Rules",
     "description": "Here you'll find everything you need to start collecting points.",

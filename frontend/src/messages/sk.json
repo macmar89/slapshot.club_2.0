@@ -542,6 +542,11 @@
     "description": "Puk sa nám niekde stratil v rohu klziska a tvoj útok skončil skôr, než začal. Táto stránka na súpiske nie je.",
     "button": "NASPÄŤ DO ŠATNE (ARÉNA)"
   },
+  "AccessDenied": {
+    "title": "Prístup zamietnutý",
+    "description": "Tvoja rola nemá oprávnenie na vstup do tejto sekcie.",
+    "button": "Naspäť do arény"
+  },
   "UserManual": {
     "title": "Užívateľská príručka",
     "description": "Tu nájdeš všetko podstatné, aby si mohol začať zbierať body.",
