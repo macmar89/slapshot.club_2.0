@@ -1,4 +1,9 @@
 export const API_ROUTES = {
+  ADMIN: {
+    MATCHES: {
+      LIST: '/admin/matches',
+    },
+  },
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',

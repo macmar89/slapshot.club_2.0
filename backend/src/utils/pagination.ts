@@ -8,12 +8,14 @@ export const buildPaginatedResponse = <T>(
 ): PaginatedResponse<T> => {
   return {
     status: 'success',
-    data,
-    meta: {
-      totalItems,
-      itemsPerPage: pagination.limit,
-      currentPage: pagination.page,
-      totalPages: Math.ceil(totalItems / pagination.limit),
+    data: {
+      data,
+      meta: {
+        totalItems,
+        itemsPerPage: pagination.limit,
+        currentPage: pagination.page,
+        totalPages: Math.ceil(totalItems / pagination.limit),
+      },
     },
   };
 };

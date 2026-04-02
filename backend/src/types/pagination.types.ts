@@ -7,6 +7,8 @@ export interface PaginatedMeta {
 
 export interface PaginatedResponse<T> {
   status: 'success';
-  data: T[];
-  meta: PaginatedMeta;
+  data: {
+    data: T[];
+    meta: PaginatedMeta;
+  };
 }
