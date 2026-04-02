@@ -1,4 +1,6 @@
 import { matchesRepository } from '../../repositories/matches.repository.js';
+import { competitionRepository } from '../../repositories/competitions.repository.js';
+import { teamsRepository } from '../../repositories/teams.repository.js';
 
 export const getAllMatches = async (
   limit: number,
@@ -49,4 +51,38 @@ export const getAllMatches = async (
     matches: matchesInfo,
     totalCount,
   };
+};
+
+export const getAdminCompetitionsLookup = async (locale: string) => {
+  const data = await competitionRepository.getAdminLookup(locale);
+  const defaultLocale = 'sk';
+
+  return data.map((comp) => {
+    const localeEntry = comp.locales.find((l) => l.locale === locale) || 
+                       comp.locales.find((l) => l.locale === defaultLocale) || 
+                       comp.locales[0];
+    
+    return {
+      id: comp.id,
+      name: localeEntry?.name || 'Unknown',
+      status: comp.status,
+      isActive: comp.status === 'active',
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name, locale));
+};
+
+export const getAdminTeamsLookup = async (locale: string, competitionId?: string) => {
+  const data = await teamsRepository.getAdminLookup(locale, competitionId);
+  const defaultLocale = 'sk';
+
+  return data.map((team) => {
+    const localeEntry = (team as any).locales.find((l: any) => l.locale === locale) || 
+                       (team as any).locales.find((l: any) => l.locale === defaultLocale) || 
+                       (team as any).locales[0];
+    
+    return {
+      id: team.id,
+      name: localeEntry?.name || 'Unknown Team',
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name, locale));
 };

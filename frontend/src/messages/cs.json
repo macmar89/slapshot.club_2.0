@@ -909,6 +909,42 @@
     "nav": {
       "dashboard": "Dashboard",
       "matches": "Zápasy"
+    },
+    "Matches": {
+      "title": "Zápasy - Administrace",
+      "no_matches_found": "Žádné zápasy se nenašly",
+      "filter": {
+        "title": "Filtr",
+        "status": "Stav zápasu",
+        "competition": "Soutěž",
+        "team": "Tým",
+        "date_from": "Datum od",
+        "date_to": "Datum do",
+        "is_checked": "Pouze nezkontrolované",
+        "is_ranked": "Pouze vyhodnocené",
+        "search_placeholder": "Hledat...",
+        "select_competition": "Vyber soutěž",
+        "select_team": "Vyber tým",
+        "all_statuses": "Všechny stavy",
+        "inactive": "neaktivní",
+        "statuses": {
+          "scheduled": "Naplánované",
+          "live": "Live",
+          "finished": "Ukončené",
+          "cancelled": "Zrušené"
+        }
+      },
+      "table": {
+        "competition": "Soutěž",
+        "date": "Datum a čas",
+        "teams": "Zápas",
+        "status": "Stav",
+        "result": "Výsledek",
+        "checked": "Kontrola",
+        "ranked": "Rank",
+        "actions": "Akce",
+        "no_result": "-"
+      }
     }
   },
   "MissingTips": {

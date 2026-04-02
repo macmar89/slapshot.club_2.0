@@ -41,4 +41,20 @@ export const competitionRepository = {
 
     return result?.name ?? null;
   },
+
+  async getAdminLookup(locale: string = 'sk') {
+    return await db.query.competitions.findMany({
+      columns: {
+        id: true,
+        status: true,
+      },
+      with: {
+        locales: {
+          columns: { name: true, locale: true },
+          where: (table, { eq }) => eq(table.locale, locale as any),
+        },
+      },
+      orderBy: (table, { desc }) => [desc(table.startDate)],
+    });
+  },
 };

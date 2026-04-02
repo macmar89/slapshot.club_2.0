@@ -7,11 +7,11 @@ export const matchesRepository = {
     const { and, eq, gte, lte, isNotNull, isNull, asc, desc } = await import('drizzle-orm');
     const whereConditions = [];
 
-    if (filters?.from) {
-      whereConditions.push(gte(matches.date, filters.from));
+    if (filters?.dateFrom) {
+      whereConditions.push(gte(matches.date, filters.dateFrom));
     }
-    if (filters?.to) {
-      whereConditions.push(lte(matches.date, filters.to));
+    if (filters?.dateTo) {
+      whereConditions.push(lte(matches.date, filters.dateTo));
     }
     if (filters?.status) {
       whereConditions.push(eq(matches.status, filters.status));

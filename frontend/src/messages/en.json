@@ -911,6 +911,42 @@
     "nav": {
       "dashboard": "Dashboard",
       "matches": "Matches"
+    },
+    "Matches": {
+      "title": "Matches - Administration",
+      "no_matches_found": "No matches found",
+      "filter": {
+        "title": "Filter",
+        "status": "Match Status",
+        "competition": "Competition",
+        "team": "Team",
+        "date_from": "Date From",
+        "date_to": "Date To",
+        "is_checked": "Unchecked Only",
+        "is_ranked": "Ranked Only",
+        "search_placeholder": "Search...",
+        "select_competition": "Select competition",
+        "select_team": "Select team",
+        "all_statuses": "All statuses",
+        "inactive": "inactive",
+        "statuses": {
+          "scheduled": "Scheduled",
+          "live": "Live",
+          "finished": "Finished",
+          "cancelled": "Cancelled"
+        }
+      },
+      "table": {
+        "competition": "Competition",
+        "date": "Date & Time",
+        "teams": "Match",
+        "status": "Status",
+        "result": "Result",
+        "checked": "Check",
+        "ranked": "Rank",
+        "actions": "Actions",
+        "no_result": "-"
+      }
     }
   },
   "MissingTips": {

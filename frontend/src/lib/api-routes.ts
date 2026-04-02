@@ -2,6 +2,8 @@ export const API_ROUTES = {
   ADMIN: {
     MATCHES: {
       LIST: '/admin/matches',
+      COMPETITIONS_LOOKUP: '/admin/matches/competitions/lookup',
+      TEAMS_LOOKUP: '/admin/matches/teams/lookup',
     },
   },
   AUTH: {

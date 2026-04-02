@@ -912,6 +912,42 @@
     "nav": {
       "dashboard": "Dashboard",
       "matches": "Zápasy"
+    },
+    "Matches": {
+      "title": "Zápasy - Administrácia",
+      "no_matches_found": "Žiadne zápasy sa nenašli",
+      "filter": {
+        "title": "Filter",
+        "status": "Stav zápasu",
+        "competition": "Súťaž",
+        "team": "Tím",
+        "date_from": "Dátum od",
+        "date_to": "Dátum do",
+        "is_checked": "Iba neskontrolované",
+        "is_ranked": "Iba vyhodnotené",
+        "search_placeholder": "Hľadať...",
+        "select_competition": "Vyber súťaž",
+        "select_team": "Vyber tím",
+        "all_statuses": "Všetky stavy",
+        "inactive": "neaktívna",
+        "statuses": {
+          "scheduled": "Naplánované",
+          "live": "Live",
+          "finished": "Ukončené",
+          "cancelled": "Zrušené"
+        }
+      },
+      "table": {
+        "competition": "Súťaž",
+        "date": "Dátum a čas",
+        "teams": "Zápas",
+        "status": "Stav",
+        "result": "Výsledok",
+        "checked": "Kontrola",
+        "ranked": "Rank",
+        "actions": "Akcie",
+        "no_result": "-"
+      }
     }
   },
   "MissingTips": {

@@ -17,6 +17,8 @@ export const getAllMatchesFilterSchema = z
       if (val === undefined) return undefined;
       return val === 'true' || val === true;
     }, z.boolean().optional()).optional(),
+    dateFrom: z.string().datetime().optional(),
+    dateTo: z.string().datetime().optional(),
   })
   .optional();
 
