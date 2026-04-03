@@ -910,7 +910,10 @@
   "Admin": {
     "nav": {
       "dashboard": "Dashboard",
-      "matches": "Matches"
+      "competitions": "Competitions",
+      "matches": "Matches",
+      "users": "Users",
+      "logs": "Audit Logs"
     },
     "Matches": {
       "title": "Matches - Administration",

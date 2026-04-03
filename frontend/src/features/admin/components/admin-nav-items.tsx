@@ -9,17 +9,25 @@ export const AdminNavItems = () => {
   const t = useTranslations('Admin.nav');
   const pathname = usePathname();
 
+  const bestMatch = dashboardConfig.adminNav
+    .filter((item) => {
+      const isExact = pathname === item.href;
+      const isSubPath = item.href !== '/' && pathname.startsWith(`${item.href}/`);
+      return isExact || isSubPath;
+    })
+    .reduce((prev, curr) => (curr.href.length > (prev?.href.length || 0) ? curr : prev), null as typeof dashboardConfig.adminNav[number] | null);
+
   return dashboardConfig.adminNav.map((item) => {
-    const href = item.href;
-    const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+    const isActive = bestMatch?.href === item.href;
 
     return (
       <SidebarItem
         key={item.href}
-        href={href}
+        href={item.href}
         icon={item.icon}
         label={t(item.labelKey)}
         isActive={isActive}
+        disabled={item.disabled}
       />
     );
   });

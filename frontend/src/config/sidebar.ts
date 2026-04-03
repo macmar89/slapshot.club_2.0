@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Trophy, Bell, FileText, User } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Trophy, Bell, FileText, User, History } from 'lucide-react';
 
 export interface DashboardItem {
   labelKey: string;
@@ -6,6 +6,7 @@ export interface DashboardItem {
   icon: React.ComponentType<{ className?: string }>;
   showBadge?: boolean;
   badgeType?: 'notifications' | 'missing_tips';
+  disabled?: boolean;
 }
 
 export const dashboardConfig = {
@@ -94,9 +95,27 @@ export const dashboardConfig = {
       icon: LayoutDashboard,
     },
     {
+      labelKey: 'competitions',
+      href: '/admin/competitions',
+      icon: Trophy,
+      disabled: true,
+    },
+    {
       labelKey: 'matches',
       href: '/admin/matches',
       icon: Calendar,
+    },
+    {
+      labelKey: 'users',
+      href: '/admin/users',
+      icon: Users,
+      disabled: true,
+    },
+    {
+      labelKey: 'logs',
+      href: '/admin/logs',
+      icon: History,
+      disabled: true,
     },
   ] as DashboardItem[],
 

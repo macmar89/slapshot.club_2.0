@@ -911,7 +911,10 @@
   "Admin": {
     "nav": {
       "dashboard": "Dashboard",
-      "matches": "Zápasy"
+      "competitions": "Súťaže",
+      "matches": "Zápasy",
+      "users": "Používatelia",
+      "logs": "Audit Logy"
     },
     "Matches": {
       "title": "Zápasy - Administrácia",
