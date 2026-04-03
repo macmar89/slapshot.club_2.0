@@ -1,4 +1,11 @@
 {
+  "UI": {
+    "Select": {
+      "no_options": "No options",
+      "clear_selection": "Clear selection",
+      "placeholder": "Select..."
+    }
+  },
   "Common": {
     "success_title": "Success!",
     "error_generic": "An unexpected error occurred",
@@ -919,6 +926,12 @@
     "Matches": {
       "title": "Matches - Administration",
       "no_matches_found": "No matches found",
+      "statuses": {
+        "scheduled": "Scheduled",
+        "live": "Live",
+        "finished": "Finished",
+        "cancelled": "Cancelled"
+      },
       "filter": {
         "title": "Filter",
         "status": "Match Status",
@@ -932,13 +945,7 @@
         "select_competition": "Select competition",
         "select_team": "Select team",
         "all_statuses": "All statuses",
-        "inactive": "inactive",
-        "statuses": {
-          "scheduled": "Scheduled",
-          "live": "Live",
-          "finished": "Finished",
-          "cancelled": "Cancelled"
-        }
+        "inactive": "inactive"
       },
       "table": {
         "competition": "Competition",
@@ -949,7 +956,8 @@
         "checked": "Check",
         "ranked": "Rank",
         "actions": "Actions",
-        "no_result": "-"
+        "no_result": "-",
+        "refresh": "Refresh"
       },
       "detail": {
         "title": "Match Detail",
@@ -960,7 +968,30 @@
         "home_team": "Home",
         "away_team": "Away",
         "save_changes": "Save Changes",
-        "reset_changes": "Reset Changes"
+        "reset_changes": "Reset Changes",
+        "checked_by": "Checked By",
+        "checked_at": "Checked At",
+        "ranked_at": "Ranked At",
+        "api_hockey_id": "API Hockey ID",
+        "api_hockey_status": "API Status",
+        "prediction_count": "Prediction Count",
+        "stage_type": "Stage",
+        "ending_type": "Ending",
+        "audit_log": "Audit Log",
+        "stats_and_api": "Stats & API",
+        "already_ranked": "Already Ranked",
+        "match_not_found": "Match not found",
+        "recalculate_points": "Recalculate points",
+        "undo_scoring": "Undo scoring",
+        "api_section": "API & Stage",
+        "stages": {
+          "regular_season": "Regular Season",
+          "group_phase": "Group Phase",
+          "playoffs": "Playoffs",
+          "pre_season": "Pre-season",
+          "relegation": "Relegation",
+          "promotion": "Promotion"
+        }
       }
     }
   },

@@ -13,9 +13,16 @@ interface ScoreInputProps {
   onChange: (v: number) => void;
   team: TeamInfo;
   disabled?: boolean;
+  isDirty?: boolean;
 }
 
-export const ScoreInput = ({ value, onChange, team, disabled = false }: ScoreInputProps) => (
+export const ScoreInput = ({
+  value,
+  onChange,
+  team,
+  disabled = false,
+  isDirty = false,
+}: ScoreInputProps) => (
   <div className="flex flex-1 flex-col items-center gap-4">
     <div className="flex h-10 w-20 items-center justify-center md:h-12 md:w-24">
       {team.logoUrl ? (
@@ -48,7 +55,11 @@ export const ScoreInput = ({ value, onChange, team, disabled = false }: ScoreInp
       >
         <Minus className="h-4 w-4" />
       </Button>
-      <div className="rounded-app flex h-14 w-12 items-center justify-center border border-white/20 bg-white/10 text-2xl font-black tracking-tighter select-none md:h-16 md:w-14 md:text-3xl">
+      <div
+        className={`rounded-app flex h-14 w-12 items-center justify-center border bg-white/10 text-2xl font-black tracking-tighter select-none transition-all duration-300 md:h-16 md:w-14 md:text-3xl ${
+          isDirty ? 'border-primary shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'border-white/20'
+        }`}
+      >
         {value}
       </div>
       <Button

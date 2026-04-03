@@ -96,4 +96,68 @@ export const matchesRepository = {
   async updateMatch(id: string, data: Partial<typeof matches.$inferInsert>) {
     return await db.update(matches).set(data).where(eq(matches.id, id));
   },
+
+  async getAdminMatchDetail(id: string) {
+    const match = await db.query.matches.findFirst({
+      where: eq(matches.id, id),
+      columns: {
+        id: true,
+        date: true,
+        status: true,
+        resultHomeScore: true,
+        resultAwayScore: true,
+        resultEndingType: true,
+        stageType: true,
+        isChecked: true,
+        checkedAt: true,
+        checkedBy: true,
+        rankedAt: true,
+        apiHockeyId: true,
+        apiHockeyStatus: true,
+      },
+      with: {
+        competition: {
+          columns: { id: true },
+          with: { locales: true },
+        },
+        homeTeam: {
+          columns: { id: true },
+          with: {
+            locales: true,
+            logo: {
+              columns: { url: true },
+            },
+          },
+        },
+        awayTeam: {
+          columns: { id: true },
+          with: {
+            locales: true,
+            logo: {
+              columns: { url: true },
+            },
+          },
+        },
+        checkedBy: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+
+    if (!match) return null;
+
+    const [predictionCount] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(sql`predictions`) // Use sql string since predictions might not be imported or I can import it
+      .where(sql`match_id = ${id}`);
+
+    return {
+      ...match,
+      predictionCount: Number(predictionCount?.count ?? 0),
+    };
+  },
 };

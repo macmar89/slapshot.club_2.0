@@ -3,11 +3,22 @@ export interface AdminMatchDto {
   competitionName: string;
   date: string;
   homeTeam: string;
+  homeLogoUrl?: string | null;
   awayTeam: string;
+  awayLogoUrl?: string | null;
   status: 'scheduled' | 'live' | 'finished' | 'cancelled';
-  result: { homeScore: number | null; awayScore: number | null } | null;
+  resultHomeScore: number | null;
+  resultAwayScore: number | null;
+  resultEndingType: 'regular' | 'ot' | 'so';
+  stageType: string;
   isChecked: boolean;
+  checkedAt?: string | null;
+  checkedBy?: string | null;
   isRanked: boolean;
+  rankedAt?: string | null;
+  apiHockeyId?: string | null;
+  apiHockeyStatus?: string | null;
+  totalPredictionsCount: number;
 }
 
 export interface AdminMatchesResponse {

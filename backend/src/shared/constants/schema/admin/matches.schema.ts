@@ -9,14 +9,18 @@ export const getAllMatchesFilterSchema = z
     status: MatchStatusEnum.optional(),
     competitionId: z.string().length(24).optional(),
     teamId: z.string().length(24).optional(),
-    isChecked: z.preprocess((val) => {
-      if (val === undefined) return undefined;
-      return val === 'true' || val === true;
-    }, z.boolean().optional()).optional(),
-    isRanked: z.preprocess((val) => {
-      if (val === undefined) return undefined;
-      return val === 'true' || val === true;
-    }, z.boolean().optional()).optional(),
+    isChecked: z
+      .preprocess((val) => {
+        if (val === undefined) return undefined;
+        return val === 'true' || val === true;
+      }, z.boolean().optional())
+      .optional(),
+    isRanked: z
+      .preprocess((val) => {
+        if (val === undefined) return undefined;
+        return val === 'true' || val === true;
+      }, z.boolean().optional())
+      .optional(),
     dateFrom: z.string().datetime().optional(),
     dateTo: z.string().datetime().optional(),
   })
@@ -35,5 +39,11 @@ export const getAllMatchesSchema = z.object({
         order: z.enum(['asc', 'desc']).default('asc'),
       })
       .default({ by: 'date', order: 'asc' }),
+  }),
+});
+
+export const getMatchDetailSchema = z.object({
+  params: z.object({
+    id: z.string().length(24),
   }),
 });

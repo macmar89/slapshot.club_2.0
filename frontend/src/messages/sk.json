@@ -1,4 +1,11 @@
 {
+  "UI": {
+    "Select": {
+      "no_options": "Žiadne možnosti",
+      "clear_selection": "Zrušiť výber",
+      "placeholder": "Vybrať..."
+    }
+  },
   "Common": {
     "success_title": "Úspech!",
     "error_generic": "Nastala neočakávaná chyba",
@@ -920,6 +927,12 @@
     "Matches": {
       "title": "Zápasy - Administrácia",
       "no_matches_found": "Žiadne zápasy sa nenašli",
+      "statuses": {
+        "scheduled": "Naplánované",
+        "live": "Live",
+        "finished": "Ukončené",
+        "cancelled": "Zrušené"
+      },
       "filter": {
         "title": "Filter",
         "status": "Stav zápasu",
@@ -933,13 +946,7 @@
         "select_competition": "Vyber súťaž",
         "select_team": "Vyber tím",
         "all_statuses": "Všetky stavy",
-        "inactive": "neaktívna",
-        "statuses": {
-          "scheduled": "Naplánované",
-          "live": "Live",
-          "finished": "Ukončené",
-          "cancelled": "Zrušené"
-        }
+        "inactive": "neaktívna"
       },
       "table": {
         "competition": "Súťaž",
@@ -950,7 +957,8 @@
         "checked": "Kontrola",
         "ranked": "Rank",
         "actions": "Akcie",
-        "no_result": "-"
+        "no_result": "-",
+        "refresh": "Aktualizovať"
       },
       "detail": {
         "title": "Detail zápasu",
@@ -961,7 +969,30 @@
         "home_team": "Domáci",
         "away_team": "Hostia",
         "save_changes": "Uložiť zmeny",
-        "reset_changes": "Zrušiť zmeny"
+        "reset_changes": "Zrušiť zmeny",
+        "checked_by": "Skontroloval",
+        "checked_at": "Dátum kontroly",
+        "ranked_at": "Dátum vyhodnotenia",
+        "api_hockey_id": "API Hockey ID",
+        "api_hockey_status": "API Status",
+        "prediction_count": "Počet tipov",
+        "stage_type": "Fáza",
+        "ending_type": "Ukončenie",
+        "audit_log": "Audit Log",
+        "stats_and_api": "Štatistiky & API",
+        "already_ranked": "Vyhodnotené",
+        "match_not_found": "Zápas nebol nájdený",
+        "recalculate_points": "Prerátať body",
+        "undo_scoring": "Vrátiť bodovanie",
+        "api_section": "API & Fáza",
+        "stages": {
+          "regular_season": "Základná časť",
+          "group_phase": "Skupinová fáza",
+          "playoffs": "Play-off",
+          "pre_season": "Predsezóna",
+          "relegation": "Baráž o udržanie",
+          "promotion": "Baráž o postupValue"
+        }
       }
     }
   },
