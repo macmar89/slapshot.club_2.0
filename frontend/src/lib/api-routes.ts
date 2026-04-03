@@ -2,6 +2,7 @@ export const API_ROUTES = {
   ADMIN: {
     MATCHES: {
       LIST: '/admin/matches',
+      DETAIL: (id: string) => `/admin/matches/${id}`,
       COMPETITIONS_LOOKUP: '/admin/matches/competitions/lookup',
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
     },

@@ -912,6 +912,7 @@
       "dashboard": "Dashboard",
       "competitions": "Competitions",
       "matches": "Matches",
+      "teams": "Teams",
       "users": "Users",
       "logs": "Audit Logs"
     },
@@ -949,6 +950,17 @@
         "ranked": "Rank",
         "actions": "Actions",
         "no_result": "-"
+      },
+      "detail": {
+        "title": "Match Detail",
+        "match_info": "Match Information",
+        "score_section": "Score",
+        "status_section": "Status",
+        "verification_section": "Verification",
+        "home_team": "Home",
+        "away_team": "Away",
+        "save_changes": "Save Changes",
+        "reset_changes": "Reset Changes"
       }
     }
   },

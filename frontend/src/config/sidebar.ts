@@ -106,6 +106,12 @@ export const dashboardConfig = {
       icon: Calendar,
     },
     {
+      labelKey: 'teams',
+      href: '/admin/teams',
+      icon: Users,
+      disabled: true,
+    },
+    {
       labelKey: 'users',
       href: '/admin/users',
       icon: Users,

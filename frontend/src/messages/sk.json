@@ -913,6 +913,7 @@
       "dashboard": "Dashboard",
       "competitions": "Súťaže",
       "matches": "Zápasy",
+      "teams": "Tímy",
       "users": "Používatelia",
       "logs": "Audit Logy"
     },
@@ -950,6 +951,17 @@
         "ranked": "Rank",
         "actions": "Akcie",
         "no_result": "-"
+      },
+      "detail": {
+        "title": "Detail zápasu",
+        "match_info": "Informácie o zápase",
+        "score_section": "Skóre",
+        "status_section": "Stav",
+        "verification_section": "Overenie",
+        "home_team": "Domáci",
+        "away_team": "Hostia",
+        "save_changes": "Uložiť zmeny",
+        "reset_changes": "Zrušiť zmeny"
       }
     }
   },
