@@ -25,9 +25,6 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'radix-ui', '@marsidev/react-turnstile'],
-    turbopack: {
-      root: './',
-    },
   },
 };
 
