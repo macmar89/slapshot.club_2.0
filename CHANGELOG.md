@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.0...v0.1.1) (2026-04-07)
+
+
+### Chores
+
+* initialize standard-version for automated release management and versioning ([025edbb](https://github.com/macmar89/slapshot.club_2.0/commit/025edbbbff42cdbe8d7dd6469724528524904942))
+
 ## 0.1.0 (2026-04-07)
 
 
