@@ -23,6 +23,8 @@ import {
   generalSettingsLocales,
   notifications,
   playoffSeries,
+  announcements,
+  announcementsLocales,
 } from './index.js';
 
 export const usersRelations = relations(users, ({ many, one }) => ({
@@ -274,5 +276,16 @@ export const playoffSeriesRelations = relations(playoffSeries, ({ one }) => ({
     fields: [playoffSeries.team2Id],
     references: [teams.id],
     relationName: 'team2',
+  }),
+}));
+
+export const announcementsRelations = relations(announcements, ({ many }) => ({
+  locales: many(announcementsLocales),
+}));
+
+export const announcementsLocalesRelations = relations(announcementsLocales, ({ one }) => ({
+  parentAnnouncement: one(announcements, {
+    fields: [announcementsLocales.parentId],
+    references: [announcements.id],
   }),
 }));

@@ -23,6 +23,8 @@ export const notificationTypeEnum = pgEnum('notification_type', [
   'SYSTEM_ALERT',
   'NEW_FEATURE',
   'UPDATE_SUMMARY',
+
+  'NEW_ANNOUNCEMENT',
 ]);
 
 export const notifications = pgTable('notifications', {
@@ -43,6 +45,8 @@ export const notifications = pgTable('notifications', {
     groupId?: string;
     points?: number;
     score?: string;
+    announcementSlug?: string;
+    announcementType?: string;
   }>(),
 
   isRead: boolean('is_read').default(false).notNull(),

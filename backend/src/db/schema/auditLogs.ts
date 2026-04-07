@@ -37,6 +37,13 @@ export const auditActionEnum = pgEnum('audit_action', [
   'MATCH_EVALUATE',
   'MATCH_REVERT_EVALUATION',
   'MATCH_RECALCULATE',
+  'MATCH_VERIFY',
+
+  'ANNOUNCEMENT_CREATE',
+  'ANNOUNCEMENT_UPDATE',
+  'ANNOUNCEMENT_PUBLISH',
+  'ANNOUNCEMENT_UNPUBLISH',
+  'ANNOUNCEMENT_DELETE',
 ]);
 
 export const entityTypeEnum = pgEnum('entity_type', [
