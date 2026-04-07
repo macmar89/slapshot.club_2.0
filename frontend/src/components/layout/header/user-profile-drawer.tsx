@@ -1,16 +1,7 @@
 'use client';
 
-import React from 'react';
 import { cn } from '@/lib/utils';
-import {
-  User as UserIcon,
-  ChevronDown,
-  Calendar,
-  AlertTriangle,
-  ChevronRight,
-  Settings,
-  MessageSquarePlus,
-} from 'lucide-react';
+import { User as UserIcon, ChevronDown, ChevronRight, MessageSquarePlus } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
@@ -23,33 +14,19 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
-import { format } from 'date-fns';
-import { sk, enUS, cs } from 'date-fns/locale';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useTranslations } from 'next-intl';
 import { ReferralLink } from '@/components/common/referral-link';
+import packageJson from '../../../../package.json';
 
 interface UserProfileDrawerProps {
   user: any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  // upcomingMatches?: any[];
-  slug: string;
-  locale: string;
-  effectiveLeagueId: string | null;
 }
 
-export function UserProfileDrawer({
-  user,
-  isOpen,
-  onOpenChange,
-  // upcomingMatches,
-  slug,
-  locale,
-  effectiveLeagueId,
-}: UserProfileDrawerProps) {
+export function UserProfileDrawer({ user, isOpen, onOpenChange }: UserProfileDrawerProps) {
   const t = useTranslations('Header');
-  const dt = useTranslations('Dashboard.nav');
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -184,7 +161,7 @@ export function UserProfileDrawer({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-black tracking-widest text-white uppercase">
-                  v1.0.0
+                  v{packageJson.version}
                 </span>
                 <span className="bg-primary rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
                   BETA

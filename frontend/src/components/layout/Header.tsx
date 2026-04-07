@@ -74,14 +74,7 @@ export function Header({ title }: HeaderProps) {
           {/* Desktop View */}
           <div className="ml-auto hidden items-center gap-4 md:flex">
             <NotificationBell />
-            <UserProfileDrawer
-              user={user}
-              isOpen={isProfileOpen}
-              onOpenChange={setIsProfileOpen}
-              slug={slug}
-              locale={locale}
-              effectiveLeagueId={effectiveLeagueId}
-            />
+            <UserProfileDrawer user={user} isOpen={isProfileOpen} onOpenChange={setIsProfileOpen} />
           </div>
 
           {/* Mobile View */}
