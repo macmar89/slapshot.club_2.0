@@ -57,8 +57,8 @@ export const AdminMatchCard = ({ match }: AdminMatchCardProps) => {
 
         <div className="flex flex-col items-center gap-1">
           <div className="text-xl font-black text-primary tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
-            {match.result 
-              ? `${match.result.homeScore ?? t('no_result')} : ${match.result.awayScore ?? t('no_result')}` 
+            {match.resultHomeScore !== null && match.resultAwayScore !== null 
+              ? `${match.resultHomeScore} : ${match.resultAwayScore}` 
               : `${t('no_result')} : ${t('no_result')}`
             }
           </div>

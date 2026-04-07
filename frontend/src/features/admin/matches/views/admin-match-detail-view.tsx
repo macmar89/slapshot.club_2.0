@@ -10,6 +10,8 @@ import { Link } from '@/i18n/routing';
 import { MatchDetailEditor, MatchSaveData } from '../components/match-detail-editor';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
+import { api } from '@/lib/api';
+import { toast } from 'sonner';
 import type { AdminMatchDto } from '@/features/admin/matches/admin-matches.types';
 
 export const AdminMatchDetailView = () => {
@@ -24,12 +26,18 @@ export const AdminMatchDetailView = () => {
     mutate,
   } = useSWR<AdminMatchDto>(id ? API_ROUTES.ADMIN.MATCHES.DETAIL(id) : null);
 
-  const handleSave = (data: MatchSaveData) => {
-    // Backend implementation will be requested by user later
-    console.log('Saving match details:', {
-      id,
-      ...data,
-    });
+  const handleSave = async (data: MatchSaveData) => {
+    try {
+      const response = await api.patch(API_ROUTES.ADMIN.MATCHES.DETAIL(id as string), data);
+      if (response.status === 200) {
+        toast.success(tTable('update_success') || 'Match updated successfully');
+        mutate();
+      }
+    } catch (error: unknown) {
+      console.error('Error saving match:', error);
+      const message = error instanceof Error ? error.message : tTable('update_error');
+      toast.error(message || 'Failed to update match');
+    }
   };
 
   return (

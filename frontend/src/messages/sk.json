@@ -958,7 +958,9 @@
         "ranked": "Rank",
         "actions": "Akcie",
         "no_result": "-",
-        "refresh": "Aktualizovať"
+        "refresh": "Aktualizovať",
+        "update_success": "Zápas bol úspešne aktualizovaný",
+        "update_error": "Nepodarilo sa aktualizovať zápas"
       },
       "detail": {
         "title": "Detail zápasu",
@@ -981,6 +983,13 @@
         "audit_log": "Audit Log",
         "stats_and_api": "Štatistiky & API",
         "already_ranked": "Vyhodnotené",
+        "not_ranked_yet": "Ešte nevyhodnotené",
+        "verify_match": "Overiť",
+        "verifying": "Overujem...",
+        "unverify_match": "Zrušiť overenie",
+        "verified_by": "Skontroloval",
+        "verification_pending": "Čaká na overenie",
+        "verification_description": "Skontrolujte správnosť stiahnutých údajov (tímy, čas, API ID).",
         "match_not_found": "Zápas nebol nájdený",
         "recalculate_points": "Prerátať body",
         "undo_scoring": "Vrátiť bodovanie",

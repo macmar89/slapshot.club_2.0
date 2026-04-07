@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { AdminMatchDto } from '../admin-matches.types';
 import { ScoreEditor } from './score-editor';
 import { MatchStats } from './match-stats';
-import { AuditInformation } from './audit-information';
 import { MatchStatusSidebar } from './match-status-sidebar';
+import { MatchVerificationCard } from './match-verification-card';
 
 export interface MatchSaveData {
   homeScore?: string;
@@ -27,9 +27,7 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const [homeScore, setHomeScore] = useState<string>(match.resultHomeScore?.toString() || '0');
   const [awayScore, setAwayScore] = useState<string>(match.resultAwayScore?.toString() || '0');
   const [status, setStatus] = useState<string>(match.status);
-  const [isChecked, setIsChecked] = useState<boolean>(match.isChecked);
-  const [isRanked, setIsRanked] = useState<boolean>(match.isRanked);
-  
+
   // New API & Stage fields
   const [apiHockeyId, setApiHockeyId] = useState<string>(match.apiHockeyId || '');
   const [apiHockeyStatus, setApiHockeyStatus] = useState<string>(match.apiHockeyStatus || 'NS');
@@ -41,13 +39,11 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const isScoreDirty = isHomeDirty || isAwayDirty;
 
   const isStatusDirty = status !== match.status;
-  const isCheckedDirty = isChecked !== match.isChecked;
-  const isRankedDirty = isRanked !== match.isRanked;
   const isApiIdDirty = apiHockeyId !== (match.apiHockeyId || '');
   const isApiStatusDirty = apiHockeyStatus !== (match.apiHockeyStatus || 'NS');
   const isStageDirty = stageType !== match.stageType;
 
-  const isSidebarDirty = isStatusDirty || isCheckedDirty || isRankedDirty || isApiIdDirty || isApiStatusDirty || isStageDirty;
+  const isSidebarDirty = isStatusDirty || isApiIdDirty || isApiStatusDirty || isStageDirty;
 
   const handleSaveScores = () => {
     if (!isScoreDirty) return;
@@ -58,8 +54,6 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
     if (!isSidebarDirty) return;
     onSave({
       status,
-      isChecked,
-      isRanked,
       apiHockeyId,
       apiHockeyStatus,
       stageType,
@@ -96,6 +90,15 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           isHomeDirty={isHomeDirty}
           isAwayDirty={isAwayDirty}
           isDirty={isScoreDirty}
+          isRanked={match.isRanked}
+          rankedAt={match.rankedAt}
+        />
+
+        <MatchVerificationCard
+          isChecked={!!match.isChecked}
+          checkedBy={match.checkedBy}
+          checkedAt={match.checkedAt}
+          onSave={onSave}
         />
 
         <MatchStats
@@ -105,13 +108,6 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           apiHockeyId={match.apiHockeyId}
           apiHockeyStatus={match.apiHockeyStatus}
         />
-
-        <AuditInformation
-          checkedBy={match.checkedBy}
-          checkedAt={match.checkedAt}
-          rankedAt={match.rankedAt}
-          isRanked={match.isRanked}
-        />
       </div>
 
       {/* Sidebar Area */}
@@ -120,12 +116,6 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           status={status}
           onStatusChange={setStatus}
           isStatusDirty={isStatusDirty}
-          isChecked={isChecked}
-          onCheckedChange={setIsChecked}
-          isCheckedDirty={isCheckedDirty}
-          isRanked={isRanked}
-          onRankedChange={setIsRanked}
-          isRankedDirty={isRankedDirty}
           apiHockeyId={apiHockeyId}
           onApiIdChange={setApiHockeyId}
           isApiIdDirty={isApiIdDirty}

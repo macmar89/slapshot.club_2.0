@@ -1,24 +1,14 @@
-'use client';
-
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { IceGlassSelect } from '@/components/ui/ice-glass-select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { Check, X, Save, Activity, Layers, Tag } from 'lucide-react';
+import { Activity, Layers, Tag, Save } from 'lucide-react';
 
 interface MatchStatusSidebarProps {
   status: string;
   onStatusChange: (val: string) => void;
   isStatusDirty?: boolean;
-
-  isChecked: boolean;
-  onCheckedChange: (val: boolean) => void;
-  isCheckedDirty?: boolean;
-
-  isRanked: boolean;
-  onRankedChange: (val: boolean) => void;
-  isRankedDirty?: boolean;
 
   apiHockeyId: string;
   onApiIdChange: (val: string) => void;
@@ -40,12 +30,6 @@ export const MatchStatusSidebar = ({
   status,
   onStatusChange,
   isStatusDirty = false,
-  isChecked,
-  onCheckedChange,
-  isCheckedDirty = false,
-  isRanked,
-  onRankedChange,
-  isRankedDirty = false,
   apiHockeyId,
   onApiIdChange,
   isApiIdDirty = false,
@@ -191,43 +175,8 @@ export const MatchStatusSidebar = ({
         </div>
       </div>
 
-      {/* Verification Section */}
-      <div className="flex flex-col gap-4 border-t border-white/5 pt-6">
-        <span className="block px-1 text-[10px] font-black tracking-widest text-white/40 uppercase">
-          {t('verification_section')}
-        </span>
-
-        <div className="flex flex-col gap-4">
-          <div
-            onClick={() => onCheckedChange(!isChecked)}
-            className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition-all duration-300 ${
-              isChecked
-                ? 'bg-primary/10 border-primary/30 text-primary shadow-primary/5 shadow-inner'
-                : 'border-white/10 bg-white/5 text-white/30 hover:border-white/20'
-            } ${isCheckedDirty ? 'border-primary ring-primary/20 shadow-[0_0_20px_rgba(234,179,8,0.4)] ring-1' : ''}`}
-          >
-            <span className="text-xs font-black tracking-widest uppercase">{t('checked_by')}</span>
-            {isChecked ? <Check className="h-5 w-5" /> : <X className="h-5 w-5" />}
-          </div>
-
-          <div
-            onClick={() => onRankedChange(!isRanked)}
-            className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition-all duration-300 ${
-              isRanked
-                ? 'bg-primary/10 border-primary/30 text-primary shadow-primary/5 shadow-inner'
-                : 'border-white/10 bg-white/5 text-white/30 hover:border-white/20'
-            } ${isRankedDirty ? 'border-primary ring-primary/20 shadow-[0_0_20px_rgba(234,179,8,0.4)] ring-1' : ''}`}
-          >
-            <span className="text-xs font-black tracking-widest uppercase">
-              {t('already_ranked')}
-            </span>
-            {isRanked ? <Check className="h-5 w-5" /> : <X className="h-5 w-5" />}
-          </div>
-        </div>
-      </div>
-
       {/* Save Button */}
-      <div className="mt-2">
+      <div className="mt-2 text-center">
         <Button
           size="lg"
           onClick={onSave}

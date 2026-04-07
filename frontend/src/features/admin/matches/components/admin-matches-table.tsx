@@ -62,8 +62,8 @@ export const AdminMatchesTable = ({ matches }: AdminMatchesTableProps) => {
                 </div>
               </td>
               <td className="px-6 py-4 text-center font-mono text-base font-bold text-primary group-hover:scale-110 transition-transform">
-                {match.result 
-                  ? `${match.result.homeScore ?? t('no_result')} : ${match.result.awayScore ?? t('no_result')}` 
+                {match.resultHomeScore !== null && match.resultAwayScore !== null 
+                  ? `${match.resultHomeScore} : ${match.resultAwayScore}` 
                   : `${t('no_result')} : ${t('no_result')}`
                 }
               </td>

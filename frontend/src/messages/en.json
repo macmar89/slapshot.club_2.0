@@ -957,7 +957,9 @@
         "ranked": "Rank",
         "actions": "Actions",
         "no_result": "-",
-        "refresh": "Refresh"
+        "refresh": "Refresh",
+        "update_success": "Match updated successfully",
+        "update_error": "Failed to update match"
       },
       "detail": {
         "title": "Match Detail",
@@ -980,6 +982,13 @@
         "audit_log": "Audit Log",
         "stats_and_api": "Stats & API",
         "already_ranked": "Already Ranked",
+        "not_ranked_yet": "Not yet ranked",
+        "verify_match": "Verify",
+        "verifying": "Verifying...",
+        "unverify_match": "Unverify",
+        "verified_by": "Checked by",
+        "verification_pending": "Pending verification",
+        "verification_description": "Check the correctness of synchronized data (teams, time, API ID).",
         "match_not_found": "Match not found",
         "recalculate_points": "Recalculate points",
         "undo_scoring": "Undo scoring",
