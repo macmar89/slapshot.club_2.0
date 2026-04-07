@@ -5,6 +5,7 @@ import {
   updateUsername,
   changePassword,
   requestEmailChange,
+  completeOnboarding,
 } from '../services/user.service.js';
 import { HttpStatusCode } from '../utils/httpStatusCodes.js';
 import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
@@ -47,6 +48,15 @@ export const requestEmailChangeHandler = catchAsync(async (req: Request, res: Re
   await requestEmailChange(req.user!.id, req.body.message);
 
   await logActivity(req, 'EMAIL_CHANGE_REQUEST', { type: 'user' }, { message: req.body.message });
+
+  res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    message: AuthMessages.UPDATE_SUCCESS,
+  });
+});
+
+export const completeOnboardingHandler = catchAsync(async (req: Request, res: Response) => {
+  await completeOnboarding(req.user!.id);
 
   res.status(HttpStatusCode.OK).json({
     status: 'success',

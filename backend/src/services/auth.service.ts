@@ -119,6 +119,7 @@ export const registerUser = async (data: RegisterInput) => {
         subscriptionActiveUntil: user.subscriptionActiveUntil,
         isVerified: !!user.verifiedAt,
         referralCode: user.referralCode,
+        hasSeenOnboarding: user.hasSeenOnboarding,
         verificationToken: user.verificationToken,
       };
 
@@ -154,6 +155,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
       subscriptionActiveUntil: true,
       verifiedAt: true,
       referralCode: true,
+      hasSeenOnboarding: true,
     },
   });
 
@@ -224,6 +226,7 @@ export const rotateRefreshToken = async (tokenString: string) => {
       subscriptionActiveUntil: true,
       verifiedAt: true,
       referralCode: true,
+      hasSeenOnboarding: true,
     },
   });
 
@@ -330,6 +333,7 @@ export const getUserProfile = async (userId: string) => {
       subscriptionActiveUntil: true,
       verifiedAt: true,
       referralCode: true,
+      hasSeenOnboarding: true,
     },
   });
 
@@ -374,6 +378,7 @@ export const verifyEmail = async (token: string) => {
       subscriptionPlan: true,
       subscriptionActiveUntil: true,
       referralCode: true,
+      hasSeenOnboarding: true,
     },
   });
 
@@ -491,6 +496,7 @@ export const resetPassword = async (data: ResetPasswordInput) => {
       subscriptionActiveUntil: true,
       verifiedAt: true,
       referralCode: true,
+      hasSeenOnboarding: true,
     },
   });
 

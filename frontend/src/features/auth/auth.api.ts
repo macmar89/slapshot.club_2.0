@@ -186,3 +186,19 @@ export const handlePostResetPassword = async (values: ResetPasswordInput) => {
     };
   }
 };
+
+export const handlePostCompleteOnboarding = async () => {
+  const { user, setUser } = useAuthStore.getState();
+
+  try {
+    await api.post(API_ROUTES.USER.COMPLETE_ONBOARDING);
+
+    if (user) {
+      setUser({ ...user, hasSeenOnboarding: true });
+    }
+
+    return { success: true };
+  } catch {
+    return { success: false };
+  }
+};

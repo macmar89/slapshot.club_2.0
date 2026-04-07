@@ -34,4 +34,6 @@ router.post(
   userController.requestEmailChangeHandler,
 );
 
+router.post('/complete-onboarding', userController.completeOnboardingHandler);
+
 export default router;

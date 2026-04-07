@@ -351,14 +351,19 @@
     }
   },
   "Onboarding": {
-    "title": "Vitaj v tíme!",
-    "step1_title": "Staň sa legendou",
-    "step1_description": "Tipuj výsledky zápasov, zbieraj body a stúpaj v globálnom rebríčku. Tvoj progres sledujeme naživo.",
-    "step2_title": "Pravidlá hry",
-    "step2_description": "5 bodov za presný výsledok, 3 body za rozdiel a víťaza, 2 body za správneho víťaza. Jednoduché, však?",
-    "step3_title": "Mini ligy",
-    "step3_description": "Vytvor si vlastnú súkromnú ligu, pozvi kamošov a ukáž im, kto je tu skutočný expert na hokej.",
-    "next": "Ďalej",
+    "title": "Vitaj v tíme! 🏒",
+    "pro_account_title": "PRO konto pre teba",
+    "pro_account_desc": "Máš u nás <r>PRO konto zadarmo</r> do 31.8.2026! Užívaj si všetky výhody naplno.",
+    "rules_title": "Stručné pravidlá",
+    "rules_exact": "5b za presný výsledok",
+    "rules_diff": "3b za rozdiel a víťaza",
+    "rules_winner": "2b za správneho víťaza",
+    "rules_link": "Pozrieť kompletné pravidlá",
+    "pwa_title": "Nainštaluj si appku",
+    "pwa_android": "Android (Chrome)",
+    "pwa_android_desc": "Menu (3 bodky) -> Pridať na plochu / Inštalovať",
+    "pwa_ios": "iOS (Safari)",
+    "pwa_ios_desc": "Zdieľať (štvorec so šípkou) -> Pridať na plochu",
     "finish": "Vstúpiť do arény"
   },
   "Arena": {

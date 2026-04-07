@@ -350,14 +350,19 @@
     }
   },
   "Onboarding": {
-    "title": "Welcome to the Team!",
-    "step1_title": "Become a Legend",
-    "step1_description": "Predict match scores, earn points, and climb the global leaderboard. We track your progress live.",
-    "step2_title": "Game Rules",
-    "step2_description": "5 points for exact score, 3 points for goal difference and winner, 2 points for correct winner. Simple, right?",
-    "step3_title": "Mini Leagues",
-    "step3_description": "Create your own private league, invite friends, and show them who the real hockey expert is.",
-    "next": "Next",
+    "title": "Welcome to the Team! 🏒",
+    "pro_account_title": "PRO Account for You",
+    "pro_account_desc": "You have a <r>FREE PRO account</r> until Aug 31, 2026! Enjoy all the benefits to the fullest.",
+    "rules_title": "Quick Rules",
+    "rules_exact": "5 pts for exact score",
+    "rules_diff": "3 pts for diff and winner",
+    "rules_winner": "2 pts for correct winner",
+    "rules_link": "View complete rules",
+    "pwa_title": "Install the App",
+    "pwa_android": "Android (Chrome)",
+    "pwa_android_desc": "Menu (3 dots) -> Add to Home Screen / Install",
+    "pwa_ios": "iOS (Safari)",
+    "pwa_ios_desc": "Share (square with arrow) -> Add to Home Screen",
     "finish": "Enter the Arena"
   },
   "Arena": {

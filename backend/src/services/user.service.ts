@@ -58,3 +58,7 @@ export const requestEmailChange = async (userId: string, message: string) => {
     status: 'new',
   });
 };
+
+export const completeOnboarding = async (userId: string) => {
+  await db.update(users).set({ hasSeenOnboarding: true }).where(eq(users.id, userId));
+};

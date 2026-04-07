@@ -10,5 +10,6 @@ export interface User {
   subscriptionActiveUntil: string;
   isVerified: boolean;
   referralCode: string;
+  hasSeenOnboarding: boolean;
   createdAt?: string;
 }

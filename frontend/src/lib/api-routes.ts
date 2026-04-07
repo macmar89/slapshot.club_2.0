@@ -27,6 +27,7 @@ export const API_ROUTES = {
     UPDATE_USERNAME: '/user/username',
     CHANGE_PASSWORD: '/user/change-password',
     EMAIL_CHANGE_REQUEST: '/user/email-change-request',
+    COMPLETE_ONBOARDING: '/user/complete-onboarding',
   },
   COMPETITIONS: {
     ALL: '/competition',
