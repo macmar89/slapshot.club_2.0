@@ -1,5 +1,6 @@
 {
   "name": "slapshot-club-root",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "docker:up": "docker-compose up -d",
@@ -10,6 +11,12 @@
     "db:setup": "npm run docker:up && npm run db:wait && npm run backend:setup",
     "be:dev": "npm --prefix backend run dev",
     "fe:dev": "npm --prefix frontend run dev",
-    "dev": "npm run be:dev & npm run fe:dev"
+    "dev": "npm run be:dev & npm run fe:dev",
+    "release": "standard-version",
+    "push": "git push --follow-tags origin main",
+    "push:prod": "git push --follow-tags origin production"
+  },
+  "devDependencies": {
+    "standard-version": "^9.5.0"
   }
 }
