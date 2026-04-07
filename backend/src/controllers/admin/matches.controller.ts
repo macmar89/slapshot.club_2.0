@@ -15,7 +15,7 @@ export const getAllMatchesHandler = catchAsync(
     const { sort, filters } = req.query;
     const { limit, offset } = req.pagination;
     const locale = req.cookies.NEXT_LOCALE || 'sk';
-    logger.info(filters);
+
     const { matches, totalCount } = await getAllMatches(limit, offset, locale, sort, filters);
 
     const response = buildPaginatedResponse(matches, totalCount, req.pagination);

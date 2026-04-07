@@ -4,8 +4,6 @@ export const MatchStatusEnum = z.enum(['scheduled', 'live', 'finished', 'cancell
 
 export const getAllMatchesFilterSchema = z
   .object({
-    from: z.string().optional(),
-    to: z.string().optional(),
     status: MatchStatusEnum.optional(),
     competitionId: z.string().length(24).optional(),
     teamId: z.string().length(24).optional(),
@@ -21,8 +19,8 @@ export const getAllMatchesFilterSchema = z
         return val === 'true' || val === true;
       }, z.boolean().optional())
       .optional(),
-    dateFrom: z.string().datetime().optional(),
-    dateTo: z.string().datetime().optional(),
+    dateFrom: z.string().optional(),
+    dateTo: z.string().optional(),
   })
   .optional();
 

@@ -24,6 +24,7 @@ interface AdminMatchesFilterProps {
 
 export const AdminMatchesFilter = ({ filters, updateFilter }: AdminMatchesFilterProps) => {
   const t = useTranslations('Admin.Matches.filter');
+  const tStatus = useTranslations('Admin.Matches.statuses');
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   
   const { competitions } = useAdminCompetitionsLookup();
@@ -31,10 +32,10 @@ export const AdminMatchesFilter = ({ filters, updateFilter }: AdminMatchesFilter
 
   const statuses = [
     { value: 'all', label: t('all_statuses') },
-    { value: 'scheduled', label: t('statuses.scheduled') },
-    { value: 'live', label: t('statuses.live') },
-    { value: 'finished', label: t('statuses.finished') },
-    { value: 'cancelled', label: t('statuses.cancelled') },
+    { value: 'scheduled', label: tStatus('scheduled') },
+    { value: 'live', label: tStatus('live') },
+    { value: 'finished', label: tStatus('finished') },
+    { value: 'cancelled', label: tStatus('cancelled') },
   ];
 
   const renderFilters = () => (

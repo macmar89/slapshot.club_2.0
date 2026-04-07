@@ -147,7 +147,6 @@ export const matchesRepository = {
       },
     });
 
-
     if (!match) return null;
 
     const [predictionCount] = await db
