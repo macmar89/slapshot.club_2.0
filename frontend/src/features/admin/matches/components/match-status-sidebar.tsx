@@ -176,13 +176,8 @@ export const MatchStatusSidebar = ({
       </div>
 
       {/* Save Button */}
-      <div className="mt-2 text-center">
-        <Button
-          size="lg"
-          onClick={onSave}
-          disabled={!isDirty}
-          className="bg-primary hover:bg-primary/80 group flex w-full items-center justify-center gap-3 font-black tracking-widest text-black uppercase shadow-[0_0_20px_rgba(234,179,8,0.2)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:grayscale"
-        >
+      <div className="mt-8 text-center">
+        <Button size="lg" onClick={onSave} disabled={!isDirty}>
           <Save className="h-5 w-5 transition-transform group-hover:rotate-12" />
           {t('save_changes')}
         </Button>
