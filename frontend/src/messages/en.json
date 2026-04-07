@@ -926,7 +926,39 @@
       "matches": "Matches",
       "teams": "Teams",
       "users": "Users",
+      "announcements": "Announcements",
       "logs": "Audit Logs"
+    },
+    "Announcements": {
+      "title": "Announcements - Administration",
+      "create_button": "Create",
+      "create_title": "New Announcement",
+      "form": {
+        "slug": "Announcement Slug",
+        "type": "Type",
+        "locales_title": "Localized Content",
+        "title": "Title",
+        "excerpt": "Short Summary / Excerpt",
+        "content": "Full Content",
+        "title_placeholder": "Announcement Title",
+        "excerpt_placeholder": "Short summary for notifications and lists",
+        "content_placeholder": "Main text of the announcement (supports Markdown)",
+        "save": "Save",
+        "publish": "Save and Publish",
+        "publish_edit": "Publish",
+        "delete": "Delete",
+        "preview": "Preview",
+        "write": "Write"
+      },
+      "errors": {
+        "slug_min": "Slug must be at least 3 characters long",
+        "slug_format": "Slug must be in kebab-case and lowercase (a-z, 0-9, -)",
+        "title_min": "Title must be at least 3 characters long",
+        "excerpt_max": "Excerpt must be at most 500 characters long",
+        "content_min": "Content must be at least 10 characters long"
+      },
+      "create_success": "Announcement was successfully created",
+      "create_error": "Failed to create announcement"
     },
     "Dashboard": {
       "title": "Admin Dashboard",

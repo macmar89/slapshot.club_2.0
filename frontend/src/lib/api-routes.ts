@@ -9,6 +9,9 @@ export const API_ROUTES = {
       COMPETITIONS_LOOKUP: '/admin/matches/competitions/lookup',
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
     },
+    ANNOUNCEMENTS: {
+      CREATE: '/admin/announcements',
+    },
   },
   AUTH: {
     LOGIN: '/auth/login',

@@ -927,7 +927,39 @@
       "matches": "Zápasy",
       "teams": "Tímy",
       "users": "Používatelia",
+      "announcements": "Oznámenia",
       "logs": "Audit Logy"
+    },
+    "Announcements": {
+      "title": "Oznámenia - Administrácia",
+      "create_button": "Vytvoriť",
+      "create_title": "Nové oznámenie",
+      "form": {
+        "slug": "Slug oznámenia",
+        "type": "Typ",
+        "locales_title": "Lokalizovaný obsah",
+        "title": "Nadpis",
+        "excerpt": "Krátky úvod / Excerpt",
+        "content": "Celý text",
+        "title_placeholder": "Nadpis oznámenia",
+        "excerpt_placeholder": "Krátky súhrn pre notifikácie a zoznamy",
+        "content_placeholder": "Hlavný text oznámenia (podporuje Markdown)",
+        "save": "Uložiť",
+        "publish": "Uložiť a publikovať",
+        "publish_edit": "Publikovať",
+        "delete": "Vymazať",
+        "preview": "Náhľad",
+        "write": "Písať"
+      },
+      "errors": {
+        "slug_min": "Slug musí mať aspoň 3 znaky",
+        "slug_format": "Slug musí byť malými písmenami a obsahovať iba a-z, 0-9 a pomlčku",
+        "title_min": "Nadpis musí mať aspoň 3 znaky",
+        "excerpt_max": "Úvod môže mať maximálne 500 znakov",
+        "content_min": "Obsah musí mať aspoň 10 znakov"
+      },
+      "create_success": "Oznámenie bolo úspešne vytvorené",
+      "create_error": "Nepodarilo sa vytvoriť oznámenie"
     },
     "Dashboard": {
       "title": "Admin Dashboard",
