@@ -1,5 +1,8 @@
 export const API_ROUTES = {
   ADMIN: {
+    DASHBOARD: {
+      STATS: '/admin/dashboard/stats',
+    },
     MATCHES: {
       LIST: '/admin/matches',
       DETAIL: (id: string) => `/admin/matches/${id}`,

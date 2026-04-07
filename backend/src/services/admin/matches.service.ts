@@ -114,13 +114,8 @@ export const getAllMatches = async (
       homeTeam: homeTeamName,
       awayTeam: awayTeamName,
       status: match.status,
-      result:
-        match.status !== 'scheduled'
-          ? {
-              homeScore: match.resultHomeScore ?? null,
-              awayScore: match.resultAwayScore ?? null,
-            }
-          : null,
+      resultHomeScore: match.status !== 'scheduled' ? match.resultHomeScore : null,
+      resultAwayScore: match.status !== 'scheduled' ? match.resultAwayScore : null,
       isChecked: match.isChecked,
       isRanked: match.rankedAt !== null,
     };
