@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## 1.0.0 (2026-04-07)
+## 0.1.0 (2026-04-07)
 
 
 ### Features
@@ -114,12 +114,6 @@ All notable changes to this project will be documented in this file. See [standa
 * Add API preconnect, optimize package imports, and reduce image quality for improved performance. ([d0d2a58](https://github.com/macmar89/slapshot.club_2.0/commit/d0d2a585274f0879b5133fde7bae30f0d80d167e))
 
 
-### Chores
-
-* Remove `seed-users.ts` script and its documentation from the README. ([118bd72](https://github.com/macmar89/slapshot.club_2.0/commit/118bd72c9d81dac431e8be280a69065d0cc5864c))
-* update missing tips reminder interval from 2 to 10 minutes ([907c2d9](https://github.com/macmar89/slapshot.club_2.0/commit/907c2d9ace302242d1981daa0814f6e096d20e20))
-
-
 ### Refactors
 
 * append .js extensions to internal module imports for ESM compatibility ([d37b704](https://github.com/macmar89/slapshot.club_2.0/commit/d37b7041cfc6eafd00f90628411537757d13f577))
@@ -147,3 +141,10 @@ All notable changes to this project will be documented in this file. See [standa
 * Update cookie `sameSite` policy to `lax` and enhance CORS origin handling for multiple domains. ([dd2edc9](https://github.com/macmar89/slapshot.club_2.0/commit/dd2edc9e9f5bdc4933971fadbfb32c753035dede))
 * update db import path and remove unused Drizzle ORM imports. ([a751f64](https://github.com/macmar89/slapshot.club_2.0/commit/a751f64f507a2cd9eebf03c85c7b43673df1b2a1))
 * Update Turnstile verification to use axios, correct related typos, and externalize the frontend API base URL. ([4ebe7c5](https://github.com/macmar89/slapshot.club_2.0/commit/4ebe7c5d9577cc9588c8343747c605a23c6a887d))
+
+
+### Chores
+
+* **release:** 1.0.0 ([1b28d9a](https://github.com/macmar89/slapshot.club_2.0/commit/1b28d9a46c2377d7867f165249a5c12837b89720))
+* Remove `seed-users.ts` script and its documentation from the README. ([118bd72](https://github.com/macmar89/slapshot.club_2.0/commit/118bd72c9d81dac431e8be280a69065d0cc5864c))
+* update missing tips reminder interval from 2 to 10 minutes ([907c2d9](https://github.com/macmar89/slapshot.club_2.0/commit/907c2d9ace302242d1981daa0814f6e096d20e20))
