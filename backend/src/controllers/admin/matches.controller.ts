@@ -5,10 +5,14 @@ import {
   getAdminCompetitionsLookup,
   getAdminTeamsLookup,
   getMatchDetail,
+  updateMatch,
+  evaluateMatch,
+  revertMatchEvaluation,
+  recalculateMatch,
 } from '../../services/admin/matches.service.js';
 import { buildPaginatedResponse } from '../../utils/pagination.js';
 import type { Request, Response, NextFunction } from 'express';
-import { logger } from '../../utils/logger.js';
+import { type AuditCtx } from '../../services/audit.service.js';
 
 export const getAllMatchesHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -60,4 +64,63 @@ export const getMatchDetailHandler = catchAsync(async (req: Request, res: Respon
   }
 
   return res.status(HttpStatusCode.OK).json({ status: 'success', data: match });
+});
+
+export const updateMatchHandler = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const auditCtx: AuditCtx = {
+    userId: req.user?.id,
+    ipAddress: req.ip,
+    userAgent: req.get('user-agent'),
+  };
+
+  const result = await updateMatch(id, req.body, auditCtx);
+
+  if (!result) {
+    return res.status(HttpStatusCode.NOT_FOUND).json({
+      status: 'error',
+      message: 'Match not found',
+    });
+  }
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success' });
+});
+
+export const evaluateMatchHandler = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const auditCtx: AuditCtx = {
+    userId: req.user?.id,
+    ipAddress: req.ip,
+    userAgent: req.get('user-agent'),
+  };
+
+  await evaluateMatch(id, auditCtx);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success' });
+});
+
+export const revertMatchEvaluationHandler = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const auditCtx: AuditCtx = {
+    userId: req.user?.id,
+    ipAddress: req.ip,
+    userAgent: req.get('user-agent'),
+  };
+
+  await revertMatchEvaluation(id, auditCtx);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success' });
+});
+
+export const recalculateMatchHandler = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const auditCtx: AuditCtx = {
+    userId: req.user?.id,
+    ipAddress: req.ip,
+    userAgent: req.get('user-agent'),
+  };
+
+  await recalculateMatch(id, auditCtx);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success' });
 });

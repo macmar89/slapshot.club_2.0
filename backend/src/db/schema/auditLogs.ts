@@ -31,6 +31,12 @@ export const auditActionEnum = pgEnum('audit_action', [
   'GROUP_OWNERSHIP_TRANSFER',
   'GROUP_ALIAS_CHANGE',
   'GROUP_SETTINGS_CHANGE',
+
+  // MATCH
+  'MATCH_UPDATE',
+  'MATCH_EVALUATE',
+  'MATCH_REVERT_EVALUATION',
+  'MATCH_RECALCULATE',
 ]);
 
 export const entityTypeEnum = pgEnum('entity_type', [

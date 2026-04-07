@@ -1,6 +1,78 @@
 import { matchesRepository } from '../../repositories/matches.repository.js';
 import { competitionRepository } from '../../repositories/competitions.repository.js';
 import { teamsRepository } from '../../repositories/teams.repository.js';
+import { logActivity, type AuditCtx } from '../audit.service.js';
+import {
+  evaluateMatch as evaluatePredictions,
+  revertMatchEvaluation as revertPredictions,
+} from '../predictions/predictionsLogic.service.js';
+import type { UpdateMatchBodyInput } from '../../shared/constants/schema/admin/matches.schema.js';
+
+export const updateMatch = async (
+  id: string,
+  updateData: UpdateMatchBodyInput,
+  auditCtx: AuditCtx,
+) => {
+  const oldMatch = await matchesRepository.getAdminMatchDetail(id);
+  if (!oldMatch) return null;
+
+  const dataToUpdate: any = { ...updateData };
+
+  if (updateData.isChecked === true) {
+    dataToUpdate.checkedAt = new Date().toISOString();
+    dataToUpdate.checkedBy = auditCtx.userId;
+  } else if (updateData.isChecked === false) {
+    dataToUpdate.checkedAt = null;
+    dataToUpdate.checkedBy = null;
+  }
+
+  await matchesRepository.updateMatch(id, dataToUpdate);
+
+  const changes: Record<string, { old: any; new: any }> = {};
+  for (const key in dataToUpdate) {
+    if (Object.prototype.hasOwnProperty.call(dataToUpdate, key)) {
+      const oldValue = (oldMatch as any)[key];
+      const newValue = (dataToUpdate as any)[key];
+
+      if (oldValue !== newValue) {
+        changes[key] = { old: oldValue, new: newValue };
+      }
+    }
+  }
+
+  if (Object.keys(changes).length > 0) {
+    await logActivity(auditCtx, 'MATCH_UPDATE', { type: 'match', id }, { changes }).catch((err) =>
+      console.error('Failed to log MATCH_UPDATE:', err),
+    );
+  }
+
+  return true;
+};
+
+export const evaluateMatch = async (id: string, auditCtx: AuditCtx) => {
+  await evaluatePredictions(id);
+  await logActivity(auditCtx, 'MATCH_EVALUATE', { type: 'match', id }).catch((err) =>
+    console.error('Failed to log MATCH_EVALUATE:', err),
+  );
+  return true;
+};
+
+export const revertMatchEvaluation = async (id: string, auditCtx: AuditCtx) => {
+  await revertPredictions(id);
+  await logActivity(auditCtx, 'MATCH_REVERT_EVALUATION', { type: 'match', id }).catch((err) =>
+    console.error('Failed to log MATCH_REVERT_EVALUATION:', err),
+  );
+  return true;
+};
+
+export const recalculateMatch = async (id: string, auditCtx: AuditCtx) => {
+  await revertPredictions(id);
+  await evaluatePredictions(id);
+  await logActivity(auditCtx, 'MATCH_RECALCULATE', { type: 'match', id }).catch((err) =>
+    console.error('Failed to log MATCH_RECALCULATE:', err),
+  );
+  return true;
+};
 
 export const getAllMatches = async (
   limit: number,
