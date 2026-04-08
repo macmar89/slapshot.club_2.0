@@ -10,16 +10,18 @@ import {
   ResetPasswordHandlerSchema,
 } from '../shared/constants/schema/auth.schema.js';
 import { verifyTurnstile } from '../middleware/turnstile.middleware.js';
+import { authLimiter, refreshLimiter } from '../middleware/rateLimit.middleware.js';
 
 const router = Router();
 
 router.get('/check-availability', authController.checkAvailabilityHandler);
-router.post('/login', verifyTurnstile, authController.login);
+router.post('/login', authLimiter, verifyTurnstile, authController.login);
 router.post('/logout', authController.logout);
 router.get('/me', isAuth, authController.getMe);
-router.post('/refresh', authController.refreshTokenHandler);
+router.post('/refresh', refreshLimiter, authController.refreshTokenHandler);
 router.post(
   '/register',
+  authLimiter,
   verifyTurnstile,
   validate(RegisterHandlerSchema),
   authController.registerHandler,
@@ -31,12 +33,14 @@ router.post(
 );
 router.post(
   '/resend-verification',
+  authLimiter,
   verifyTurnstile,
   validate(ResendVerificationHandlerSchema),
   authController.resendVerificationHandler,
 );
 router.post(
   '/forgot-password',
+  authLimiter,
   verifyTurnstile,
   validate(ForgotPasswordHandlerSchema),
   authController.forgotPasswordHandler,

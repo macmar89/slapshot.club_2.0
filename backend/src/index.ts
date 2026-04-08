@@ -9,6 +9,8 @@ import apiRouter from './routes/index.js';
 import { IS_PRODUCTION, env } from './config/env.js';
 import { AppError } from './utils/appError.js';
 import { HttpStatusCode } from './utils/httpStatusCodes.js';
+import hpp from 'hpp';
+import { globalLimiter } from './middleware/rateLimit.middleware.js';
 import './workers/email.worker.js';
 import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
@@ -20,6 +22,7 @@ import {
   scheduleDailyMissingTipsReminder,
 } from './queues/matches.queue.js';
 import { scheduleDailyStandingsSync } from './queues/competitions.queue.js';
+import helmet from 'helmet';
 
 const allowedOrigins = [
   'https://slapshot.club',
@@ -28,13 +31,15 @@ const allowedOrigins = [
 ];
 
 const app = express();
+app.disable('x-powered-by');
 
 app.set('trust proxy', 1);
 app.set('query parser', 'extended');
 
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(hpp());
 
 app.use(
   cors({
@@ -49,9 +54,36 @@ app.use(
   }),
 );
 
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    frameguard: { action: 'deny' },
+    noSniff: true,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginEmbedderPolicy: { policy: 'require-corp' },
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    dnsPrefetchControl: { allow: false },
+
+    hsts: {
+      maxAge: 31536000,
+
+      includeSubDomains: true,
+      preload: true,
+    },
+  }),
+);
+
 app.use(pinoHttp({ logger, autoLogging: false }));
 
-app.use('/api/v1', apiRouter);
+app.use('/api/v1', globalLimiter, apiRouter);
 
 app.get('/health', (req, res) => {
   res.status(HttpStatusCode.OK).json({ status: 'ok', timestamp: new Date().toISOString() });

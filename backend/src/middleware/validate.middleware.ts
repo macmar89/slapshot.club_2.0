@@ -1,6 +1,7 @@
 import { ZodError, type ZodObject } from 'zod';
 import type { Request, Response, NextFunction } from 'express';
 import { HttpStatusCode } from '../utils/httpStatusCodes.js';
+import { logger } from '../utils/logger.js';
 
 export const validate =
   (schema: ZodObject<any, any>) => async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,7 @@ export const validate =
       }
       return next();
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       if (error instanceof ZodError || (error as any)?.name === 'ZodError') {
         return res.status(HttpStatusCode.BAD_REQUEST).json({
           status: 'error',

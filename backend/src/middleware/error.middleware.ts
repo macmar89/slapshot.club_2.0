@@ -26,6 +26,6 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
 
   res.status(statusCode).json({
     status: statusCode >= 500 ? 'error' : 'fail',
-    message,
+    message: IS_PRODUCTION && statusCode >= 500 ? 'Internal Server Error' : message,
   });
 };
