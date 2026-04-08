@@ -580,7 +580,40 @@
     "tabs_rules": "Rules",
     "tabs_groups": "Groups",
     "tabs_minileagues": "Mini Leagues",
-    "tabs_gdpr": "GDPR"
+    "tabs_gdpr": "GDPR",
+    "groups_features": {
+      "community": {
+        "title": "Community",
+        "description": "Create your own hockey locker room for your friends or colleagues."
+      },
+      "management": {
+        "title": "Member Management",
+        "description": "The group owner (Captain) has full control over who can join."
+      },
+      "codes": {
+        "title": "Invite Codes",
+        "description": "Easy sharing using unique codes that you generate."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "description": "Option to set the group as private or public according to your needs."
+      }
+    },
+    "groups_limits_title": "Membership and Limits",
+    "groups_limits_desc": "Different membership levels bring different possibilities within groups.",
+    "groups_limits": {
+      "plan": "Membership",
+      "create": "Creation",
+      "join": "Membership",
+      "boost": "Capacity",
+      "count": "{count, plural, one {# group} other {# groups}}",
+      "boost_count": "+{count} spots",
+      "none": "Not allowed",
+      "plan_free": "Free",
+      "plan_starter": "Starter",
+      "plan_pro": "Pro",
+      "plan_vip": "VIP"
+    }
   },
   "Email": {
     "verification": {

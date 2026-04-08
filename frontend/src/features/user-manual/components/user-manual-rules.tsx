@@ -7,8 +7,8 @@ export const UserManualRules = () => {
   const t = useTranslations('UserManual');
 
   return (
-    <div className="space-y-8">
-      <section>
+    <IceGlassCard className="flex flex-col p-4 sm:p-8">
+      <section className="mb-6">
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-semibold text-white">
           <span className="bg-primary/10 text-primary border-primary/20 flex h-8 w-8 items-center justify-center rounded-lg border text-sm font-bold">
             01
@@ -60,6 +60,6 @@ export const UserManualRules = () => {
           ))}
         </div>
       </section>
-    </div>
+    </IceGlassCard>
   );
 };

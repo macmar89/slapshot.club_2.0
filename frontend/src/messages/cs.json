@@ -578,7 +578,40 @@
     "tabs_rules": "Pravidla",
     "tabs_groups": "Skupiny",
     "tabs_minileagues": "Mini ligy",
-    "tabs_gdpr": "GDPR"
+    "tabs_gdpr": "GDPR",
+    "groups_features": {
+      "community": {
+        "title": "Komunita",
+        "description": "Vytvořte si vlastní hokejovou kabinu pro své přátele nebo kolegy."
+      },
+      "management": {
+        "title": "Správa členů",
+        "description": "Majitel skupiny (Kapitán) má plnou kontrolu nad tím, kdo se může připojit."
+      },
+      "codes": {
+        "title": "Zvací kódy",
+        "description": "Jednoduché sdílení pomocí unikátních kódů, které si vygenerujete."
+      },
+      "privacy": {
+        "title": "Soukromí",
+        "description": "Možnost nastavit skupinu jako soukromou nebo veřejnou podle vašich potřeb."
+      }
+    },
+    "groups_limits_title": "Členství a limity",
+    "groups_limits_desc": "Různé úrovně členství přinášejí různé možnosti v rámci skupin.",
+    "groups_limits": {
+      "plan": "Členství",
+      "create": "Vytvoření",
+      "join": "Členství",
+      "boost": "Kapacita",
+      "count": "{count, plural, one {# skupina} few {# skupiny} other {# skupin}}",
+      "boost_count": "+{count} míst",
+      "none": "Nepovoleno",
+      "plan_free": "Free",
+      "plan_starter": "Starter",
+      "plan_pro": "Pro",
+      "plan_vip": "VIP"
+    }
   },
   "Email": {
     "verification": {
