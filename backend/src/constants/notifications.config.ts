@@ -32,4 +32,5 @@ export const NOTIFICATION_CONFIG: Record<NotificationType, { channels: Notificat
   NEW_FEATURE: { channels: ['in-app'] },
   UPDATE_SUMMARY: { channels: ['in-app'] },
   TRIAL_EXPIRING: { channels: ['in-app', 'push', 'email'] },
+  NEW_ANNOUNCEMENT: { channels: ['in-app'] },
 };

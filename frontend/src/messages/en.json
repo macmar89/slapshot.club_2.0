@@ -880,6 +880,10 @@
       "title": "New Feature",
       "message": "{message}"
     },
+    "new_announcement": {
+      "title": "{title_en}",
+      "message": "A new announcement has been published. Check it out in the Arena section!"
+    },
     "update_summary": {
       "title": "Weekly Update",
       "message": "{message}"
@@ -957,8 +961,44 @@
         "excerpt_max": "Excerpt must be at most 500 characters long",
         "content_min": "Content must be at least 10 characters long"
       },
-      "create_success": "Announcement was successfully created",
-      "create_error": "Failed to create announcement"
+      "create_success": "Announcement created successfully",
+      "create_error": "Failed to create announcement",
+      "edit_title": "Edit Announcement",
+      "update_success": "Announcement updated successfully",
+      "update_error": "Failed to update announcement",
+      "announcement_not_found": "Announcement not found",
+      "unsaved_changes": "You have unsaved changes in the form",
+      "delete_title": "Delete Announcement?",
+      "delete_confirm_desc": "This action cannot be undone. This announcement will be permanently removed from all language versions.",
+      "delete_action": "Delete",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete_success": "Announcement was successfully deleted",
+      "delete_error": "Failed to delete announcement",
+      "published_at": "This announcement was published on {date}",
+      "publish_confirm_title": "Publish Announcement?",
+      "publish_confirm_irreversible": "Are you sure you want to publish? This action is irreversible and the announcement will no longer be editable or deletable.",
+      "total_items": "Total",
+      "page": "Page",
+      "no_announcements_found": "No announcements found",
+      "filter": {
+        "all_statuses": "All statuses",
+        "published": "Published",
+        "draft": "Draft",
+        "status": "Status",
+        "type": "Type",
+        "all_types": "All types"
+      },
+      "table": {
+        "no_announcements_found": "No announcements found",
+        "title": "Title",
+        "type": "Type",
+        "status": "Status",
+        "created_at": "Created",
+        "published_at": "Published",
+        "published": "Published",
+        "draft": "Draft"
+      }
     },
     "Dashboard": {
       "title": "Admin Dashboard",

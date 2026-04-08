@@ -11,7 +11,7 @@ export const NOTIFICATION_GROUPS = {
     'GROUP_PENDING_REJECTED',
   ],
   COMPETITION: ['NEW_COMPETITION', 'COMPETITION_STARTED', 'COMPETITION_FINISHED'],
-  SYSTEM: ['SYSTEM_ALERT', 'NEW_FEATURE', 'UPDATE_SUMMARY', 'TRIAL_EXPIRING'],
+  SYSTEM: ['SYSTEM_ALERT', 'NEW_FEATURE', 'UPDATE_SUMMARY', 'TRIAL_EXPIRING', 'NEW_ANNOUNCEMENT'],
 } as const;
 
 export enum NOTIFICATION_GROUP {
@@ -99,5 +99,9 @@ export const NOTIFICATION_KEYS = {
   TRIAL_EXPIRING: {
     title: 'notifications.trial_expiring.title',
     message: 'notifications.trial_expiring.message',
+  },
+  NEW_ANNOUNCEMENT: {
+    title: 'notifications.new_announcement.title',
+    message: 'notifications.new_announcement.message',
   },
 } as const;

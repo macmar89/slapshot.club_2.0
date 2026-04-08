@@ -878,6 +878,10 @@
       "title": "Nová funkce",
       "message": "{message}"
     },
+    "new_announcement": {
+      "title": "{title_cz}",
+      "message": "Bylo zveřejněno nové oznámení. Podívej se na něj v sekci Arena!"
+    },
     "update_summary": {
       "title": "Týdenní shrnutí",
       "message": "{message}"
@@ -956,7 +960,43 @@
         "content_min": "Obsah musí mít alespoň 10 znaků"
       },
       "create_success": "Oznámení bylo úspěšně vytvořeno",
-      "create_error": "Nepodařilo se vytvořit oznámení"
+      "create_error": "Nepodařilo se vytvořit oznámení",
+      "edit_title": "Upravit oznámení",
+      "update_success": "Oznámení bylo úspěšně upraveno",
+      "update_error": "Nepodařilo se upravit oznámení",
+      "announcement_not_found": "Oznámení nebylo nalezeno",
+      "unsaved_changes": "Máte neuložené změny ve formuláři",
+      "delete_title": "Smazat oznámení?",
+      "delete_confirm_desc": "Tuto akci nelze vzít zpět. Oznámení bude trvale odstraněno ze všech jazykových verzí.",
+      "delete_action": "Smazat",
+      "cancel": "Zrušit",
+      "deleting": "Mažu...",
+      "delete_success": "Oznámení bylo úspěšně smazáno",
+      "delete_error": "Nepodařilo se smazat oznámení",
+      "published_at": "Toto oznámení bylo publikováno dne {date}",
+      "publish_confirm_title": "Publikovat oznámení?",
+      "publish_confirm_irreversible": "Opravdu chcete publikovat? Tato akce je nevratná a oznámení již nepůjde upravit ani smazat.",
+      "total_items": "Celkem",
+      "page": "Strana",
+      "no_announcements_found": "Žádná oznámení nebyla nalezena",
+      "filter": {
+        "all_statuses": "Všechny stavy",
+        "published": "Publikováno",
+        "draft": "Koncept",
+        "status": "Stav",
+        "type": "Typ",
+        "all_types": "Všechny typy"
+      },
+      "table": {
+        "no_announcements_found": "Žádná oznámení nebyla nalezena",
+        "title": "Nadpis",
+        "type": "Typ",
+        "status": "Stav",
+        "created_at": "Vytvořeno",
+        "published_at": "Publikováno",
+        "published": "Publikováno",
+        "draft": "Koncept"
+      }
     },
     "Dashboard": {
       "title": "Admin Dashboard",

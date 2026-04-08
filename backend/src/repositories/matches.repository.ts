@@ -1,10 +1,9 @@
 import { db } from '../db/index.js';
 import { matches } from '../db/schema/index.js';
-import { eq, sql, or } from 'drizzle-orm';
+import { and, eq, gte, lte, isNotNull, isNull, asc, desc, sql, or } from 'drizzle-orm';
 
 export const matchesRepository = {
   async getAdminMatches(limit: number, offset: number, sort: any, filters: any) {
-    const { and, eq, gte, lte, isNotNull, isNull, asc, desc } = await import('drizzle-orm');
     const whereConditions = [];
 
     if (filters?.dateFrom) {

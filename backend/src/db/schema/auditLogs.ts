@@ -56,6 +56,7 @@ export const entityTypeEnum = pgEnum('entity_type', [
   'match',
   'team',
   'leaderboard',
+  'announcement',
 ]);
 
 export const auditLogs = pgTable(

@@ -19,4 +19,13 @@ export const userRepository = {
 
     return result?.username ?? null;
   },
+
+  async getAllActiveUserIds() {
+    const result = await dbDefault.query.users.findMany({
+      columns: { id: true },
+      where: (u) => notDeleted(u),
+    });
+
+    return result.map((r) => r.id);
+  },
 };

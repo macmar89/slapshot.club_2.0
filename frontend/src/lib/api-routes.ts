@@ -10,7 +10,11 @@ export const API_ROUTES = {
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
     },
     ANNOUNCEMENTS: {
+      LIST: '/admin/announcements',
       CREATE: '/admin/announcements',
+      DETAIL: (slug: string) => `/admin/announcements/${slug}`,
+      UPDATE: (slug: string) => `/admin/announcements/${slug}`,
+      DELETE: (slug: string) => `/admin/announcements/${slug}`,
     },
   },
   AUTH: {
