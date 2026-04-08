@@ -916,7 +916,7 @@
     },
     "new_announcement": {
       "title": "{title_en}",
-      "message": "A new announcement has been published. Check it out in the Arena section!"
+      "message": "A new announcement has been published. Check it out in the News section!"
     },
     "update_summary": {
       "title": "Weekly Update",

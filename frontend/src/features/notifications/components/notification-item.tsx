@@ -53,7 +53,13 @@ export function NotificationItem({ notification, onAfterClick, className }: Noti
         >
           {t(
             getSubKey(notification.titleKey) as Parameters<typeof t>[0],
-            { missingTipsCount: 'undefined', ...notification.payload } as Parameters<typeof t>[1],
+            {
+              missingTipsCount: 'undefined',
+              title_sk: 'Nové oznámenie',
+              title_en: 'New Announcement',
+              title_cz: 'Nové oznámení',
+              ...notification.payload,
+            } as Parameters<typeof t>[1],
           )}
         </span>
       </div>

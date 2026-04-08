@@ -19,6 +19,9 @@ export interface NotificationPayload {
   missingTipsCount?: number;
   announcementSlug?: string;
   announcementType?: string;
+  title_sk?: string;
+  title_en?: string;
+  title_cz?: string;
 }
 
 export type NotificationGroup = (typeof NOTIFICATION_GROUPS)[keyof typeof NOTIFICATION_GROUPS];

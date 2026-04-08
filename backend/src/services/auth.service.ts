@@ -44,8 +44,20 @@ export const registerUser = async (data: RegisterInput) => {
     throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
+
+  let txResult: {
+    id: string; username: string; email: string;
+    role: 'user' | 'admin' | 'editor' | 'demo';
+    subscriptionPlan: 'free' | 'starter' | 'pro' | 'vip';
+    subscriptionActiveUntil: string | null;
+    isActive: true;
+    referralCode: string;
+    hasSeenOnboarding: boolean;
+    verificationToken: string | null;
+  };
+
   try {
-    return await db.transaction(async (tx) => {
+    txResult = await db.transaction(async (tx) => {
       const hashedPassword = await hashPassword(data.password);
 
       const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
@@ -113,38 +125,18 @@ export const registerUser = async (data: RegisterInput) => {
         }
       }
 
-      // Check for welcome announcement and notify user
-      try {
-        const welcomeAnnouncement = await announcementsRepository.getAnnouncementBySlug('welcome');
-        if (welcomeAnnouncement && welcomeAnnouncement.isPublished) {
-          await notify({
-            userId: user.id,
-            type: 'NEW_ANNOUNCEMENT',
-            payload: {
-              announcementSlug: welcomeAnnouncement.slug,
-              announcementType: welcomeAnnouncement.type,
-            },
-          });
-        }
-      } catch {
-        // Ignore if welcome announcement doesn't exist
-      }
-
-      const result = {
+      return {
         id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
         subscriptionActiveUntil: user.subscriptionActiveUntil,
-        isVerified: !!user.verifiedAt,
+        isActive: true as const,
         referralCode: user.referralCode,
-        hasSeenOnboarding: user.hasSeenOnboarding,
+        hasSeenOnboarding: user.hasSeenOnboarding ?? false,
         verificationToken: user.verificationToken,
       };
-
-      logger.info({ userId: result.id, username: result.username }, 'User registered successfully');
-      return result;
     });
   } catch (error: any) {
     logger.error(
@@ -153,6 +145,32 @@ export const registerUser = async (data: RegisterInput) => {
     );
     throw error;
   }
+
+  const newUser = txResult;
+
+  logger.info({ userId: newUser.id, username: newUser.username }, 'User registered successfully');
+
+  // Send welcome notification AFTER transaction commits — must NOT be inside tx block
+  try {
+    const welcomeAnnouncement = await announcementsRepository.getAnnouncementBySlug('welcome');
+    if (welcomeAnnouncement && welcomeAnnouncement.isPublished) {
+      await notify({
+        userId: newUser.id,
+        type: 'NEW_ANNOUNCEMENT',
+        payload: {
+          announcementSlug: welcomeAnnouncement.slug,
+          announcementType: welcomeAnnouncement.type,
+          title_sk: welcomeAnnouncement.locales?.sk?.title ?? 'Nové oznámenie',
+          title_en: welcomeAnnouncement.locales?.en?.title ?? 'New Announcement',
+          title_cz: welcomeAnnouncement.locales?.cz?.title ?? 'Nové oznámení',
+        },
+      });
+    }
+  } catch (err) {
+    logger.warn({ err, userId: newUser.id }, '[Register] Failed to send welcome notification');
+  }
+
+  return newUser;
 };
 
 export const loginUser = async (data: LoginInput, req: Request) => {
