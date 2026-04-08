@@ -45,7 +45,7 @@ export const createAnnouncementSchema = z.object({
   body: createAnnouncementBodySchema,
 });
 
-export const getAllAnnouncementsFilterSchema = z
+export const getAllAnnouncementsAsAdminFilterSchema = z
   .object({
     isPublished: z
       .preprocess((val) => {
@@ -57,18 +57,33 @@ export const getAllAnnouncementsFilterSchema = z
   })
   .optional();
 
-export const getAllAnnouncementsSchema = z.object({
+export const getAllAnnouncementsAsAdminSchema = z.object({
   query: z.object({
     page: z.string().optional(),
     limit: z.string().optional(),
     lang: z.string().optional(),
-    filters: getAllAnnouncementsFilterSchema,
+    filters: getAllAnnouncementsAsAdminFilterSchema,
     sort: z
       .object({
         by: z.enum(['createdAt', 'publishedAt', 'type']).default('createdAt'),
         order: z.enum(['asc', 'desc']).default('desc'),
       })
       .default({ by: 'createdAt', order: 'desc' }),
+  }),
+});
+
+export const getAllAnnouncementsFilterSchema = z
+  .object({
+    type: z.enum(announcementTypes).optional(),
+  })
+  .optional();
+
+export const getAllAnnouncementsSchema = z.object({
+  query: z.object({
+    page: z.string().optional(),
+    limit: z.string().optional(),
+    lang: z.string().optional(),
+    filters: getAllAnnouncementsFilterSchema,
   }),
 });
 
@@ -82,5 +97,8 @@ export const updateAnnouncementSchema = z.object({
 });
 
 export type CreateAnnouncementBodyInput = z.infer<typeof createAnnouncementBodySchema>;
+export type GetAllAnnouncementsAsAdminQueryInput = z.infer<
+  typeof getAllAnnouncementsAsAdminSchema
+>['query'];
 export type GetAllAnnouncementsQueryInput = z.infer<typeof getAllAnnouncementsSchema>['query'];
 export type UpdateAnnouncementBodyInput = z.infer<typeof createAnnouncementBodySchema>;

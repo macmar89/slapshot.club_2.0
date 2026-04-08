@@ -77,6 +77,11 @@ export const dashboardConfig = {
       badgeType: 'missing_tips',
     },
     {
+      labelKey: 'announcements',
+      href: '/announcements',
+      icon: Megaphone,
+    },
+    {
       labelKey: 'manual',
       href: '/user-manual',
       icon: FileText,

@@ -54,6 +54,11 @@ export function useNotificationActions() {
         case 'UPDATE_SUMMARY':
           // No navigation needed
           break;
+        case 'NEW_ANNOUNCEMENT':
+          if (payload.announcementSlug) {
+            router.push(`/announcements/${payload.announcementSlug}`);
+          }
+          break;
         default:
           break;
       }

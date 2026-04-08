@@ -41,7 +41,8 @@
       "overview": "Overview",
       "arena": "Arena",
       "missing_tips": "My tips",
-      "notifications": "Notifications",
+      "notifications": "Alerts",
+      "announcements": "News",
       "matches": "Matches",
       "tables": "Tables",
       "teams": "Teams",
@@ -811,7 +812,7 @@
     "miss": "Miss"
   },
   "AppNotifications": {
-    "title": "Notifications",
+    "title": "Alerts",
     "markAllAsRead": "Mark all as read",
     "unreadCount": "{count, plural, one {# new} other {# new}}",
     "empty": "No new notifications",
@@ -1120,5 +1121,12 @@
       "description": "{count, plural, one {# missing tip} other {# missing tips}} for the next 24 hours",
       "action": "Complete tips"
     }
+  },
+  "Announcements": {
+    "title": "News",
+    "description": "Stay updated with the latest info from Slapshot.club",
+    "empty": "No news available yet.",
+    "readMore": "Read more",
+    "back": "Back to list"
   }
 }

@@ -11,11 +11,13 @@ import matchRoutes from './matches.routes.js';
 import publicMatchRoutes from './matches.public.routes.js';
 import groupRoutes from './groups.routes.js';
 import notificationRoutes from './notifications.routes.js';
+import announcementRoutes from './announcements.routes.js';
 
 const router = Router();
 
 router.use('/admin', isAuth, isAdmin, adminRoutes);
 
+router.use('/announcements', isAuth, announcementRoutes);
 router.use('/auth', authRoutes);
 router.use('/competition', competitionRoutes);
 router.use('/feedback', isAuth, feedbackRoutes);

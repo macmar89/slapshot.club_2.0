@@ -41,7 +41,8 @@
       "overview": "Přehled",
       "arena": "Aréna",
       "missing_tips": "Moje tipy",
-      "notifications": "Oznámení",
+      "notifications": "Upozornění",
+      "announcements": "Aktuality",
       "matches": "Zápasy",
       "tables": "Tabulky",
       "teams": "Týmy",
@@ -809,7 +810,7 @@
     "miss": "Mimo"
   },
   "AppNotifications": {
-    "title": "Oznámení",
+    "title": "Upozornění",
     "markAllAsRead": "Označit vše jako přečtené",
     "unreadCount": "{count, plural, one {# nové} few {# nové} other {# nových}}",
     "empty": "Žádná nová oznámení",
@@ -1118,5 +1119,12 @@
       "description": "{count, plural, one {# chybějící tip} few {# chybějící tipy} other {# chybějících tipů}} na nejbližších 24 hodin",
       "action": "Doplnit tipy"
     }
+  },
+  "Announcements": {
+    "title": "Aktuality",
+    "description": "Zůstaň v obraze s nejnovějšími info ze Slapshot.club",
+    "empty": "Zatím nejsou žádné aktuality.",
+    "readMore": "Číst více",
+    "back": "Zpět na seznam"
   }
 }

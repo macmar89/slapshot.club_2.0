@@ -113,4 +113,8 @@ export const API_ROUTES = {
     READ_ONE: (id: string) => `/notifications/read/${id}`,
     STREAM: '/notifications/stream',
   },
+  ANNOUNCEMENTS: {
+    LIST: (limit = 10, offset = 0) => `/announcements?limit=${limit}&offset=${offset}`,
+    DETAIL: (slug: string) => `/announcements/${slug}`,
+  },
 } as const;

@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Link, usePathname } from '@/i18n/routing';
-import { FileText, User, MessageSquarePlus, Settings } from 'lucide-react';
+import { FileText, User, MessageSquarePlus, Settings, Megaphone } from 'lucide-react';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useAuthStore } from '@/store/use-auth-store';
 
@@ -71,6 +71,12 @@ export const Sidebar = ({ children }: SidebarProps) => {
         </div>
 
         <div className="flex flex-col gap-2">
+          <SidebarItem
+            href="/announcements"
+            icon={Megaphone}
+            label={t('announcements')}
+            isActive={pathname === '/announcements'}
+          />
           <SidebarItem
             href="/user-manual"
             icon={FileText}

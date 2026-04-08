@@ -1,8 +1,11 @@
 import { announcementsRepository } from '../../repositories/announcements.repository.js';
 import { logActivity, type AuditCtx } from '../audit.service.js';
+import {
+  getAnnouncements as coreGetAnnouncements,
+  getAnnouncementBySlug as coreGetAnnouncementBySlug,
+} from '../announcements/announcements.service.js';
 import type {
   CreateAnnouncementBodyInput,
-  GetAllAnnouncementsQueryInput,
   UpdateAnnouncementBodyInput,
 } from '../../shared/constants/schema/admin/announcements.schema.js';
 import { AppError } from '../../utils/appError.js';
@@ -60,28 +63,8 @@ export const createAnnouncement = async (
   return announcement;
 };
 
-export const getAllAnnouncements = async (
-  limit: number,
-  offset: number,
-  lang: string,
-  sort: GetAllAnnouncementsQueryInput['sort'],
-  filters: GetAllAnnouncementsQueryInput['filters'],
-) => {
-  // Map 'cz' to 'cs' for database
-  const dbLang = lang === 'cz' ? 'cs' : lang;
-
-  return await announcementsRepository.getAllAnnouncements(
-    limit,
-    offset,
-    dbLang,
-    sort as any,
-    (filters || {}) as any,
-  );
-};
-
-export const getAnnouncementBySlug = async (slug: string) => {
-  return await announcementsRepository.getAnnouncementBySlug(slug);
-};
+export const getAllAnnouncements = coreGetAnnouncements;
+export const getAnnouncementBySlug = coreGetAnnouncementBySlug;
 
 export const updateAnnouncement = async (
   slug: string,
@@ -94,7 +77,9 @@ export const updateAnnouncement = async (
     en: input.locales.en,
   };
 
-  const oldAnnouncement = await announcementsRepository.getAnnouncementBySlug(slug).catch(() => null);
+  const oldAnnouncement = await announcementsRepository
+    .getAnnouncementBySlug(slug)
+    .catch(() => null);
 
   const announcement = await announcementsRepository.updateAnnouncement(slug, {
     slug: input.slug,

@@ -41,7 +41,8 @@
       "overview": "Prehľad",
       "arena": "Aréna",
       "missing_tips": "Moje tipy",
-      "notifications": "Oznámenia",
+      "notifications": "Upozornenia",
+      "announcements": "Aktuality",
       "matches": "Zápasy",
       "tables": "Tabuľky",
       "teams": "Tímy",
@@ -812,7 +813,7 @@
     "miss": "Mimo"
   },
   "AppNotifications": {
-    "title": "Oznámenia",
+    "title": "Upozornenia",
     "markAllAsRead": "Označiť všetko ako prečítané",
     "unreadCount": "{count, plural, one {# nové} few {# nové} other {# nových}}",
     "empty": "Žiadne nové oznámenia",
@@ -1121,5 +1122,12 @@
       "description": "{count, plural, one {# chýbajúci tip} few {# chýbajúce tipy} other {# chýbajúcich tipov}} na najbližších 24 hodín",
       "action": "Doplniť tipy"
     }
+  },
+  "Announcements": {
+    "title": "Aktuality",
+    "description": "Zostaň v obraze s najnovšími info zo Slapshot.club",
+    "empty": "Zatiaľ nie sú žiadne aktuality.",
+    "readMore": "Čítať viac",
+    "back": "Späť na zoznam"
   }
 }
