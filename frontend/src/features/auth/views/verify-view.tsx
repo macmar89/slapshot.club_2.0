@@ -117,7 +117,7 @@ export const VerifyView = ({ token, initialEmail }: VerifyViewProps) => {
                   <p className="font-medium text-white/80">{t('verify_error')}</p>
 
                   {resendDone ? (
-                    <div className="bg-gold/10 border-gold/20 text-gold rounded-app animate-in fade-in slide-in-from-bottom-2 w-full border px-4 py-2 text-sm font-medium">
+                    <div className="bg-gold/10 border-gold/20 text-gold rounded-app w-full border px-4 py-2 text-sm font-medium">
                       {t('verification_sent')}
                     </div>
                   ) : email ? (

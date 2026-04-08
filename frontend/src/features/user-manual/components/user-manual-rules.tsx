@@ -7,7 +7,7 @@ export const UserManualRules = () => {
   const t = useTranslations('UserManual');
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-8 duration-500">
+    <div className="space-y-8">
       <section>
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-semibold text-white">
           <span className="bg-primary/10 text-primary border-primary/20 flex h-8 w-8 items-center justify-center rounded-lg border text-sm font-bold">

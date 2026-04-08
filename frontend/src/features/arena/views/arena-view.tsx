@@ -22,7 +22,7 @@ export function ArenaView({ initialCompetitions }: ArenaViewProps) {
   });
 
   const renderCompetitionGrid = (comps: Competition[], compact: boolean = false) => (
-    <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both mb-12 grid grid-cols-1 gap-4 duration-700 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
+    <div className="mb-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8">
       {comps.map((competition) => (
         <CompetitionCard key={competition.id} competition={competition} compact={compact} />
       ))}

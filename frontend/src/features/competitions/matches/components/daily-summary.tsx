@@ -50,7 +50,7 @@ export function DailySummary({ matches, predictions }: DailySummaryProps) {
   if (!hasMatches) return null;
 
   return (
-    <div className="animate-in fade-in slide-in-from-top-4 mb-4 duration-500 sm:mb-6">
+    <div className="mb-4 sm:mb-6">
       <IceGlassCard className="p-2 sm:p-4" backdropBlur="md">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-start gap-4">

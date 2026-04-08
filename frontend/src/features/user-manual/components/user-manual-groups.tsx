@@ -28,7 +28,7 @@ export const UserManualGroups = () => {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8">
       <section>
         <h2 className="text-2xl font-semibold mb-6 flex items-center gap-3">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary text-sm font-bold border border-primary/20">

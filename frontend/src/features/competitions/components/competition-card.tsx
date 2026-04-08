@@ -74,7 +74,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
           >
             <div
               className={cn(
-                'rounded-app animate-in zoom-in absolute top-6 right-6 border px-4 py-1.5 text-[0.7rem] font-bold tracking-widest uppercase backdrop-blur-md duration-500',
+                'rounded-app absolute top-6 right-6 border px-4 py-1.5 text-[0.7rem] font-bold tracking-widest uppercase backdrop-blur-md',
                 competition.status === 'active'
                   ? 'border-[#eab308] bg-[#eab308] text-black shadow-[0_0_15px_rgba(234,179,8,0.3)]'
                   : competition.status === 'finished'
@@ -86,7 +86,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
             </div>
 
             {isJoined && !isFinished && (
-              <div className="rounded-app animate-in slide-in-from-left-2 absolute top-6 left-6 flex items-center gap-1.5 bg-[#22c55e] px-3 py-1.5 text-[0.65rem] font-black tracking-widest text-white uppercase shadow-[0_0_15px_rgba(34,197,94,0.4)] duration-500">
+              <div className="rounded-app absolute top-6 left-6 flex items-center gap-1.5 bg-[#22c55e] px-3 py-1.5 text-[0.65rem] font-black tracking-widest text-white uppercase shadow-[0_0_15px_rgba(34,197,94,0.4)]">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
                 {t('joined')}
               </div>

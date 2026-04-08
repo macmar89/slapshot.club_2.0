@@ -14,7 +14,7 @@ export const AdminDashboardView = () => {
   const { data, isLoading, error } = useSWR<DashboardStats>(API_ROUTES.ADMIN.DASHBOARD.STATS);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 duration-1000 md:p-8">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col gap-1 px-2 text-left">
         <h1 className="text-3xl font-black tracking-widest text-white/90 uppercase italic drop-shadow-md md:text-4xl">

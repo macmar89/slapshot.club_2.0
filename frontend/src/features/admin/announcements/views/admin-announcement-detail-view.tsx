@@ -64,7 +64,7 @@ export const AdminAnnouncementDetailView = ({ slug }: AdminAnnouncementDetailVie
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-4xl flex-col gap-6 p-4 duration-700 md:p-8 font-sans">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-4 md:p-8 font-sans">
       {/* Header */}
       <div className="flex items-center gap-6 px-2">
         <Link href="/admin/announcements">

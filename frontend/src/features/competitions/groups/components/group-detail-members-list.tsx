@@ -120,7 +120,7 @@ const MemberActionDropdown = ({
       </Button>
 
       {isOpen && (
-        <div className="animate-in fade-in zoom-in absolute top-full right-0 z-50 mt-2 w-48 origin-top-right duration-200">
+        <div className="absolute top-full right-0 z-50 mt-2 w-48 origin-top-right">
           <div className="rounded-app border border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl">
             <div className="py-1.5">
               {actions.map((action, idx) => {

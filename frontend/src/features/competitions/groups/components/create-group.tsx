@@ -163,7 +163,7 @@ export function CreateGroupForm() {
 
           {/* Premium Restriction Overlay */}
           {isFree && (
-            <div className="animate-in fade-in absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center duration-700">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center">
               <div className="absolute inset-0 bg-black/85 backdrop-blur-[32px] sm:backdrop-blur-[45px]" />
 
               <div className="relative z-30 mx-auto flex max-w-[280px] flex-col items-center">

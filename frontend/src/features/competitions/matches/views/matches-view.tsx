@@ -54,7 +54,7 @@ export const MatchesView = () => {
             <DateSwitcher />
           </div>
 
-          <div className="animate-in fade-in slide-in-from-bottom-4 -mx-1 grid grid-cols-1 gap-3 duration-700 md:mx-0 md:gap-6 lg:grid-cols-2">
+          <div className="-mx-1 grid grid-cols-1 gap-3 md:mx-0 md:gap-6 lg:grid-cols-2">
             {data && data?.length > 0 ? (
               data.map((match: Match) => (
                 <MatchCard key={match.id} match={match} refresh={mutate} />

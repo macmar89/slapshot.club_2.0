@@ -65,7 +65,7 @@ export const MissingTipsView = () => {
         notFound={<ErrorView />}
       >
         {(matches) => (
-          <div className="animate-in fade-in slide-in-from-bottom-4 grid grid-cols-1 gap-4 duration-700 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {matches && matches.length > 0 ? (
               matches.map((match: Match) => (
                 <div key={match.id} className="relative">

@@ -41,7 +41,7 @@ export const AdminMatchDetailView = () => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 duration-1000 md:p-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-6">

@@ -46,10 +46,9 @@ interface AccountViewProps {
     };
     role?: string;
   };
-  countries: Array<{ id: number; name: string; code: string }>;
 }
 
-export function AccountView({ user: initialUser, countries }: AccountViewProps) {
+export function AccountView({ user: initialUser }: AccountViewProps) {
   const t = useTranslations('Account');
   const router = useRouter();
   const pathname = usePathname();
@@ -70,7 +69,7 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
   };
 
   return (
-    <div className="animate-in fade-in py-8 duration-700 md:py-24">
+    <div className="py-8 md:py-24">
       <Container className="max-w-4xl">
         <div className="flex flex-col gap-6 md:gap-6">
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -92,7 +91,7 @@ export function AccountView({ user: initialUser, countries }: AccountViewProps) 
               </div>
             )}
 
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
               <TabsContent value="profile">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   <ProfileOverview />

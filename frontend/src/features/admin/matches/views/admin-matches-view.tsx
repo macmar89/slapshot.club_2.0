@@ -19,7 +19,7 @@ export const AdminMatchesView = () => {
   const { data, mutate, isLoading, error } = useAdminMatches(buildQueryString());
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 duration-700 md:p-8">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-8">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-black tracking-widest text-white/90 uppercase italic drop-shadow-md md:text-4xl">
           {t('title')}

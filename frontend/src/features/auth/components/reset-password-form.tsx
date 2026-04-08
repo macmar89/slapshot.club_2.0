@@ -67,7 +67,7 @@ export const ResetPasswordForm = () => {
 
   if (isSuccess) {
     return (
-      <div className="animate-in fade-in zoom-in flex w-full max-w-sm flex-col gap-6 text-center duration-500">
+      <div className="flex w-full max-w-sm flex-col gap-6 text-center">
         <div className="bg-gold/10 border-gold/20 mx-auto mb-2 flex h-20 w-20 items-center justify-center rounded-full border">
           <svg
             className="text-gold h-10 w-10"

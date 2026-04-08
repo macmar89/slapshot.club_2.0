@@ -21,7 +21,7 @@ export function ResetPasswordView() {
       <div className="relative z-10 flex w-full max-w-6xl flex-col items-center gap-16 px-6 py-12 lg:flex-row lg:gap-24">
         {/* Left Column: Marketing / Branding */}
         <div className="flex-1 text-center lg:text-left">
-          <div className="animate-in fade-in slide-in-from-top-4 relative order-1 mx-auto mb-2 h-40 w-40 duration-700 sm:mb-4 lg:mx-0 lg:ml-auto">
+          <div className="relative order-1 mx-auto mb-2 h-40 w-40 sm:mb-4 lg:mx-0 lg:ml-auto">
             <SlapshotLogo
               width={160}
               height={160}
@@ -29,7 +29,7 @@ export function ResetPasswordView() {
             />
           </div>
 
-          <div className="animate-in slide-in-from-left mb-8 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold tracking-[0.2em] text-white uppercase backdrop-blur-md duration-700">
+          <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold tracking-[0.2em] text-white uppercase backdrop-blur-md">
             <Zap className="h-3 w-3 fill-white" />
             {t('hero.badge')}
           </div>
@@ -45,7 +45,7 @@ export function ResetPasswordView() {
         </div>
 
         {/* Right Column: Reset Password Form */}
-        <div className="animate-in zoom-in fade-in w-full max-w-md duration-1000">
+        <div className="w-full max-w-md">
           <IceGlassCard className="border-0 p-0 sm:p-0" backdropBlur="xl">
             <div className="flex w-full flex-col items-center rounded-2xl border border-white/5 bg-white/5 p-6 shadow-inner">
               <React.Suspense fallback={<div className="text-white/50">Loading...</div>}>

@@ -223,7 +223,7 @@ export function PlayerPredictionHistory({
 
         {/* Suggestions Dropdown */}
         {showDropdown && filteredTeams.length > 0 && !isLocked && (
-          <div className="animate-in fade-in slide-in-from-top-2 absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#0f172a]/95 shadow-2xl backdrop-blur-2xl duration-200">
+          <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#0f172a]/95 shadow-2xl backdrop-blur-2xl">
             <div className="space-y-0.5 p-1.5">
               {filteredTeams.map((team) => (
                 <button

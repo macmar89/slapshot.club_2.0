@@ -21,7 +21,7 @@ export function LoginView() {
       <div className="relative mx-auto flex w-full max-w-[1920px] flex-col p-4 text-right lg:flex-row">
         {/* Left Column: Login Form */}
         <div className="relative z-40 order-2 flex w-full items-center justify-center p-2 sm:p-8 lg:order-1 lg:w-1/2 lg:p-12">
-          <div className="animate-in fade-in slide-in-from-left w-full max-w-md duration-1000">
+          <div className="w-full max-w-md">
             <IceGlassCard className="border-0 p-0 sm:p-0" backdropBlur="xl">
               <div className="relative z-10 flex w-full flex-col items-center border border-white/5 bg-white/5 p-6 shadow-inner sm:p-8">
                 <React.Suspense fallback={<div className="text-white/50">Loading...</div>}>
@@ -35,8 +35,8 @@ export function LoginView() {
         {/* Right Column: Hero Content */}
         <div className="relative order-1 min-h-[30vh] w-full overflow-hidden lg:order-2 lg:min-h-screen lg:w-1/2">
           <div className="relative z-20 flex h-full flex-col items-center justify-center p-6 pb-4 text-right sm:p-12 lg:items-end lg:p-24">
-            <div className="animate-in fade-in slide-in-from-right flex flex-col space-y-2 duration-1000 sm:space-y-4">
-              <div className="animate-in fade-in slide-in-from-top-4 relative order-1 mx-auto mb-2 h-40 w-40 duration-700 sm:mb-4 lg:mx-0 lg:ml-auto">
+            <div className="flex flex-col space-y-2 sm:space-y-4">
+              <div className="relative order-1 mx-auto mb-2 h-40 w-40 sm:mb-4 lg:mx-0 lg:ml-auto">
                 <SlapshotLogo
                   width={160}
                   height={160}

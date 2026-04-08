@@ -51,7 +51,7 @@ export const AnnouncementLocaleTabs = ({
         <TabsContent
           key={lang}
           value={lang}
-          className="animate-in fade-in slide-in-from-left-4 mt-0 space-y-6 duration-500"
+          className="mt-0 space-y-6"
         >
           <div className="space-y-2">
             <Label className="ml-1 font-mono text-[12px] tracking-widest text-white uppercase italic">

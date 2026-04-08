@@ -62,7 +62,7 @@ export function AccountView() {
               </div>
             )}
 
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
               <TabsContent value="profile">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   <ProfileOverview />

@@ -43,7 +43,7 @@ export function AnnouncementDetailView() {
       >
         {(item: PublicAnnouncementDetailDto) => (
           <IceGlassCard className="p-6 md:p-10">
-            <article className="animate-in fade-in slide-in-from-bottom-8 fill-mode-both duration-700">
+            <article>
               <div className="mb-6 flex flex-wrap items-center gap-4">
                 <AnnouncementTypeBadge type={item.type} />
                 <div className="flex items-center gap-2 text-xs font-medium tracking-widest text-white/60 uppercase">

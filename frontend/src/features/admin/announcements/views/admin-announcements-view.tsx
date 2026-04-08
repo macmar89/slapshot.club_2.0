@@ -27,7 +27,7 @@ export const AdminAnnouncementsView = () => {
   );
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 duration-700 md:p-8 font-sans">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-8 font-sans">
       <div className="mb-4 flex items-center justify-between">
         <PageHeader title={t('title')} hideDescriptionOnMobile />
         <Link href="/admin/announcements/create">

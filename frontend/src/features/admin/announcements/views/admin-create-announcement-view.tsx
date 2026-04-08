@@ -30,7 +30,7 @@ export const AdminCreateAnnouncementView = () => {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 duration-1000 md:p-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 md:p-8">
       <div className="flex items-center gap-6 px-2">
         <Link href="/admin/announcements">
           <Button
