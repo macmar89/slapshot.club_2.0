@@ -20,6 +20,7 @@ export const getAnnouncementsHandler = catchAsync(async (req: Request, res: Resp
     limit,
     offset,
     locale,
+    undefined,
     { ...filters, isPublished: true },
   );
 

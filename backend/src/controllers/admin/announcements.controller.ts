@@ -10,10 +10,10 @@ import {
 import { buildPaginatedResponse } from '../../utils/pagination.js';
 import type { Request, Response } from 'express';
 import { type AuditCtx } from '../../services/audit.service.js';
-import type { GetAllAnnouncementsQueryInput } from '../../shared/constants/schema/admin/announcements.schema.js';
+import type { GetAllAnnouncementsAsAdminQueryInput } from '../../shared/constants/schema/admin/announcements.schema.js';
 
 export const getAllAnnouncementsHandler = catchAsync(async (req: Request, res: Response) => {
-  const query = req.query as unknown as GetAllAnnouncementsQueryInput;
+  const query = req.query as unknown as GetAllAnnouncementsAsAdminQueryInput;
   const { sort, filters, lang } = query;
   const { limit, offset } = req.pagination;
   const locale = (lang as string) || req.cookies.NEXT_LOCALE || 'sk';

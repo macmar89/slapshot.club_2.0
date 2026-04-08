@@ -10,6 +10,7 @@ import {
   Trophy,
   Users,
   FileText,
+  Megaphone,
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
@@ -28,11 +29,13 @@ import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useCompetitionStore } from '@/store/use-competition-store';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
+import { useAnnouncementsUnreadCount } from '@/features/announcements/hooks/use-announcements-unread-count';
+import packageJson from '../../../../package.json';
 
 interface MobileMenuProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  user: any;
+  user: { username?: string } | null;
   slug: string;
 }
 
@@ -43,6 +46,8 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
 
   const { data: missingData } = useSWR<{ count: number }>(API_ROUTES.PREDICTION.SUMMARY);
   const missingCount = missingData?.count || 0;
+
+  const { unreadCount } = useAnnouncementsUnreadCount();
 
   return (
     <div className="ml-auto md:hidden">
@@ -111,7 +116,7 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
               {slug && (
                 <>
                   <Link
-                    href={`/${slug}/dashboard` as any}
+                    href={`/${slug}/dashboard`}
                     onClick={() => onOpenChange(false)}
                     className="rounded-app flex flex-col items-center justify-center gap-2 border border-white/20 bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
                   >
@@ -121,7 +126,7 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
                     </span>
                   </Link>
                   <Link
-                    href={`/${slug}/matches` as any}
+                    href={`/${slug}/matches`}
                     onClick={() => onOpenChange(false)}
                     className="rounded-app flex flex-col items-center justify-center gap-2 border border-white/20 bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
                   >
@@ -131,7 +136,7 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
                     </span>
                   </Link>
                   <Link
-                    href={`/${slug}/leaderboard` as any}
+                    href={`/${slug}/leaderboard`}
                     onClick={() => onOpenChange(false)}
                     className="rounded-app flex flex-col items-center justify-center gap-2 border border-white/20 bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
                   >
@@ -141,7 +146,7 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
                     </span>
                   </Link>
                   <Link
-                    href={`/${slug}/groups` as any}
+                    href={`/${slug}/groups`}
                     onClick={() => onOpenChange(false)}
                     className="rounded-app flex flex-col items-center justify-center gap-2 border border-white/20 bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
                   >
@@ -156,7 +161,7 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
               <Link
                 href="/user-manual"
                 onClick={() => onOpenChange(false)}
-                className="rounded-app border-primary/20 flex flex-col items-center justify-center gap-2 border bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
+                className="rounded-app border-white/20 flex flex-col items-center justify-center gap-2 border bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
               >
                 <FileText className="h-5 w-5" />
                 <span className="text-[10px] font-bold tracking-widest uppercase">
@@ -165,9 +170,25 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
               </Link>
 
               <Link
+                href="/announcements"
+                onClick={() => onOpenChange(false)}
+                className="rounded-app group relative border-white/20 flex flex-col items-center justify-center gap-2 border bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
+              >
+                <Megaphone className="h-5 w-5" />
+                <span className="text-[10px] font-bold tracking-widest uppercase">
+                  {dt('announcements')}
+                </span>
+                {unreadCount > 0 && (
+                  <div className="bg-primary absolute top-2 right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-black text-black">
+                    {unreadCount}
+                  </div>
+                )}
+              </Link>
+
+              <Link
                 href="/account"
                 onClick={() => onOpenChange(false)}
-                className="rounded-app border-primary/20 flex flex-col items-center justify-center gap-2 border bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
+                className="rounded-app border-white/20 flex flex-col items-center justify-center gap-2 border bg-gray-800 p-4 text-white/60 transition-all hover:bg-white/10 hover:text-white"
               >
                 <UserIcon className="h-5 w-5" />
                 <span className="text-[10px] font-bold tracking-widest uppercase">
@@ -187,7 +208,19 @@ export function MobileMenu({ isOpen, onOpenChange, user, slug }: MobileMenuProps
               </FeedbackModal>
             </div>
 
-            <LogoutButton />
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black tracking-widest text-white uppercase">
+                    v{packageJson.version}
+                  </span>
+                  <span className="bg-primary rounded-sm px-1.5 py-0.5 text-[8px] font-black tracking-normal text-black normal-case">
+                    BETA
+                  </span>
+                </div>
+                <LogoutButton />
+              </div>
+            </div>
           </div>
         </SheetContent>
       </Sheet>

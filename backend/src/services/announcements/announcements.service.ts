@@ -4,7 +4,8 @@ export const getAnnouncements = async (
   limit: number,
   offset: number,
   lang: string,
-  filters?: { isPublished?: boolean; type?: string | undefined },
+  sort?: { by: string; order: 'asc' | 'desc' },
+  filters?: { isPublished?: boolean | undefined; type?: string | undefined },
 ) => {
   // Map 'cz' to 'cs' for database
   const dbLang = lang === 'cz' ? 'cs' : lang;
@@ -13,7 +14,7 @@ export const getAnnouncements = async (
     limit,
     offset,
     dbLang,
-    { by: 'publishedAt', order: 'desc' },
+    sort || { by: 'publishedAt', order: 'desc' },
     (filters || {}) as any,
   );
 };
