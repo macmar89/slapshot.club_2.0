@@ -87,8 +87,18 @@ export const markAsReadHandler = catchAsync(
 
 export const getUnreadNotificationsCountHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const { group } = req.query as { group?: string | string[] };
     const userId = req.user!.id;
-    const count = await notificationsRepository.getUnreadCountByUserId(userId);
+    const count = await notificationsRepository.getUnreadCountByUserId(userId, group);
     res.status(HttpStatusCode.OK).json({ status: 'success', data: { count } });
+  },
+);
+
+export const markAnnouncementReadHandler = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { slug } = req.params as { slug: string };
+    const userId = req.user!.id;
+    await notificationsRepository.markAnnouncementAsRead(userId, slug);
+    res.status(HttpStatusCode.OK).json({ status: 'success' });
   },
 );

@@ -5,6 +5,7 @@ import {
   getNotificationsSchema,
   markAsReadSchema,
   getUnreadCountSchema,
+  markAnnouncementAsReadSchema,
 } from '../shared/constants/schema/notifications.schema.js';
 import { IS_DEVELOPMENT } from '../config/env.js';
 
@@ -14,6 +15,11 @@ router.get('/stream', notificationsController.getNotificationsStreamHandler);
 router.get('/', validate(getNotificationsSchema), notificationsController.getNotificationsHandler);
 router.patch('/read/all', notificationsController.markAllAsReadHandler);
 router.patch('/read/:id', validate(markAsReadSchema), notificationsController.markAsReadHandler);
+router.patch(
+  '/read/announcement/:slug',
+  validate(markAnnouncementAsReadSchema),
+  notificationsController.markAnnouncementReadHandler,
+);
 router.get(
   '/unread-count',
   validate(getUnreadCountSchema),

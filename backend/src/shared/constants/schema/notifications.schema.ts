@@ -23,4 +23,10 @@ export const getUnreadCountSchema = z.object({
   }),
 });
 
+export const markAnnouncementAsReadSchema = z.object({
+  params: z.object({
+    slug: z.string(),
+  }),
+});
+
 export type GetNotificationsQuery = z.infer<typeof getNotificationsQuerySchema>;

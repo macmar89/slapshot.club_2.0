@@ -19,7 +19,7 @@ export function useNotificationActions() {
       if (!notification.isRead) {
         await api.patch(API_ROUTES.NOTIFICATIONS.READ_ONE(notification.id));
         // Global revalidate for all notification-related keys
-        mutate(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT);
+        mutate(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT());
         mutate(API_ROUTES.NOTIFICATIONS.ALL(10, 'ALL'));
       }
 

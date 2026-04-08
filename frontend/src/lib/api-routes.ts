@@ -108,9 +108,11 @@ export const API_ROUTES = {
       });
       return `/notifications?${params.toString()}`;
     },
-    UNREAD_COUNT: '/notifications/unread-count',
+    UNREAD_COUNT: (group?: string) =>
+      group ? `/notifications/unread-count?group=${group}` : '/notifications/unread-count',
     READ_ALL: '/notifications/read/all',
     READ_ONE: (id: string) => `/notifications/read/${id}`,
+    READ_ANNOUNCEMENT: (slug: string) => `/notifications/read/announcement/${slug}`,
     STREAM: '/notifications/stream',
   },
   ANNOUNCEMENTS: {

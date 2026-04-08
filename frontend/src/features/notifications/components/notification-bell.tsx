@@ -41,7 +41,7 @@ export function NotificationBell() {
   useNotificationsSSE();
 
   const { data: unreadData, mutate: mutateUnread } = useSWR<{ count: number }>(
-    API_ROUTES.NOTIFICATIONS.UNREAD_COUNT,
+    API_ROUTES.NOTIFICATIONS.UNREAD_COUNT(),
   );
   const {
     data: notificationsData,

@@ -1,6 +1,6 @@
 import { db as defaultDb } from '../db/index.js';
 import { notifications } from '../db/schema/index.js';
-import { eq, and, inArray, lt } from 'drizzle-orm';
+import { eq, and, inArray, lt, sql } from 'drizzle-orm';
 import type { NotificationPayload, CreateNotificationData } from '../types/notifications.types.js';
 import { NOTIFICATION_GROUPS } from '../constants/notifications.constants.js';
 
@@ -59,10 +59,22 @@ export const notificationsRepository = {
     });
   },
 
-  async getUnreadCountByUserId(userId: string): Promise<number> {
+  async getUnreadCountByUserId(userId: string, groupParam?: string | string[]): Promise<number> {
     const result = await defaultDb.query.notifications.findMany({
       columns: { id: true },
-      where: (n, { eq, and }) => and(eq(n.userId, userId), eq(n.isRead, false)),
+      where: (n, { eq, and, inArray }) => {
+        const filters = [eq(n.userId, userId), eq(n.isRead, false)];
+        if (groupParam && groupParam !== 'ALL') {
+          const types = getTypesForGroups(groupParam);
+          if (types.length > 0) {
+            filters.push(inArray(n.type, types as any));
+          } else {
+            // Invalid group, block all
+            filters.push(eq(n.type, 'NONE' as any));
+          }
+        }
+        return and(...filters);
+      },
     });
     return result.length;
   },
@@ -81,5 +93,18 @@ export const notificationsRepository = {
       .update(notifications)
       .set({ isRead: true })
       .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+  },
+  async markAnnouncementAsRead(userId: string, slug: string) {
+    await defaultDb
+      .update(notifications)
+      .set({ isRead: true })
+      .where(
+        and(
+          eq(notifications.userId, userId),
+          eq(notifications.type, 'NEW_ANNOUNCEMENT'),
+          eq(notifications.isRead, false),
+          sql`${notifications.payload}->>'announcementSlug' = ${slug}`
+        )
+      );
   },
 };

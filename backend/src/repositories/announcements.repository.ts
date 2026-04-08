@@ -59,7 +59,7 @@ export const announcementsRepository = {
 
     if (filters?.isPublished !== undefined) {
       const isPublished = (filters.isPublished as any) === 'true' || filters.isPublished === true;
-      logger.info({ isPublished }, 'isPublished');
+
       whereConditions.push(eq(announcements.isPublished, isPublished));
     }
     if (filters?.type) {

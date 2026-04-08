@@ -19,9 +19,13 @@ export function useNotificationsSSE() {
     };
 
     eventSource.addEventListener('new-notification', () => {
-      // Invalidate both lists immediately to trigger automatic background refetch
-      mutate(API_ROUTES.NOTIFICATIONS.UNREAD_COUNT);
-      mutate(API_ROUTES.NOTIFICATIONS.ALL(10, 'ALL')); // Assumes matching SWR limits
+      // Invalidate all unread count variants and the main notification list
+      mutate(
+        (key) => typeof key === 'string' && key.startsWith('/notifications/unread-count'),
+        undefined,
+        { revalidate: true }
+      );
+      mutate(API_ROUTES.NOTIFICATIONS.ALL(10, 'ALL'));
     });
 
     eventSource.addEventListener('connected', (event) => {

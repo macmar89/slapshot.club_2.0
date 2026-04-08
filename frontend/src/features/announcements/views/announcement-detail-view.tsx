@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
+import { api } from '@/lib/api';
 import { DataLoader } from '@/components/common/data-loader';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,8 +22,29 @@ export function AnnouncementDetailView() {
   const locale = useLocale();
 
   const { slug } = useAppParams(['slug']);
+  const { mutate } = useSWRConfig();
 
   const { data: announcement, error, isLoading } = useSWR(API_ROUTES.ANNOUNCEMENTS.DETAIL(slug));
+
+  useEffect(() => {
+    const markAsRead = async () => {
+      try {
+        await api.patch(API_ROUTES.NOTIFICATIONS.READ_ANNOUNCEMENT(slug));
+        // Global revalidate for unread announcement badge
+        mutate(
+          (key) => typeof key === 'string' && key.startsWith('/notifications/unread-count'),
+          undefined,
+          { revalidate: true }
+        );
+      } catch (err) {
+        console.error('Failed to mark announcement as read', err);
+      }
+    };
+
+    if (slug) {
+      markAsRead();
+    }
+  }, [slug, mutate]);
 
   const dateLocale = locale === 'sk' ? sk : locale === 'cs' ? cs : enUS;
   const publishedDate = announcement?.publishedAt

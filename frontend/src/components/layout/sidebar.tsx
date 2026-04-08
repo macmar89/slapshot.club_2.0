@@ -6,6 +6,7 @@ import { Link, usePathname } from '@/i18n/routing';
 import { FileText, User, MessageSquarePlus, Settings, Megaphone } from 'lucide-react';
 import { FeedbackModal } from '@/components/common/feedback-modal';
 import { useAuthStore } from '@/store/use-auth-store';
+import { useAnnouncementsUnreadCount } from '@/features/announcements/hooks/use-announcements-unread-count';
 
 interface SidebarItemProps {
   href: string;
@@ -58,6 +59,8 @@ export const Sidebar = ({ children }: SidebarProps) => {
   const t = useTranslations('Dashboard.nav');
   const pathname = usePathname();
 
+  const { unreadCount } = useAnnouncementsUnreadCount();
+
   const user = useAuthStore((state) => state.user);
   const isAdmin = user?.role === 'admin' || user?.role === 'editor';
 
@@ -76,6 +79,7 @@ export const Sidebar = ({ children }: SidebarProps) => {
             icon={Megaphone}
             label={t('announcements')}
             isActive={pathname === '/announcements'}
+            badge={unreadCount > 0 ? unreadCount : undefined}
           />
           <SidebarItem
             href="/user-manual"
