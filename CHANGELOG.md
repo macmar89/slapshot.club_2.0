@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.1...v0.1.2) (2026-04-08)
+
+
+### Features
+
+* add announcements schema and integrate into database models ([7cf213a](https://github.com/macmar89/slapshot.club_2.0/commit/7cf213a77d4b28fb11f84f4893d8be173c8c7669))
+* implement admin announcement management system with CRUD capabilities and localization support ([c499102](https://github.com/macmar89/slapshot.club_2.0/commit/c4991021331de65831d5043b0ea03a43dd1028a2))
+* implement full CRUD functionality for admin announcements including publishing, deletion, and filtering. ([a142814](https://github.com/macmar89/slapshot.club_2.0/commit/a1428149eb761498a97e20ff1b33ed35c140177e))
+
+
+### Refactors
+
+* remove PWA tabs from onboarding modal and clean up turbopack config ([f31a6df](https://github.com/macmar89/slapshot.club_2.0/commit/f31a6dfa534596295f9663be3824bceb00e1acdf))
+* simplify UserProfileDrawer props and update version display from package.json with turbopack configuration ([9a6d8c8](https://github.com/macmar89/slapshot.club_2.0/commit/9a6d8c88bab55a30bfeaa4802435e4002c2171d1))
+
 ### [0.1.1](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.0...v0.1.1) (2026-04-07)
 
 
