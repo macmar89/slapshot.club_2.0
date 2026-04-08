@@ -23,16 +23,16 @@ export const AdminAnnouncementsView = () => {
   >({ isPublished: undefined, type: undefined }, { by: 'createdAt', order: 'desc' });
 
   const { data, isLoading, error } = useSWR<AnnouncementsListResponse>(
-    `${API_ROUTES.ADMIN.ANNOUNCEMENTS.LIST}?${buildQueryString()}`
+    `${API_ROUTES.ADMIN.ANNOUNCEMENTS.LIST}?${buildQueryString()}`,
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-8 font-sans">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <div className="flex items-center justify-between">
         <PageHeader title={t('title')} hideDescriptionOnMobile />
         <Link href="/admin/announcements/create">
-          <Button className="font-bold tracking-widest uppercase italic shadow-[0_0_15px_rgba(234,179,8,0.3)] hover:shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-all">
-            <Plus className="h-5 w-5 mr-2" />
+          <Button className="font-bold tracking-widest uppercase italic shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.5)]">
+            <Plus className="mr-2 h-5 w-5" />
             {t('create_button')}
           </Button>
         </Link>
@@ -68,10 +68,7 @@ export const AdminAnnouncementsView = () => {
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <IceGlassCard className="overflow-hidden border-white/10 p-0 shadow-2xl">
-                <AdminAnnouncementsTable
-                  announcements={data.data}
-                  isLoading={false}
-                />
+                <AdminAnnouncementsTable announcements={data.data} isLoading={false} />
 
                 {/* Pagination inside Card on Desktop */}
                 <div className="flex flex-col items-center justify-center gap-4 border-t border-white/5 bg-white/[0.02] py-6">
@@ -81,8 +78,8 @@ export const AdminAnnouncementsView = () => {
                     onPageChange={setPage}
                   />
                   <div className="font-mono text-[10px] tracking-tighter text-white/20 uppercase">
-                    {t('total_items')}: {data.meta.totalItems} | {t('page')}: {data.meta.currentPage} /{' '}
-                    {data.meta.totalPages}
+                    {t('total_items')}: {data.meta.totalItems} | {t('page')}:{' '}
+                    {data.meta.currentPage} / {data.meta.totalPages}
                   </div>
                 </div>
               </IceGlassCard>

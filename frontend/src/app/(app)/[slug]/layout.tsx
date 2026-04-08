@@ -40,7 +40,7 @@ export default async function CompetitionLayout({
         </IceGlassCard>
       </aside>
 
-      <main className="min-h-screen pt-20 pb-32 md:pb-0 lg:pl-72">
+      <main className="min-h-screen pt-24 pb-32 md:pb-0 lg:pl-72">
         <Container className="h-full">{children}</Container>
       </main>
 

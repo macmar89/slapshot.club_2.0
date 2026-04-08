@@ -7,6 +7,7 @@ interface AppRouteParams {
   username: string;
   matchId: string;
   groupSlug: string;
+  id: string;
 }
 
 export function useAppParams<K extends keyof AppRouteParams>(keys: K[]): Pick<AppRouteParams, K> {

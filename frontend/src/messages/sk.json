@@ -933,7 +933,7 @@
       "teams": "Tímy",
       "users": "Používatelia",
       "announcements": "Oznámenia",
-      "feedback": "Spätná väzba",
+      "feedback": "Feedback",
       "logs": "Audit Logy"
     },
     "Announcements": {
@@ -1111,7 +1111,7 @@
       }
     },
     "Feedback": {
-      "title": "Spätná väzba - Administrácia",
+      "title": "Feedback - Administrácia",
       "no_feedback_found": "Žiadna spätná väzba sa nenašla",
       "total_items": "Celkom",
       "page": "Strana",

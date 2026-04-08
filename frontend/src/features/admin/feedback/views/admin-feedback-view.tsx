@@ -1,32 +1,35 @@
 'use client';
 
-import { useAdminMatches } from '../api/use-admin-matches';
+import useSWR from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { useTableFiltersUrl } from '@/hooks/use-table-filters-url';
-import { AdminMatchesFilter } from '../components/admin-matches-filter';
-import { AdminMatchesTable } from '../components/admin-matches-table';
-import { AdminMatchCard } from '../components/admin-match-card';
+import { AdminFeedbackFilter } from '../components/admin-feedback-filter';
+import { AdminFeedbackTable } from '../components/admin-feedback-table';
+import { AdminFeedbackCard } from '../components/admin-feedback-card';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Pagination } from '@/components/common/pagination';
 import { DataLoader } from '@/components/common/data-loader';
 import { useTranslations } from 'next-intl';
+import { FeedbackListResponse } from '../feedback.types';
 import { PageHeader } from '@/components/layout/page-header';
 
-export const AdminMatchesView = () => {
-  const t = useTranslations('Admin.Matches');
+export const AdminFeedbackView = () => {
+  const t = useTranslations('Admin.Feedback');
   const { filters, updateFilter, page, setPage, buildQueryString } = useTableFiltersUrl<
     Record<string, unknown>
-  >({ status: 'scheduled', isChecked: false });
+  >({ status: undefined, read: undefined }, { by: 'createdAt', order: 'desc' });
 
-  const { data, mutate, isLoading, error } = useAdminMatches(buildQueryString());
+  const { data, isLoading, error } = useSWR<FeedbackListResponse>(
+    `${API_ROUTES.ADMIN.FEEDBACK.LIST}?${buildQueryString()}`,
+  );
 
   return (
-    <div className="md:p- mx-auto flex w-full max-w-7xl flex-col gap-6">
-      <PageHeader title={t('title')} />
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 font-sans">
+      <PageHeader title={t('title')} hideDescriptionOnMobile />
 
       <IceGlassCard className="relative overflow-hidden border-white/10 p-6 shadow-2xl md:p-8">
-        <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
-        <AdminMatchesFilter
-          filters={filters as Record<string, unknown>}
+        <AdminFeedbackFilter
+          filters={filters as Record<string, string | boolean | undefined>}
           updateFilter={updateFilter}
         />
       </IceGlassCard>
@@ -37,7 +40,7 @@ export const AdminMatchesView = () => {
         error={error}
         notFound={
           <div className="p-12 text-center font-bold tracking-widest text-white/30 uppercase italic">
-            {t('no_matches_found')}
+            {t('no_feedback_found')}
           </div>
         }
         skeleton={
@@ -53,11 +56,7 @@ export const AdminMatchesView = () => {
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <IceGlassCard className="overflow-hidden border-white/10 p-0 shadow-2xl">
-                <AdminMatchesTable
-                  matches={data.data}
-                  isLoading={false}
-                  onRefresh={() => mutate()}
-                />
+                <AdminFeedbackTable feedback={data.data} />
 
                 {/* Pagination inside Card on Desktop */}
                 <div className="flex flex-col items-center justify-center gap-4 border-t border-white/5 bg-white/[0.02] py-6">
@@ -67,8 +66,8 @@ export const AdminMatchesView = () => {
                     onPageChange={setPage}
                   />
                   <div className="font-mono text-[10px] tracking-tighter text-white/20 uppercase">
-                    SPOLU ZÁPASOV: {data.meta.totalItems} | STRANA: {data.meta.currentPage} /{' '}
-                    {data.meta.totalPages}
+                    {t('total_items')}: {data.meta.totalItems} | {t('page')}:{' '}
+                    {data.meta.currentPage} / {data.meta.totalPages}
                   </div>
                 </div>
               </IceGlassCard>
@@ -76,8 +75,8 @@ export const AdminMatchesView = () => {
 
             {/* Mobile Cards View */}
             <div className="flex flex-col gap-4 md:hidden">
-              {data.data.map((match) => (
-                <AdminMatchCard key={match.id} match={match} />
+              {data.data.map((item) => (
+                <AdminFeedbackCard key={item.id} feedback={item} />
               ))}
 
               {/* Pagination in its own Card on Mobile */}
@@ -88,8 +87,8 @@ export const AdminMatchesView = () => {
                   onPageChange={setPage}
                 />
                 <div className="text-center font-mono text-[10px] tracking-tighter text-white/20 uppercase">
-                  SPOLU ZÁPASOV: {data.meta.totalItems} <br />
-                  STRANA: {data.meta.currentPage} / {data.meta.totalPages}
+                  {t('total_items')}: {data.meta.totalItems} <br />
+                  {t('page')}: {data.meta.currentPage} / {data.meta.totalPages}
                 </div>
               </IceGlassCard>
             </div>

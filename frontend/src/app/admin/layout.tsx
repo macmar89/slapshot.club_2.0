@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </IceGlassCard>
         </aside>
 
-        <main className="min-h-screen pt-20 pb-32 md:pb-0 lg:pl-72">
+        <main className="min-h-screen pt-24 pb-32 md:pb-0 lg:pl-72">
           <Container>{children}</Container>
         </main>
       </div>

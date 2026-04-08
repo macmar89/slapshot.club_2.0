@@ -7,15 +7,15 @@ import useSWR from 'swr';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { API_ROUTES } from '@/lib/api-routes';
-import { AnnouncementForm } from '../components/announcement-form';
-import { AnnouncementDeleteDialog } from '../components/announcement-delete-dialog';
-import { AnnouncementFormValues } from '../announcements.types';
+import { AnnouncementForm } from '@/features/admin/announcements/components/announcement-form';
+import { AnnouncementDeleteDialog } from '@/features/admin/announcements/components/announcement-delete-dialog';
+import { AnnouncementFormValues } from '@/features/admin/announcements/announcements.types';
 import { DataLoader } from '@/components/common/data-loader';
-import { ArrowLeft, X } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { X } from 'lucide-react';
 import { api } from '@/lib/api';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
-import { Button } from '@/components/ui/button';
+import { BackLink } from '@/components/common/back-link';
+import { PageHeader } from '@/components/layout/page-header';
 
 interface AdminAnnouncementDetailViewProps {
   slug: string;
@@ -29,7 +29,7 @@ export const AdminAnnouncementDetailView = ({ slug }: AdminAnnouncementDetailVie
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { data, isLoading, error } = useSWR<AnnouncementFormValues>(
-    API_ROUTES.ADMIN.ANNOUNCEMENTS.DETAIL(slug)
+    API_ROUTES.ADMIN.ANNOUNCEMENTS.DETAIL(slug),
   );
 
   const handleSubmit = async (values: AnnouncementFormValues) => {
@@ -64,26 +64,11 @@ export const AdminAnnouncementDetailView = ({ slug }: AdminAnnouncementDetailVie
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-4 md:p-8 font-sans">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
       {/* Header */}
       <div className="flex items-center gap-6 px-2">
-        <Link href="/admin/announcements">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
-          >
-            <ArrowLeft className="h-5 w-5 text-white/50 hover:text-white" />
-          </Button>
-        </Link>
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-black tracking-widest text-white/90 uppercase italic drop-shadow-md md:text-3xl">
-            {t('edit_title')}
-          </h1>
-          <span className="text-primary/60 text-[10px] font-bold tracking-widest uppercase">
-            Admin Announcement System
-          </span>
-        </div>
+        <BackLink href="/admin/announcements" />
+        <PageHeader title={t('edit_title')} />
       </div>
 
       <DataLoader
@@ -100,9 +85,7 @@ export const AdminAnnouncementDetailView = ({ slug }: AdminAnnouncementDetailVie
             </div>
           </div>
         }
-        skeleton={
-          <IceGlassCard className="h-[600px] animate-pulse border-white/10 bg-white/5" />
-        }
+        skeleton={<IceGlassCard className="h-[600px] animate-pulse border-white/10 bg-white/5" />}
       >
         {(data) => (
           <AnnouncementForm

@@ -930,6 +930,7 @@
       "teams": "Týmy",
       "users": "Uživatelé",
       "announcements": "Oznámení",
+      "feedback": "Feedback",
       "logs": "Audit Logy"
     },
     "Announcements": {
@@ -1118,6 +1119,55 @@
       "title": "Chybějící tipy",
       "description": "{count, plural, one {# chybějící tip} few {# chybějící tipy} other {# chybějících tipů}} na nejbližších 24 hodin",
       "action": "Doplnit tipy"
+    },
+    "Feedback": {
+      "title": "Feedback - Administrace",
+      "no_feedback_found": "Žádná zpětná vazba nebyla nalezena",
+      "total_items": "Celkem",
+      "page": "Strana",
+      "back_to_list": "Zpět na seznam",
+      "feedback_not_found": "Zpětná vazba nebyla nalezena",
+      "mark_read_error": "Nepodařilo se označit jako přečtenou",
+      "update_status_success": "Stav byl úspěšně aktualizován",
+      "update_status_error": "Nepodařilo se aktualizovat stav",
+      "save_status": "Uložit stav",
+      "saving": "Ukladám...",
+      "detail_title": "Detail zprávy",
+      "message_label": "Zpráva",
+      "page_url_label": "URL stránky",
+      "from_user": "Od uživatele",
+      "anonymous": "Anonymní",
+      "filter": {
+        "status": "Stav",
+        "all_statuses": "Všechny stavy",
+        "read": "Přečteno",
+        "all_read": "Vše",
+        "only_read": "Pouze přečtené",
+        "only_unread": "Pouze nepřečtené",
+        "date_from": "Datum od",
+        "date_to": "Datum do"
+      },
+      "table": {
+        "no_feedback_found": "Žádná zpětná vazba nebyla nalezena",
+        "type": "Typ",
+        "from": "Od",
+        "date": "Datum",
+        "status": "Stav",
+        "read": "Přečteno"
+      },
+      "status": {
+        "new": "Nové",
+        "in-progress": "V řešení",
+        "resolved": "Vyřešeno",
+        "ignored": "Ignorováno"
+      },
+      "type": {
+        "bug": "Chyba",
+        "idea": "Nápad",
+        "change_user_email_request": "Žádost o změnu emailu",
+        "custom_country_request": "Žádost o zemi",
+        "other": "Jiné"
+      }
     }
   },
   "Announcements": {

@@ -21,7 +21,7 @@ export function PageHeader({
       className={cn('flex flex-col justify-between gap-6 md:flex-row md:items-start', className)}
     >
       <div className="flex flex-col gap-2">
-        <h1 className="text-center text-3xl leading-none font-black tracking-tighter text-white uppercase italic sm:text-left md:text-5xl">
+        <h1 className="text-center text-3xl leading-none font-black tracking-tighter text-white uppercase italic sm:text-left md:text-4xl">
           <span className="text-primary">{title}</span>
         </h1>
         {description && (

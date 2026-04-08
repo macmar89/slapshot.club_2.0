@@ -142,7 +142,6 @@ export const dashboardConfig = {
       labelKey: 'feedback',
       href: '/admin/feedback',
       icon: MessageSquare,
-      disabled: true,
     },
     {
       labelKey: 'logs',

@@ -9,13 +9,14 @@ import { DataLoader } from '@/components/common/data-loader';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { sk, enUS, cs } from 'date-fns/locale';
-import { AnnouncementTypeBadge } from '../components/announcement-type-badge';
-import { PublicAnnouncementDetailDto } from '../announcements.types';
+import { AnnouncementTypeBadge } from '@/features/announcements/components/announcement-type-badge';
+import { PublicAnnouncementDetailDto } from '@/features/announcements/announcements.types';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useAppParams } from '@/hooks/use-app-params';
 import { BackLink } from '@/components/common/back-link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { PageHeader } from '@/components/layout/page-header';
 
 export function AnnouncementDetailView() {
   const t = useTranslations('Announcements');
@@ -34,7 +35,7 @@ export function AnnouncementDetailView() {
         mutate(
           (key) => typeof key === 'string' && key.startsWith('/notifications/unread-count'),
           undefined,
-          { revalidate: true }
+          { revalidate: true },
         );
       } catch (err) {
         console.error('Failed to mark announcement as read', err);
@@ -53,7 +54,7 @@ export function AnnouncementDetailView() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.05),transparent),radial-gradient(circle_at_bottom_left,rgba(234,179,8,0.02),transparent)] pb-24 text-white md:pb-8">
-      <div className="pb-4">
+      <div className="flex items-center gap-4 pb-4">
         <BackLink href="/announcements" />
       </div>
 

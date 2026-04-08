@@ -5,14 +5,18 @@ import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Button } from '@/components/ui/button';
 import { DataLoader } from '@/components/common/data-loader';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, RefreshCcw, X } from 'lucide-react';
-import { Link } from '@/i18n/routing';
-import { MatchDetailEditor, MatchSaveData } from '../components/match-detail-editor';
+import { RefreshCcw, X } from 'lucide-react';
+import {
+  MatchDetailEditor,
+  MatchSaveData,
+} from '@/features/admin/matches/components/match-detail-editor';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import type { AdminMatchDto } from '@/features/admin/matches/admin-matches.types';
+import { BackLink } from '@/components/common/back-link';
+import { PageHeader } from '@/components/layout/page-header';
 
 export const AdminMatchDetailView = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,34 +49,9 @@ export const AdminMatchDetailView = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/admin/matches">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-12 w-12 rounded-full border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
-            >
-              <ArrowLeft className="h-6 w-6 text-white/50 hover:text-white" />
-            </Button>
-          </Link>
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-black tracking-widest text-white/90 uppercase italic drop-shadow-md md:text-3xl">
-              {t('title')}
-            </h1>
-            <span className="text-primary/60 text-[10px] font-bold tracking-widest uppercase">
-              Admin Match Management System
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => mutate()}
-            className="h-10 gap-2 border border-white/10 bg-white/5 px-4 text-white/60 hover:bg-white/10"
-          >
-            <RefreshCcw className="h-4 w-4" />
-            {tTable('refresh')}
-          </Button>
+          <BackLink href="/admin/matches" />
+
+          <PageHeader title={t('title')} />
         </div>
       </div>
 

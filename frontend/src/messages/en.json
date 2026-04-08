@@ -1108,6 +1108,55 @@
           "promotion": "Promotion"
         }
       }
+    },
+    "Feedback": {
+      "title": "Feedback - Administration",
+      "no_feedback_found": "No feedback found",
+      "total_items": "Total",
+      "page": "Page",
+      "back_to_list": "Back to list",
+      "feedback_not_found": "Feedback not found",
+      "mark_read_error": "Failed to mark as read",
+      "update_status_success": "Status updated successfully",
+      "update_status_error": "Failed to update status",
+      "save_status": "Save Status",
+      "saving": "Saving...",
+      "detail_title": "Message Detail",
+      "message_label": "Message",
+      "page_url_label": "Page URL",
+      "from_user": "From User",
+      "anonymous": "Anonymous",
+      "filter": {
+        "status": "Status",
+        "all_statuses": "All Statuses",
+        "read": "Read",
+        "all_read": "All",
+        "only_read": "Only Read",
+        "only_unread": "Only Unread",
+        "date_from": "Date From",
+        "date_to": "Date To"
+      },
+      "table": {
+        "no_feedback_found": "No feedback found",
+        "type": "Type",
+        "from": "From",
+        "date": "Date",
+        "status": "Status",
+        "read": "Read"
+      },
+      "status": {
+        "new": "New",
+        "in-progress": "In Progress",
+        "resolved": "Resolved",
+        "ignored": "Ignored"
+      },
+      "type": {
+        "bug": "Bug",
+        "idea": "Idea",
+        "change_user_email_request": "Email Change Request",
+        "custom_country_request": "Country Request",
+        "other": "Other"
+      }
     }
   },
   "MissingTips": {
