@@ -50,7 +50,7 @@ export const registerUser = async (data: RegisterInput) => {
     role: 'user' | 'admin' | 'editor' | 'demo';
     subscriptionPlan: 'free' | 'starter' | 'pro' | 'vip';
     subscriptionActiveUntil: string | null;
-    isActive: true;
+    isVerified: false;
     referralCode: string;
     hasSeenOnboarding: boolean;
     verificationToken: string | null;
@@ -132,7 +132,7 @@ export const registerUser = async (data: RegisterInput) => {
         role: user.role,
         subscriptionPlan: user.subscriptionPlan,
         subscriptionActiveUntil: user.subscriptionActiveUntil,
-        isActive: true as const,
+        isVerified: false as const,
         referralCode: user.referralCode,
         hasSeenOnboarding: user.hasSeenOnboarding ?? false,
         verificationToken: user.verificationToken,
