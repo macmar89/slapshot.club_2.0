@@ -30,6 +30,7 @@ export const announcements = pgTable(
     type: announcementTypeEnum('type').default('GENERAL').notNull(),
 
     isPublished: boolean('is_published').default(false).notNull(),
+    isPinned: boolean('is_pinned').default(false).notNull(),
     publishedAt: timestamp('published_at', { precision: 3, withTimezone: true, mode: 'string' }),
 
     ...withUpdatesFields,

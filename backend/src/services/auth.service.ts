@@ -25,6 +25,8 @@ import { getSubscriptionEndDate } from '../utils/date.js';
 import { userSettings } from '../db/schema/userSettings.js';
 import { subscriptions } from '../db/schema/subscriptions.js';
 import { userReferrals } from '../db/schema/userReferrals.js';
+import { announcementsRepository } from '../repositories/announcements.repository.js';
+import { notify } from './notifications.service.js';
 
 const hashToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -62,6 +64,7 @@ export const registerUser = async (data: RegisterInput) => {
           subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
           isActive: true,
           referralCode: generateReferralCode(),
+          hasSeenOnboarding: true,
           preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
           verificationToken: generateRandomToken(),
         })
@@ -108,6 +111,23 @@ export const registerUser = async (data: RegisterInput) => {
             referredUserId: user.id,
           });
         }
+      }
+
+      // Check for welcome announcement and notify user
+      try {
+        const welcomeAnnouncement = await announcementsRepository.getAnnouncementBySlug('welcome');
+        if (welcomeAnnouncement && welcomeAnnouncement.isPublished) {
+          await notify({
+            userId: user.id,
+            type: 'NEW_ANNOUNCEMENT',
+            payload: {
+              announcementSlug: welcomeAnnouncement.slug,
+              announcementType: welcomeAnnouncement.type,
+            },
+          });
+        }
+      } catch {
+        // Ignore if welcome announcement doesn't exist
       }
 
       const result = {

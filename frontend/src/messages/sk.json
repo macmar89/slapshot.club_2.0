@@ -947,6 +947,8 @@
         "title": "Nadpis",
         "excerpt": "Krátky úvod / Excerpt",
         "content": "Celý text",
+        "is_pinned": "Pripnúť správu",
+        "is_pinned_desc": "Správa bude zobrazená na vrchu zoznamu aktualít.",
         "title_placeholder": "Nadpis oznámenia",
         "excerpt_placeholder": "Krátky súhrn pre notifikácie a zoznamy",
         "content_placeholder": "Hlavný text oznámenia (podporuje Markdown)",

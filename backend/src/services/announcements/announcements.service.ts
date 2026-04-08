@@ -39,6 +39,7 @@ export const getPublicAnnouncementDetail = async (slug: string, lang: string) =>
     slug: announcement.slug,
     type: announcement.type,
     publishedAt: announcement.publishedAt,
+    isPinned: announcement.isPinned,
     title: localeContent?.title,
     excerpt: localeContent?.excerpt,
     content: localeContent?.content,

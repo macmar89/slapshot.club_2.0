@@ -12,6 +12,7 @@ export const announcementsRepository = {
     slug: string;
     type: (typeof announcementTypes)[number];
     isPublished?: boolean;
+    isPinned?: boolean;
     locales: Record<string, { title: string; excerpt: string; content: string }>;
   }) {
     return await db.transaction(async (tx) => {
@@ -21,6 +22,7 @@ export const announcementsRepository = {
           slug: data.slug,
           type: data.type,
           isPublished: data.isPublished,
+          isPinned: data.isPinned || false,
           publishedAt: data.isPublished ? new Date().toISOString() : null,
         })
         .returning();
@@ -67,7 +69,7 @@ export const announcementsRepository = {
     }
 
     const sortOrderFn = sort?.order === 'asc' ? asc : desc;
-    const orderByParams = [];
+    const orderByParams = [desc(announcements.isPinned)];
 
     if (sort?.by === 'publishedAt') {
       orderByParams.push(sortOrderFn(announcements.publishedAt));
@@ -82,6 +84,7 @@ export const announcementsRepository = {
         id: announcements.id,
         slug: announcements.slug,
         isPublished: announcements.isPublished,
+        isPinned: announcements.isPinned,
         publishedAt: announcements.publishedAt,
         type: announcements.type,
         createdAt: announcements.createdAt,
@@ -150,6 +153,7 @@ export const announcementsRepository = {
       slug: string;
       type: string;
       isPublished: boolean;
+      isPinned?: boolean;
       locales: Record<string, { title: string; excerpt: string; content: string }>;
     },
   ) {
@@ -160,6 +164,7 @@ export const announcementsRepository = {
           slug: data.slug,
           type: data.type as any,
           isPublished: data.isPublished,
+          isPinned: data.isPinned ?? false,
           publishedAt: data.isPublished ? new Date().toISOString() : null,
           updatedAt: new Date().toISOString(),
         })

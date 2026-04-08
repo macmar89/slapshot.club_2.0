@@ -52,6 +52,7 @@ export const AnnouncementForm = ({
       slug: '',
       type: 'GENERAL',
       isPublished: false,
+      isPinned: false,
       locales: {
         sk: { title: '', excerpt: '', content: '' },
         cz: { title: '', excerpt: '', content: '' },
@@ -92,6 +93,7 @@ export const AnnouncementForm = ({
           register={register}
           errors={errors}
           setValue={setValue}
+          watch={watch}
           selectedType={selectedType}
           dirtyFields={dirtyFields}
           isDisabled={isDisabled}

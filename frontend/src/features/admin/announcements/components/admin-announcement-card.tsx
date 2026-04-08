@@ -1,7 +1,7 @@
 import { AdminAnnouncementDto } from '../announcements.types';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Megaphone } from 'lucide-react';
+import { Calendar, Megaphone, Pin } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
@@ -30,6 +30,12 @@ export const AdminAnnouncementCard = ({ announcement }: AdminAnnouncementCardPro
             <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-white/10 text-white/40 h-5 px-2">
               {announcement.type}
             </Badge>
+            {announcement.isPinned && (
+              <Badge className="bg-primary/20 text-primary border-primary/20 uppercase text-[9px] font-black h-5 px-2 gap-1">
+                <Pin size={10} className="fill-primary" />
+                Pinned
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-1">
             <Calendar className="h-3 w-3 text-white/30" />

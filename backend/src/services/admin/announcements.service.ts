@@ -29,6 +29,7 @@ export const createAnnouncement = async (
     slug: input.slug,
     type: input.type,
     isPublished: input.isPublished,
+    isPinned: input.isPinned,
     locales: mappedLocales,
   });
 
@@ -85,6 +86,7 @@ export const updateAnnouncement = async (
     slug: input.slug,
     type: input.type,
     isPublished: input.isPublished,
+    isPinned: input.isPinned,
     locales: mappedLocales,
   });
 

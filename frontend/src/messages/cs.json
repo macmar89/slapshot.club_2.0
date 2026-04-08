@@ -940,6 +940,8 @@
       "form": {
         "slug": "Slug oznámení",
         "type": "Typ",
+        "is_pinned": "Připnout zprávu",
+        "is_pinned_desc": "Zpráva bude zobrazena na vrchu seznamu aktualit.",
         "locales_title": "Lokalizovaný obsah",
         "title": "Nadpis",
         "excerpt": "Krátký úvod / Excerpt",

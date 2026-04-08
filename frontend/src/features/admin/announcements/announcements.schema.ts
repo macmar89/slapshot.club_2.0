@@ -14,6 +14,7 @@ export const announcementFormSchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'slug_format'),
   type: z.enum(announcementTypes),
   isPublished: z.boolean().default(false),
+  isPinned: z.boolean().default(false),
   locales: z.object({
     sk: localeContentSchema,
     cz: localeContentSchema,

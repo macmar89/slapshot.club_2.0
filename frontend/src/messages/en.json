@@ -942,6 +942,8 @@
       "form": {
         "slug": "Announcement Slug",
         "type": "Type",
+        "is_pinned": "Pin announcement",
+        "is_pinned_desc": "The announcement will be displayed at the top of the news list.",
         "locales_title": "Localized Content",
         "title": "Title",
         "excerpt": "Short Summary / Excerpt",

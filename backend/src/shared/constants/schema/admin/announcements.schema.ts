@@ -21,6 +21,7 @@ export const createAnnouncementBodySchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'Slug must be in kebab-case and lowercase (a-z, 0-9, -)'),
   type: z.enum(announcementTypes),
   isPublished: z.boolean().default(false),
+  isPinned: z.boolean().default(false),
 
   locales: z.object({
     sk: z.object({
@@ -65,7 +66,7 @@ export const getAllAnnouncementsAsAdminSchema = z.object({
     filters: getAllAnnouncementsAsAdminFilterSchema,
     sort: z
       .object({
-        by: z.enum(['createdAt', 'publishedAt', 'type']).default('createdAt'),
+        by: z.enum(['createdAt', 'publishedAt', 'type', 'isPinned']).default('createdAt'),
         order: z.enum(['asc', 'desc']).default('desc'),
       })
       .default({ by: 'createdAt', order: 'desc' }),

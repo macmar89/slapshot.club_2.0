@@ -25,6 +25,7 @@ export interface AnnouncementFormValues {
     en: AnnouncementLocaleContent;
   };
   isPublished?: boolean;
+  isPinned?: boolean;
   publishedAt?: string | null;
 }
 
@@ -34,6 +35,7 @@ export interface AdminAnnouncementDto {
   title: string;
   type: AnnouncementType;
   isPublished: boolean;
+  isPinned: boolean;
   publishedAt: string | null;
   createdAt: string;
 }

@@ -8,6 +8,7 @@ import { AdminAnnouncementDto } from '../../admin/announcements/announcements.ty
 import { cn } from '@/lib/utils';
 import { Link } from '@/i18n/routing';
 import { AnnouncementTypeBadge } from './announcement-type-badge';
+import { Pin } from 'lucide-react';
 
 interface AnnouncementCardProps {
   announcement: AdminAnnouncementDto;
@@ -25,12 +26,23 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
     <Link href={`/announcements/${announcement.slug}`} className="block transition-transform hover:scale-[1.01] active:scale-[0.99]">
       <IceGlassCard
       className={cn(
-        'overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]',
+        'overflow-hidden transition-all',
+        announcement.isPinned 
+          ? 'border-primary/30 shadow-[0_0_20px_rgba(234,179,8,0.15)] bg-primary/5' 
+          : 'hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]'
       )}
     >
       <div className="flex flex-col gap-6 p-4 md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <AnnouncementTypeBadge type={announcement.type} />
+          <div className="flex items-center gap-3">
+            <AnnouncementTypeBadge type={announcement.type} />
+            {announcement.isPinned && (
+              <div className="flex items-center gap-1.5 rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-black tracking-widest text-primary uppercase italic">
+                <Pin size={10} className="fill-primary" />
+                Pripnuté
+              </div>
+            )}
+          </div>
 
           <time className="text-xs font-medium tracking-widest text-white/60 uppercase">
             {publishedDate}
