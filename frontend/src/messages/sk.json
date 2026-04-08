@@ -933,6 +933,7 @@
       "teams": "Tímy",
       "users": "Používatelia",
       "announcements": "Oznámenia",
+      "feedback": "Spätná väzba",
       "logs": "Audit Logy"
     },
     "Announcements": {
@@ -1107,6 +1108,55 @@
           "relegation": "Baráž o udržanie",
           "promotion": "Baráž o postupValue"
         }
+      }
+    },
+    "Feedback": {
+      "title": "Spätná väzba - Administrácia",
+      "no_feedback_found": "Žiadna spätná väzba sa nenašla",
+      "total_items": "Celkom",
+      "page": "Strana",
+      "back_to_list": "Späť na zoznam",
+      "feedback_not_found": "Spätná väzba sa nenašla",
+      "mark_read_error": "Nepodarilo sa označiť ako prečítanú",
+      "update_status_success": "Stav bol úspešne aktualizovaný",
+      "update_status_error": "Nepodarilo sa aktualizovať stav",
+      "save_status": "Uložiť stav",
+      "saving": "Ukladám...",
+      "detail_title": "Detail správy",
+      "message_label": "Správa",
+      "page_url_label": "URL stránky",
+      "from_user": "Od používateľa",
+      "anonymous": "Anonymný",
+      "filter": {
+        "status": "Stav",
+        "all_statuses": "Všetky stavy",
+        "read": "Prečítané",
+        "all_read": "Všetky",
+        "only_read": "Iba prečítané",
+        "only_unread": "Iba neprečítané",
+        "date_from": "Dátum od",
+        "date_to": "Dátum do"
+      },
+      "table": {
+        "no_feedback_found": "Žiadna spätná väzba sa nenašla",
+        "type": "Typ",
+        "from": "Od",
+        "date": "Dátum",
+        "status": "Stav",
+        "read": "Prečítané"
+      },
+      "status": {
+        "new": "Nové",
+        "in-progress": "V riešení",
+        "resolved": "Vyriešené",
+        "ignored": "Ignorované"
+      },
+      "type": {
+        "bug": "Chyba",
+        "idea": "Nápad",
+        "change_user_email_request": "Žiadosť o zmenu emailu",
+        "custom_country_request": "Žiadosť o krajinu",
+        "other": "Iné"
       }
     }
   },

@@ -1,4 +1,15 @@
-import { LayoutDashboard, Calendar, Users, Trophy, Bell, FileText, User, History, Megaphone } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Calendar,
+  Users,
+  Trophy,
+  Bell,
+  FileText,
+  User,
+  History,
+  Megaphone,
+  MessageSquare,
+} from 'lucide-react';
 
 export interface DashboardItem {
   labelKey: string;
@@ -126,6 +137,12 @@ export const dashboardConfig = {
       labelKey: 'announcements',
       href: '/admin/announcements',
       icon: Megaphone,
+    },
+    {
+      labelKey: 'feedback',
+      href: '/admin/feedback',
+      icon: MessageSquare,
+      disabled: true,
     },
     {
       labelKey: 'logs',

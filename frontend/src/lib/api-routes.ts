@@ -9,6 +9,11 @@ export const API_ROUTES = {
       COMPETITIONS_LOOKUP: '/admin/matches/competitions/lookup',
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
     },
+    FEEDBACK: {
+      LIST: '/admin/feedback',
+      DETAIL: (id: string) => `/admin/feedback/${id}`,
+      UPDATE: (id: string) => `/admin/feedback/${id}`,
+    },
     ANNOUNCEMENTS: {
       LIST: '/admin/announcements',
       CREATE: '/admin/announcements',

@@ -932,6 +932,7 @@
       "teams": "Teams",
       "users": "Users",
       "announcements": "Announcements",
+      "feedback": "Feedback",
       "logs": "Audit Logs"
     },
     "Announcements": {
