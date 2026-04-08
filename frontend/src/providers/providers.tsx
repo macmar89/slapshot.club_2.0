@@ -12,7 +12,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         fetcher: swrFetcher,
         revalidateOnFocus: true,
         revalidateIfStale: true,
-        dedupingInterval: 5000,
+        dedupingInterval: 30000,
       }}
     >
       <AuthSync>{children}</AuthSync>

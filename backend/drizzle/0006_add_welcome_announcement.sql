@@ -1,6 +1,6 @@
 -- Custom SQL migration file
 INSERT INTO "announcements" ("id", "slug", "type", "is_published", "is_pinned", "published_at", "created_at", "updated_at")
-VALUES ('ucxz132221bwyfbw7bxrd2ew', 'welcome-to-the-roster', 'GENERAL', true, true, now(), now(), now())
+VALUES ('ucxz132221bwyfbw7bxrd2ew', 'welcome', 'GENERAL', true, true, now(), now(), now())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO "announcements_locales" ("id", "parent_id", "locale", "title", "excerpt", "content") VALUES
