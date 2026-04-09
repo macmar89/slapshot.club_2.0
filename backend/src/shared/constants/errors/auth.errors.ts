@@ -22,6 +22,7 @@ export const AuthErrors = {
     INVALID_PHONE_NUMBER: 'invalid_phone_number',
   },
 
+  REGISTRATION_CLOSED: 'registration_closed',
   FORBIDDEN_SUPERADMIN: 'forbidden_superadmin',
   FORBIDDEN_ORGANIZATION: 'forbidden_organization',
   CONTEXT_ERROR: 'context_error',

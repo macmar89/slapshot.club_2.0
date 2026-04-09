@@ -1,4 +1,5 @@
 import { catchAsync } from '../utils/catchAsync.js';
+import { env } from '../config/env.js';
 import { type Request, type Response } from 'express';
 import { AppError } from '../utils/appError.js';
 import {
@@ -124,6 +125,10 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const registerHandler = catchAsync(async (req: Request, res: Response) => {
+  if (!env.REGISTRATION_OPEN) {
+    throw new AppError(AuthErrors.REGISTRATION_CLOSED, HttpStatusCode.FORBIDDEN);
+  }
+
   const user = await registerUser(req.body);
 
   const userAgent = req.headers['user-agent'] || 'unknown';

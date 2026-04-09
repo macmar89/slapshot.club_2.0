@@ -10,6 +10,7 @@ import { handlePostLogin } from '@/features/auth/auth.api';
 import { getLoginSchema, type LoginInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
 import { Turnstile } from '@/components/common/turnstile';
+import { type TurnstileInstance } from '@marsidev/react-turnstile';
 import { PasswordInput } from './password-input';
 import {
   Form,
@@ -27,6 +28,7 @@ export const LoginForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const turnstileRef = React.useRef<TurnstileInstance>(null);
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(getLoginSchema(t)),
@@ -54,10 +56,14 @@ export const LoginForm = () => {
         router.push('/arena');
       } else {
         setError(res.message || 'registration_failed');
+        turnstileRef.current?.reset();
+        form.setValue('turnstileToken', '');
       }
     } catch (err) {
       console.error('Login error:', err);
       setError('unexpected_error');
+      turnstileRef.current?.reset();
+      form.setValue('turnstileToken', '');
     } finally {
       setIsLoading(false);
     }
@@ -129,6 +135,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormControl>
                   <Turnstile
+                    ref={turnstileRef}
                     onSuccess={field.onChange}
                     onError={() =>
                       form.setError('turnstileToken', { message: t('errors.turnstile_error') })

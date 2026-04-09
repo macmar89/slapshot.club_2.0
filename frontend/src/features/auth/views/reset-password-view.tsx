@@ -7,18 +7,19 @@ import { Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { SlapshotLogo } from '@/components/common/slapshot-logo';
+import { AuthFooter } from '@/features/auth/components/auth-footer';
 
 export function ResetPasswordView() {
   const t = useTranslations('Login');
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden font-sans">
+    <div className="selection:bg-gold/30 selection:text-gold-light relative flex min-h-screen flex-col">
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/40" />
       <div className="fixed top-6 right-6 z-50">
         <LanguageSwitcher />
       </div>
 
-      <div className="relative z-10 flex w-full max-w-6xl flex-col items-center gap-16 px-6 py-12 lg:flex-row lg:gap-24">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-grow flex-col items-center gap-16 px-6 py-12 lg:flex-row lg:gap-24">
         {/* Left Column: Marketing / Branding */}
         <div className="flex-1 text-center lg:text-left">
           <div className="relative order-1 mx-auto mb-2 h-40 w-40 sm:mb-4 lg:mx-0 lg:ml-auto">
@@ -53,12 +54,9 @@ export function ResetPasswordView() {
               </React.Suspense>
             </div>
           </IceGlassCard>
-
-          <div className="mt-8 text-center text-xs font-medium tracking-[0.3em] text-white/30 uppercase">
-            {t('hero.footer')}
-          </div>
         </div>
       </div>
+      <AuthFooter />
     </div>
   );
 }

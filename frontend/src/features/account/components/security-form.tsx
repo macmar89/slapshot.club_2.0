@@ -29,7 +29,11 @@ export function SecurityForm() {
   });
 
   const onPasswordSubmit = async (data: PasswordUpdateFormData) => {
-    const res = await updatePasswordAction(data.currentPassword, data.newPassword);
+    const res = await updatePasswordAction(
+      data.currentPassword,
+      data.newPassword,
+      data.confirmPassword,
+    );
     if (res.ok) {
       toast.success(commonT('success_title'));
       resetPassword();

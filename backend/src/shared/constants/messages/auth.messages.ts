@@ -10,6 +10,7 @@ export const AuthMessages = {
 
   ERRORS: {
     MISSING_REFRESH_TOKEN: 'missing_refresh_token',
+    REGISTRATION_CLOSED: 'registration_closed',
 
     USERNAME_ALREADY_EXISTS: 'username_already_exists',
     EMAIL_ALREADY_EXISTS: 'email_already_exists',

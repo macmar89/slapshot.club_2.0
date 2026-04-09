@@ -248,6 +248,9 @@
     "register_subtitle": "Join the best hockey community",
     "register_button": "Register",
     "registering": "Registering...",
+    "registration_closed_title": "Registration Closed",
+    "registration_closed_desc": "New player registration is currently paused. Please try again later or contact us.",
+    "registration_closed": "Registration is currently closed.",
     "register_again": "Try registration again",
     "forgot_password_title": "Forgot Password",
     "forgot_password_subtitle": "Enter your email and we'll send you instructions to reset your password",
@@ -272,6 +275,7 @@
     "errors": {
       "turnstile_error": "Please confirm you are not a robot.",
       "registration_failed": "Registration failed. Please try again.",
+      "registration_closed": "Registration is currently closed.",
       "unexpected_error": "An unexpected error occurred. Please try again.",
       "wrong_credentials": "Invalid username or password",
       "username_too_short": "Username must be at least 2 characters long",

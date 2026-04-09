@@ -9,6 +9,7 @@ import { handlePostForgotPassword } from '@/features/auth/auth.api';
 import { getForgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/auth.schema';
 import { useTranslations } from 'next-intl';
 import { Turnstile } from '@/components/common/turnstile';
+import { type TurnstileInstance } from '@marsidev/react-turnstile';
 import { Link } from '@/i18n/routing';
 import { toast } from 'sonner';
 
@@ -18,6 +19,7 @@ export const ForgotPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSent, setIsSent] = useState(false);
+  const turnstileRef = React.useRef<TurnstileInstance>(null);
 
   const schema = getForgotPasswordSchema(t);
 
@@ -46,9 +48,13 @@ export const ForgotPasswordForm = () => {
         toast.success(t('forgot_password_success') || 'Inštrukcie boli odoslané na váš email.');
       } else {
         setError(t(`errors.${res.message}`));
+        turnstileRef.current?.reset();
+        setValue('turnstileToken', '');
       }
     } catch {
       setError(t('errors.unexpected_error'));
+      turnstileRef.current?.reset();
+      setValue('turnstileToken', '');
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +121,7 @@ export const ForgotPasswordForm = () => {
         </div>
 
         <Turnstile
+          ref={turnstileRef}
           onSuccess={(token: string) => setValue('turnstileToken', token)}
           onError={() => setError(t('errors.turnstile_error'))}
           onExpire={() => setValue('turnstileToken', '')}

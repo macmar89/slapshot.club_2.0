@@ -18,7 +18,7 @@ export function LoginView() {
         <LanguageSwitcher />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1920px] flex-col p-4 text-right lg:flex-row">
+      <div className="relative mx-auto flex w-full max-w-[1920px] flex-grow flex-col p-4 text-right lg:flex-row">
         {/* Left Column: Login Form */}
         <div className="relative z-40 order-2 flex w-full items-center justify-center p-2 sm:p-8 lg:order-1 lg:w-1/2 lg:p-12">
           <div className="w-full max-w-md">
@@ -33,7 +33,7 @@ export function LoginView() {
         </div>
 
         {/* Right Column: Hero Content */}
-        <div className="relative order-1 min-h-[30vh] w-full overflow-hidden lg:order-2 lg:min-h-screen lg:w-1/2">
+        <div className="relative order-1 min-h-[30vh] w-full overflow-hidden lg:order-2 lg:h-auto lg:w-1/2">
           <div className="relative z-20 flex h-full flex-col items-center justify-center p-6 pb-4 text-right sm:p-12 lg:items-end lg:p-24">
             <div className="flex flex-col space-y-2 sm:space-y-4">
               <div className="relative order-1 mx-auto mb-2 h-40 w-40 sm:mb-4 lg:mx-0 lg:ml-auto">

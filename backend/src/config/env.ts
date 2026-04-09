@@ -37,6 +37,9 @@ const envSchema = z.object({
   BREVO_API_KEY: z.string().min(1, 'Brevo API key is required'),
   BREVO_SENDER_NAME: z.string().min(1, 'Brevo sender name is required'),
   BREVO_SENDER_EMAIL: z.email('Invalid Brevo sender email format'),
+  REGISTRATION_OPEN: z
+    .preprocess((val) => val === 'true' || val === '1' || val === undefined, z.boolean())
+    .default(true),
 });
 
 // Validation process

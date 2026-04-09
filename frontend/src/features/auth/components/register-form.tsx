@@ -1,18 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, Link } from '@/i18n/routing';
 import { useForm, Controller } from 'react-hook-form';
+import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { Link } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
 import { AvailabilityInput } from './availability-input';
 import { PasswordInput } from '@/features/auth/components/password-input';
 import dynamic from 'next/dynamic';
 import { Turnstile } from '@/components/common/turnstile';
+import { type TurnstileInstance } from '@marsidev/react-turnstile';
 import { getRegisterSchema, type RegisterInput } from '../auth.schema';
 import { handlePostRegister } from '../auth.api';
 
@@ -35,6 +36,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   const [gdprOpen, setGdprOpen] = useState(false);
+  const turnstileRef = React.useRef<TurnstileInstance>(null);
 
   const {
     register,
@@ -56,6 +58,8 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
     },
   });
 
+  const isRegistrationOpen = process.env.NEXT_PUBLIC_REGISTRATION_OPEN !== 'false';
+
   const onSubmit = async (data: RegisterInput) => {
     setIsLoading(true);
     setError(null);
@@ -70,9 +74,13 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         router.push('/arena');
       } else {
         setError(t(`errors.${res.message}`) || t('errors.registration_failed'));
+        turnstileRef.current?.reset();
+        setValue('turnstileToken', '');
       }
     } catch {
       setError(t('errors.unexpected_error'));
+      turnstileRef.current?.reset();
+      setValue('turnstileToken', '');
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +95,17 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         <p className="text-sm font-medium text-white/40">{t('register_subtitle')}</p>
       </div>
 
+      {!isRegistrationOpen && (
+        <div className="rounded-app animate-in fade-in slide-in-from-top-2 border border-red-600 px-4 py-3 text-center transition-all duration-300">
+          <p className="text-sm leading-tight font-bold tracking-tight text-red-500 uppercase">
+            {t('registration_closed_title')}
+          </p>
+          <p className="mt-1 text-xs leading-snug font-medium text-white">
+            {t('registration_closed_desc')}
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {error && (
           <div className="rounded-app border border-red-500/20 bg-red-500/10 px-4 py-2 text-center text-sm font-medium text-red-500">
@@ -100,7 +119,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           label={t('username')}
           hint={t('username_hint')}
           placeholder={t('username_placeholder')}
-          disabled={isLoading}
+          disabled={isLoading || !isRegistrationOpen}
           error={errors.username?.message}
           register={register('username')}
           onAvailabilityChange={setIsUsernameAvailable}
@@ -111,7 +130,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           type="email"
           label={t('email')}
           placeholder={t('email_placeholder')}
-          disabled={isLoading}
+          disabled={isLoading || !isRegistrationOpen}
           error={errors.email?.message}
           register={register('email')}
           onAvailabilityChange={setIsEmailAvailable}
@@ -121,17 +140,20 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           id="password"
           label={t('password')}
           placeholder={t('password_placeholder')}
-          disabled={isLoading}
+          disabled={isLoading || !isRegistrationOpen}
           error={errors.password?.message}
           hint={!errors.password?.message ? t('password_hint') : undefined}
           register={register('password')}
         />
 
-        <Turnstile
-          onSuccess={(token) => setValue('turnstileToken', token)}
-          onError={() => setError(t('errors.turnstile_error'))}
-          onExpire={() => setValue('turnstileToken', '')}
-        />
+        {!isLoading && isRegistrationOpen && (
+          <Turnstile
+            ref={turnstileRef}
+            onSuccess={(token) => setValue('turnstileToken', token)}
+            onError={() => setError(t('errors.turnstile_error'))}
+            onExpire={() => setValue('turnstileToken', '')}
+          />
+        )}
         {errors.turnstileToken && (
           <p className="text-center text-xs text-red-500">{errors.turnstileToken.message}</p>
         )}
@@ -146,6 +168,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
                   id="gdpr"
                   checked={!!field.value}
                   onCheckedChange={field.onChange}
+                  disabled={isLoading || !isRegistrationOpen}
                   className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--primary))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--primary))]"
                 />
               </div>
@@ -154,12 +177,19 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           <div className="grid gap-1 leading-none">
             <label
               htmlFor="gdpr"
-              className="cursor-pointer text-xs leading-tight font-medium text-white/80 select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className={cn(
+                'text-xs leading-tight font-medium text-white/80 select-none peer-disabled:opacity-70',
+                !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer',
+              )}
             >
               {t('gdpr_label_prefix')}{' '}
               <span
-                className="text-gold cursor-pointer hover:underline"
+                className={cn(
+                  'text-gold',
+                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:underline',
+                )}
                 onClick={(e) => {
+                  if (!isRegistrationOpen) return;
                   e.preventDefault();
                   e.stopPropagation();
                   setGdprOpen(true);
@@ -184,6 +214,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
                   id="marketing"
                   checked={!!field.value}
                   onCheckedChange={field.onChange}
+                  disabled={isLoading || !isRegistrationOpen}
                   className="cursor-pointer border-white/30 data-[state=checked]:border-[hsl(var(--primary))] data-[state=checked]:bg-transparent data-[state=checked]:text-[hsl(var(--primary))]"
                 />
               </div>
@@ -191,7 +222,10 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
           />
           <label
             htmlFor="marketing"
-            className="cursor-pointer text-xs leading-snug font-medium text-white/60 select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className={cn(
+              'text-xs leading-snug font-medium text-white/60 select-none peer-disabled:opacity-70',
+              !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer',
+            )}
           >
             {t('marketing_label')}
           </label>
@@ -202,7 +236,7 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         type="submit"
         color="gold"
         className="w-full py-4 text-base font-bold tracking-wide"
-        disabled={isLoading || !isUsernameAvailable || !isEmailAvailable}
+        disabled={isLoading || !isUsernameAvailable || !isEmailAvailable || !isRegistrationOpen}
       >
         {isLoading ? t('registering') : t('register_button')}
       </Button>

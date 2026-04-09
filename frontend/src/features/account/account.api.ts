@@ -15,11 +15,16 @@ export const updateUsernameAction = async (username: string) => {
   }
 };
 
-export const updatePasswordAction = async (oldPassword: string, newPassword: string) => {
+export const updatePasswordAction = async (
+  oldPassword: string,
+  newPassword: string,
+  confirmPassword: string,
+) => {
   try {
     const { data } = await api.post(API_ROUTES.USER.CHANGE_PASSWORD, {
       oldPassword,
       newPassword,
+      confirmPassword,
     });
     return { ok: true, data: data.data };
   } catch (error: unknown) {

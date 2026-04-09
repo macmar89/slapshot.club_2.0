@@ -247,6 +247,8 @@
     "register_button": "Registrovat se",
     "registering": "Registruji...",
     "already_have_account": "Už máš účet?",
+    "registration_closed_title": "Registrace uzavřena",
+    "registration_closed_desc": "Registrace nových hráčů je momentálně pozastavena. Zkus to později nebo nás kontaktuj.",
     "forgot_password_title": "Zapomenuté heslo",
     "forgot_password_subtitle": "Zadej svůj email a my ti pošleme instrukce k obnově hesla",
     "send_instructions": "Odeslat instrukce",
@@ -267,6 +269,7 @@
     "errors": {
       "turnstile_error": "Potvrďte prosím, že nejste robot.",
       "registration_failed": "Registrace selhala. Zkuste to prosím znovu.",
+      "registration_closed": "Registrace je momentálně uzavřena.",
       "unexpected_error": "Nastala neočekávaná chyba. Zkuste to prosím znovu.",
       "wrong_credentials": "Nesprávné jméno nebo heslo",
       "username_too_short": "Uživatelské jméno musí mít alespoň 2 znaky",

@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { submitFeedbackAction } from '@/actions/feedback';
 import { Turnstile } from '@/components/common/turnstile';
+import { type TurnstileInstance } from '@marsidev/react-turnstile';
 
 interface FeedbackModalProps {
   children?: React.ReactNode;
@@ -43,6 +44,7 @@ export function FeedbackModal({
   const [message, setMessage] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const turnstileRef = React.useRef<TurnstileInstance>(null);
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
@@ -70,6 +72,8 @@ export function FeedbackModal({
       handleOpenChange(false);
     } else {
       toast.error(result.error || commonT('error_generic'));
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
     }
   };
 
@@ -153,6 +157,7 @@ export function FeedbackModal({
           </div>
 
           <Turnstile
+            ref={turnstileRef}
             onSuccess={setTurnstileToken}
             onError={() => toast.error(t('turnstile_error'))}
             onExpire={() => setTurnstileToken('')}

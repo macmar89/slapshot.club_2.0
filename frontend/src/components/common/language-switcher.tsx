@@ -19,8 +19,8 @@ export function LanguageSwitcher() {
 
   const languages = [
     { code: 'sk', label: 'Slovenčina' },
-    { code: 'en', label: 'English' },
     { code: 'cs', label: 'Čeština' },
+    { code: 'en', label: 'English' },
   ];
 
   const toggleLanguage = async (newLocale: string) => {
