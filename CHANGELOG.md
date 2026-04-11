@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.2...v0.1.4) (2026-04-11)
+
+
+### Features
+
+* add announcements and assets tables to database schema ([fbf3acb](https://github.com/macmar89/slapshot.club_2.0/commit/fbf3acbc9fdc792349af82bbedfb4a726527fb7d))
+* add announcements link with unread count to mobile menu and update announcement service to support custom sorting ([b479ad1](https://github.com/macmar89/slapshot.club_2.0/commit/b479ad109c3632522447b6183eca727c65d19370))
+* add custom thin scrollbar utility and apply to sidebar navigation container ([105136b](https://github.com/macmar89/slapshot.club_2.0/commit/105136bb1ae7da0d410db44d88075c98f1f631f3))
+* add pinning functionality to announcements and remove onboarding modal ([b19cfff](https://github.com/macmar89/slapshot.club_2.0/commit/b19cffffcad80c1adb385f35769e62c8473b7ba6))
+* add registration toggle, refactor Turnstile to support refs, and standardize authentication view layouts ([b158cce](https://github.com/macmar89/slapshot.club_2.0/commit/b158cceb686730695254c944fe7875f08c334101))
+* add registrationSource to user schema and implement referral-based registration routing ([037db1b](https://github.com/macmar89/slapshot.club_2.0/commit/037db1b0b0578b683e57cdb65d8676db14e917f7))
+* add welcome announcement schema and increase SWR deduping interval to 30s ([f7b347c](https://github.com/macmar89/slapshot.club_2.0/commit/f7b347c5c31b0868c8d90612c07b2d0093fab141))
+* enhance user manual groups view with membership tiers and localized content ([33bb5dc](https://github.com/macmar89/slapshot.club_2.0/commit/33bb5dc1f88e5b7da746b969b4630db1add5ab97))
+* implement admin feedback management system with CRUD operations and filtering support ([784186b](https://github.com/macmar89/slapshot.club_2.0/commit/784186b4c821991fbcc431b4f37d1ba95a770995))
+* implement admin feedback management system with listing, filtering, and detail views ([2321d10](https://github.com/macmar89/slapshot.club_2.0/commit/2321d10f19f3fefb6777302bbb6f2ab2dec03826))
+* implement competition filtering by status and add category counts to the arena view ([8ea1211](https://github.com/macmar89/slapshot.club_2.0/commit/8ea1211ffe8d1f54deda33e69269ce03208d05cc))
+* implement public announcements system with detail views and notification integration ([16f5c6f](https://github.com/macmar89/slapshot.club_2.0/commit/16f5c6f804a41c4da9e16426a6eeb444eb6af96f))
+* implement security hardening with helmet, hpp, and rate limiting middleware ([f38f26f](https://github.com/macmar89/slapshot.club_2.0/commit/f38f26fe4717eff37b13209bbf3c891b9b4009d9))
+* implement unread announcement tracking with sidebar badge and automatic read status updates ([bc46aa8](https://github.com/macmar89/slapshot.club_2.0/commit/bc46aa888452ece36200cbc2e5c40ec947ce8673))
+
+
+### Bug Fixes
+
+* rename isActive property to isVerified and update default value to false in auth service ([3ed6b73](https://github.com/macmar89/slapshot.club_2.0/commit/3ed6b7396e88f05539457ba6122fd6316711606f))
+* update leaderboard sorting logic to handle unranked entries and bump Next.js version ([3895606](https://github.com/macmar89/slapshot.club_2.0/commit/3895606009b95e2da8c3beede20b688c347af42f))
+
+
+### Chores
+
+* **release:** 0.1.3 ([37d4e86](https://github.com/macmar89/slapshot.club_2.0/commit/37d4e86ebe721f241b2187ec822826d1084f0a63))
+
+
+### Refactors
+
+* move welcome notification outside registration transaction and include localized titles in payload ([2b9ff22](https://github.com/macmar89/slapshot.club_2.0/commit/2b9ff223b96386d62c408a7aa2b142ace4ad903d))
+* remove gap from sidebar navigation container and reorder overflow properties ([f870b48](https://github.com/macmar89/slapshot.club_2.0/commit/f870b48c1a7c9d550d8c9ae8466da476170ae967))
+* remove global entrance animations across all feature views and components ([5aa1668](https://github.com/macmar89/slapshot.club_2.0/commit/5aa16684dd8dc0fb7330dfe993a043dcecd6c266))
+
 ### [0.1.3](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.2...v0.1.3) (2026-04-09)
 
 
