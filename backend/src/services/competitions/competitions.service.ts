@@ -15,7 +15,11 @@ import { AppError } from '../../utils/appError.js';
 import { logger } from '../../utils/logger.js';
 import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
 
-export const findAllCompetitions = async (userId: string, locale: AppLocale, tab: string = 'active') => {
+export const findAllCompetitions = async (
+  userId: string,
+  locale: AppLocale,
+  tab: string = 'active',
+) => {
   const competitions = await db.query.competitions.findMany({
     columns: {
       id: true,

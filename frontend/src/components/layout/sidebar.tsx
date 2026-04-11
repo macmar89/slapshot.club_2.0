@@ -75,7 +75,7 @@ export const Sidebar = ({ children }: SidebarProps) => {
           <div className="h-px w-full bg-white/10" />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <SidebarItem
             href="/announcements"
             icon={Megaphone}
