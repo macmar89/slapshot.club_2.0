@@ -66,8 +66,8 @@ export const Sidebar = ({ children }: SidebarProps) => {
 
   return (
     <nav className="flex h-full flex-col overflow-hidden">
-      <div className="scrollbar-thin flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="mt-4 flex flex-col gap-2">{children}</div>
+      <div className="scrollbar-thin flex-1 overflow-x-hidden overflow-y-auto">
+        <div className="mt-4 flex flex-col">{children}</div>
       </div>
 
       <div className="mt-auto flex-shrink-0 pt-4">
