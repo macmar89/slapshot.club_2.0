@@ -1,10 +1,21 @@
 import { ArenaView } from '@/features/arena/views/arena-view';
-import { getActiveCompetitionsServer } from '@/features/competitions/competitions.server';
+import { getActiveCompetitionsServer, getCompetitionCountsServer } from '@/features/competitions/competitions.server';
 
-export default async function ArenaPage() {
-  const result = await getActiveCompetitionsServer();
+export default async function ArenaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedParams = await searchParams;
+  const tab = typeof resolvedParams.tab === 'string' ? resolvedParams.tab : 'active';
 
-  const competitions = result.success ? result.data : [];
+  const [competitionsResult, countsResult] = await Promise.all([
+    getActiveCompetitionsServer(tab),
+    getCompetitionCountsServer(),
+  ]);
 
-  return <ArenaView initialCompetitions={competitions} />;
+  const competitions = competitionsResult.success ? competitionsResult.data : [];
+  const counts = countsResult.success ? countsResult.data : { active: 0, upcoming: 0, finished: 0 };
+
+  return <ArenaView initialCompetitions={competitions} initialCounts={counts} currentTab={tab} />;
 }

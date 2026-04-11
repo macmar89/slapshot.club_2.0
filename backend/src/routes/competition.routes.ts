@@ -17,6 +17,7 @@ router.get('/public/:slug', competitionController.getPublicCompetitionNameHandle
 
 //  protected endpoints
 router.use(isAuth);
+router.get('/counts', competitionController.getCompetitionCountsHandler);
 router.get('/', competitionController.getCompetitionsHandler);
 router.post('/join', validate(joinCompetitionSchema), competitionController.joinCompetitionHandler);
 

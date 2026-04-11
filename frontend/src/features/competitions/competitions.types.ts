@@ -1,4 +1,4 @@
-export type CompetitionStatus = 'upcoming' | 'active' | 'finished';
+export type CompetitionStatus = 'upcoming' | 'active' | 'finished' | 'archived';
 
 export interface LeaderboardEntry {
   totalPoints: number;

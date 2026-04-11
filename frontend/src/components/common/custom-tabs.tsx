@@ -92,10 +92,15 @@ export const CustomTabs = ({
       } else {
         // Fallback to search param logic if no href provided
         const params = new URLSearchParams(searchParams.toString());
-        params.set(paramName, value);
+        if (value === 'active' || value === defaultValue) {
+          params.delete(paramName);
+        } else {
+          params.set(paramName, value);
+        }
         // Use window.location.pathname if pathname isn't working as expected in dynamic routes
         const currentPath = window.location.pathname;
-        router.replace(`${currentPath}?${params.toString()}`, { scroll: false });
+        const queryStr = params.toString();
+        router.replace(`${currentPath}${queryStr ? '?' + queryStr : ''}`, { scroll: false });
       }
     });
   };
@@ -147,7 +152,7 @@ export const CustomTabs = ({
             <TabsTrigger
               key={item.value}
               value={item.value}
-              className={cn('gap-2', visibleItems.length >= 3 && 'min-w-[110px] sm:min-w-0')}
+              className={cn('gap-2 shrink-0 transition-transform active:scale-95', visibleItems.length >= 3 && 'min-w-[120px] sm:min-w-0')}
               disabled={isPending || item.disabled}
             >
               {item.label}

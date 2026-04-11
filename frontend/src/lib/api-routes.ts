@@ -43,6 +43,7 @@ export const API_ROUTES = {
   },
   COMPETITIONS: {
     ALL: '/competition',
+    COUNTS: '/competition/counts',
     JOIN: '/competition/join',
 
     LEADERBOARD: {

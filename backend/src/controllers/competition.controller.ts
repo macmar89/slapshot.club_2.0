@@ -6,6 +6,7 @@ import {
   findPublicCompetitionName,
   getPlayerStats,
   getPlayerPredictions,
+  getCompetitionCounts,
 } from '../services/competitions/competitions.service.js';
 import { getCompetitionTeams } from '../services/team.service.js';
 import type { AppLocale } from '../types/global.types.js';
@@ -58,8 +59,9 @@ export const getPlayerPredictionsHandler = catchAsync(async (req: Request, res: 
 export const getCompetitionsHandler = catchAsync(async (req: Request, res: Response) => {
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
   const userId = req.user!.id;
+  const tab = (req.query.tab as string) || 'active';
 
-  const competitions = await findAllCompetitions(userId, locale);
+  const competitions = await findAllCompetitions(userId, locale, tab);
 
   res.status(200).json({
     status: 'success',
@@ -68,6 +70,16 @@ export const getCompetitionsHandler = catchAsync(async (req: Request, res: Respo
     },
   });
 });
+
+export const getCompetitionCountsHandler = catchAsync(async (req: Request, res: Response) => {
+  const counts = await getCompetitionCounts();
+
+  res.status(200).json({
+    status: 'success',
+    data: counts,
+  });
+});
+
 
 export const joinCompetitionHandler = catchAsync(async (req: Request, res: Response) => {
   const competitionId = req.body.competitionId;

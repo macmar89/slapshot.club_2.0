@@ -373,8 +373,11 @@
     "status": {
       "active": "Probíhající",
       "upcoming": "Připravuje se",
-      "finished": "Ukončeno"
+      "finished": "Ukončeno",
+      "archived": "Archivováno"
     },
+    "empty_state_title": "Prázdná kategorie",
+    "empty_state_desc": "Momentálně nejsou žádné soutěže v této kategorii. Zkus se podívat do ostatních záložek nebo se vrať později.",
     "start_date": "Začátek",
     "end_date": "Konec",
     "status_label": "Stav",

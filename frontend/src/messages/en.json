@@ -376,8 +376,11 @@
     "status": {
       "active": "Ongoing",
       "upcoming": "Upcoming",
-      "finished": "Finished"
+      "finished": "Finished",
+      "archived": "Archived"
     },
+    "empty_state_title": "Empty Category",
+    "empty_state_desc": "There are currently no competitions in this category. Check out other tabs or come back later.",
     "start_date": "Starts",
     "end_date": "Ends",
     "status_label": "Status",

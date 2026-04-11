@@ -27,7 +27,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
   const [isJoinModalOpen, setIsJoinModalOpen] = useState<boolean>(false);
 
   const isJoined = competition.isJoined;
-  const isFinished = competition.status === 'finished';
+  const isFinished = competition.status === 'finished' || competition.status === 'archived';
   const isRegistrationDisabled = !competition.isRegistrationOpen;
   const userRank = competition.leaderboardEntries?.currentRank ?? 0;
 
