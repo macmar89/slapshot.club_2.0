@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter, Link } from '@/i18n/routing';
 import { useForm, Controller } from 'react-hook-form';
@@ -14,8 +14,8 @@ import { PasswordInput } from '@/features/auth/components/password-input';
 import dynamic from 'next/dynamic';
 import { Turnstile } from '@/components/common/turnstile';
 import { type TurnstileInstance } from '@marsidev/react-turnstile';
-import { getRegisterSchema, type RegisterInput } from '../auth.schema';
-import { handlePostRegister } from '../auth.api';
+import { getRegisterSchema, type RegisterInput } from '@/features/auth/auth.schema';
+import { handlePostRegister } from '@/features/auth/auth.api';
 
 const GdprModalContent = dynamic(() => import('./gdpr-content-dialog'), { ssr: false });
 
@@ -29,14 +29,12 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
 
   const locale = useLocale();
 
-  console.log(referralCode);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
-  const [gdprOpen, setGdprOpen] = useState(false);
-  const turnstileRef = React.useRef<TurnstileInstance>(null);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
+  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
+  const [gdprOpen, setGdprOpen] = useState<boolean>(false);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const {
     register,

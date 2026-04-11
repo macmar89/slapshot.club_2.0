@@ -14,7 +14,9 @@
     "dev": "npm run be:dev & npm run fe:dev",
     "release": "standard-version",
     "push": "git push --follow-tags origin main",
-    "push:prod": "git push --follow-tags origin production"
+    "push:prod": "git push --follow-tags origin production",
+    "db:generate": "npm --prefix backend run db:generate",
+    "db:migrate": "npm --prefix backend run db:migrate"
   },
   "devDependencies": {
     "standard-version": "^9.5.0"

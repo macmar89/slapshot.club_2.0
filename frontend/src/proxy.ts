@@ -32,6 +32,7 @@ export async function proxy(request: NextRequest) {
     pathname === '/' ||
     pathname === '/login' ||
     pathname === '/register' ||
+    pathname.startsWith('/register/') ||
     pathname === '/forgot-password' ||
     pathname === '/reset-password' ||
     pathname === '/verify';
