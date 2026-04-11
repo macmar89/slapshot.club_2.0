@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import { CompetitionStoreSync } from '@/providers/competition-store-sync';
 
 import { CompetitionMobileNav } from '@/features/competitions/components/competition-mobile-nav';
+import { ProtectionModal } from '@/features/competitions/components/protection-modal';
 
 export default async function CompetitionLayout({
   children,
@@ -34,7 +35,7 @@ export default async function CompetitionLayout({
         <IceGlassCard className="h-full w-full" backdropBlur="md">
           <div className="flex h-full flex-col p-4">
             <Sidebar>
-              <CompetitionNav slug={slug} competition={data} />
+              <CompetitionNav slug={slug} competition={data as any} />
             </Sidebar>
           </div>
         </IceGlassCard>
@@ -43,6 +44,8 @@ export default async function CompetitionLayout({
       <main className="pt-24 pb-32 md:pb-0 lg:pl-72">
         <Container>{children}</Container>
       </main>
+
+      {!data.isJoined && <ProtectionModal competition={data} />}
 
       <CompetitionStoreSync name={data.name} />
       <CompetitionMobileNav slug={slug} />

@@ -34,4 +34,4 @@ export interface JoinCompetitionResponse {
   error?: string;
 }
 
-export type CompetitionPublicInfo = Pick<Competition, 'name' | 'description'>;
+export type CompetitionPublicInfo = Pick<Competition, 'id' | 'name' | 'description' | 'isJoined' | 'isRegistrationOpen'>;

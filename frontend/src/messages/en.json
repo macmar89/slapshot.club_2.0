@@ -396,7 +396,10 @@
       "description": "You are not joined in {competitionName}. Do you want to join?",
       "cancel": "Cancel",
       "confirm": "Join Now",
-      "joining": "Joining..."
+      "joining": "Joining...",
+      "back_to_arena": "Back to Arena",
+      "registration_closed_title": "Registration Not Yet Open",
+      "registration_closed_description": "Registration for the {competitionName} competition is not yet open. Please check back later."
     },
     "rules": "Rules",
     "settings": "Settings"

@@ -393,7 +393,10 @@
       "description": "Nejsi přihlášen do soutěže {competitionName}. Chceš se připojit?",
       "cancel": "Zrušit",
       "confirm": "Připojit se",
-      "joining": "Připojování..."
+      "joining": "Připojování...",
+      "back_to_arena": "Zpět do Arény",
+      "registration_closed_title": "Registrace ještě není otevřena",
+      "registration_closed_description": "Do soutěže {competitionName} se ještě není možné přihlásit. Registrace bude spuštěna později."
     },
     "rules": "Pravidla",
     "settings": "Nastavení"

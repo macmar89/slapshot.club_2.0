@@ -106,8 +106,9 @@ export const joinCompetitionHandler = catchAsync(async (req: Request, res: Respo
 export const getPublicCompetitionNameHandler = catchAsync(async (req: Request, res: Response) => {
   const slug = req.params.slug as string;
   const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+  const userId = req.user?.id;
 
-  const competition = await findPublicCompetitionName(slug, locale);
+  const competition = await findPublicCompetitionName(slug, locale, userId);
 
   res.status(200).json({
     status: 'success',

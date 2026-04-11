@@ -132,10 +132,15 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
   }
 };
 
-export const findPublicCompetitionName = async (slug: string, locale: AppLocale) => {
+export const findPublicCompetitionName = async (
+  slug: string,
+  locale: AppLocale,
+  userId?: string,
+) => {
   const competition = await db.query.competitions.findFirst({
     columns: {
       id: true,
+      isRegistrationOpen: true,
     },
     with: {
       locales: {
@@ -146,6 +151,15 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
         where: (locales, { eq }) => eq(locales.locale, locale as AppLocale),
         limit: 1,
       },
+      leaderboardEntries: userId
+        ? {
+            columns: {
+              id: true,
+            },
+            where: (leaderboardEntries, { eq }) => eq(leaderboardEntries.userId, userId),
+            limit: 1,
+          }
+        : undefined,
     },
     where: (competitions) => eq(competitions.slug, slug),
   });
@@ -155,8 +169,11 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
   }
 
   return {
+    id: competition.id,
     name: competition?.locales[0]?.name ?? null,
     description: competition?.locales[0]?.description ?? null,
+    isJoined: userId ? (competition.leaderboardEntries?.length ?? 0) > 0 : false,
+    isRegistrationOpen: competition.isRegistrationOpen,
   };
 };
 
