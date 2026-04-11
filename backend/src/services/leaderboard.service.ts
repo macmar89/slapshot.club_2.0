@@ -37,7 +37,10 @@ export const getLeaderboard = async (slug: string, userId: string) => {
         },
       },
     },
-    orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
+    orderBy: (leaderboardEntries, { asc, sql }) => [
+      asc(sql`CASE WHEN ${leaderboardEntries.currentRank} = 0 THEN 1 ELSE 0 END`),
+      asc(leaderboardEntries.currentRank),
+    ],
   });
 
   return entries.map((entry) => {
