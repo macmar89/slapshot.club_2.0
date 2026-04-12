@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocale } from 'next-intl';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { Languages, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,8 @@ const setLocaleCookie = (newLocale: string) => {
 
 export function LanguageSwitcher() {
   const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -42,8 +45,8 @@ export function LanguageSwitcher() {
     // 3. Close the dropdown
     setIsOpen(false);
 
-    // 4. Use window.location.reload() to ensure the change is picked up across the whole app
-    window.location.reload();
+    // 4. Use next-intl router to properly change the URL prefix without reloading the page
+    router.replace(pathname, { locale: newLocale });
   };
 
   // Close dropdown when clicking outside

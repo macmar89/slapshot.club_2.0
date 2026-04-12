@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+
+const intlMiddleware = createMiddleware(routing);
 
 function parseJwt(token: string) {
   try {
@@ -25,27 +29,49 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Extract clean pathname without locale for public page check
+  const locales = routing.locales;
+  let cleanPathname = pathname;
+  for (const loc of locales) {
+    if (cleanPathname.startsWith(`/${loc}/`) || cleanPathname === `/${loc}`) {
+      cleanPathname = cleanPathname.substring(loc.length + 1) || '/';
+      break;
+    }
+  }
+
   const accessToken = request.cookies.get('access_token')?.value;
   const refreshToken = request.cookies.get('refresh_token')?.value;
 
   const isPublicPage =
-    pathname === '/' ||
-    pathname === '/login' ||
-    pathname === '/register' ||
-    pathname.startsWith('/register/') ||
-    pathname === '/forgot-password' ||
-    pathname === '/reset-password' ||
-    pathname === '/verify' ||
-    pathname === '/terms' ||
-    pathname === '/privacy-policy';
+    cleanPathname === '/' ||
+    cleanPathname === '/login' ||
+    cleanPathname === '/register' ||
+    cleanPathname.startsWith('/register/') ||
+    cleanPathname === '/forgot-password' ||
+    cleanPathname === '/reset-password' ||
+    cleanPathname === '/verify' ||
+    cleanPathname === '/terms' ||
+    cleanPathname === '/privacy-policy';
+
+  // Determine current locale (fallback to default)
+  let locale = routing.defaultLocale;
+  for (const loc of locales) {
+    if (pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`) {
+      locale = loc;
+      break;
+    }
+  }
+
+  // We run next-intl middleware first to handle standard URL localization
+  let response = intlMiddleware(request);
 
   if (!isPublicPage && !accessToken && !refreshToken) {
-    const loginUrl = new URL('/', request.url);
+    const loginUrl = new URL(`/${locale}/`, request.url);
     return NextResponse.redirect(loginUrl);
   }
 
   // If on home page and have refresh token, try to validate/refresh and redirect to arena
-  if (pathname === '/' && refreshToken) {
+  if (cleanPathname === '/' && refreshToken) {
     let isExpired = true;
     if (accessToken) {
       const decoded = parseJwt(accessToken);
@@ -55,7 +81,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (!isExpired) {
-      return NextResponse.redirect(new URL('/arena', request.url));
+      return NextResponse.redirect(new URL(`/${locale}/arena`, request.url));
     }
 
     // If expired, try to refresh
@@ -69,7 +95,7 @@ export async function proxy(request: NextRequest) {
 
       if (refreshRes.ok) {
         const setCookieHeader = refreshRes.headers.get('set-cookie');
-        const response = NextResponse.redirect(new URL('/arena', request.url));
+        response = NextResponse.redirect(new URL(`/${locale}/arena`, request.url));
         if (setCookieHeader) {
           response.headers.set('Set-Cookie', setCookieHeader);
         }
@@ -77,11 +103,9 @@ export async function proxy(request: NextRequest) {
       }
     } catch {
       // If refresh fails on home page, just continue to show login
-      return NextResponse.next();
+      return response;
     }
   }
-
-  let response = NextResponse.next();
 
   if (!isPublicPage && refreshToken) {
     let isExpired = true;
@@ -120,26 +144,22 @@ export async function proxy(request: NextRequest) {
 
             if (newCookies['access_token']) {
               request.cookies.set('access_token', newCookies['access_token']);
-              // Re-create response object with the updated request headers
-              // This ensures the injected cookie is passed to downstream layout/pages
-              // We reuse the cookies already set by intlMiddleware
-              response = NextResponse.next({
-                request: {
-                  headers: request.headers,
-                },
-              });
-              // We must also re-apply the Set-Cookie header to the new response
+              
+              const newHeaders = new Headers(request.headers);
+              newHeaders.set('Cookie', request.headers.get('Cookie') || '');
+              
+              // Also update response from intlMiddleware with header
               response.headers.set('Set-Cookie', setCookieHeader);
             }
           }
         } else if (!isPublicPage) {
           // Refresh failed (e.g., refresh token also expired), redirect to login
-          const loginUrl = new URL('/', request.url);
+          const loginUrl = new URL(`/${locale}/`, request.url);
           return NextResponse.redirect(loginUrl);
         }
       } catch {
         if (!isPublicPage) {
-          const loginUrl = new URL('/', request.url);
+          const loginUrl = new URL(`/${locale}/`, request.url);
           return NextResponse.redirect(loginUrl);
         }
       }
@@ -151,13 +171,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Enable a comprehensive matcher to ensure all paths are processed
     // Match all request paths except for the ones starting with:
-    // - api (API routes)
-    // - _next/static (static files)
-    // - _next/image (image optimization files)
-    // - favicon.ico (favicon file)
-    // - OneSignalSDKWorker.js & OneSignalSDK.sw.js (OneSignal service workers)
     '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|OneSignalSDKWorker.js|OneSignalSDK.sw.js).*)',
   ],
 };

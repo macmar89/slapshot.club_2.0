@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Sora, Space_Grotesk } from 'next/font/google';
 
-import './globals.css';
+import '@/app/globals.css';
 import BackgroundImage from '@/components/common/background-image';
 import { Providers } from '@/providers/providers';
 import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
