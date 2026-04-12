@@ -7,7 +7,8 @@ import '@/app/globals.css';
 import BackgroundImage from '@/components/common/background-image';
 import { Providers } from '@/providers/providers';
 import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
-import { getSEO } from '@/config/seo';
+import { getSEO, APP_URL } from '@/config/seo';
+import { Analytics } from '@/components/common/Analytics';
 
 const sora = Sora({
   subsets: ['latin'],
@@ -25,8 +26,34 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const seo = getSEO('default', locale);
   return {
+    metadataBase: new URL(APP_URL),
     title: { template: '%s | slapshot.club', default: seo.title },
     description: seo.description,
+    icons: {
+      icon: '/icon.webp',
+      apple: '/icon.webp',
+    },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: APP_URL,
+      siteName: 'slapshot.club',
+      images: [
+        {
+          url: '/og-image.webp',
+          width: 800,
+          height: 600,
+        },
+      ],
+      locale: locale,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description: seo.description,
+      images: ['/og-image.webp'],
+    },
   };
 }
 
@@ -51,6 +78,7 @@ export default async function RootLayout({
             <BackgroundImage />
             <PredictionDialog />
             {children}
+            <Analytics />
           </Providers>
         </body>
       </NextIntlClientProvider>
