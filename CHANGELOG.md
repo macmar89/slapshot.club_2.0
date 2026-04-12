@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.4...v0.1.5) (2026-04-12)
+
+
+### Features
+
+* add MS 2026 team assets and registration protection modal, and implement optional authentication middleware ([c53e0bb](https://github.com/macmar89/slapshot.club_2.0/commit/c53e0bb7474e0a9647ad29b8a1d57d565dfcfeb5))
+* enable forced locale prefix routing and integrate next-intl middleware for localized path handling ([a27a7a8](https://github.com/macmar89/slapshot.club_2.0/commit/a27a7a8f038c5065b575bdb4d29d75034c8a45dd))
+* implement legal pages, update registration consent flow, and optimize image quality settings ([a370f3a](https://github.com/macmar89/slapshot.club_2.0/commit/a370f3a0cd6c192ded301aaa1a91eb05e622f3a3))
+* update competition card UI to support upcoming status and clean up project root files ([72d1dad](https://github.com/macmar89/slapshot.club_2.0/commit/72d1dadd502265c7f5f0678405276e1780fbfbc4))
+
+
+### Chores
+
+* generate package-lock.json for project dependencies ([81622ed](https://github.com/macmar89/slapshot.club_2.0/commit/81622ed357c3913df3deffb6e8bc955e99647fbe))
+
 ### [0.1.4](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.2...v0.1.4) (2026-04-11)
 
 
