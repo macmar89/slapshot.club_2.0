@@ -58,7 +58,9 @@
       "more": "More",
       "menu": "Menu",
       "feedback": "Feedback",
-      "admin": "Admin"
+      "admin": "Admin",
+      "terms": "Terms",
+      "privacy": "GDPR"
     },
     "settings": {
       "title": "Settings",
@@ -269,8 +271,10 @@
     "resend_verification": "Resend verification email",
     "verification_sent": "A new verification email has been sent",
     "resending": "Resending...",
-    "gdpr_label_prefix": "I agree to the processing of",
-    "gdpr_label_link": "personal data (GDPR)",
+    "gdpr_label_prefix": "I agree to the ",
+    "terms_link_text": "Terms and Conditions",
+    "registration_agreement_middle": " and I acknowledge the ",
+    "privacy_link_text": "Privacy Policy",
     "marketing_label": "I want to be in the first line! 🏒 Send me news from the locker room about new leagues and tweaks so I have the game under control.",
     "errors": {
       "turnstile_error": "Please confirm you are not a robot.",
@@ -298,7 +302,7 @@
       "password_no_lowercase": "Password must contain at least one lowercase letter",
       "password_no_number": "Password must contain at least one number",
       "password_no_special": "Password must contain at least one special character",
-      "gdpr_required": "You must agree to the processing of personal data (GDPR)",
+      "gdpr_required": "You must agree to the Terms and Conditions and acknowledge the Privacy Policy",
       "confirm_password_required": "Repeat the new password",
       "passwords_dont_match": "Passwords do not match",
       "phone_number_too_short": "Phone number must be at least 10 characters long",

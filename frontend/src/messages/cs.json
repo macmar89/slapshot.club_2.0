@@ -58,7 +58,9 @@
       "more": "Více",
       "menu": "Menu",
       "feedback": "Feedback",
-      "admin": "Admin"
+      "admin": "Admin",
+      "terms": "Podmínky",
+      "privacy": "GDPR"
     },
     "settings": {
       "title": "Nastavení",
@@ -292,7 +294,7 @@
       "password_no_lowercase": "Heslo musí obsahovat alespoň jedno malé písmeno",
       "password_no_number": "Heslo musí obsahovat alespoň jedno číslo",
       "password_no_special": "Heslo musí obsahovat alespoň jeden speciální znak",
-      "gdpr_required": "Musíte souhlasit se zpracováním osobních údajů (GDPR)",
+      "gdpr_required": "Musíte souhlasit s Obchodními podmínkami a vzít na vědomí Zásady ochrany soukromí",
       "confirm_password_required": "Zopakujte nové heslo",
       "passwords_dont_match": "Hesla se neshodují",
       "phone_number_too_short": "Telefonní číslo musí mít alespoň 10 znaků",
@@ -306,8 +308,10 @@
       "subscription_required": "Vaše zkušební verze vypršela. Pro pokračování si aktivujte předplatné.",
       "logout_failed": "Odhlášení selhalo. Zkuste to prosím znovu."
     },
-    "gdpr_label_prefix": "Souhlasím se zpracováním",
-    "gdpr_label_link": "osobních údajů (GDPR)",
+    "gdpr_label_prefix": "Souhlasím s ",
+    "terms_link_text": "Obchodními podmínkami",
+    "registration_agreement_middle": " a beru na vědomí ",
+    "privacy_link_text": "Zásady ochrany soukromí",
     "marketing_label": "Chci být v první lajně! 🏒 Posílejte mi novinky z kabíny o nových ligách a vychytávkach, ať mám hru stále pod kontrolou.",
     "gdpr_modal": {
       "title": "Zpracování osobních údajů (GDPR)",

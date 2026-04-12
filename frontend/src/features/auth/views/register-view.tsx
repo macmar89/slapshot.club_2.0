@@ -2,8 +2,8 @@ import { LanguageSwitcher } from '@/components/common/language-switcher';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { useTranslations } from 'next-intl';
 import { SlapshotLogo } from '@/components/common/slapshot-logo';
-import { AuthFooter } from '../components/auth-footer';
-import { RegisterForm } from '../components/register-form';
+import { AuthFooter } from '@/features/auth/components/auth-footer';
+import { RegisterForm } from '@/features/auth/components/register-form';
 
 export interface RegisterViewProps {
   referralCode?: string;

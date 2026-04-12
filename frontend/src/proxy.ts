@@ -35,7 +35,9 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/register/') ||
     pathname === '/forgot-password' ||
     pathname === '/reset-password' ||
-    pathname === '/verify';
+    pathname === '/verify' ||
+    pathname === '/terms' ||
+    pathname === '/privacy-policy';
 
   if (!isPublicPage && !accessToken && !refreshToken) {
     const loginUrl = new URL('/', request.url);

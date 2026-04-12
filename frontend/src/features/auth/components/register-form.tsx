@@ -33,7 +33,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
   const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
-  const [gdprOpen, setGdprOpen] = useState<boolean>(false);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
   const {
@@ -180,21 +179,30 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
                 !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
             >
-              {t('gdpr_label_prefix')}{' '}
-              <span
+              {t('gdpr_label_prefix')}
+              <Link
+                href="/terms"
+                target="_blank"
                 className={cn(
-                  'text-gold',
-                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:underline',
+                  'text-gold underline',
+                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gold/80',
                 )}
-                onClick={(e) => {
-                  if (!isRegistrationOpen) return;
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setGdprOpen(true);
-                }}
+                onClick={(e) => !isRegistrationOpen && e.preventDefault()}
               >
-                {t('gdpr_label_link')}
-              </span>
+                {t('terms_link_text')}
+              </Link>
+              {t('registration_agreement_middle')}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                className={cn(
+                  'text-gold underline',
+                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gold/80',
+                )}
+                onClick={(e) => !isRegistrationOpen && e.preventDefault()}
+              >
+                {t('privacy_link_text')}
+              </Link>
             </label>
             {errors.gdprConsent && (
               <p className="text-xs text-red-500">{errors.gdprConsent.message}</p>
@@ -246,7 +254,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         </Link>
       </div>
 
-      {gdprOpen && <GdprModalContent open={gdprOpen} onOpenChange={setGdprOpen} />}
     </form>
   );
 };

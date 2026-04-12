@@ -12,7 +12,7 @@ export default function BackgroundImage() {
           className="object-cover object-center"
           priority
           sizes="100vw"
-          quality={70}
+          quality={75}
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-slate-950/20 to-slate-950/40" />

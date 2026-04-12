@@ -113,6 +113,24 @@ export const Sidebar = ({ children }: SidebarProps) => {
               </span>
             </div>
           </FeedbackModal>
+
+          <div className="mt-4 flex flex-row items-center justify-center gap-3 px-4 text-[9px] uppercase tracking-wider text-white/40">
+            <Link
+              href="/terms"
+              target="_blank"
+              className="hover:text-white/80 hover:underline transition-colors"
+            >
+              {t('terms')}
+            </Link>
+            <span>&bull;</span>
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              className="hover:text-white/80 hover:underline transition-colors"
+            >
+              {t('privacy')}
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
