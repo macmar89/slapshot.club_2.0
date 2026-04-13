@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, usePathname } from '@/i18n/routing';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
@@ -35,6 +35,7 @@ export const CustomTabs = ({
 }: CustomTabsProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const currentPath = usePathname();
   const [isPending, startTransition] = useTransition();
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const [showLeftIndicator, setShowLeftIndicator] = React.useState(false);
@@ -97,8 +98,7 @@ export const CustomTabs = ({
         } else {
           params.set(paramName, value);
         }
-        // Use window.location.pathname if pathname isn't working as expected in dynamic routes
-        const currentPath = window.location.pathname;
+        // Use currentPath from usePathname() hook called at top level
         const queryStr = params.toString();
         router.replace(`${currentPath}${queryStr ? '?' + queryStr : ''}`, { scroll: false });
       }
