@@ -200,10 +200,11 @@
   },
   "Login": {
     "hero": {
-      "badge": "Nová éra hokejových tipov",
+      "badge": "Domov hokejových nadšencov",
       "title_main": "SLAPSHOT",
       "title_sub": "CLUB",
-      "description": "Vstúp do sveta, kde každý gól rozhoduje. Tipuj zápasy, tvor stratégie a staň sa legendou v najlepšej hokejovej komunite.",
+      "description": "Tipuj hokej. Súťaž s komunitou. Ovládni rebríček.",
+      "description_sub": "Žiadny hazard, len čistá vášeň pre hokej.",
       "footer": "© 2026 SLAPSHOT CLUB • Všetky práva vyhradené"
     },
     "features": {

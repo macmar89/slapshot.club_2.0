@@ -42,6 +42,8 @@ export function ResetPasswordView() {
 
           <p className="mb-12 max-w-xl text-xl leading-relaxed text-white/50">
             {t('hero.description')}
+            <br />
+            {t('hero.description_sub')}
           </p>
         </div>
 
