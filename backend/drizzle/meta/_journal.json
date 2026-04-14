@@ -50,6 +50,13 @@
       "when": 1775680131602,
       "tag": "0006_add_welcome_announcement",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1775934714675,
+      "tag": "0007_kind_killmonger",
+      "breakpoints": true
     }
   ]
 }

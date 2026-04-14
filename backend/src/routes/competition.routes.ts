@@ -6,17 +6,18 @@ import {
   getMyCompetitionStatsSchema,
   getPlayerPredictionsSchema,
 } from '../shared/constants/schema/competitions.schema.js';
-import { isAuth } from '../middleware/auth.middleware.js';
+import { isAuth, optionalAuth } from '../middleware/auth.middleware.js';
 import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
 import leaderboardRoutes from './leaderboard.routes.js';
 
 const router = Router();
 
 //  public endpoints
-router.get('/public/:slug', competitionController.getPublicCompetitionNameHandler);
+router.get('/public/:slug', optionalAuth, competitionController.getPublicCompetitionNameHandler);
 
 //  protected endpoints
 router.use(isAuth);
+router.get('/counts', competitionController.getCompetitionCountsHandler);
 router.get('/', competitionController.getCompetitionsHandler);
 router.post('/join', validate(joinCompetitionSchema), competitionController.joinCompetitionHandler);
 

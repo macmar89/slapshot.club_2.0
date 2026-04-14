@@ -15,7 +15,11 @@ import { AppError } from '../../utils/appError.js';
 import { logger } from '../../utils/logger.js';
 import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
 
-export const findAllCompetitions = async (userId: string, locale: AppLocale) => {
+export const findAllCompetitions = async (
+  userId: string,
+  locale: AppLocale,
+  tab: string = 'active',
+) => {
   const competitions = await db.query.competitions.findMany({
     columns: {
       id: true,
@@ -25,7 +29,12 @@ export const findAllCompetitions = async (userId: string, locale: AppLocale) => 
       totalParticipants: true,
       startDate: true,
     },
-    where: (competitions) => eq(competitions.status, 'active'),
+    where: (table, { eq, inArray }) => {
+      if (tab === 'active') return eq(table.status, 'active');
+      if (tab === 'upcoming') return eq(table.status, 'upcoming');
+      if (tab === 'finished') return inArray(table.status, ['finished', 'archived']);
+      return eq(table.status, 'active');
+    },
     with: {
       locales: {
         columns: {
@@ -123,10 +132,15 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
   }
 };
 
-export const findPublicCompetitionName = async (slug: string, locale: AppLocale) => {
+export const findPublicCompetitionName = async (
+  slug: string,
+  locale: AppLocale,
+  userId?: string,
+) => {
   const competition = await db.query.competitions.findFirst({
     columns: {
       id: true,
+      isRegistrationOpen: true,
     },
     with: {
       locales: {
@@ -137,6 +151,15 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
         where: (locales, { eq }) => eq(locales.locale, locale as AppLocale),
         limit: 1,
       },
+      leaderboardEntries: userId
+        ? {
+            columns: {
+              id: true,
+            },
+            where: (leaderboardEntries, { eq }) => eq(leaderboardEntries.userId, userId),
+            limit: 1,
+          }
+        : undefined,
     },
     where: (competitions) => eq(competitions.slug, slug),
   });
@@ -146,8 +169,11 @@ export const findPublicCompetitionName = async (slug: string, locale: AppLocale)
   }
 
   return {
+    id: competition.id,
     name: competition?.locales[0]?.name ?? null,
     description: competition?.locales[0]?.description ?? null,
+    isJoined: userId ? (competition.leaderboardEntries?.length ?? 0) > 0 : false,
+    isRegistrationOpen: competition.isRegistrationOpen,
   };
 };
 
@@ -418,4 +444,20 @@ export const getPlayerPredictions = async (
       playerSubscriptionPlan: user?.subscriptionPlan,
     },
   };
+};
+
+export const getCompetitionCounts = async () => {
+  const result = await db
+    .select({ status: competitions.status, count: count() })
+    .from(competitions)
+    .groupBy(competitions.status);
+
+  const counts = { active: 0, upcoming: 0, finished: 0 };
+  result.forEach((row) => {
+    if (row.status === 'active') counts.active += row.count;
+    else if (row.status === 'upcoming') counts.upcoming += row.count;
+    else if (row.status === 'finished' || row.status === 'archived') counts.finished += row.count;
+  });
+
+  return counts;
 };

@@ -20,3 +20,18 @@ export const isAuth = catchAsync(async (req: Request, res: Response, next: NextF
     throw new AppError(ERR.AUTH.TOKEN_EXPIRED, HttpStatusCode.UNAUTHORIZED);
   }
 });
+
+export const optionalAuth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies.access_token;
+
+  if (token) {
+    try {
+      const decoded = verifyAccessToken(token);
+      req.user = decoded;
+    } catch (err) {
+      // Ignore token errors for optional auth
+    }
+  }
+
+  next();
+});

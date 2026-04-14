@@ -65,15 +65,17 @@ export const Sidebar = ({ children }: SidebarProps) => {
   const isAdmin = user?.role === 'admin' || user?.role === 'editor';
 
   return (
-    <nav className="flex h-full flex-col">
-      <div className="mt-4 flex flex-col gap-2">{children}</div>
+    <nav className="flex h-full flex-col overflow-hidden">
+      <div className="scrollbar-thin flex-1 overflow-x-hidden overflow-y-auto">
+        <div className="mt-4 flex flex-col">{children}</div>
+      </div>
 
-      <div className="mt-auto pt-4">
+      <div className="mt-auto flex-shrink-0 pt-4">
         <div className="mb-4 px-4">
           <div className="h-px w-full bg-white/10" />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <SidebarItem
             href="/announcements"
             icon={Megaphone}
@@ -111,6 +113,24 @@ export const Sidebar = ({ children }: SidebarProps) => {
               </span>
             </div>
           </FeedbackModal>
+
+          <div className="mt-4 flex flex-row items-center justify-center gap-3 px-4 text-[9px] uppercase tracking-wider text-white/40">
+            <Link
+              href="/terms"
+              target="_blank"
+              className="hover:text-white/80 hover:underline transition-colors"
+            >
+              {t('terms')}
+            </Link>
+            <span>&bull;</span>
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              className="hover:text-white/80 hover:underline transition-colors"
+            >
+              {t('privacy')}
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

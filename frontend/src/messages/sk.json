@@ -58,7 +58,9 @@
       "more": "Viac",
       "menu": "Menu",
       "feedback": "Feedback",
-      "admin": "Admin"
+      "admin": "Admin",
+      "terms": "Podmienky",
+      "privacy": "GDPR"
     },
     "settings": {
       "title": "Nastavenia",
@@ -198,10 +200,11 @@
   },
   "Login": {
     "hero": {
-      "badge": "Nová éra hokejových tipov",
+      "badge": "Domov hokejových nadšencov",
       "title_main": "SLAPSHOT",
       "title_sub": "CLUB",
-      "description": "Vstúp do sveta, kde každý gól rozhoduje. Tipuj zápasy, tvor stratégie a staň sa legendou v najlepšej hokejovej komunite.",
+      "description": "Tipuj hokej. Súťaž s komunitou. Ovládni rebríček.",
+      "description_sub": "Žiadny hazard, len čistá vášeň pre hokej.",
       "footer": "© 2026 SLAPSHOT CLUB • Všetky práva vyhradené"
     },
     "features": {
@@ -266,8 +269,10 @@
     "resend_verification": "Odoslať nový overovací e-mail",
     "verification_sent": "Nový overovací e-mail bol odoslaný",
     "resending": "Odosielam...",
-    "gdpr_label_prefix": "Súhlasím so spracovaním",
-    "gdpr_label_link": "osobných údajov (GDPR)",
+    "gdpr_label_prefix": "Súhlasím s ",
+    "terms_link_text": "Obchodnými podmienkami",
+    "registration_agreement_middle": " a beriem na vedomie ",
+    "privacy_link_text": "Zásady ochrany súkromia",
     "marketing_label": "Chcem byť v prvej lajne! 🏒 Posielajte mi novinky z kabíny o nových ligách a vychytávkach, nech mám hru stále pod kontrolou.",
     "errors": {
       "turnstile_error": "Potvrďte prosím, že nie ste robot.",
@@ -298,7 +303,7 @@
       "password_no_lowercase": "Heslo musí obsahovať aspoň jedno malé písmeno",
       "password_no_number": "Heslo musí obsahovať aspoň jednu číslicu",
       "password_no_special": "Heslo musí obsahovať aspoň jeden špeciálny znak",
-      "gdpr_required": "Musíte súhlasiť so spracovaním osobných údajov (GDPR)",
+      "gdpr_required": "Musíte súhlasiť s Obchodnými podmienkami a vziať na vedomie Zásady ochrany súkromia",
       "confirm_password_required": "Zopakujte nové heslo",
       "passwords_dont_match": "Heslá sa nezhodujú",
       "phone_number_too_short": "Telefónne číslo musí mať aspoň 10 znakov",
@@ -376,8 +381,11 @@
     "status": {
       "active": "Prebiehajúce",
       "upcoming": "Pripravuje sa",
-      "finished": "Ukončené"
+      "finished": "Ukončené",
+      "archived": "Archivované"
     },
+    "empty_state_title": "Prázdna kategória",
+    "empty_state_desc": "Momentálne nie sú žiadne súťaže v tejto kategórii. Skús pozrieť ostatné záložky alebo sa vráť neskôr.",
     "start_date": "Začiatok",
     "end_date": "Koniec",
     "status_label": "Stav",
@@ -393,7 +401,10 @@
       "description": "Nie si prihlásený do súťaže {competitionName}. Chceš sa pripojiť?",
       "cancel": "Zrušiť",
       "confirm": "Pripojiť sa",
-      "joining": "Pripájanie..."
+      "joining": "Pripájanie...",
+      "back_to_arena": "Naspäť do Arény",
+      "registration_closed_title": "Registrácia ešte nie je otvorená",
+      "registration_closed_description": "Do súťaže {competitionName} sa ešte nie je možné prihlásiť. Registrácia bude spustená neskôr."
     },
     "rules": "Pravidlá",
     "settings": "Nastavenia"

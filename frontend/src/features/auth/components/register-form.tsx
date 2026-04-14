@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter, Link } from '@/i18n/routing';
 import { useForm, Controller } from 'react-hook-form';
@@ -14,8 +14,8 @@ import { PasswordInput } from '@/features/auth/components/password-input';
 import dynamic from 'next/dynamic';
 import { Turnstile } from '@/components/common/turnstile';
 import { type TurnstileInstance } from '@marsidev/react-turnstile';
-import { getRegisterSchema, type RegisterInput } from '../auth.schema';
-import { handlePostRegister } from '../auth.api';
+import { getRegisterSchema, type RegisterInput } from '@/features/auth/auth.schema';
+import { handlePostRegister } from '@/features/auth/auth.api';
 
 const GdprModalContent = dynamic(() => import('./gdpr-content-dialog'), { ssr: false });
 
@@ -29,14 +29,11 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
 
   const locale = useLocale();
 
-  console.log(referralCode);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
-  const [gdprOpen, setGdprOpen] = useState(false);
-  const turnstileRef = React.useRef<TurnstileInstance>(null);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
+  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const {
     register,
@@ -182,21 +179,30 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
                 !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
             >
-              {t('gdpr_label_prefix')}{' '}
-              <span
+              {t('gdpr_label_prefix')}
+              <Link
+                href="/terms"
+                target="_blank"
                 className={cn(
-                  'text-gold',
-                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:underline',
+                  'text-gold underline',
+                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gold/80',
                 )}
-                onClick={(e) => {
-                  if (!isRegistrationOpen) return;
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setGdprOpen(true);
-                }}
+                onClick={(e) => !isRegistrationOpen && e.preventDefault()}
               >
-                {t('gdpr_label_link')}
-              </span>
+                {t('terms_link_text')}
+              </Link>
+              {t('registration_agreement_middle')}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                className={cn(
+                  'text-gold underline',
+                  !isRegistrationOpen ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gold/80',
+                )}
+                onClick={(e) => !isRegistrationOpen && e.preventDefault()}
+              >
+                {t('privacy_link_text')}
+              </Link>
             </label>
             {errors.gdprConsent && (
               <p className="text-xs text-red-500">{errors.gdprConsent.message}</p>
@@ -248,7 +254,6 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         </Link>
       </div>
 
-      {gdprOpen && <GdprModalContent open={gdprOpen} onOpenChange={setGdprOpen} />}
     </form>
   );
 };

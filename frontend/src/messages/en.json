@@ -58,7 +58,9 @@
       "more": "More",
       "menu": "Menu",
       "feedback": "Feedback",
-      "admin": "Admin"
+      "admin": "Admin",
+      "terms": "Terms",
+      "privacy": "GDPR"
     },
     "settings": {
       "title": "Settings",
@@ -198,10 +200,11 @@
   },
   "Login": {
     "hero": {
-      "badge": "A New Era of Hockey Betting",
+      "badge": "The Home of Hockey Enthusiasts",
       "title_main": "SLAPSHOT",
       "title_sub": "CLUB",
-      "description": "Enter a world where every goal matters. Predict matches, create strategies, and become a legend in the best hockey community.",
+      "description": "Predict hockey. Compete with the community. Rule the leaderboard.",
+      "description_sub": "No gambling, just pure passion for hockey.",
       "footer": "© 2026 SLAPSHOT CLUB • All rights reserved"
     },
     "features": {
@@ -269,8 +272,10 @@
     "resend_verification": "Resend verification email",
     "verification_sent": "A new verification email has been sent",
     "resending": "Resending...",
-    "gdpr_label_prefix": "I agree to the processing of",
-    "gdpr_label_link": "personal data (GDPR)",
+    "gdpr_label_prefix": "I agree to the ",
+    "terms_link_text": "Terms and Conditions",
+    "registration_agreement_middle": " and I acknowledge the ",
+    "privacy_link_text": "Privacy Policy",
     "marketing_label": "I want to be in the first line! 🏒 Send me news from the locker room about new leagues and tweaks so I have the game under control.",
     "errors": {
       "turnstile_error": "Please confirm you are not a robot.",
@@ -298,7 +303,7 @@
       "password_no_lowercase": "Password must contain at least one lowercase letter",
       "password_no_number": "Password must contain at least one number",
       "password_no_special": "Password must contain at least one special character",
-      "gdpr_required": "You must agree to the processing of personal data (GDPR)",
+      "gdpr_required": "You must agree to the Terms and Conditions and acknowledge the Privacy Policy",
       "confirm_password_required": "Repeat the new password",
       "passwords_dont_match": "Passwords do not match",
       "phone_number_too_short": "Phone number must be at least 10 characters long",
@@ -376,8 +381,11 @@
     "status": {
       "active": "Ongoing",
       "upcoming": "Upcoming",
-      "finished": "Finished"
+      "finished": "Finished",
+      "archived": "Archived"
     },
+    "empty_state_title": "Empty Category",
+    "empty_state_desc": "There are currently no competitions in this category. Check out other tabs or come back later.",
     "start_date": "Starts",
     "end_date": "Ends",
     "status_label": "Status",
@@ -393,7 +401,10 @@
       "description": "You are not joined in {competitionName}. Do you want to join?",
       "cancel": "Cancel",
       "confirm": "Join Now",
-      "joining": "Joining..."
+      "joining": "Joining...",
+      "back_to_arena": "Back to Arena",
+      "registration_closed_title": "Registration Not Yet Open",
+      "registration_closed_description": "Registration for the {competitionName} competition is not yet open. Please check back later."
     },
     "rules": "Rules",
     "settings": "Settings"

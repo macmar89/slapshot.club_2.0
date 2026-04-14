@@ -56,6 +56,7 @@ export const users = pgTable(
     isActive: boolean('is_active').default(true).notNull(),
 
     referralCode: varchar('referral_code').unique().notNull(),
+    registrationSource: varchar('registration_source', { length: 100 }),
     referredById: varchar('referred_by_id', { length: 24 }).references(
       (): AnyPgColumn => users.id,
       {

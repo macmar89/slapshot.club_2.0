@@ -27,7 +27,8 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
   const [isJoinModalOpen, setIsJoinModalOpen] = useState<boolean>(false);
 
   const isJoined = competition.isJoined;
-  const isFinished = competition.status === 'finished';
+  const isFinished = competition.status === 'finished' || competition.status === 'archived';
+  const isUpcoming = competition.status === 'upcoming';
   const isRegistrationDisabled = !competition.isRegistrationOpen;
   const userRank = competition.leaderboardEntries?.currentRank ?? 0;
 
@@ -50,7 +51,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
       <div
         className={cn(
           'group block',
-          isRegistrationDisabled && 'cursor-not-allowed opacity-60',
+          isRegistrationDisabled && !isUpcoming && 'cursor-not-allowed opacity-60',
           compact ? 'h-[240px]' : 'h-[340px] md:h-[380px] lg:h-[400px]',
         )}
       >
@@ -75,7 +76,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
             <div
               className={cn(
                 'rounded-app absolute top-6 right-6 border px-4 py-1.5 text-[0.7rem] font-bold tracking-widest uppercase backdrop-blur-md',
-                competition.status === 'active'
+                competition.status === 'active' || isUpcoming
                   ? 'border-[#eab308] bg-[#eab308] text-black shadow-[0_0_15px_rgba(234,179,8,0.3)]'
                   : competition.status === 'finished'
                     ? 'border-white/10 bg-white/5 text-white/50'
