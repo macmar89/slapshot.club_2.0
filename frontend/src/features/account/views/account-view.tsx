@@ -9,10 +9,16 @@ import { EmailSection } from '../components/email-section';
 import { SecurityForm } from '../components/security-form';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useAuthStore } from '@/store/use-auth-store';
-import { UserCog } from 'lucide-react';
+import { UserCog, Send, Loader2 } from 'lucide-react';
+import { IceGlassCard } from '@/components/ui/ice-glass-card';
+import { Button } from '@/components/ui/button';
+import { handlePostResendVerificationMe } from '@/features/auth/auth.api';
+import { toast } from 'sonner';
+import { useState } from 'react';
 
 export function AccountView() {
   const t = useTranslations('Account');
+  const commonT = useTranslations('Common');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -20,6 +26,8 @@ export function AccountView() {
   const { user, setUser } = useAuthStore();
   const activeTab = searchParams.get('tab') || 'profile';
   const isAdmin = user?.role === 'admin';
+
+  const [isResending, setIsResending] = useState(false);
 
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -30,6 +38,22 @@ export function AccountView() {
   const handleUsernameUpdated = (newUsername: string) => {
     if (user) {
       setUser({ ...user, username: newUsername });
+    }
+  };
+
+  const handleResend = async () => {
+    setIsResending(true);
+    try {
+      const res = await handlePostResendVerificationMe();
+      if (res.success) {
+        toast.success(t('verification_resent_success'));
+      } else {
+        toast.error(res.message || commonT('error_generic'));
+      }
+    } catch (err) {
+      toast.error(commonT('error_generic'));
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -66,6 +90,42 @@ export function AccountView() {
               <TabsContent value="profile">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   <ProfileOverview />
+
+                  {!user.isVerified && (
+                    <div className="md:col-span-2">
+                      <IceGlassCard backdropBlur="md" className="p-4 md:p-6">
+                        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-warning/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full md:h-12 md:w-12">
+                              <Send className="text-warning h-5 w-5 md:h-6 md:w-6" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-white md:text-base">
+                                {t('verification_notice', {
+                                  email: user.email,
+                                })}
+                              </p>
+                              <p className="text-[10px] font-bold tracking-widest text-white uppercase">
+                                {t('verification_resend_hint')}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="border-warning/30 text-warning hover:bg-warning/10 h-10 shrink-0 px-6 text-xs font-black tracking-widest uppercase italic md:h-12 md:text-sm"
+                            onClick={handleResend}
+                            disabled={isResending}
+                          >
+                            {isResending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              t('resend_verification')
+                            )}
+                          </Button>
+                        </div>
+                      </IceGlassCard>
+                    </div>
+                  )}
 
                   <UsernameForm
                     initialUsername={user.username}

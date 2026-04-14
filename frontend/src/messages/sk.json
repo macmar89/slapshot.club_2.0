@@ -694,7 +694,11 @@
     "referral_description": "Zdieľaj tento registračný link a získaj bonusové body za každého nového hráča.",
     "referral_not_available": "Referral link nie je dostupný",
     "copy": "Kopírovať",
-    "copied": "Skopírované"
+    "copied": "Skopírované",
+    "verification_notice": "Váš účet nie je overený. Overovací e-mail sme vám odoslali na {email}.",
+    "verification_resend_hint": "Ak vám neprišiel, môžete ho odoslať znova.",
+    "resend_verification": "Odoslať znova",
+    "verification_resent_success": "Overovací e-mail bol úspešne odoslaný"
   },
   "Jersey": {
     "title": "Tvorca Dresu",

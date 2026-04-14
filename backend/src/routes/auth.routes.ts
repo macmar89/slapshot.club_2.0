@@ -38,6 +38,7 @@ router.post(
   validate(ResendVerificationHandlerSchema),
   authController.resendVerificationHandler,
 );
+router.post('/resend-verification-me', isAuth, authController.resendVerificationMeHandler);
 router.post(
   '/forgot-password',
   authLimiter,

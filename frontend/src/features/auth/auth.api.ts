@@ -146,6 +146,25 @@ export const handlePostResendVerification = async (values: ResendVerificationInp
   }
 };
 
+export const handlePostResendVerificationMe = async () => {
+  try {
+    const { data } = await api.post(API_ROUTES.AUTH.RESEND_VERIFICATION_ME);
+
+    return {
+      success: true,
+      message: data.message,
+      data: data.data,
+    };
+  } catch (error: unknown) {
+    const errorMessage = ((error as any).response?.data?.message || 'UNEXPECTED_ERROR') as string;
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};
+
 export const handlePostForgotPassword = async (values: ForgotPasswordInput) => {
   try {
     const { data } = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, values);

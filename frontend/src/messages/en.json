@@ -694,7 +694,11 @@
     "referral_description": "Share this registration link and earn bonus points for every new teammate.",
     "referral_not_available": "Referral link not available",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "verification_notice": "Your account is not verified. We sent a verification e-mail to {email}.",
+    "verification_resend_hint": "If you didn't receive it, you can have it sent again.",
+    "resend_verification": "Resend",
+    "verification_resent_success": "Verification e-mail was successfully sent"
   },
   "Jersey": {
     "title": "Jersey Creator",

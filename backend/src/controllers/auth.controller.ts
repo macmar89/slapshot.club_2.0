@@ -33,6 +33,7 @@ import { AuthMessages } from '../shared/constants/messages/auth.messages.js';
 import { logActivity } from '../services/audit.service.js';
 import type { AvailabilityCheckType } from '../types/global.types.js';
 import { emailQueue } from '../queues/email.queue.js';
+import { logger } from '../utils/logger.js';
 
 export const login = catchAsync(async (req: Request, res: Response) => {
   const validatedData = LoginSchema.parse(req.body);
@@ -264,6 +265,33 @@ export const resendVerificationHandler = catchAsync(async (req: Request, res: Re
         username,
         email: userEmail,
         preferredLanguage,
+      },
+      token,
+      locale,
+    },
+  });
+
+  res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    message: AuthMessages.VERIFICATION_SENT,
+  });
+});
+
+export const resendVerificationMeHandler = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+
+  const { user } = await getUserProfile(userId);
+
+  const { token } = await resendVerification(user.email);
+
+  const locale = req.cookies.NEXT_LOCALE || 'sk';
+
+  await emailQueue.add('verification-email', {
+    type: 'verification-email',
+    data: {
+      user: {
+        username: user.username,
+        email: user.email,
       },
       token,
       locale,
