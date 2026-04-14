@@ -8,7 +8,7 @@ import BackgroundImage from '@/components/common/background-image';
 import { Providers } from '@/providers/providers';
 import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
 import { getSEO, APP_URL } from '@/config/seo';
-import { Analytics } from '@/components/common/Analytics';
+import { Analytics } from '@/components/common/analytics';
 
 const sora = Sora({
   subsets: ['latin'],
