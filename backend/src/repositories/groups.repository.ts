@@ -109,6 +109,7 @@ export const groupRepository = {
   async getSettingsById(groupId: string) {
     return defaultDb.query.groups.findFirst({
       columns: {
+        name: true,
         code: true,
         status: true,
         warningExpiresAt: true,

@@ -6,15 +6,17 @@ import { useTranslations } from 'next-intl';
 import { DataLoader } from '@/components/common/data-loader';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Button } from '@/components/ui/button';
-import { Copy, Trash2, Shield, UserPlus, Lock, Key } from 'lucide-react';
+import { Copy, Trash2, Shield, UserPlus, Lock, Key, Save, Edit2 } from 'lucide-react';
 import { IceGlassCard } from '@/components/ui/ice-glass-card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
-import { patchUpdateGroupSettings, deleteGroup } from '../groups.api';
+import { useState, useEffect } from 'react';
+import { patchUpdateGroupSettings, deleteGroup, patchUpdateGroupName } from '../groups.api';
 import { toast } from 'sonner';
 import { useRouter } from '@/i18n/routing';
 import dynamic from 'next/dynamic';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 const GroupDeleteDialog = dynamic(
   () =>
@@ -47,6 +49,35 @@ export const GroupDetailSettingsTab = ({
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [newName, setNewName] = useState<string>('');
+
+  useEffect(() => {
+    if (data?.name) {
+      setNewName(data.name);
+    }
+  }, [data?.name]);
+
+  const handleNameUpdate = async () => {
+    if (!newName || newName === data?.name) return;
+
+    setIsSaving(true);
+    const res = await patchUpdateGroupName(groupSlug, newName);
+    if (res.success && res.data) {
+      toast.success(t('group_updated_success'));
+      const nextSlug = (res.data as any).newSlug;
+
+      if (nextSlug && nextSlug !== groupSlug) {
+        // Redirect to new slug
+        router.replace(`/${competitionSlug}/groups/${nextSlug}?tab=settings`);
+      } else {
+        mutate(API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug));
+        mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
+      }
+    } else {
+      toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
+    }
+    setIsSaving(false);
+  };
 
   const handleToggle = async (key: keyof GroupDetailSettings, value: boolean) => {
     setIsSaving(true);
@@ -55,6 +86,7 @@ export const GroupDetailSettingsTab = ({
     if (res.success) {
       toast.success(t('group_updated_success'));
       mutate(API_ROUTES.GROUPS.DETAIL.SETTINGS(groupSlug));
+      mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
     } else {
       toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
     }
@@ -91,6 +123,62 @@ export const GroupDetailSettingsTab = ({
               className="space-y-0 overflow-hidden border-white/10 p-0 shadow-xl"
               backdropBlur="lg"
             >
+              {/* General Settings (Name) */}
+              <div className="border-b border-white/10 p-4 md:px-6 md:py-5">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+                      <Edit2 className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col">
+                      <Label className="text-sm font-semibold text-white md:text-base">
+                        {t('group_name')}
+                      </Label>
+                      <p className="text-xs text-white/40 md:text-sm">{t('group_name_desc')}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <Input
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        className={cn(
+                          'border-white/10 bg-white/5 text-white placeholder:text-white/20',
+                          newName.length > 0 &&
+                            !/^[a-zA-Z0-9áčdeéíľĺňóôŕšťúýžÁČDEÉÍĽĹŇÓÔŔŠŤÚÝŽ\s\-.!?,]*$/.test(
+                              newName,
+                            ) &&
+                            'border-destructive focus-visible:ring-destructive',
+                        )}
+                        placeholder={t('name_placeholder')}
+                        disabled={isSaving}
+                      />
+                      <Button
+                        onClick={handleNameUpdate}
+                        disabled={
+                          isSaving ||
+                          !newName ||
+                          newName.length < 3 ||
+                          newName.length > 100 ||
+                          newName === data.name ||
+                          !/^[a-zA-Z0-9áčdeéíľĺňóôŕšťúýžÁČDEÉÍĽĹŇÓÔŔŠŤÚÝŽ\s\-.!?,]*$/.test(newName)
+                        }
+                        className="gap-2"
+                      >
+                        <Save className="h-4 w-4" />
+                        <span>{t('save')}</span>
+                      </Button>
+                    </div>
+                    {newName.length > 0 &&
+                      !/^[a-zA-Z0-9áčdeéíľĺňóôŕšťúýžÁČDEÉÍĽĹŇÓÔŔŠŤÚÝŽ\s\-.!?,]*$/.test(newName) && (
+                        <p className="text-destructive text-[10px] font-bold tracking-tight uppercase">
+                          {t('invalid_characters_error') || 'Invalid characters used'}
+                        </p>
+                      )}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 items-center gap-4 border-b border-white/10 bg-white/[0.02] p-4 md:grid-cols-2 md:p-6 lg:grid-cols-3">
                 {/* Invite Code */}
                 <div className="flex flex-col gap-1 md:gap-2">
@@ -207,7 +295,7 @@ export const GroupDetailSettingsTab = ({
                 </div>
 
                 {/* Alias Requirement */}
-                <div className="flex items-center justify-between p-4 md:px-6 md:py-5">
+                {/* <div className="flex items-center justify-between p-4 md:px-6 md:py-5">
                   <div className="flex gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500">
                       <Key className="h-5 w-5" />
@@ -227,7 +315,7 @@ export const GroupDetailSettingsTab = ({
                     onCheckedChange={(val) => handleToggle('isAliasRequired', val)}
                     disabled={isSaving}
                   />
-                </div>
+                </div>*/}
               </div>
             </IceGlassCard>
 

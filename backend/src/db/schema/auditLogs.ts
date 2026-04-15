@@ -30,6 +30,7 @@ export const auditActionEnum = pgEnum('audit_action', [
   'GROUP_STATUS_CHANGE',
   'GROUP_OWNERSHIP_TRANSFER',
   'GROUP_ALIAS_CHANGE',
+  'GROUP_NAME_CHANGE',
   'GROUP_SETTINGS_CHANGE',
 
   // MATCH

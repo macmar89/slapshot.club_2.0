@@ -80,6 +80,7 @@ export interface GroupMembersResponse {
 }
 
 export interface GroupDetailSettings {
+  name: string;
   code: string;
   status: GroupStatus;
   warningExpiresAt: string | null;

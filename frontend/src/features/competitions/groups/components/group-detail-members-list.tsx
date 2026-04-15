@@ -187,6 +187,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
         toast.success(t(`status_updated_${status}`));
         await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
         await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+        await mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
       } else {
         toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }
@@ -206,6 +207,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
           toast.success(t('status_updated_owner'));
           await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
           await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+          await mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
         } else {
           toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
         }
@@ -215,6 +217,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
           toast.success(t('role_updated_success'));
           await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
           await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+          await mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
         } else {
           toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
         }
@@ -234,6 +237,7 @@ const MemberRow = ({ groupSlug, member, myMemberRole, isOpen, onToggle }: Member
         toast.success(t('status_updated_removed'));
         await mutate(API_ROUTES.GROUPS.DETAIL.MEMBERS.LIST(groupSlug));
         await mutate(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));
+        await mutate(API_ROUTES.GROUPS.DETAIL.LEADERBOARD(groupSlug));
       } else {
         toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }

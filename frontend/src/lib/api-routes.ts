@@ -74,6 +74,7 @@ export const API_ROUTES = {
     DETAIL: {
       INFO: (slug: string) => `/groups/${slug}`,
       LEADERBOARD: (slug: string) => `/groups/${slug}/leaderboard`,
+      NAME: (slug: string) => `/groups/${slug}/name`,
       MEMBERS: {
         LIST: (slug: string) => `/groups/${slug}/members`,
         STATUS: (slug: string, memberId: string) => `/groups/${slug}/members/${memberId}/status`,

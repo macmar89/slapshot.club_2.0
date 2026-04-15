@@ -531,7 +531,10 @@
       "member_not_found": "Member not found.",
       "user_not_competition_member": "You are not a member of this competition.",
       "user_not_found": "User not found.",
-      "unexpected": "An unexpected error occurred. Please try again."
+      "unexpected": "An unexpected error occurred. Please try again.",
+      "invalid_characters": "Invalid characters used",
+      "name_min": "Name must be at least 3 characters.",
+      "name_max": "Name can be at most 100 characters."
     },
     "status_active": "Active",
     "status_pending": "Pending",
@@ -561,7 +564,11 @@
     "status_updated_removed": "Member has been successfully removed from the group.",
     "role_updated_success": "Member role has been successfully updated.",
     "group_created_successfully": "Group created successfully! 🏒",
-    "join_group_success": "You have successfully joined the group."
+    "join_group_success": "You have successfully joined the group.",
+    "group_name": "Group Name",
+    "group_name_desc": "Changing the name will also update the group URL.",
+    "name_placeholder": "Enter group name...",
+    "save": "Save"
   },
   "NotFound": {
     "title": "Icing!",

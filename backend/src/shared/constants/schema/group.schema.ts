@@ -21,7 +21,12 @@ export const groupMemberParamsSchema = z.object({
 
 export const createGroupSchema = z
   .object({
-    name: z.string().min(3).max(100),
+    name: z
+      .string()
+      .trim()
+      .min(3)
+      .max(100)
+      .regex(/^[a-zA-Z0-9áčdeéíľĺňóôŕšťúýžÁČDEÉÍĽĹŇÓÔŔŠŤÚÝŽ\s\-.!?,]+$/, 'Invalid characters'),
     competitionSlug: z.string().min(3).max(100),
     type: z.enum(groupType),
     isAliasRequired: z.boolean().default(false).optional(),
@@ -58,6 +63,18 @@ export const updateGroupSettingsSchema = z.object({
   body: z.object({
     type: z.enum(groupSettingKey),
     value: z.boolean(),
+  }),
+});
+
+export const updateGroupNameSchema = z.object({
+  params: groupParamsSchema,
+  body: z.object({
+    name: z
+      .string()
+      .trim()
+      .min(3)
+      .max(100)
+      .regex(/^[a-zA-Z0-9áčdeéíľĺňóôŕšťúýžÁČDEÉÍĽĹŇÓÔŔŠŤÚÝŽ\s\-.!?,]+$/, 'invalid_characters'),
   }),
 });
 

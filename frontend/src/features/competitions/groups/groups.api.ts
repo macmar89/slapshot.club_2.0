@@ -47,6 +47,17 @@ export const patchUpdateGroupSettings = async (
   }
 };
 
+export const patchUpdateGroupName = async (groupSlug: string, name: string) => {
+  try {
+    const response = await api.patch(API_ROUTES.GROUPS.DETAIL.NAME(groupSlug), { name });
+
+    return { success: response.status === 201, data: response.data.data };
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'UNEXPECTED_ERROR';
+    return { success: false, error: errorMessage };
+  }
+};
+
 export const deleteGroup = async (groupSlug: string) => {
   try {
     const response = await api.delete(API_ROUTES.GROUPS.DETAIL.INFO(groupSlug));

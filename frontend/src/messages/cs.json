@@ -528,7 +528,10 @@
       "member_not_found": "Hráč nebyl nalezen.",
       "user_not_competition_member": "Nejste členem této soutěže.",
       "user_not_found": "Uživatel nebyl nalezen.",
-      "unexpected": "Nastala neočekávaná chyba. Zkus znovu."
+      "unexpected": "Nastala neočekávaná chyba. Zkus znovu.",
+      "invalid_characters": "Použili jste nepovolené znaky",
+      "name_min": "Název musí mít alespoň 3 znaky.",
+      "name_max": "Název může mít nejvýše 100 znaků."
     },
     "status_active": "Aktivní",
     "status_pending": "Čekající",
@@ -558,7 +561,11 @@
     "status_updated_removed": "Hráč byl úspěšně vyhozen ze skupiny.",
     "role_updated_success": "Role člena byla úspěšně upravena.",
     "group_created_successfully": "Skupina byla úspěšně vytvořena! 🏒",
-    "join_group_success": "Úspěšně jste se připojili ke skupině."
+    "join_group_success": "Úspěšně jste se připojili ke skupině.",
+    "group_name": "Název skupiny",
+    "group_name_desc": "Změna jména změní i URL adresu skupiny.",
+    "name_placeholder": "Zadej název skupiny...",
+    "save": "Uložit"
   },
   "NotFound": {
     "title": "Zakázané uvolnění!",

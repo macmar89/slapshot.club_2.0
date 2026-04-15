@@ -251,6 +251,23 @@ export const updateGroupSettings = async (
   });
 };
 
+export const updateGroupName = async (groupId: string, newName: string) => {
+  const group = await groupRepository.getById(groupId, ['id', 'slug']);
+  if (!group) {
+    throw new AppError(GroupMessages.ERRORS.GROUP_NOT_FOUND, HttpStatusCode.NOT_FOUND);
+  }
+
+  const slugSuffix = group.id.slice(-6);
+  const newSlug = generateSlug(newName, slugSuffix);
+
+  await groupRepository.updateGroup(groupId, {
+    name: newName,
+    slug: newSlug,
+  });
+
+  return { newSlug };
+};
+
 export const deleteGroup = async (groupId: string, userId: string) => {
   const group = await groupRepository.getById(groupId, [
     'id',

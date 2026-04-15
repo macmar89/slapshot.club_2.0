@@ -12,6 +12,7 @@ import {
   updateMemberRoleSchema,
   removeMemberSchema,
   updateGroupSettingsSchema,
+  updateGroupNameSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
@@ -83,6 +84,12 @@ router.patch(
   validate(updateGroupSettingsSchema),
   validateGroupRole(['owner']),
   groupController.updateGroupSettingsHandler,
+);
+router.patch(
+  '/:slug/name',
+  validate(updateGroupNameSchema),
+  validateGroupRole(['owner']),
+  groupController.updateGroupNameHandler,
 );
 export default router;
 

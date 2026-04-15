@@ -133,7 +133,9 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
               <span
                 className={cn(
                   'flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[8px] font-black md:hidden',
-                  entry.memberRole === 'owner' ? 'bg-[#eab308] text-black' : 'bg-blue-500 text-white',
+                  entry.memberRole === 'owner'
+                    ? 'bg-[#eab308] text-black'
+                    : 'bg-blue-500 text-white',
                 )}
               >
                 {entry.memberRole === 'owner' ? 'C' : 'A'}
@@ -147,7 +149,7 @@ export const RankRow = ({ entry, className, onClick, isHeader, hideRank }: RankR
             >
               {entry.username}
             </span>
-            {'globalCurrentRank' in entry && entry.globalCurrentRank && (
+            {'globalCurrentRank' in entry && !!entry.globalCurrentRank && (
               <span className="text-[10px] font-medium text-white/30 lowercase md:text-[11px]">
                 (#{entry.globalCurrentRank})
               </span>

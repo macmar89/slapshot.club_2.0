@@ -19,6 +19,7 @@ import {
   getGroupSettings,
   getUserGroupsByCompetitionSlug,
   updateGroupSettings,
+  updateGroupName,
   deleteGroup,
 } from '../services/groups/groupsCore.service.js';
 import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service.js';
@@ -237,6 +238,30 @@ export const updateGroupSettingsHandler = catchAsync(async (req: Request, res: R
   ).catch((err) => logger.error(err));
 
   return res.status(HttpStatusCode.CREATED).json({ status: 'success' });
+});
+
+export const updateGroupNameHandler = catchAsync(async (req: Request, res: Response) => {
+  const { groupId } = req.group!;
+  const { name } = req.body;
+  const { id: userId } = req.user!;
+
+  const { newSlug } = await updateGroupName(groupId, name);
+
+  logActivity(
+    req,
+    'GROUP_NAME_CHANGE',
+    { type: 'group', id: groupId },
+    {
+      actorId: userId,
+      action: 'GROUP_NAME_CHANGE',
+      metadata: {
+        newName: name,
+        newSlug,
+      },
+    },
+  ).catch((err) => logger.error(err));
+
+  return res.status(HttpStatusCode.CREATED).json({ status: 'success', data: { newSlug } });
 });
 
 export const deleteGroupHandler = catchAsync(async (req: Request, res: Response) => {
