@@ -51,6 +51,11 @@ export function GroupJoinForm() {
       if (res.success) {
         toast.success(t('join_group_success'));
         setCode('');
+        
+        // Mutate competitions list and counts to update Arena view
+        await mutate((key: string) => typeof key === 'string' && key.startsWith(API_ROUTES.COMPETITIONS.ALL));
+        await mutate(API_ROUTES.COMPETITIONS.COUNTS);
+
         await mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug));
         router.refresh();
       } else {

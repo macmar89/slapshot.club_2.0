@@ -70,6 +70,11 @@ export function CreateGroupForm() {
       toast.success(t('group_created_successfully'));
       form.reset();
       setOpen(false);
+
+      // Mutate competitions list and counts to update Arena view
+      mutate((key: string) => typeof key === 'string' && key.startsWith(API_ROUTES.COMPETITIONS.ALL));
+      mutate(API_ROUTES.COMPETITIONS.COUNTS);
+
       mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug!));
       router.refresh();
     } else {

@@ -14,6 +14,8 @@ import { Link, useRouter } from '@/i18n/routing';
 import { handleJoinCompetition } from '../competitions.api';
 import { toast } from 'sonner';
 import { CompetitionPublicInfo } from '../competitions.types';
+import { useSWRConfig } from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { useState } from 'react';
 import { HockeyLoader } from '@/components/ui/hockey-loader';
 
@@ -24,6 +26,7 @@ interface ProtectionModalProps {
 export function ProtectionModal({ competition }: ProtectionModalProps) {
   const router = useRouter();
   const t = useTranslations('Arena.join_modal');
+  const { mutate } = useSWRConfig();
   const [isJoining, setIsJoining] = useState(false);
 
   const { id, name, isRegistrationOpen } = competition;
@@ -34,6 +37,11 @@ export function ProtectionModal({ competition }: ProtectionModalProps) {
       const res = await handleJoinCompetition(id);
       if (res.success) {
         toast.success(t('success_join') || 'Successfully joined!');
+        
+        // Mutate competitions list and counts
+        mutate((key: string) => typeof key === 'string' && key.startsWith(API_ROUTES.COMPETITIONS.ALL));
+        mutate(API_ROUTES.COMPETITIONS.COUNTS);
+
         router.refresh();
       } else {
         toast.error(res.error || t('error_generic'));

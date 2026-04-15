@@ -13,6 +13,8 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { handleJoinCompetition } from '../competitions.api';
 import { toast } from 'sonner';
+import { useSWRConfig } from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 
 import { Competition } from '../competitions.types';
 
@@ -25,6 +27,7 @@ interface JoinCompetitionModalProps {
 export function JoinCompetitionModal({ isOpen, onClose, competition }: JoinCompetitionModalProps) {
   const router = useRouter();
   const t = useTranslations('Arena.join_modal');
+  const { mutate } = useSWRConfig();
 
   const { id, slug, name } = competition;
 
@@ -33,6 +36,10 @@ export function JoinCompetitionModal({ isOpen, onClose, competition }: JoinCompe
       const res = await handleJoinCompetition(id);
       if (res.success) {
         onClose();
+        // Mutate competitions list and counts
+        mutate((key: string) => typeof key === 'string' && key.startsWith(API_ROUTES.COMPETITIONS.ALL));
+        mutate(API_ROUTES.COMPETITIONS.COUNTS);
+        
         router.push(`${slug}/dashboard`);
       } else {
         toast.error(res.error || t('error_generic'));
