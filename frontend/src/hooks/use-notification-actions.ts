@@ -59,6 +59,11 @@ export function useNotificationActions() {
             router.push(`/announcements/${payload.announcementSlug}`);
           }
           break;
+        case 'NEW_FEEDBACK':
+          if (payload.feedbackId) {
+            router.push(`/admin/feedback/${payload.feedbackId}`);
+          }
+          break;
         default:
           break;
       }

@@ -25,6 +25,7 @@ export const notificationTypeEnum = pgEnum('notification_type', [
   'UPDATE_SUMMARY',
 
   'NEW_ANNOUNCEMENT',
+  'NEW_FEEDBACK',
 ]);
 
 export const notifications = pgTable('notifications', {
@@ -47,6 +48,7 @@ export const notifications = pgTable('notifications', {
     score?: string;
     announcementSlug?: string;
     announcementType?: string;
+    feedbackId?: string;
   }>(),
 
   isRead: boolean('is_read').default(false).notNull(),

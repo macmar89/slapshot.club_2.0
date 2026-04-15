@@ -1,3 +1,5 @@
+import { mutate } from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { AdminFeedbackDto } from '../feedback.types';
 import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
@@ -15,10 +17,16 @@ export const AdminFeedbackCard = ({ feedback }: AdminFeedbackCardProps) => {
   const tType = useTranslations('Admin.Feedback.type');
   const router = useRouter();
 
+  const handleClick = () => {
+    mutate((key) => typeof key === 'string' && key.startsWith(API_ROUTES.ADMIN.FEEDBACK.LIST));
+    mutate(API_ROUTES.ADMIN.FEEDBACK.UNREAD_COUNT);
+    router.push(`/admin/feedback/${feedback.id}`);
+  };
+
   return (
     <IceGlassCard
-      onClick={() => router.push(`/admin/feedback/${feedback.id}`)}
-      className="flex flex-col gap-4 border-white/10 p-5 p-4 active:scale-[0.98] transition-all cursor-pointer overflow-hidden relative"
+      onClick={handleClick}
+      className="flex flex-col gap-4 border-white/10 p-5 active:scale-[0.98] transition-all cursor-pointer overflow-hidden relative"
     >
       {!feedback.read && (
         <div className="absolute top-0 right-0 w-8 h-8 pointer-events-none">

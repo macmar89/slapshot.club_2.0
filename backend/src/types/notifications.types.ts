@@ -22,6 +22,8 @@ export interface NotificationPayload {
   title_sk?: string;
   title_en?: string;
   title_cz?: string;
+  feedbackId?: string;
+  type?: string;
 }
 
 export type NotificationGroup = (typeof NOTIFICATION_GROUPS)[keyof typeof NOTIFICATION_GROUPS];

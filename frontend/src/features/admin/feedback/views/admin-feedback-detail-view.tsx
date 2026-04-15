@@ -39,6 +39,10 @@ export const AdminFeedbackDetailView = () => {
   useEffect(() => {
     if (feedback) {
       setSelectedStatus(feedback.status);
+      // Revalidate unread count badge in sidebar
+      mutate(API_ROUTES.ADMIN.FEEDBACK.UNREAD_COUNT);
+      // Revalidate feedback list to reflect "read" status
+      mutate((key) => typeof key === 'string' && key.startsWith(API_ROUTES.ADMIN.FEEDBACK.LIST));
     }
   }, [feedback]);
 

@@ -11,7 +11,7 @@ export const NOTIFICATION_GROUPS = {
     'GROUP_PENDING_REJECTED',
   ],
   COMPETITION: ['NEW_COMPETITION', 'COMPETITION_STARTED', 'COMPETITION_FINISHED'],
-  SYSTEM: ['SYSTEM_ALERT', 'NEW_FEATURE', 'UPDATE_SUMMARY', 'TRIAL_EXPIRING', 'NEW_ANNOUNCEMENT'],
+  SYSTEM: ['SYSTEM_ALERT', 'NEW_FEATURE', 'UPDATE_SUMMARY', 'TRIAL_EXPIRING', 'NEW_ANNOUNCEMENT', 'NEW_FEEDBACK'],
   ANNOUNCEMENTS: ['NEW_ANNOUNCEMENT'],
 } as const;
 
@@ -105,5 +105,9 @@ export const NOTIFICATION_KEYS = {
   NEW_ANNOUNCEMENT: {
     title: 'notifications.new_announcement.title',
     message: 'notifications.new_announcement.message',
+  },
+  NEW_FEEDBACK: {
+    title: 'notifications.new_feedback.title',
+    message: 'notifications.new_feedback.message',
   },
 } as const;

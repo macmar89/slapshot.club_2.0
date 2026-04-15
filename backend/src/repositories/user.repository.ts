@@ -28,4 +28,21 @@ export const userRepository = {
 
     return result.map((r) => r.id);
   },
+
+  async getAdminAndEditorUserIds() {
+    const result = await dbDefault.query.users.findMany({
+      columns: { id: true },
+      where: (u, { inArray, and, eq }) =>
+        and(inArray(u.role, ['admin', 'editor']), eq(u.isActive, true), notDeleted(u)),
+    });
+
+    return result.map((r) => r.id);
+  },
+
+  async getUserInfoForNotification(userId: string) {
+    return await dbDefault.query.users.findFirst({
+      columns: { username: true, email: true },
+      where: (u, { eq, and }) => and(eq(u.id, userId), notDeleted(u)),
+    });
+  },
 };

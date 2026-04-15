@@ -13,6 +13,7 @@ export const API_ROUTES = {
       LIST: '/admin/feedback',
       DETAIL: (id: string) => `/admin/feedback/${id}`,
       UPDATE: (id: string) => `/admin/feedback/${id}`,
+      UNREAD_COUNT: '/admin/feedback/unread-count',
     },
     ANNOUNCEMENTS: {
       LIST: '/admin/announcements',

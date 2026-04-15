@@ -1,6 +1,7 @@
 import { SUBSCRIPTION_CONFIG } from './subscription.config.js';
 
 export const APP_CONFIG = {
+  SUPPORT_EMAIL: 'support@slapshot.club',
   DASHBOARD: {
     UPCOMING_DAYS_RANGE: 3,
     MAX_MATCH_CARDS: 3,

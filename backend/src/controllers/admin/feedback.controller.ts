@@ -39,3 +39,12 @@ export const updateFeedbackHandler = catchAsync(async (req: Request, res: Respon
     data: updated,
   });
 });
+
+export const getUnreadCountHandler = catchAsync(async (req: Request, res: Response) => {
+  const count = await feedbackService.getUnreadCount();
+
+  return res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    data: { count },
+  });
+});

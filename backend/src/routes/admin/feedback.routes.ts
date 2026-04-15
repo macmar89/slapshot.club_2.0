@@ -3,6 +3,7 @@ import {
   listFeedbackHandler,
   getFeedbackHandler,
   updateFeedbackHandler,
+  getUnreadCountHandler,
 } from '../../controllers/admin/feedback.controller.js';
 import { validate } from '../../middleware/validate.middleware.js';
 import {
@@ -15,6 +16,7 @@ import { paginate } from '../../middlewares/pagination.middleware.js';
 const router = Router();
 
 router.get('/', validate(listFeedbackQuerySchema), paginate(), listFeedbackHandler);
+router.get('/unread-count', getUnreadCountHandler);
 router.get('/:id', validate(feedbackParamsSchema), getFeedbackHandler);
 router.patch('/:id', validate(updateFeedbackStatusSchema), updateFeedbackHandler);
 

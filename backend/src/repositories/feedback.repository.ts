@@ -125,4 +125,13 @@ export const feedbackRepository = {
 
     return updated;
   },
+
+  async getUnreadCount() {
+    const [result] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(feedback)
+      .where(eq(feedback.read, false));
+
+    return Number(result?.count ?? 0);
+  },
 };

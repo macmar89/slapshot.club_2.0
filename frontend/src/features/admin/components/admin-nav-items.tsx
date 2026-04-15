@@ -15,6 +15,11 @@ export const AdminNavItems = () => {
   const { data: missingData } = useSWR<{ count: number }>(API_ROUTES.PREDICTION.SUMMARY);
   const missingCount = missingData?.count || 0;
 
+  const { data: unreadFeedbackData } = useSWR<{ count: number }>(
+    API_ROUTES.ADMIN.FEEDBACK.UNREAD_COUNT,
+  );
+  const unreadFeedbackCount = unreadFeedbackData?.count || 0;
+
   const bestMatch = dashboardConfig.adminNav
     .filter((item) => {
       const isExact = pathname === item.href;
@@ -51,6 +56,7 @@ export const AdminNavItems = () => {
             label={t(item.labelKey)}
             isActive={isActive}
             disabled={item.disabled}
+            badge={item.labelKey === 'feedback' && unreadFeedbackCount > 0 ? unreadFeedbackCount : undefined}
           />
         );
       })}

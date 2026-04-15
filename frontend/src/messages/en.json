@@ -951,6 +951,10 @@
     "trial_expiring": {
       "title": "Trial Expiring",
       "message": "Your trial expires in {days} days."
+    },
+    "new_feedback": {
+      "title": "New feedback",
+      "message": "A new {type} feedback has been received."
     }
   },
   "Errors": {

@@ -1,3 +1,5 @@
+import useSWR, { mutate } from 'swr';
+import { API_ROUTES } from '@/lib/api-routes';
 import { AdminFeedbackDto } from '../feedback.types';
 import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
@@ -14,6 +16,13 @@ export const AdminFeedbackTable = ({ feedback }: AdminFeedbackTableProps) => {
   const t = useTranslations('Admin.Feedback');
   const tType = useTranslations('Admin.Feedback.type');
   const router = useRouter();
+
+  const handleRowClick = (id: string) => {
+    // Revalidate list and unread count immediately
+    mutate((key) => typeof key === 'string' && key.startsWith(API_ROUTES.ADMIN.FEEDBACK.LIST));
+    mutate(API_ROUTES.ADMIN.FEEDBACK.UNREAD_COUNT);
+    router.push(`/admin/feedback/${id}`);
+  };
 
   return (
     <div className="w-full overflow-x-auto">
@@ -41,7 +50,7 @@ export const AdminFeedbackTable = ({ feedback }: AdminFeedbackTableProps) => {
           {feedback.map((item) => (
             <tr
               key={item.id}
-              onClick={() => router.push(`/admin/feedback/${item.id}`)}
+              onClick={() => handleRowClick(item.id)}
               className="hover:bg-white/[0.05] group cursor-pointer transition-colors"
             >
               <td className="px-6 py-4 text-xs font-mono text-white/60">

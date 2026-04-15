@@ -948,6 +948,10 @@
     "trial_expiring": {
       "title": "Trial končí",
       "message": "Trial účet ti končí o {days} dní."
+    },
+    "new_feedback": {
+      "title": "Nový feedback",
+      "message": "Byl přijat nový feedback typu {type}."
     }
   },
   "Errors": {

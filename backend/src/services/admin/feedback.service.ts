@@ -23,3 +23,7 @@ export const getFeedbackAndMarkRead = async (id: string) => {
 export const updateFeedbackStatus = async (id: string, status: FeedbackStatus) => {
   return feedbackRepository.updateStatus(id, status);
 };
+
+export const getUnreadCount = async () => {
+  return feedbackRepository.getUnreadCount();
+};
