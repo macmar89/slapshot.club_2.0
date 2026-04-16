@@ -27,6 +27,9 @@ import { subscriptions } from '../db/schema/subscriptions.js';
 import { userReferrals } from '../db/schema/userReferrals.js';
 import { announcementsRepository } from '../repositories/announcements.repository.js';
 import { notify } from './notifications.service.js';
+import { enqueueSlackRegistrationNotification } from '../queues/slack.queue.js';
+
+
 
 const hashToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -171,8 +174,20 @@ export const registerUser = async (data: RegisterInput) => {
     logger.warn({ err, userId: newUser.id }, '[Register] Failed to send welcome notification');
   }
 
+  // Enqueue Slack notification (non-blocking)
+  enqueueSlackRegistrationNotification({
+    user: {
+      id: newUser.id,
+      username: newUser.username,
+      email: newUser.email
+    },
+    referralSource: data.referralCode
+  }).catch(err => logger.error({ err }, '[Register] Failed to enqueue Slack notification'));
+
+
   return newUser;
 };
+
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({

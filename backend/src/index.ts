@@ -15,6 +15,8 @@ import './workers/email.worker.js';
 import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
 import './workers/notifications.worker.js';
+import './workers/slack.worker.js';
+
 import {
   scheduleMatchesSyncMasterJob,
   scheduleLiveMatchesTicker,

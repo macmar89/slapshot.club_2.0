@@ -20,6 +20,9 @@ import { notDeleted } from '../../db/helpers.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
 import { groupMembersRepository } from '../../repositories/groupMembers.repository.js';
 import type { GroupSettingKey } from '../../shared/constants/schema/group.schema.js';
+import { enqueueSlackGroupNotification } from '../../queues/slack.queue.js';
+import { userRepository } from '../../repositories/user.repository.js';
+
 
 export const createGroup = async (
   userId: string,
@@ -92,7 +95,35 @@ export const createGroup = async (
     });
 
     logger.info({ userId, name: body.name, groupId }, 'Group created successfully');
+    
+    // Slack notification (non-blocking)
+    (async () => {
+      try {
+        const [user, competition] = await Promise.all([
+          userRepository.getUserInfoForNotification(userId),
+          competitionRepository.getById(competitionId, ['id'])
+        ]);
+        
+        // competitionRepository.getById might not return the name directly in some methods, 
+        // let's check competitionRepository more closely or use a broad fetch
+        const competitionName = await db.query.competitionsLocales.findFirst({
+           where: (locales, { eq, and }) => and(eq(locales.competitionId, competitionId), eq(locales.locale, 'sk')),
+           columns: { name: true }
+        });
+
+
+        await enqueueSlackGroupNotification({
+          name: body.name,
+          username: user?.username || 'Neznámy',
+          competitionName: competitionName?.name || 'Súťaž',
+        });
+      } catch (err) {
+        logger.error({ err, groupId }, 'Failed to enqueue slack group notification');
+      }
+    })();
+
     return { groupId, competitionId };
+
   } catch (error: any) {
     logger.error({ error: error.message, userId, name: body.name }, 'Failed to create group');
     throw error;

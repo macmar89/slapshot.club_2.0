@@ -14,6 +14,9 @@ import { calculateRate, roundTo } from '../../utils/math.js';
 import { AppError } from '../../utils/appError.js';
 import { logger } from '../../utils/logger.js';
 import { PlayerMessages } from '../../shared/constants/messages/player.messages.js';
+import { enqueueSlackCompetitionJoinNotification } from '../../queues/slack.queue.js';
+import { userRepository } from '../../repositories/user.repository.js';
+
 
 export const findAllCompetitions = async (
   userId: string,
@@ -125,7 +128,29 @@ export const joinCompetition = async (userId: string, competitionId: string) => 
       { userId, competitionId, slug: competition.slug },
       'User joined competition successfully',
     );
+
+    // Slack notification (non-blocking)
+    (async () => {
+       try {
+         const [userInfo, competitionName] = await Promise.all([
+           userRepository.getUserInfoForNotification(userId),
+           db.query.competitionsLocales.findFirst({
+             where: (locales, { eq, and }) => and(eq(locales.competitionId, competitionId), eq(locales.locale, 'sk')),
+             columns: { name: true }
+           })
+         ]);
+
+         await enqueueSlackCompetitionJoinNotification({
+           username: userInfo?.username || 'Neznámy',
+           competitionName: competitionName?.name || 'Súťaž',
+         });
+       } catch (err) {
+         logger.error({ err, userId, competitionId }, 'Failed to enqueue slack competition join notification');
+       }
+    })();
+
     return competition;
+
   } catch (error: any) {
     logger.error({ error: error.message, userId, competitionId }, 'Failed to join competition');
     throw error;

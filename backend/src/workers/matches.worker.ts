@@ -3,7 +3,9 @@ import { redisConfig } from '../config/redis.config.js';
 import { logger } from '../utils/logger.js';
 import { competitionRepository } from '../repositories/competitions.repository.js';
 import { matchesQueue } from '../queues/matches.queue.js';
+import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
 import { syncFutureMatches } from '../services/matches/matchesSync.service.js';
+
 import { handleLiveUpdates } from '../services/matches/matchesLive.service.js';
 import { evaluateMatch } from '../services/predictions/predictionsLogic.service.js';
 import {
@@ -88,4 +90,14 @@ export const matchesWorker = new Worker(
 
 matchesWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Matches queue job failed');
+
+  if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
+    enqueueSlackJobFailureNotification({
+      queueName: 'matches-queue',
+      jobName: job.name,
+      error: err.message,
+      attempts: job.attemptsMade
+    }).catch(slackErr => logger.error({ slackErr }, '[MATCHES WORKER] Failed to enqueue Slack failure notification'));
+  }
 });
+

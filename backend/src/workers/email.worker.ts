@@ -4,6 +4,8 @@ import { renderVerificationEmail } from '../templates/emails/renderVerifyUserEma
 import { renderForgotPasswordEmail } from '../templates/emails/renderResetPasswordEmail.js';
 import { logger } from '../utils/logger.js';
 import { emailService } from '../services/email.service.js';
+import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
+
 
 import skTranslations from '../locates/sk.json' with { type: 'json' };
 import enTranslations from '../locates/en.json' with { type: 'json' };
@@ -66,4 +68,14 @@ emailWorker.on('completed', (job: Job) => {
 
 emailWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error({ jobId: job?.id, error: err.message }, 'Email job failed');
+
+  if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
+    enqueueSlackJobFailureNotification({
+      queueName: 'email-queue',
+      jobName: job.name,
+      error: err.message,
+      attempts: job.attemptsMade
+    }).catch(slackErr => logger.error({ slackErr }, '[EMAIL WORKER] Failed to enqueue Slack failure notification'));
+  }
 });
+

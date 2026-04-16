@@ -5,6 +5,8 @@ import { refreshCompetitionRankings } from '../services/leaderboard.service.js';
 import { competitionRepository } from '../repositories/competitions.repository.js';
 import { syncStandings } from '../services/admin/competitions.service.js';
 import { API_HOCKEY_CONFIG } from '../config/apiHockey.js';
+import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
+
 
 export const competitionsWorker = new Worker(
   'competitions-queue',
@@ -75,4 +77,14 @@ competitionsWorker.on('completed', (job: Job) => {
 
 competitionsWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Competitions queue job failed');
+
+  if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
+    enqueueSlackJobFailureNotification({
+      queueName: 'competitions-queue',
+      jobName: job.name,
+      error: err.message,
+      attempts: job.attemptsMade
+    }).catch(slackErr => logger.error({ slackErr }, '[COMPETITIONS WORKER] Failed to enqueue Slack failure notification'));
+  }
 });
+

@@ -40,7 +40,9 @@ const envSchema = z.object({
   REGISTRATION_OPEN: z
     .preprocess((val) => val === 'true' || val === '1' || val === undefined, z.boolean())
     .default(true),
+  SLACK_WEBHOOK_URL: z.string().optional(),
 });
+
 
 // Validation process
 const envServer = envSchema.safeParse(process.env);

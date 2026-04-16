@@ -5,6 +5,8 @@ import { APP_CONFIG } from '../config/app.js';
 import { emailService } from './email.service.js';
 import { notify } from './notifications.service.js';
 import { userRepository } from '../repositories/user.repository.js';
+import { enqueueSlackFeedbackNotification } from '../queues/slack.queue.js';
+
 
 export const createFeedback = async (data: {
   type: 'bug' | 'idea' | 'other';
@@ -60,7 +62,22 @@ export const createFeedback = async (data: {
       logger.error({ err, feedbackId: newFeedback.id }, 'Failed to send feedback email to support');
     }
 
+    // 1b. Send Slack notification
+    try {
+      const userInfo = await userRepository.getUserInfoForNotification(data.userId);
+      await enqueueSlackFeedbackNotification({
+        type: data.type,
+        message: data.message,
+        username: userInfo?.username || 'Neznámy',
+        email: userInfo?.email || 'Neznámy',
+        feedbackId: newFeedback.id,
+      });
+    } catch (err) {
+      logger.error({ err, feedbackId: newFeedback.id }, 'Failed to enqueue slack feedback notification');
+    }
+
     // 2. Send in-app and push notification to admins & editors
+
     try {
       const adminEditorIds = await userRepository.getAdminAndEditorUserIds();
 

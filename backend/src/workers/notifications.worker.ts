@@ -4,6 +4,8 @@ import { logger } from '../utils/logger.js';
 import { userRepository } from '../repositories/user.repository.js';
 import { announcementsRepository } from '../repositories/announcements.repository.js';
 import { notify } from '../services/notifications.service.js';
+import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
+
 
 export const notificationsWorker = new Worker(
   'notifications-queue',
@@ -64,4 +66,14 @@ notificationsWorker.on('completed', (job: Job) => {
 
 notificationsWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Notifications queue job failed');
+
+  if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
+    enqueueSlackJobFailureNotification({
+      queueName: 'notifications-queue',
+      jobName: job.name,
+      error: err.message,
+      attempts: job.attemptsMade
+    }).catch(slackErr => logger.error({ slackErr }, '[NOTIFICATIONS WORKER] Failed to enqueue Slack failure notification'));
+  }
 });
+
