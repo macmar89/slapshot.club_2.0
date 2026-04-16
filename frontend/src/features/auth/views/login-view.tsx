@@ -19,7 +19,7 @@ export function LoginView() {
         <LanguageSwitcher />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1920px] flex-grow flex-col p-4 text-right lg:flex-row">
+      <div className="relative mx-auto flex w-full max-w-[1920px] flex-grow flex-col p-4 lg:flex-row">
         {/* Left Column: Login Form */}
         <div className="relative z-40 order-2 flex w-full items-center justify-center p-2 sm:p-8 lg:order-1 lg:w-1/2 lg:p-12">
           <div className="w-full max-w-md">
