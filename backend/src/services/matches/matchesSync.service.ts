@@ -85,6 +85,10 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
     return {
       success: true,
       message: `Sync completed. Created ${matchesCreated}, Updated ${matchesUpdated}.`,
+      data: {
+        created: matchesCreated,
+        updated: matchesUpdated,
+      },
     };
   } catch (error: any) {
     logger.error(`[FUTURE SYNC ERROR] ${error.message}`);

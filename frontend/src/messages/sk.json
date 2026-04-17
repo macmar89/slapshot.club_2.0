@@ -1097,6 +1097,11 @@
     "Matches": {
       "title": "Zápasy - Administrácia",
       "no_matches_found": "Žiadne zápasy sa nenašli",
+      "sync": {
+        "api_sport_id": "API Sport ID",
+        "days_ahead": "Počet dní dopredu",
+        "submit": "Synchronizovať zápasy"
+      },
       "statuses": {
         "scheduled": "Naplánované",
         "live": "Live",

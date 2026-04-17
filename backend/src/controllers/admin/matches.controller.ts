@@ -13,6 +13,7 @@ import {
 import { buildPaginatedResponse } from '../../utils/pagination.js';
 import type { Request, Response, NextFunction } from 'express';
 import { type AuditCtx } from '../../services/audit.service.js';
+import { syncFutureMatches } from '../../services/matches/matchesSync.service.js';
 
 export const getAllMatchesHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -123,4 +124,22 @@ export const recalculateMatchHandler = catchAsync(async (req: Request, res: Resp
   await recalculateMatch(id, auditCtx);
 
   return res.status(HttpStatusCode.OK).json({ status: 'success' });
+});
+
+export const syncMatchesHandler = catchAsync(async (req: Request, res: Response) => {
+  const { apiSportId, daysAhead } = req.query as any;
+
+  const result = await syncFutureMatches(Number(apiSportId), Number(daysAhead));
+
+  if (!result.success) {
+    return res.status(HttpStatusCode.BAD_REQUEST).json({
+      status: 'error',
+      message: result.message,
+    });
+  }
+
+  return res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    data: result.data,
+  });
 });

@@ -1097,6 +1097,11 @@
     "Matches": {
       "title": "Matches - Administration",
       "no_matches_found": "No matches found",
+      "sync": {
+        "api_sport_id": "API Sport ID",
+        "days_ahead": "Days Ahead",
+        "submit": "Sync Matches"
+      },
       "statuses": {
         "scheduled": "Scheduled",
         "live": "Live",

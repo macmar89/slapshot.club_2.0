@@ -75,4 +75,11 @@ export const updateMatchSchema = z.object({
   body: updateMatchBodySchema,
 });
 
+export const syncMatchesSchema = z.object({
+  query: z.object({
+    apiSportId: z.preprocess((val) => Number(val), z.number().int().positive()),
+    daysAhead: z.preprocess((val) => Number(val), z.number().int().min(0).max(365)).default(14),
+  }),
+});
+
 export type UpdateMatchBodyInput = z.infer<typeof updateMatchBodySchema>;

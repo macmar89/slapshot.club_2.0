@@ -8,6 +8,7 @@ export const API_ROUTES = {
       DETAIL: (id: string) => `/admin/matches/${id}`,
       COMPETITIONS_LOOKUP: '/admin/matches/competitions/lookup',
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
+      SYNC: '/admin/matches/sync',
     },
     FEEDBACK: {
       LIST: '/admin/feedback',
