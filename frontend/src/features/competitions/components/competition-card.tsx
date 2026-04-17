@@ -51,7 +51,7 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
       <div
         className={cn(
           'group block',
-          isRegistrationDisabled && !isUpcoming && 'cursor-not-allowed opacity-60',
+          isRegistrationDisabled && !isUpcoming && !isFinished && 'cursor-not-allowed opacity-60',
           compact ? 'h-[240px]' : 'h-[340px] md:h-[380px] lg:h-[400px]',
         )}
       >
@@ -62,7 +62,6 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
             isJoined && !isFinished
               ? 'border-[#22c55e]/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
               : 'group-hover:border-[#eab308]/40',
-            isFinished && 'opacity-80 group-hover:opacity-100',
           )}
           backdropBlur="xs"
           withGradient
@@ -149,12 +148,12 @@ export function CompetitionCard({ competition, compact = false }: CompetitionCar
               </div>
               <Button
                 onClick={handleEnter}
-                color={isFinished ? 'secondary' : 'gold'}
-                disabled={isRegistrationDisabled}
+                color="gold"
+                disabled={isRegistrationDisabled && !isFinished}
                 className={cn(
                   'rounded-app shrink-0 font-black',
                   compact ? 'px-4 py-2 text-[10px]' : 'px-5 py-2.5 text-xs',
-                  isRegistrationDisabled && 'cursor-not-allowed opacity-50 grayscale',
+                  isRegistrationDisabled && !isFinished && 'cursor-not-allowed opacity-50 grayscale',
                 )}
               >
                 {isFinished
