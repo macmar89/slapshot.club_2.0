@@ -41,6 +41,9 @@ const envSchema = z.object({
     .preprocess((val) => val === 'true' || val === '1' || val === undefined, z.boolean())
     .default(true),
   SLACK_WEBHOOK_URL: z.string().optional(),
+
+  // Internal APIs
+  SLAPSHOTAI_TOKEN: z.string().optional(),
 });
 
 

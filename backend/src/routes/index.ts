@@ -12,6 +12,7 @@ import publicMatchRoutes from './matches.public.routes.js';
 import groupRoutes from './groups.routes.js';
 import notificationRoutes from './notifications.routes.js';
 import announcementRoutes from './announcements.routes.js';
+import internalRoutes from './internal.routes.js';
 
 const router = Router();
 
@@ -26,6 +27,8 @@ router.use('/matches', isAuth, matchRoutes);
 router.use('/notifications', isAuth, notificationRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
 router.use('/user', isAuth, userRoutes);
+
+router.use('/internal', internalRoutes);
 
 router.use('/public/matches', isAuth, isAdmin, publicMatchRoutes);
 
