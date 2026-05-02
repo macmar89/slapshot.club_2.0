@@ -4,6 +4,7 @@ import {
   getPredictionsForMatches,
   getNewVerifiedAppUsers,
   getNewVerifiedCompetitionUsers,
+  getTotalVerifiedAppUsers,
 } from '../repositories/slapshotai.repository.js';
 import type {
   SlapshotAiStatsResponse,
@@ -18,20 +19,33 @@ export const getStatsForSlapshotAi = async (
   const activeCompetitions = await getActiveCompetitions();
 
   if (activeCompetitions.length === 0) {
-    return { summary: { totalTips: 0 }, metadata: { newAppUsers: [] }, competitions: [] };
+    const totalAppUsersRes = await getTotalVerifiedAppUsers();
+    return { 
+      summary: { totalTips: 0 }, 
+      metadata: { newAppUsers: [], newAppUsersCount: 0, totalAppUsersCount: totalAppUsersRes }, 
+      competitions: [] 
+    };
   }
 
   const competitionIds = activeCompetitions.map((c) => c.id);
 
   const recentMatches = await getRecentFinishedMatches(competitionIds, startDate, endDate);
 
-  const newAppUsersReq = getNewVerifiedAppUsers(startDate);
-  const newCompUsersReq = getNewVerifiedCompetitionUsers(startDate);
+  const newAppUsersReq = getNewVerifiedAppUsers(startDate, endDate);
+  const newCompUsersReq = getNewVerifiedCompetitionUsers(startDate, endDate);
+  const totalAppUsersReq = getTotalVerifiedAppUsers();
 
-  const [newAppUsersRes, newCompUsersRes] = await Promise.all([newAppUsersReq, newCompUsersReq]);
+  const [newAppUsersRes, newCompUsersRes, totalAppUsersRes] = await Promise.all([
+    newAppUsersReq, 
+    newCompUsersReq,
+    totalAppUsersReq,
+  ]);
 
+  const newAppUsersList = newAppUsersRes.map((u) => u.username);
   const metadata = {
-    newAppUsers: newAppUsersRes.map((u) => u.username),
+    newAppUsers: newAppUsersList,
+    newAppUsersCount: newAppUsersList.length,
+    totalAppUsersCount: totalAppUsersRes,
   };
 
   if (recentMatches.length === 0) {
@@ -53,6 +67,8 @@ export const getStatsForSlapshotAi = async (
       newUsersCount: 0,
       newCompetitionUsers: [],
       matches: [],
+      topTippers: [],
+      bottomTippers: [],
     });
   }
 
@@ -65,6 +81,7 @@ export const getStatsForSlapshotAi = async (
   }
 
   let totalTips = 0;
+  const userPointsByCompetition = new Map<string, Map<string, number>>();
 
   for (const match of recentMatches) {
     const matchName = `${match.homeTeamName || 'Domáci'} vs ${match.awayTeamName || 'Hostia'}`;
@@ -81,18 +98,30 @@ export const getStatsForSlapshotAi = async (
     };
     const perfectHits: string[] = [];
 
+    const compPoints = userPointsByCompetition.get(match.competitionId) || new Map<string, number>();
+
     for (const pred of matchPreds) {
+      let points = 0;
       if (pred.isExact) {
         stats.exactScore++;
         perfectHits.push(pred.username);
+        points = 5;
       } else if (pred.isDiff) {
         stats.goalDifference++;
+        points = 3;
       } else if (pred.isTrend) {
         stats.winnerOnly++;
+        points = 2;
       } else if (pred.isWrong) {
         stats.missed++;
+        points = 0;
       }
+
+      const currentPoints = compPoints.get(pred.username) || 0;
+      compPoints.set(pred.username, currentPoints + points);
     }
+    
+    userPointsByCompetition.set(match.competitionId, compPoints);
 
     const total12 = match.homePredictedCount + match.awayPredictedCount;
     totalTips += total12;
@@ -147,6 +176,18 @@ export const getStatsForSlapshotAi = async (
     if (compData) {
       compData.matches.push(matchData);
       compData.totalTips += total12;
+    }
+  }
+
+  for (const [compId, compData] of competitionsMap.entries()) {
+    const compPoints = userPointsByCompetition.get(compId);
+    if (compPoints && compPoints.size > 0) {
+      const sortedUsers = Array.from(compPoints.entries())
+        .map(([username, points]) => ({ username, points }))
+        .sort((a, b) => b.points - a.points);
+      
+      compData.topTippers = sortedUsers.slice(0, 3);
+      compData.bottomTippers = sortedUsers.slice(-3).reverse();
     }
   }
 

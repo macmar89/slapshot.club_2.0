@@ -8,7 +8,7 @@ import {
   users,
   leaderboardEntries,
 } from '../db/schema/index.js';
-import { eq, and, or, gt, lte, inArray, aliasedTable, isNotNull } from 'drizzle-orm';
+import { eq, and, or, gt, lte, inArray, aliasedTable, isNotNull, sql } from 'drizzle-orm';
 
 export const getActiveCompetitions = async () => {
   return db
@@ -86,7 +86,7 @@ export const getPredictionsForMatches = async (matchIds: string[]) => {
     .where(inArray(predictions.matchId, matchIds));
 };
 
-export const getNewVerifiedAppUsers = async (since: string) => {
+export const getNewVerifiedAppUsers = async (since: string, until: string) => {
   return db
     .select({
       username: users.username,
@@ -95,12 +95,13 @@ export const getNewVerifiedAppUsers = async (since: string) => {
     .where(
       and(
         gt(users.createdAt, since),
+        lte(users.createdAt, until),
         isNotNull(users.verifiedAt),
       ),
     );
 };
 
-export const getNewVerifiedCompetitionUsers = async (since: string) => {
+export const getNewVerifiedCompetitionUsers = async (since: string, until: string) => {
   return db
     .select({
       username: users.username,
@@ -111,8 +112,18 @@ export const getNewVerifiedCompetitionUsers = async (since: string) => {
     .where(
       and(
         gt(leaderboardEntries.createdAt, since),
+        lte(leaderboardEntries.createdAt, until),
         isNotNull(users.verifiedAt),
       ),
     )
     .groupBy(users.username, leaderboardEntries.competitionId);
+};
+
+export const getTotalVerifiedAppUsers = async () => {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users)
+    .where(isNotNull(users.verifiedAt));
+  
+  return Number(result[0]?.count || 0);
 };
