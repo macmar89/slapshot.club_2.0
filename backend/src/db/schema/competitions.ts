@@ -37,6 +37,7 @@ export const competitions = pgTable(
     phase: enumCompetitionsPhase('phase').default('regular').notNull(),
 
     isRegistrationOpen: boolean('is_registration_open').default(false),
+    isSyncEnabled: boolean('is_sync_enabled').default(false),
     startDate: timestamp('start_date', {
       precision: 3,
       withTimezone: true,

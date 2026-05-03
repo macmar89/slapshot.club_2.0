@@ -71,6 +71,13 @@
       "when": 1776280534243,
       "tag": "0009_common_synch",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1777841237366,
+      "tag": "0010_peaceful_black_bolt",
+      "breakpoints": true
     }
   ]
 }

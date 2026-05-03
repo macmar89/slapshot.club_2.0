@@ -28,7 +28,7 @@ export const competitionRepository = {
         slug: true,
       },
       where: (table, { and, eq, isNotNull }) =>
-        and(eq(table.status, 'active'), isNotNull(table.apiHockeyId)),
+        and(eq(table.isSyncEnabled, true), isNotNull(table.apiHockeyId)),
     });
   },
 
