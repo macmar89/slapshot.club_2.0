@@ -17,6 +17,8 @@ export interface MatchSaveData {
   apiHockeyStatus?: string | null;
   stageType?: string;
   date?: string;
+  homeTeamId?: string;
+  awayTeamId?: string;
 }
 
 interface MatchDetailEditorProps {
@@ -29,6 +31,14 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const [awayScore, setAwayScore] = useState<string>(match.resultAwayScore?.toString() || '0');
   const [status, setStatus] = useState<string>(match.status);
   const [matchDate, setMatchDate] = useState<string>(match.date);
+
+  // Team fields
+  const [homeTeamId, setHomeTeamId] = useState<string>(match.homeTeamId);
+  const [awayTeamId, setAwayTeamId] = useState<string>(match.awayTeamId);
+  const [homeTeamName, setHomeTeamName] = useState<string>(match.homeTeam);
+  const [awayTeamName, setAwayTeamName] = useState<string>(match.awayTeam);
+  const [homeLogoUrl, setHomeLogoUrl] = useState<string | null>(match.homeLogoUrl || null);
+  const [awayLogoUrl, setAwayLogoUrl] = useState<string | null>(match.awayLogoUrl || null);
 
   // New API & Stage fields
   const [apiHockeyId, setApiHockeyId] = useState<string>(match.apiHockeyId || '');
@@ -46,11 +56,18 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const isApiStatusDirty = apiHockeyStatus !== (match.apiHockeyStatus || 'NS');
   const isStageDirty = stageType !== match.stageType;
 
+  const isTeamsDirty = homeTeamId !== match.homeTeamId || awayTeamId !== match.awayTeamId;
+
   const isSidebarDirty = isStatusDirty || isApiIdDirty || isApiStatusDirty || isStageDirty;
 
   const handleSaveScores = () => {
-    if (!isScoreDirty) return;
-    onSave({ homeScore, awayScore, date: matchDate });
+    if (!isScoreDirty && !isTeamsDirty) return;
+    onSave({
+      homeScore,
+      awayScore,
+      date: matchDate,
+      ...(isTeamsDirty && { homeTeamId, awayTeamId }),
+    });
   };
 
   const handleSaveSidebar = () => {
@@ -71,6 +88,17 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
     console.log('Undoing scoring for match:', match.id);
   };
 
+  const handleSwapTeams = () => {
+    setHomeTeamId(awayTeamId);
+    setAwayTeamId(homeTeamId);
+    setHomeTeamName(awayTeamName);
+    setAwayTeamName(homeTeamName);
+    setHomeLogoUrl(awayLogoUrl);
+    setAwayLogoUrl(homeLogoUrl);
+    setHomeScore(awayScore);
+    setAwayScore(homeScore);
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Main Content Area */}
@@ -80,10 +108,10 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           awayScore={awayScore}
           onHomeScoreChange={setHomeScore}
           onAwayScoreChange={setAwayScore}
-          homeTeam={match.homeTeam}
-          homeLogoUrl={match.homeLogoUrl}
-          awayTeam={match.awayTeam}
-          awayLogoUrl={match.awayLogoUrl}
+          homeTeam={homeTeamName}
+          homeLogoUrl={homeLogoUrl}
+          awayTeam={awayTeamName}
+          awayLogoUrl={awayLogoUrl}
           competitionName={match.competitionName}
           matchDate={matchDate}
           onMatchDateChange={setMatchDate}
@@ -91,10 +119,11 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           onSave={handleSaveScores}
           onRecalculate={handleRecalculate}
           onUndoScoring={handleUndoScoring}
+          onSwapTeams={handleSwapTeams}
           isHomeDirty={isHomeDirty}
           isAwayDirty={isAwayDirty}
           isDateDirty={isDateDirty}
-          isDirty={isScoreDirty}
+          isDirty={isScoreDirty || isTeamsDirty}
           isRanked={match.isRanked}
           rankedAt={match.rankedAt}
         />

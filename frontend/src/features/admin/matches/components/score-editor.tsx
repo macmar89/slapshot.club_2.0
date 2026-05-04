@@ -31,6 +31,7 @@ interface ScoreEditorProps {
   isDirty?: boolean;
   isRanked?: boolean;
   rankedAt?: string | null;
+  onSwapTeams?: () => void;
 }
 
 export const ScoreEditor = ({
@@ -55,6 +56,7 @@ export const ScoreEditor = ({
   isDirty = false,
   isRanked = false,
   rankedAt,
+  onSwapTeams,
 }: ScoreEditorProps) => {
   const t = useTranslations('Admin.Matches.detail');
 
@@ -106,10 +108,21 @@ export const ScoreEditor = ({
           isDirty={isHomeDirty}
         />
 
-        <div className="flex h-32 items-center justify-center self-center pt-8">
+        <div className="flex flex-col items-center justify-center self-center pt-8 gap-2">
           <span className="text-2xl font-black text-white/10 italic select-none md:text-4xl">
             :
           </span>
+          {onSwapTeams && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onSwapTeams}
+              className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-primary transition-all"
+              title={t('swap_teams')}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <ScoreInput

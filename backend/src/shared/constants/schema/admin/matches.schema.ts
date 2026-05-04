@@ -67,6 +67,8 @@ export const updateMatchBodySchema = z.object({
   apiHockeyStatus: z.string().optional(),
   isChecked: z.boolean().optional(),
   date: z.string().optional(),
+  homeTeamId: z.string().length(24).optional(),
+  awayTeamId: z.string().length(24).optional(),
 });
 
 export const updateMatchSchema = z.object({

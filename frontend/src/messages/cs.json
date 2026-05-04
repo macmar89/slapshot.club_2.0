@@ -1165,6 +1165,7 @@
         "match_not_found": "Zápas nebyl nalezen",
         "recalculate_points": "Přepočítat body",
         "undo_scoring": "Vrátit bodování",
+        "swap_teams": "Prohodit týmy",
         "api_section": "API & Fáze",
         "stages": {
           "regular_season": "Základní část",

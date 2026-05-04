@@ -1168,6 +1168,7 @@
         "match_not_found": "Match not found",
         "recalculate_points": "Recalculate points",
         "undo_scoring": "Undo scoring",
+        "swap_teams": "Swap teams",
         "api_section": "API & Stage",
         "stages": {
           "regular_season": "Regular Season",

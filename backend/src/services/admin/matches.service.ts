@@ -1,6 +1,7 @@
 import { matchesRepository } from '../../repositories/matches.repository.js';
 import { competitionRepository } from '../../repositories/competitions.repository.js';
 import { teamsRepository } from '../../repositories/teams.repository.js';
+import { predictionsRepository } from '../../repositories/predictions.repository.js';
 import { logActivity, type AuditCtx } from '../audit.service.js';
 import {
   evaluateMatch as evaluatePredictions,
@@ -24,6 +25,17 @@ export const updateMatch = async (
   } else if (updateData.isChecked === false) {
     dataToUpdate.checkedAt = null;
     dataToUpdate.checkedBy = null;
+  }
+
+  // Check for team swap to also swap predictions
+  const isTeamSwap = 
+    updateData.homeTeamId && 
+    updateData.awayTeamId && 
+    updateData.homeTeamId === oldMatch.awayTeam.id && 
+    updateData.awayTeamId === oldMatch.homeTeam.id;
+
+  if (isTeamSwap) {
+    await predictionsRepository.swapPredictionsScores(id);
   }
 
   await matchesRepository.updateMatch(id, dataToUpdate);
@@ -196,8 +208,10 @@ export const getMatchDetail = async (id: string, locale: string, userRole: strin
     date: match.date,
     competitionName,
     homeTeam: homeTeamName,
+    homeTeamId: match.homeTeam.id,
     homeLogoUrl: (match.homeTeam as any).logo?.url || null,
     awayTeam: awayTeamName,
+    awayTeamId: match.awayTeam.id,
     awayLogoUrl: (match.awayTeam as any).logo?.url || null,
     resultHomeScore: match.resultHomeScore ?? null,
     resultAwayScore: match.resultAwayScore ?? null,
