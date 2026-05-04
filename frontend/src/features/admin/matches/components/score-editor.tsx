@@ -6,6 +6,8 @@ import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
 import { Trophy, Calendar, Save, RefreshCw, Undo2 } from 'lucide-react';
 import { ScoreInput } from '@/features/competitions/predictions/components/score-input';
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 
 interface ScoreEditorProps {
   homeScore: string;
@@ -20,10 +22,12 @@ interface ScoreEditorProps {
   matchDate: string;
   status: string;
   onSave: () => void;
+  onMatchDateChange?: (date: string) => void;
   onRecalculate?: () => void;
   onUndoScoring?: () => void;
   isHomeDirty?: boolean;
   isAwayDirty?: boolean;
+  isDateDirty?: boolean;
   isDirty?: boolean;
   isRanked?: boolean;
   rankedAt?: string | null;
@@ -40,12 +44,14 @@ export const ScoreEditor = ({
   awayLogoUrl,
   competitionName,
   matchDate,
+  onMatchDateChange,
   status,
   onSave,
   onRecalculate,
   onUndoScoring,
   isHomeDirty = false,
   isAwayDirty = false,
+  isDateDirty = false,
   isDirty = false,
   isRanked = false,
   rankedAt,
@@ -72,10 +78,23 @@ export const ScoreEditor = ({
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Calendar className="h-3 w-3 text-white/30" />
-          <span className="font-mono text-[10px] text-white/60">
-            {format(new Date(matchDate), 'dd.MM.yyyy HH:mm')}
-          </span>
+          <Calendar className={cn("h-3 w-3", isDateDirty ? "text-primary" : "text-white/30")} />
+          <input
+            type="datetime-local"
+            value={format(new Date(matchDate), "yyyy-MM-dd'T'HH:mm")}
+            onChange={(e) => {
+              if (onMatchDateChange) {
+                const newDate = new Date(e.target.value);
+                if (!isNaN(newDate.getTime())) {
+                  onMatchDateChange(newDate.toISOString());
+                }
+              }
+            }}
+            className={cn(
+              "bg-transparent border-none text-[10px] font-mono text-white/60 focus:ring-0 p-0 cursor-pointer transition-colors",
+              isDateDirty && "text-primary font-bold"
+            )}
+          />
         </div>
       </div>
 

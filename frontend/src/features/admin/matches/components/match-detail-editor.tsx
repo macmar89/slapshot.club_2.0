@@ -16,6 +16,7 @@ export interface MatchSaveData {
   apiHockeyId?: string | null;
   apiHockeyStatus?: string | null;
   stageType?: string;
+  date?: string;
 }
 
 interface MatchDetailEditorProps {
@@ -27,6 +28,7 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const [homeScore, setHomeScore] = useState<string>(match.resultHomeScore?.toString() || '0');
   const [awayScore, setAwayScore] = useState<string>(match.resultAwayScore?.toString() || '0');
   const [status, setStatus] = useState<string>(match.status);
+  const [matchDate, setMatchDate] = useState<string>(match.date);
 
   // New API & Stage fields
   const [apiHockeyId, setApiHockeyId] = useState<string>(match.apiHockeyId || '');
@@ -36,7 +38,8 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   // Dirty state calculation
   const isHomeDirty = (parseInt(homeScore) || 0) !== (match.resultHomeScore || 0);
   const isAwayDirty = (parseInt(awayScore) || 0) !== (match.resultAwayScore || 0);
-  const isScoreDirty = isHomeDirty || isAwayDirty;
+  const isDateDirty = matchDate !== match.date;
+  const isScoreDirty = isHomeDirty || isAwayDirty || isDateDirty;
 
   const isStatusDirty = status !== match.status;
   const isApiIdDirty = apiHockeyId !== (match.apiHockeyId || '');
@@ -47,7 +50,7 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
 
   const handleSaveScores = () => {
     if (!isScoreDirty) return;
-    onSave({ homeScore, awayScore });
+    onSave({ homeScore, awayScore, date: matchDate });
   };
 
   const handleSaveSidebar = () => {
@@ -82,13 +85,15 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           awayTeam={match.awayTeam}
           awayLogoUrl={match.awayLogoUrl}
           competitionName={match.competitionName}
-          matchDate={match.date}
+          matchDate={matchDate}
+          onMatchDateChange={setMatchDate}
           status={status}
           onSave={handleSaveScores}
           onRecalculate={handleRecalculate}
           onUndoScoring={handleUndoScoring}
           isHomeDirty={isHomeDirty}
           isAwayDirty={isAwayDirty}
+          isDateDirty={isDateDirty}
           isDirty={isScoreDirty}
           isRanked={match.isRanked}
           rankedAt={match.rankedAt}
