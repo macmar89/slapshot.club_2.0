@@ -122,6 +122,11 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
             {translateRound(match.roundLabel, tm)}
           </p>
         )}
+        {match.stageType === 'playoffs' && match.seriesState && (
+          <p className="mt-1 text-[10px] font-black tracking-[0.2em] text-warning uppercase">
+            {t('current_series_state', { state: match.seriesState })}
+          </p>
+        )}
       </div>
 
       <div className="flex-1 mb-8 flex items-center justify-between gap-4">

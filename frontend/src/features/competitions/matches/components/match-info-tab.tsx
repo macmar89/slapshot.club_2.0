@@ -100,6 +100,11 @@ export const MatchInfoTab = () => {
                       <span className="text-warning mb-1 text-[0.65rem] font-black tracking-[0.2em] uppercase">
                         {match.roundLabel || match.groupName}
                       </span>
+                      {match.stageType === 'playoffs' && match.seriesState && (
+                        <span className="text-warning mb-1 text-[0.65rem] font-black tracking-[0.2em] uppercase">
+                          {t('current_series_state', { state: match.seriesState })}
+                        </span>
+                      )}
                       <span className="text-xs font-bold text-white/80">
                         {matchDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} •{' '}
                         {matchDate.toLocaleTimeString(locale, {

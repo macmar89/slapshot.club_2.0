@@ -5,6 +5,7 @@ import { matches } from '../../db/schema/index.js';
 import { eq } from 'drizzle-orm';
 import { logger } from '../../utils/logger.js';
 import { slugifyRoundLabel } from '../../utils/slug.js';
+import { updatePlayoffSeries } from './playoff.service.js';
 
 export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
   const apiKey = process.env.SPORT_API_KEY;
@@ -113,14 +114,13 @@ async function createOrUpdateMatch(
 
   // Format round label (e.g., "39. kolo")
   let roundLabel: string | null = null;
+  let stageType: 'regular_season' | 'playoffs' | 'group_phase' | 'pre_season' | 'relegation' | 'promotion' = 'regular_season';
+  
   if (apiMatch.week) {
     roundLabel = slugifyRoundLabel(apiMatch.week);
-    //   const weekClean = apiMatch.week.replace(/[^0-9]/g, '');
-    //   if (weekClean) {
-    //     roundLabel = `${weekClean}. kolo`;
-    //   } else {
-    //     roundLabel = apiMatch.week;
-    //   }
+    if (apiMatch.week.toLowerCase().includes('playoff')) {
+      stageType = 'playoffs';
+    }
   }
 
   // Get date in proper ISO format (timezone aware)
@@ -145,9 +145,18 @@ async function createOrUpdateMatch(
       hasChanges = true;
     }
 
+    if (existingMatch.stageType !== stageType) {
+      updateData.stageType = stageType as any;
+      hasChanges = true;
+    }
+
     if (hasChanges) {
       try {
         await db.update(matches).set(updateData).where(eq(matches.id, existingMatch.id));
+
+        if (internalStatus === 'finished' && existingMatch.status !== 'finished') {
+          await updatePlayoffSeries(existingMatch.id);
+        }
 
         logger.info(
           `[FUTURE SYNC] Updated match time/status for ${existingMatch.displayTitle} (${apiId})`,
@@ -174,7 +183,7 @@ async function createOrUpdateMatch(
   }
 
   try {
-    await db.insert(matches).values({
+    const [inserted] = await db.insert(matches).values({
       competitionId,
       homeTeamId: homeTeam.id,
       awayTeamId: awayTeam.id,
@@ -183,10 +192,14 @@ async function createOrUpdateMatch(
       apiHockeyId: apiId,
       apiHockeyStatus: apiMatch.status.short,
       displayTitle: `${homeTeam.slug} vs ${awayTeam.slug}`,
-      stageType: 'regular_season',
+      stageType: stageType as any,
       resultEndingType: 'regular',
       roundLabel,
-    });
+    }).returning({ id: matches.id });
+
+    if (internalStatus === 'finished' && inserted) {
+      await updatePlayoffSeries(inserted.id);
+    }
 
     logger.info(`[FUTURE SYNC] Created match: ${homeTeam.slug} vs ${awayTeam.slug} (${matchDate})`);
     return 'created';

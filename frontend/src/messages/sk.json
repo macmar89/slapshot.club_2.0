@@ -170,7 +170,8 @@
         "AOT": "KON (PP)",
         "AP": "KON (SN)"
       },
-      "last_chance": "Posledná šanca"
+      "last_chance": "Posledná šanca",
+      "current_series_state": "Aktuálny stav série: {state}"
     },
     "leaderboard": {
       "title": "Rebríček",

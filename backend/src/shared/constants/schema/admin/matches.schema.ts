@@ -86,3 +86,10 @@ export const syncMatchesSchema = z.object({
 });
 
 export type UpdateMatchBodyInput = z.infer<typeof updateMatchBodySchema>;
+
+export const recalculatePlayoffsSchema = z.object({
+  body: z.object({
+    apiSportId: z.preprocess((val) => Number(val), z.number().int().positive()),
+    seasonYear: z.preprocess((val) => Number(val), z.number().int().positive()),
+  }),
+});

@@ -170,7 +170,8 @@
         "AOT": "KON (PR)",
         "AP": "KON (SN)"
       },
-      "last_chance": "Poslední šance"
+      "last_chance": "Poslední šance",
+      "current_series_state": "Aktuální stav série: {state}"
     },
     "leaderboard": {
       "title": "Žebříček",

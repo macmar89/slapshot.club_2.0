@@ -170,7 +170,8 @@
         "AOT": "FT (OT)",
         "AP": "FT (SO)"
       },
-      "last_chance": "Last chance"
+      "last_chance": "Last chance",
+      "current_series_state": "Current series state: {state}"
     },
     "leaderboard": {
       "title": "Leaderboard",
