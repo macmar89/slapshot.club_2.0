@@ -25,6 +25,7 @@ export const competitionRepository = {
       columns: {
         id: true,
         apiHockeyId: true,
+        apiHockeySeason: true,
         slug: true,
       },
       where: (table, { and, eq, isNotNull }) =>
