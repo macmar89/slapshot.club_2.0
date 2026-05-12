@@ -39,6 +39,7 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
     const today = new Date();
     let matchesCreated = 0;
     let matchesUpdated = 0;
+    let matchesSkipped = 0;
 
     for (let i = 0; i < daysAhead; i++) {
       const date = new Date(today);
@@ -77,18 +78,20 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
         const result = await createOrUpdateMatch(apiMatch, currentCompId);
         if (result === 'created') matchesCreated++;
         if (result === 'updated') matchesUpdated++;
+        if (result === 'skipped') matchesSkipped++;
       }
     }
     logger.info(
-      `[FUTURE SYNC] Finished sync for ${competition.slug}. Created: ${matchesCreated}, Updated: ${matchesUpdated}`,
+      `[FUTURE SYNC] Finished sync for ${competition.slug}. Created: ${matchesCreated}, Updated: ${matchesUpdated}, Skipped: ${matchesSkipped}`,
     );
 
     return {
       success: true,
-      message: `Sync completed. Created ${matchesCreated}, Updated ${matchesUpdated}.`,
+      message: `Sync completed. Created ${matchesCreated}, Updated ${matchesUpdated}, Skipped ${matchesSkipped} (usually missing teams).`,
       data: {
         created: matchesCreated,
         updated: matchesUpdated,
+        skipped: matchesSkipped,
       },
     };
   } catch (error: any) {
@@ -117,8 +120,9 @@ async function createOrUpdateMatch(
   let stageType: 'regular_season' | 'playoffs' | 'group_phase' | 'pre_season' | 'relegation' | 'promotion' = 'regular_season';
   
   if (apiMatch.week) {
-    roundLabel = slugifyRoundLabel(apiMatch.week);
-    if (apiMatch.week.toLowerCase().includes('playoff')) {
+    const weekStr = String(apiMatch.week);
+    roundLabel = slugifyRoundLabel(weekStr);
+    if (weekStr.toLowerCase().includes('playoff')) {
       stageType = 'playoffs';
     }
   }
