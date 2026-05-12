@@ -59,7 +59,6 @@ export const updatePlayoffSeries = async (matchId: string) => {
       else if (m.awayTeamId === team1Id && homeWon) team2Wins++;
     }
 
-    // Find existing series
     const existingSeries = await db.query.playoffSeries.findFirst({
       where: and(
         eq(playoffSeries.competitionId, competitionId),
@@ -72,19 +71,16 @@ export const updatePlayoffSeries = async (matchId: string) => {
 
     const isFinished = team1Wins >= 4 || team2Wins >= 4; // Assuming best-of-7, can be adjusted later or dynamic
 
-    let t1Wins = team1Wins;
-    let t2Wins = team2Wins;
-
     if (existingSeries) {
-      // Keep existing team1 and team2 assignment
-      t1Wins = existingSeries.team1Id === team1Id ? team1Wins : team2Wins;
-      t2Wins = existingSeries.team2Id === team1Id ? team1Wins : team2Wins;
+      // Keep existing team1 and team2 assignment for playoffSeries table
+      const existingTeam1Wins = existingSeries.team1Id === team1Id ? team1Wins : team2Wins;
+      const existingTeam2Wins = existingSeries.team2Id === team1Id ? team1Wins : team2Wins;
 
       await db
         .update(playoffSeries)
         .set({
-          score1: t1Wins,
-          score2: t2Wins,
+          score1: existingTeam1Wins,
+          score2: existingTeam2Wins,
           isFinished,
         })
         .where(eq(playoffSeries.id, existingSeries.id));
@@ -93,8 +89,8 @@ export const updatePlayoffSeries = async (matchId: string) => {
         competitionId,
         team1Id,
         team2Id,
-        score1: t1Wins,
-        score2: t2Wins,
+        score1: team1Wins,
+        score2: team2Wins,
         stage: match.roundLabel ?? 'Playoffs',
         isFinished,
       });
@@ -114,20 +110,13 @@ export const updatePlayoffSeries = async (matchId: string) => {
       orderBy: asc(matches.date),
     });
 
-    let homeCurrentWins = 0;
-    let awayCurrentWins = 0;
-
     for (let i = 0; i < allSeriesMatches.length; i++) {
       const currentM = allSeriesMatches[i]!;
       const gameNumber = i + 1;
 
-      // Assign the state before this match started, or after?
-      // Usually "Series tied 1-1" or similar
-      const hTeamId = currentM.homeTeamId;
-      const aTeamId = currentM.awayTeamId;
-
-      const hWins = hTeamId === team1Id ? t1Wins : t2Wins;
-      const aWins = aTeamId === team1Id ? t1Wins : t2Wins;
+      // Ensure the score is displayed from the perspective of the home team
+      const hWins = currentM.homeTeamId === team1Id ? team1Wins : team2Wins;
+      const aWins = currentM.awayTeamId === team1Id ? team1Wins : team2Wins;
 
       const seriesState = `${hWins}:${aWins}`;
 
@@ -140,7 +129,7 @@ export const updatePlayoffSeries = async (matchId: string) => {
         .where(eq(matches.id, currentM.id));
     }
 
-    logger.info(`[PLAYOFF] Updated series state for ${competitionId}: ${t1Wins}:${t2Wins}`);
+    logger.info(`[PLAYOFF] Updated series state for ${competitionId}: ${team1Wins}:${team2Wins}`);
   } catch (error: any) {
     logger.error(`[PLAYOFF] Error updating series state: ${error.message}`);
   }
