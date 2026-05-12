@@ -122,7 +122,15 @@ async function createOrUpdateMatch(
   if (apiMatch.week) {
     const weekStr = String(apiMatch.week);
     roundLabel = slugifyRoundLabel(weekStr);
-    if (weekStr.toLowerCase().includes('playoff')) {
+    if (
+      weekStr.toLowerCase().includes('playoff') ||
+      weekStr.toLowerCase().includes('final') ||
+      weekStr.toLowerCase().includes('quarter') ||
+      weekStr.toLowerCase().includes('semi') ||
+      weekStr.toLowerCase().includes('1/8') ||
+      weekStr.toLowerCase().includes('1/4') ||
+      weekStr.toLowerCase().includes('1/2')
+    ) {
       stageType = 'playoffs';
     }
   }
