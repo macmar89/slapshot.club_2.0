@@ -128,9 +128,9 @@ export const recalculateMatchHandler = catchAsync(async (req: Request, res: Resp
 });
 
 export const syncMatchesHandler = catchAsync(async (req: Request, res: Response) => {
-  const { apiSportId, daysAhead } = req.query as any;
+  const { apiSportId, daysAhead, seasonYear } = req.query as any;
 
-  const result = await syncFutureMatches(Number(apiSportId), Number(daysAhead));
+  const result = await syncFutureMatches(Number(apiSportId), Number(daysAhead), seasonYear ? Number(seasonYear) : undefined);
 
   if (!result.success) {
     return res.status(HttpStatusCode.BAD_REQUEST).json({

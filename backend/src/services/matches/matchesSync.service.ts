@@ -7,7 +7,7 @@ import { logger } from '../../utils/logger.js';
 import { slugifyRoundLabel } from '../../utils/slug.js';
 import { updatePlayoffSeries } from './playoff.service.js';
 
-export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
+export async function syncFutureMatches(apiSportId: number, daysAhead: number, seasonYear?: number) {
   const apiKey = process.env.SPORT_API_KEY;
   if (!apiKey) {
     logger.error('[FUTURE SYNC] SPORT_API_KEY missing.');
@@ -16,7 +16,12 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
 
   try {
     const competition = await db.query.competitions.findFirst({
-      where: (c, { eq }) => eq(c.apiHockeyId, String(apiSportId)),
+      where: (c, { eq, and }) => {
+        if (seasonYear) {
+          return and(eq(c.apiHockeyId, String(apiSportId)), eq(c.apiHockeySeason, seasonYear));
+        }
+        return eq(c.apiHockeyId, String(apiSportId));
+      },
     });
 
     if (!competition) {
@@ -60,6 +65,8 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
         },
       });
 
+      console.log(response);
+
       if (!response.ok) {
         logger.error(
           `[FUTURE SYNC][${competition.slug}] API error for ${dateStr}: ${response.statusText}`,
@@ -68,6 +75,7 @@ export async function syncFutureMatches(apiSportId: number, daysAhead: number) {
       }
 
       const data: ApiHockeyResponse = await response.json();
+      console.log(data);
       const apiMatchesList = data.response;
 
       if (!apiMatchesList || apiMatchesList.length === 0) {
@@ -106,9 +114,15 @@ async function createOrUpdateMatch(
 ): Promise<'created' | 'updated' | 'skipped'> {
   const apiId = String(apiMatch.id);
 
+  logger.info(
+    `[FUTURE SYNC DEBUG] Processing apiMatch ID: ${apiId}, Date: ${apiMatch.date}, Teams: ${apiMatch.teams.home.name} vs ${apiMatch.teams.away.name}`,
+  );
+
   const existingMatch = await db.query.matches.findFirst({
     where: (m, { eq }) => eq(m.apiHockeyId, apiId),
   });
+
+  logger.info(`[FUTURE SYNC DEBUG] existingMatch found in DB? ${!!existingMatch}`);
 
   const internalStatus =
     (API_HOCKEY_CONFIG.GAME_STATUSES as any)[apiMatch.status.short] ||
@@ -117,8 +131,14 @@ async function createOrUpdateMatch(
 
   // Format round label (e.g., "39. kolo")
   let roundLabel: string | null = null;
-  let stageType: 'regular_season' | 'playoffs' | 'group_phase' | 'pre_season' | 'relegation' | 'promotion' = 'regular_season';
-  
+  let stageType:
+    | 'regular_season'
+    | 'playoffs'
+    | 'group_phase'
+    | 'pre_season'
+    | 'relegation'
+    | 'promotion' = 'regular_season';
+
   if (apiMatch.week) {
     const weekStr = String(apiMatch.week);
     roundLabel = slugifyRoundLabel(weekStr);
@@ -187,27 +207,34 @@ async function createOrUpdateMatch(
   const homeTeam = await findTeamByApiId(apiMatch.teams.home.id);
   const awayTeam = await findTeamByApiId(apiMatch.teams.away.id);
 
+  logger.info(
+    `[FUTURE SYNC DEBUG] DB Search for Teams: Home(API ID ${apiMatch.teams.home.id}) => ${!!homeTeam}, Away(API ID ${apiMatch.teams.away.id}) => ${!!awayTeam}`,
+  );
+
   if (!homeTeam || !awayTeam) {
     logger.warn(
-      `[FUTURE SYNC] Skipping match ${apiId}: Teams not found (Home: ${apiMatch.teams.home.name}, Away: ${apiMatch.teams.away.name})`,
+      `[FUTURE SYNC] Skipping match ${apiId}: Teams not found in local DB (Home API ID: ${apiMatch.teams.home.id}, Away API ID: ${apiMatch.teams.away.id})`,
     );
     return 'skipped';
   }
 
   try {
-    const [inserted] = await db.insert(matches).values({
-      competitionId,
-      homeTeamId: homeTeam.id,
-      awayTeamId: awayTeam.id,
-      date: matchDate,
-      status: internalStatus,
-      apiHockeyId: apiId,
-      apiHockeyStatus: apiMatch.status.short,
-      displayTitle: `${homeTeam.slug} vs ${awayTeam.slug}`,
-      stageType: stageType as any,
-      resultEndingType: 'regular',
-      roundLabel,
-    }).returning({ id: matches.id });
+    const [inserted] = await db
+      .insert(matches)
+      .values({
+        competitionId,
+        homeTeamId: homeTeam.id,
+        awayTeamId: awayTeam.id,
+        date: matchDate,
+        status: internalStatus,
+        apiHockeyId: apiId,
+        apiHockeyStatus: apiMatch.status.short,
+        displayTitle: `${homeTeam.slug} vs ${awayTeam.slug}`,
+        stageType: stageType as any,
+        resultEndingType: 'regular',
+        roundLabel,
+      })
+      .returning({ id: matches.id });
 
     if (internalStatus === 'finished' && inserted) {
       await updatePlayoffSeries(inserted.id);

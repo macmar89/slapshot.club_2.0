@@ -6,10 +6,11 @@ import { useState } from 'react';
 export function useAdminMatchSync() {
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const syncMatches = async (apiSportId: number, daysAhead: number = 14) => {
+  const syncMatches = async (apiSportId: number, daysAhead: number = 14, seasonYear?: number) => {
     setIsSyncing(true);
     try {
-      const response = await api.post(`${API_ROUTES.ADMIN.MATCHES.SYNC}?apiSportId=${apiSportId}&daysAhead=${daysAhead}`);
+      const url = `${API_ROUTES.ADMIN.MATCHES.SYNC}?apiSportId=${apiSportId}&daysAhead=${daysAhead}${seasonYear ? `&seasonYear=${seasonYear}` : ''}`;
+      const response = await api.post(url);
 
       const result = response.data;
 

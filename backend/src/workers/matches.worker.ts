@@ -33,6 +33,7 @@ export const matchesWorker = new Worker(
           competitionId: comp.id,
           apiSportId: comp.apiHockeyId,
           slug: comp.slug,
+          seasonYear: comp.apiHockeySeason,
         });
       }
 
@@ -42,14 +43,14 @@ export const matchesWorker = new Worker(
     }
 
     if (name === 'syncCompetitionMatches') {
-      const { competitionId, apiSportId, slug } = data;
+      const { competitionId, apiSportId, slug, seasonYear } = data;
 
       logger.info(
-        `[MATCHES WORKER] Starting sync routine for competition ${slug} (${competitionId})`,
+        `[MATCHES WORKER] Starting sync routine for competition ${slug} (${competitionId}) with season ${seasonYear}`,
       );
 
       // We know apiSportId is set because of getActive() filter
-      const result = await syncFutureMatches(Number(apiSportId), 14);
+      const result = await syncFutureMatches(Number(apiSportId), 14, seasonYear ? Number(seasonYear) : undefined);
 
       if (result.success) {
         logger.info(`[MATCHES WORKER] Finished sync for ${slug}: ${result.message}`);
