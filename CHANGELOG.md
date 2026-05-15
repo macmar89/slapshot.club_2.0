@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/macmar89/slapshot.club_2.0/compare/v0.2.0...v0.3.0) (2026-05-15)
+
+
+### Features
+
+* add account verification status notice and resend functionality to user profile view ([e6a963f](https://github.com/macmar89/slapshot.club_2.0/commit/e6a963f9344182ab6b4dd5c85be6dd455a93ca98))
+* add and sync prediction statistics for match team swaps ([8d675b8](https://github.com/macmar89/slapshot.club_2.0/commit/8d675b8d9d52b0ce42ad994d9eb7a84383ae78d5))
+* add editable match date field to admin score editor and update schema ([38deb27](https://github.com/macmar89/slapshot.club_2.0/commit/38deb27dbcc80ce716a41e3a25c748d4bb2dbdb6))
+* add explicit npm scripts for minor, patch, and major version releases ([8a667ff](https://github.com/macmar89/slapshot.club_2.0/commit/8a667fffe5534185253bea8f19b085c2f76c9877))
+* add isSyncEnabled column to competitions and filter matches by sync state ([5ac2075](https://github.com/macmar89/slapshot.club_2.0/commit/5ac207570156a127b8b2e62dd8bbdb587be58d52))
+* add JoinLeagueModal and mobile-responsive buttons to group views ([eeeb318](https://github.com/macmar89/slapshot.club_2.0/commit/eeeb318a1677eed51d7082d97f2d80d128ad5716))
+* add optional seasonYear parameter to match synchronization service and UI ([5e6f6cf](https://github.com/macmar89/slapshot.club_2.0/commit/5e6f6cf6ff1471417e141102afb2898936b7b8de))
+* add team swapping functionality to match editor including prediction updates ([1acf254](https://github.com/macmar89/slapshot.club_2.0/commit/1acf25448a75f4bd61ce5b2c218dec52f298fe13))
+* add tipper rankings and user counts to SlapshotAI stats with updated date window calculation ([50a0dc2](https://github.com/macmar89/slapshot.club_2.0/commit/50a0dc291e1c8e6d05ce17a8b767d21e1c3f66f9))
+* add unread feedback count endpoint and implement real-time notification support for new feedback ([0289090](https://github.com/macmar89/slapshot.club_2.0/commit/0289090484cd4506353ad90a94e52219f0a5770f))
+* expand playoff stage detection to include additional round naming conventions ([4f21153](https://github.com/macmar89/slapshot.club_2.0/commit/4f211532c47dfec2d4c31742ca8feb6057796fbf))
+* implement admin match synchronization feature with UI form and backend API endpoint ([edfb05f](https://github.com/macmar89/slapshot.club_2.0/commit/edfb05f1380c7c571d5882dd68b7c031bb2a94ed))
+* implement group name update functionality with backend persistence and audit logging ([70c0caa](https://github.com/macmar89/slapshot.club_2.0/commit/70c0caa485e77b6afe1fa88aa0200ddb04c5769e))
+* implement group-specific match views, routing, and prediction filtering capabilities ([f325672](https://github.com/macmar89/slapshot.club_2.0/commit/f325672d7da8e7e92bd51791687f9f42ed163df9))
+* implement internal SlapshotAI reporting API with token-based authentication and service logic ([ccc2f37](https://github.com/macmar89/slapshot.club_2.0/commit/ccc2f37fe780d9069e7f3799ba7765dde555deb2))
+* implement playoff series tracking and manual recalculation functionality ([e4db968](https://github.com/macmar89/slapshot.club_2.0/commit/e4db96849698bec81ed0f3409b3b5a08a616f848))
+* implement Slack notification system with dedicated service, queue, and worker for monitoring registrations, feedback, groups, and job failures ([91b51f0](https://github.com/macmar89/slapshot.club_2.0/commit/91b51f06cf1d694ae5c09fb86367dcb0e3557eab))
+* implement SWR cache invalidation for competition data across join and creation flows ([610168f](https://github.com/macmar89/slapshot.club_2.0/commit/610168f7ced6b6f5457a6ba21a13b94f309e4fab))
+* include apiHockeySeason field in competition repository query columns ([52a1b28](https://github.com/macmar89/slapshot.club_2.0/commit/52a1b289fb4698592d7f432b71b3c6e2adb4ddde))
+* track and log skipped matches during sync and add robust string handling for round label slugification ([a416ce6](https://github.com/macmar89/slapshot.club_2.0/commit/a416ce6507dd0cadd07923236e77d570a58621c4))
+* update site metadata with new assets and integrate analytics component ([f5aef3d](https://github.com/macmar89/slapshot.club_2.0/commit/f5aef3d463c72997b574fd0647ef5e89eaa3048b))
+
+
+### Bug Fixes
+
+* update Analytics component import path to match file casing ([f910104](https://github.com/macmar89/slapshot.club_2.0/commit/f910104befc025761eda668621d192b99bfa4f30))
+* update registration disabled state logic and button styling in competition card ([b792e03](https://github.com/macmar89/slapshot.club_2.0/commit/b792e032244a9183a9944daf12beece2cec8efb9))
+
+
+### Refactors
+
+* clean up score tracking variables and improve clarity in playoff series update logic ([087e2c7](https://github.com/macmar89/slapshot.club_2.0/commit/087e2c7dfecea61d3d4352e22843c07a12a84de5))
+* extract AuthHero component and update hero copy across authentication views ([bc44864](https://github.com/macmar89/slapshot.club_2.0/commit/bc44864e3fd43b271d6ef482165aa13b0c1a68ad))
+* replace window.location.pathname with usePathname hook in CustomTabs component ([80e32b1](https://github.com/macmar89/slapshot.club_2.0/commit/80e32b1470cb3256e2c905aa27c05ded82aca70d))
+* update login page layout and responsive typography with updated translations ([cbb26f8](https://github.com/macmar89/slapshot.club_2.0/commit/cbb26f81c553d3e7bac74ef60dc8706d49d43642))
+
 ## [0.2.0](https://github.com/macmar89/slapshot.club_2.0/compare/v0.1.4...v0.2.0) (2026-04-12)
 
 
