@@ -1155,6 +1155,8 @@
         "api_hockey_id": "API Hockey ID",
         "api_hockey_status": "API Status",
         "prediction_count": "Počet tipov",
+        "home_predicted": "Tipy na domáceho",
+        "away_predicted": "Tipy na hosťa",
         "stage_type": "Fáza",
         "ending_type": "Ukončenie",
         "audit_log": "Audit Log",

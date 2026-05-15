@@ -1155,6 +1155,8 @@
         "api_hockey_id": "API Hockey ID",
         "api_hockey_status": "API Status",
         "prediction_count": "Prediction Count",
+        "home_predicted": "Home predictions",
+        "away_predicted": "Away predictions",
         "stage_type": "Stage",
         "ending_type": "Ending",
         "audit_log": "Audit Log",

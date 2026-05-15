@@ -11,6 +11,8 @@ interface MatchStatsProps {
   resultEndingType: string;
   apiHockeyId?: string | null;
   apiHockeyStatus?: string | null;
+  homePredictedCount?: number;
+  awayPredictedCount?: number;
 }
 
 export const MatchStats = ({
@@ -19,6 +21,8 @@ export const MatchStats = ({
   resultEndingType,
   apiHockeyId,
   apiHockeyStatus,
+  homePredictedCount = 0,
+  awayPredictedCount = 0,
 }: MatchStatsProps) => {
   const t = useTranslations('Admin.Matches.detail');
 
@@ -37,6 +41,14 @@ export const MatchStats = ({
             <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-black px-3 py-0.5">
               {totalPredictionsCount}
             </Badge>
+          </div>
+          <div className="flex justify-between items-center group">
+            <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors">{t('home_predicted')}</span>
+            <span className="text-xs font-bold text-white/70">{homePredictedCount}</span>
+          </div>
+          <div className="flex justify-between items-center group">
+            <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors">{t('away_predicted')}</span>
+            <span className="text-xs font-bold text-white/70">{awayPredictedCount}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-xs text-white/40">{t('stage_type')}</span>
