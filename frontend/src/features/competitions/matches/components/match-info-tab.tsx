@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Trophy, Users, PencilLine } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
 import type { Match } from '@/features/competitions/matches/matches.types';
@@ -19,7 +19,9 @@ import { ErrorView } from '@/components/common/error-view';
 
 export const MatchInfoTab = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
+  const groupSlug = searchParams.get('groupSlug');
 
   const t = useTranslations('Dashboard.matches');
   const locale = useLocale();
@@ -29,7 +31,11 @@ export const MatchInfoTab = () => {
   const { data, mutate, isLoading, error } = useSWR<{
     match: Match;
     scores: Record<string, number>;
-  }>(API_ROUTES.MATCHES.DETAIL.INFO(id));
+  }>(
+    groupSlug
+      ? API_ROUTES.GROUPS.MATCHES.DETAIL.INFO(groupSlug, id)
+      : API_ROUTES.MATCHES.DETAIL.INFO(id),
+  );
 
   return (
     <DataLoader

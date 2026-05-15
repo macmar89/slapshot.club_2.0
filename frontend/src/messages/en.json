@@ -481,6 +481,7 @@
     "mobile_management_hint": "Use desktop version for member management",
     "tabs": {
       "ranking": "Ranking",
+      "matches": "Matches",
       "cabin": "Cabin",
       "roster": "Roster",
       "settings": "Settings"

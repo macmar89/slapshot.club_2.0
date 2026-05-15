@@ -1,7 +1,7 @@
 import { MatchPredictionsList } from './match-prediction-list';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useQueryFilters } from '@/hooks/use-query-filter';
 import { PaginatedResponse } from '@/lib/types';
 import { Prediction } from '../../predictions/prediction.types';
@@ -11,12 +11,16 @@ import { ErrorView } from '@/components/common/error-view';
 
 export const MatchPredictionTab = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
+  const groupSlug = searchParams.get('groupSlug');
 
   const { page, limit, search } = useQueryFilters();
 
   const { data, isLoading, error } = useSWR<PaginatedResponse<Prediction>>(
-    API_ROUTES.MATCHES.DETAIL.PREDICTIONS(id, { page, limit, search }),
+    groupSlug
+      ? API_ROUTES.GROUPS.MATCHES.DETAIL.PREDICTIONS(groupSlug, id, { page, limit, search })
+      : API_ROUTES.MATCHES.DETAIL.PREDICTIONS(id, { page, limit, search }),
     { keepPreviousData: true },
   );
 

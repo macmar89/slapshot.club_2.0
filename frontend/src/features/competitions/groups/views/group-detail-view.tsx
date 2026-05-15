@@ -10,10 +10,12 @@ import { CustomTabs, type TabItem } from '@/components/common/custom-tabs';
 import { MessageCircle, Settings, Trophy } from 'lucide-react';
 import { GroupDetailRosterTab } from '@/features/competitions/groups/components/group-detail-roster-tab';
 import { TabsContent } from '@/components/ui/tabs';
-import { GroupDetailCabinTab } from '../components/group-detail-cabin-tab';
-import { GroupDetailLeaderboardTab } from '../components/group-detail-leaderboard-tab';
-import { GroupDetailDataLoader } from '../components/group-detail-data-loader';
-import { GroupDetailSettingsTab } from '../components/group-detail-settings-tab';
+import { GroupDetailCabinTab } from '@/features/competitions/groups/components/group-detail-cabin-tab';
+import { GroupDetailLeaderboardTab } from '@/features/competitions/groups/components/group-detail-leaderboard-tab';
+import { GroupDetailDataLoader } from '@/features/competitions/groups/components/group-detail-data-loader';
+import { GroupDetailSettingsTab } from '@/features/competitions/groups/components/group-detail-settings-tab';
+import { GroupDetailMatchesTab } from '@/features/competitions/groups/components/group-detail-matches-tab';
+import { CalendarDays } from 'lucide-react';
 
 export const GroupDetailView = () => {
   const t = useTranslations('Groups');
@@ -33,6 +35,12 @@ export const GroupDetailView = () => {
             label: t('tabs.ranking'),
             href: `/${competitionSlug}/groups/${groupSlug}?tab=members`,
             icon: <Trophy className="h-4 w-4" />,
+          },
+          {
+            value: 'matches',
+            label: t('tabs.matches'),
+            href: `/${competitionSlug}/groups/${groupSlug}?tab=matches`,
+            icon: <CalendarDays className="h-4 w-4" />,
           },
           {
             value: 'cabin',
@@ -68,6 +76,9 @@ export const GroupDetailView = () => {
             <CustomTabs items={tabItems} defaultValue="members">
               <TabsContent value="members" className="mt-0">
                 <GroupDetailLeaderboardTab groupSlug={groupSlug} />
+              </TabsContent>
+              <TabsContent value="matches" className="mt-0">
+                <GroupDetailMatchesTab groupSlug={groupSlug} />
               </TabsContent>
               <TabsContent value="cabin" className="mt-0">
                 <GroupDetailCabinTab />

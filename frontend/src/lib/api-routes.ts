@@ -89,6 +89,21 @@ export const API_ROUTES = {
     },
     JOIN: `/groups/join`,
     USER_GROUPS_BY_COMPETITION_SLUG: (slug: string) => `/groups/competition/${slug}`,
+    MATCHES: {
+      LIST: (slug: string, date: string, timezone: string) =>
+        `/groups/${slug}/matches?date=${date}&tz=${timezone}`,
+      DETAIL: {
+        INFO: (slug: string, matchId: string) => `/groups/${slug}/matches/${matchId}/info`,
+        PREDICTIONS: (slug: string, matchId: string, query?: Record<string, string | number>) => {
+          const params = new URLSearchParams();
+          if (query?.page) params.append('page', query.page.toString());
+          if (query?.limit) params.append('limit', query.limit.toString());
+          if (query?.search) params.append('search', query.search as string);
+          const queryString = params.toString();
+          return `/groups/${slug}/matches/${matchId}/predictions${queryString ? `?${queryString}` : ''}`;
+        },
+      },
+    },
   },
   MATCHES: {
     DETAIL: {
