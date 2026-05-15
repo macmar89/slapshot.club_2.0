@@ -13,7 +13,10 @@ import {
   removeMemberSchema,
   updateGroupSettingsSchema,
   updateGroupNameSchema,
+  getGroupMatchDetailInfoSchema,
+  getGroupMatchDetailPredictionsSchema,
 } from '../shared/constants/schema/group.schema.js';
+import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
 
 const router = Router();
@@ -42,6 +45,24 @@ router.delete(
   validate(getGroupDetailSchema),
   validateGroupRole(['owner']),
   groupController.deleteGroupHandler,
+);
+router.get(
+  '/:slug/matches',
+  validate(getCompetitionMatchesSchema),
+  validateGroupRole(),
+  groupController.getGroupMatchesHandler,
+);
+router.get(
+  '/:slug/matches/:matchId/info',
+  validate(getGroupMatchDetailInfoSchema),
+  validateGroupRole(),
+  groupController.getGroupMatchInfoHandler,
+);
+router.get(
+  '/:slug/matches/:matchId/predictions',
+  validate(getGroupMatchDetailPredictionsSchema),
+  validateGroupRole(),
+  groupController.getGroupMatchPredictionsHandler,
 );
 router.get(
   '/:slug/members',

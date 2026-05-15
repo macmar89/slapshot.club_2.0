@@ -23,6 +23,9 @@ import {
   deleteGroup,
 } from '../services/groups/groupsCore.service.js';
 import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service.js';
+import { getGroupMatches, getGroupMatchInfoById } from '../services/matches/matches.service.js';
+import { getGroupMatchPredictions } from '../services/prediction.service.js';
+import type { AppLocale } from '../types/global.types.js';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;
@@ -96,6 +99,19 @@ export const getGroupDetailHandler = catchAsync(async (req: Request, res: Respon
   const response = await getGroupDetail(userId, slug);
 
   return res.status(HttpStatusCode.OK).json({ status: 'success', data: response });
+});
+
+export const getGroupMatchesHandler = catchAsync(async (req: Request, res: Response) => {
+  const { id: userId } = req.user!;
+  const slug = req.params.slug as string;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+  const date = req.query.date as string;
+  const timezone = req.query.tz as string;
+  const { groupId } = req.group!;
+
+  const data = await getGroupMatches(groupId, date, userId, locale, timezone);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data });
 });
 
 export const getGroupMembersHandler = catchAsync(async (req: Request, res: Response) => {
@@ -283,4 +299,37 @@ export const deleteGroupHandler = catchAsync(async (req: Request, res: Response)
   return res
     .status(HttpStatusCode.OK)
     .json({ status: 'success', data: { message: GroupMessages.GROUP_DELETED } });
+});
+
+export const getGroupMatchInfoHandler = catchAsync(async (req: Request, res: Response) => {
+  const matchId = req.params.matchId as string;
+  const locale = (req.cookies.NEXT_LOCALE as AppLocale) || 'sk';
+  const userId = req.user!.id;
+  const { groupId } = req.group!;
+
+  const data = await getGroupMatchInfoById(groupId, matchId, locale, userId);
+
+  return res.status(HttpStatusCode.OK).json({ status: 'success', data });
+});
+
+export const getGroupMatchPredictionsHandler = catchAsync(async (req: Request, res: Response) => {
+  const matchId = req.params.matchId as string;
+  const isFreeUser = req.user!.subscriptionPlan === 'free';
+  const { groupId } = req.group!;
+
+  const predictions = await getGroupMatchPredictions(
+    groupId,
+    matchId,
+    {
+      page: Number(req.query.page),
+      limit: Number(req.query.limit),
+      search: req.query.search as string,
+    },
+    isFreeUser,
+  );
+
+  return res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    data: predictions,
+  });
 });

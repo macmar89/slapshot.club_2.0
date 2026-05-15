@@ -67,7 +67,12 @@ export const DateSwitcher = ({
       if (onDateChange) {
         onDateChange(newDate);
       } else {
-        router.push(`${pathname}?date=${newDate}`, { scroll: false });
+        let resolvedPath = pathname;
+        Object.entries(params).forEach(([key, value]) => {
+          resolvedPath = resolvedPath.replace(`[${key}]`, value as string);
+        });
+
+        router.push(`${resolvedPath}?date=${newDate}` as any, { scroll: false });
       }
     }
   };
@@ -163,7 +168,12 @@ export const DateSwitcher = ({
             if (onDateChange) {
               onDateChange(date);
             } else {
-              router.push(`${pathname}?date=${date}`, { scroll: false });
+              let resolvedPath = pathname;
+              Object.entries(params).forEach(([key, value]) => {
+                resolvedPath = resolvedPath.replace(`[${key}]`, value as string);
+              });
+
+              router.push(`${resolvedPath}?date=${date}` as any, { scroll: false });
             }
             setIsCalendarOpen(false);
           }}

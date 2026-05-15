@@ -1,6 +1,4 @@
-import { BackLink } from '@/components/common/back-link';
 import { useTranslations } from 'next-intl';
-import { useAppParams } from '@/hooks/use-app-params';
 import { Crown, Users } from 'lucide-react';
 import type { GroupDetail } from '@/features/competitions/groups/group.types';
 
@@ -10,14 +8,9 @@ interface GroupDetailHeaderProps {
 
 export const GroupDetailHeader = ({ group }: GroupDetailHeaderProps) => {
   const t = useTranslations('Groups');
-  const { slug: competitionSlug } = useAppParams(['slug']);
 
   return (
     <div className="mb-4 flex shrink-0 flex-col gap-4 px-1">
-      <div className="flex items-center justify-between">
-        <BackLink href={`/${competitionSlug}/groups`} label={t('back_to_list')} />
-      </div>
-
       <div className="mt-2 flex flex-col items-start justify-between gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center">
         <div className="flex items-center gap-5">
           <div className="from-primary/20 border-primary/30 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border bg-gradient-to-br to-black shadow-[0_0_20px_rgba(250,204,21,0.15)]">
