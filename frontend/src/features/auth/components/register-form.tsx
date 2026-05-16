@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter, Link } from '@/i18n/routing';
 import { useForm, Controller } from 'react-hook-form';
@@ -33,7 +33,12 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
   const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
   const turnstileRef = useRef<TurnstileInstance>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const {
     register,
@@ -70,7 +75,8 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
       if (res.success) {
         router.push('/arena');
       } else {
-        setError(t(`errors.${res.message}`) || t('errors.registration_failed'));
+        const errorKey = `errors.${res.message}`;
+        setError(t.has(errorKey) ? t(errorKey) : t('errors.registration_failed'));
         turnstileRef.current?.reset();
         setValue('turnstileToken', '');
       }
@@ -242,7 +248,13 @@ export const RegisterForm = ({ referralCode }: RegisterFormProps) => {
         type="submit"
         color="gold"
         className="w-full py-4 text-base font-bold tracking-wide"
-        disabled={isLoading || !isUsernameAvailable || !isEmailAvailable || !isRegistrationOpen}
+        disabled={
+          !isMounted ||
+          isLoading ||
+          !isUsernameAvailable ||
+          !isEmailAvailable ||
+          !isRegistrationOpen
+        }
       >
         {isLoading ? t('registering') : t('register_button')}
       </Button>

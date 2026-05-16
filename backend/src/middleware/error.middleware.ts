@@ -22,7 +22,12 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
   }
 
   const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
+  let message = err.message || 'Internal Server Error';
+
+  // Sanitize message to avoid leaking database internals/queries
+  if (message.includes('Failed query') || message.includes('insert into') || message.includes('update "')) {
+    message = 'Internal Server Error';
+  }
 
   res.status(statusCode).json({
     status: statusCode >= 500 ? 'error' : 'fail',

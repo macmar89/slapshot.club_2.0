@@ -29,13 +29,12 @@ import { announcementsRepository } from '../repositories/announcements.repositor
 import { notify } from './notifications.service.js';
 import { enqueueSlackRegistrationNotification } from '../queues/slack.queue.js';
 
-
-
 const hashToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
 };
 
 export const registerUser = async (data: RegisterInput) => {
+  logger.info(data);
   const trimmedUsername = data.username.trim();
   const trimmedEmail = data.email.trim().toLowerCase();
 
@@ -50,18 +49,16 @@ export const registerUser = async (data: RegisterInput) => {
     throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
-
   let txResult: any;
   let retryCount = 0;
   const MAX_RETRIES = 3;
+  const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
+    (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
 
   while (retryCount < MAX_RETRIES) {
     try {
       txResult = await db.transaction(async (tx) => {
         const hashedPassword = await hashPassword(data.password);
-
-        const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
-          (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
 
         const subscriptionEndDate = getSubscriptionEndDate();
 
@@ -157,13 +154,39 @@ export const registerUser = async (data: RegisterInput) => {
         continue;
       }
 
+      // Check for other unique constraint violations
+      const message = error.message?.toLowerCase() || '';
+      const detail = error.detail?.toLowerCase() || '';
+
+      if (message.includes('users_username_unique') || detail.includes('username')) {
+        throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
+      }
+
+      if (message.includes('users_email_unique') || detail.includes('email')) {
+        throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
+      }
+
       logger.error(
         {
-          error: error.message,
-          detail: error.detail,
-          data: { username: trimmedUsername, email: trimmedEmail },
+          error: {
+            message: error.message,
+            detail: error.detail,
+            hint: error.hint,
+            code: error.code,
+            column: error.column,
+            constraint: error.constraint,
+            table: error.table,
+            schema: error.schema,
+            where: error.where,
+          },
+          data: { 
+            username: trimmedUsername, 
+            email: trimmedEmail,
+            referralCode: data.referralCode,
+            defaultPlan
+          },
         },
-        'User registration failed',
+        'User registration failed CRITICAL',
       );
       throw error;
     }
@@ -198,15 +221,13 @@ export const registerUser = async (data: RegisterInput) => {
     user: {
       id: newUser.id,
       username: newUser.username,
-      email: newUser.email
+      email: newUser.email,
     },
-    referralSource: data.referralCode
-  }).catch(err => logger.error({ err }, '[Register] Failed to enqueue Slack notification'));
-
+    referralSource: data.referralCode,
+  }).catch((err) => logger.error({ err }, '[Register] Failed to enqueue Slack notification'));
 
   return newUser;
 };
-
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({
