@@ -37,9 +37,9 @@ describe('Auth Flow Integration', () => {
     expect(registrationResult.id).toBeDefined();
 
     // Verify user exists in DB
-    const [dbUser] = await db.select().from(users).where(eq(users.id, registeredUserId));
+    const [dbUser] = await db.select().from(users).where(eq(users.id, registeredUserId!));
     expect(dbUser).toBeDefined();
-    expect(dbUser.username).toBe(testUser.username);
+    expect(dbUser!.username).toBe(testUser.username);
 
     // 2. Login User
     console.log('Testing login...');
@@ -51,11 +51,11 @@ describe('Auth Flow Integration', () => {
     expect(loginResult.user.id).toBe(registeredUserId);
     
     // Create a session (as the controller does)
-    const rawRefreshToken = await createSession(registeredUserId, 'test-agent');
+    const rawRefreshToken = await createSession(registeredUserId!, 'test-agent');
     expect(rawRefreshToken).toBeDefined();
 
     // Verify refresh token exists in DB
-    const [dbToken] = await db.select().from(refreshTokens).where(eq(refreshTokens.userId, registeredUserId));
+    const [dbToken] = await db.select().from(refreshTokens).where(eq(refreshTokens.userId, registeredUserId!));
     expect(dbToken).toBeDefined();
 
     // 3. Logout User
@@ -64,7 +64,7 @@ describe('Auth Flow Integration', () => {
     expect(logoutUserId).toBe(registeredUserId);
 
     // Verify refresh token is deleted from DB
-    const [deletedToken] = await db.select().from(refreshTokens).where(eq(refreshTokens.userId, registeredUserId));
+    const [deletedToken] = await db.select().from(refreshTokens).where(eq(refreshTokens.userId, registeredUserId!));
     expect(deletedToken).toBeUndefined();
     
     console.log('Auth flow test completed successfully!');
