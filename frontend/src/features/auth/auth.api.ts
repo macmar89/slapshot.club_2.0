@@ -1,6 +1,7 @@
 import { API_ROUTES } from '@/lib/api-routes';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/use-auth-store';
+import { clearPwaCaches } from '@/lib/pwa';
 import {
   LoginInput,
   RegisterInput,
@@ -73,6 +74,7 @@ export const handlePostLogout = async () => {
     return { success: false, message: 'logout_failed' };
   } finally {
     useAuthStore.getState().logout();
+    await clearPwaCaches();
     window.location.href = '/';
   }
 };

@@ -177,3 +177,30 @@
     }
   }
 }
+
+:root {
+  --app-header-h: 3.5rem;
+  --app-bottom-nav-h: 4rem;
+  --app-safe-top: env(safe-area-inset-top, 0px);
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --blur-md: 6px;
+    --blur-lg: 8px;
+    --blur-xl: 10px;
+    --blur-2xl: 12px;
+    --blur-3xl: 14px;
+  }
+}

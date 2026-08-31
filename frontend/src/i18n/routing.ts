@@ -7,30 +7,6 @@ export const routing = defineRouting({
   defaultLocale: 'sk',
 
   localePrefix: 'always',
-
-  pathnames: {
-    '/': '/',
-    '/dashboard': '/dashboard',
-    '/login': '/login',
-    '/register': '/register',
-    '/register/[referralCode]': '/register/[referralCode]',
-    '/forgot-password': '/forgot-password',
-    '/account': '/account',
-    '/dashboard/rules': '/dashboard/rules',
-    '/dashboard/profile': '/dashboard/profile',
-    '/dashboard/settings': '/dashboard/settings',
-    '/settings': '/settings',
-    '/[slug]/dashboard': '/[slug]/dashboard',
-    '/[slug]/dashboard/leagues': '/[slug]/dashboard/leagues',
-    '/[slug]/dashboard/leagues/[leagueId]': '/[slug]/dashboard/leagues/[leagueId]',
-    '/[slug]/dashboard/matches': '/[slug]/dashboard/matches',
-    '/[slug]/dashboard/leaderboard': '/[slug]/dashboard/leaderboard',
-    '/[slug]/groups/[groupSlug]': '/[slug]/groups/[groupSlug]',
-    '/arena': '/arena',
-    '/arena/rules': '/arena/rules',
-    '/arena/[slug]': '/arena/[slug]',
-    '/ranking': '/ranking',
-  } as Record<string, string>,
 });
 
 export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);

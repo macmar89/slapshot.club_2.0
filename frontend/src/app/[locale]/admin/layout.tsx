@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/sidebar';
 import { Container } from '@/components/ui/container';
 import { AdminNavItems } from '@/features/admin/components/admin-nav-items';
 import { AdminGuard } from '@/features/auth/components/admin-guard';
+import { BottomNav } from '@/components/layout/mobile/bottom-nav';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,9 +22,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </IceGlassCard>
         </aside>
 
-        <main className="pt-24 pb-32 md:pb-0 lg:pl-72">
+        <main className="pt-[calc(var(--app-header-h)+var(--app-safe-top)+1rem)] pb-[calc(var(--app-bottom-nav-h)+var(--app-safe-bottom)+1.5rem)] lg:pt-24 lg:pb-10 lg:pl-72">
           <Container>{children}</Container>
         </main>
+
+        <BottomNav context="arena" />
       </div>
     </AdminGuard>
   );

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>Offline — Slapshot Club</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem calc(1.5rem + env(safe-area-inset-left, 0px)) 2rem
+          calc(1.5rem + env(safe-area-inset-right, 0px));
+        background-color: #0a0a0a;
+        color: #fafafa;
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        text-align: center;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        display: flex;
+        max-width: 22rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      img {
+        width: 5rem;
+        height: 5rem;
+        opacity: 0.9;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        color: #a1a1aa;
+      }
+
+      button {
+        min-height: 3rem;
+        margin-top: 0.5rem;
+        padding: 0 1.75rem;
+        border: 0;
+        border-radius: 0.125rem;
+        background-color: #fafafa;
+        color: #0a0a0a;
+        font-family: inherit;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:active {
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icons/icon-192.png" alt="Slapshot Club" width="192" height="192" />
+      <h1 data-i18n="title">Ste offline</h1>
+      <p data-i18n="description">
+        Nemáme spojenie so serverom. Skontrolujte pripojenie na internet a skúste to znova.
+      </p>
+      <button type="button" data-i18n="action" onclick="window.location.reload()">Skúsiť znova</button>
+    </main>
+
+    <script>
+      (function () {
+        var messages = {
+          sk: {
+            title: 'Ste offline',
+            description:
+              'Nemáme spojenie so serverom. Skontrolujte pripojenie na internet a skúste to znova.',
+            action: 'Skúsiť znova',
+          },
+          cs: {
+            title: 'Jste offline',
+            description:
+              'Nemáme spojení se serverem. Zkontrolujte připojení k internetu a zkuste to znovu.',
+            action: 'Zkusit znovu',
+          },
+          en: {
+            title: 'You are offline',
+            description:
+              'We cannot reach the server. Check your internet connection and try again.',
+            action: 'Try again',
+          },
+        };
+
+        var locale = (navigator.language || 'sk').slice(0, 2).toLowerCase();
+        var dictionary = messages[locale] || messages.sk;
+
+        document.documentElement.lang = messages[locale] ? locale : 'sk';
+        document.title = dictionary.title + ' — Slapshot Club';
+
+        document.querySelectorAll('[data-i18n]').forEach(function (node) {
+          var key = node.getAttribute('data-i18n');
+          if (dictionary[key]) node.textContent = dictionary[key];
+        });
+      })();
+    </script>
+  </body>
+</html>

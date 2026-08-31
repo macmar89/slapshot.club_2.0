@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Sora, Space_Grotesk } from 'next/font/google';
@@ -9,6 +9,7 @@ import { Providers } from '@/providers/providers';
 import { PredictionDialog } from '@/features/competitions/predictions/components/prediction-dialog';
 import { getSEO, APP_URL } from '@/config/seo';
 import { Analytics } from '@/components/common/analytics';
+import { ServiceWorkerRegister } from '@/components/pwa/service-worker-register';
 
 const sora = Sora({
   subsets: ['latin'],
@@ -31,7 +32,12 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo.description,
     icons: {
       icon: '/icon.webp',
-      apple: '/icon.webp',
+      apple: '/icons/apple-touch-icon.png',
+    },
+    appleWebApp: {
+      capable: true,
+      title: 'Slapshot',
+      statusBarStyle: 'black-translucent',
     },
     openGraph: {
       title: seo.title,
@@ -57,6 +63,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+  themeColor: '#0a0a0a',
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +93,7 @@ export default async function RootLayout({
             <PredictionDialog />
             {children}
             <Analytics />
+            <ServiceWorkerRegister />
           </Providers>
         </body>
       </NextIntlClientProvider>

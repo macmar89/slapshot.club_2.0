@@ -12,7 +12,8 @@
     "loading": "Ukladám...",
     "refresh": "Aktualizovať",
     "new_password": "Nové heslo",
-    "confirm_password": "Zopakuj nové heslo"
+    "confirm_password": "Zopakuj nové heslo",
+    "back": "Späť"
   },
   "HomePage": {
     "title": "Vítajte",
@@ -807,9 +808,14 @@
     "owner_right_transfer_desc": "Môže odovzdať \"kapitánsku pásku\" inému."
   },
   "PWA": {
-    "orientation_lock": {
-      "title": "Otočte zariadenie",
-      "message": "Pre najlepší zážitok používajte aplikáciu v režime na výšku."
+    "install": {
+      "action": "Nainštalovať aplikáciu",
+      "ios_hint": "V Safari ťukni na Zdieľať a zvoľ „Pridať na plochu“."
+    },
+    "update": {
+      "title": "Nová verzia je pripravená",
+      "description": "Aplikáciu stačí obnoviť a načíta sa najnovšia verzia.",
+      "action": "Obnoviť"
     }
   },
   "PlayerDetail": {

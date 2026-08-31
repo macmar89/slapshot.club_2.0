@@ -12,7 +12,8 @@
     "loading": "Saving...",
     "refresh": "Refresh",
     "new_password": "New Password",
-    "confirm_password": "Repeat New Password"
+    "confirm_password": "Repeat New Password",
+    "back": "Back"
   },
   "HomePage": {
     "title": "Welcome",
@@ -807,9 +808,14 @@
     "owner_right_transfer_desc": "Can transfer the \"captain's armband\" to another member."
   },
   "PWA": {
-    "orientation_lock": {
-      "title": "Rotate your device",
-      "message": "For the best experience, please use the app in portrait mode."
+    "install": {
+      "action": "Install app",
+      "ios_hint": "In Safari tap Share and choose “Add to Home Screen”."
+    },
+    "update": {
+      "title": "A new version is ready",
+      "description": "Reload the app to get the latest version.",
+      "action": "Reload"
     }
   },
   "PlayerDetail": {
