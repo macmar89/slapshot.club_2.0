@@ -1,0 +1,151 @@
+name: slapshot_club
+
+volumes:
+  # keeps the name of the volume created by the previous docker-compose.yml
+  # so the existing local database survives the switch
+  pgdata:
+    name: slapshot_club_20_pgdata
+  redisdata:
+    name: slapshot_club_redisdata
+  # node_modules live in named volumes, NOT on the bind mount. The host
+  # copies are built for macOS/arm (argon2 is native) and contain host
+  # symlinks, so they must be hidden inside the container; named volumes
+  # also persist the in-container install across restarts.
+  root_node_modules:
+  backend_node_modules:
+  frontend_node_modules:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: slapshot-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-slapshot_club}
+    ports:
+      - '${POSTGRES_PORT:-5462}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-slapshot_club}',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: slapshot-db-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_TEST_DB:-slapshot_club_test}
+    ports:
+      - '${POSTGRES_TEST_PORT:-5463}:5432'
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_TEST_DB:-slapshot_club_test}',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: slapshot-redis
+    restart: unless-stopped
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot installer. Mounts every node_modules volume so a single run
+  # populates them all, then exits. The long running services depend on it
+  # completing and skip their own install via the lockfile hash stamp.
+  deps:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      target: dev_runner
+    image: slapshot_club-dev_runner
+    container_name: slapshot-deps
+    environment:
+      INSTALL_TARGETS: 'backend frontend'
+    volumes:
+      - .:/srv
+      - root_node_modules:/srv/node_modules
+      - backend_node_modules:/srv/backend/node_modules
+      - frontend_node_modules:/srv/frontend/node_modules
+    command: ['echo', '[deps] backend + frontend install complete']
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      target: dev_runner
+    image: slapshot_club-dev_runner
+    container_name: slapshot-backend
+    restart: unless-stopped
+    working_dir: /srv/backend
+    # backend/.env is the single source of app config (bind-mounted in).
+    # .env.local is loaded second and only overrides the host-specific vars
+    # (localhost -> compose service names) for the in-Docker run.
+    env_file:
+      - backend/.env
+      - .env.local
+    ports:
+      - '${BACKEND_PORT:-4800}:4800'
+      # drizzle studio (make db-studio), started ad hoc inside the container
+      - '${DRIZZLE_STUDIO_PORT:-4983}:4983'
+    volumes:
+      - .:/srv
+      - root_node_modules:/srv/node_modules
+      - backend_node_modules:/srv/backend/node_modules
+    command: ['npm', 'run', 'dev']
+    depends_on:
+      deps:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      target: dev_runner
+    image: slapshot_club-dev_runner
+    container_name: slapshot-frontend
+    restart: unless-stopped
+    working_dir: /srv/frontend
+    # frontend/.env is bind-mounted and read by next itself; .env.local only
+    # overrides NEXT_PUBLIC_API_URL, because the next server (rewrites, SSR
+    # fetches) must reach the api by service name, not via localhost.
+    env_file:
+      - .env.local
+    ports:
+      - '${FRONTEND_PORT:-3800}:3800'
+    volumes:
+      - .:/srv
+      - root_node_modules:/srv/node_modules
+      - frontend_node_modules:/srv/frontend/node_modules
+    command: ['npm', 'run', 'dev', '--', '-H', '0.0.0.0']
+    depends_on:
+      deps:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
