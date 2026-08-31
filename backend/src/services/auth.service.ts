@@ -28,8 +28,11 @@ import { userReferrals } from '../db/schema/userReferrals.js';
 import { announcementsRepository } from '../repositories/announcements.repository.js';
 import { notify } from './notifications.service.js';
 import { enqueueSlackRegistrationNotification } from '../queues/slack.queue.js';
-
-
+import {
+  forgetRotatedRefreshToken,
+  readRotatedRefreshToken,
+  rememberRotatedRefreshToken,
+} from '../utils/refreshTokenGrace.util.js';
 
 const hashToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -47,9 +50,10 @@ export const registerUser = async (data: RegisterInput) => {
     throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
-
   let txResult: {
-    id: string; username: string; email: string;
+    id: string;
+    username: string;
+    email: string;
     role: 'user' | 'admin' | 'editor' | 'demo';
     subscriptionPlan: 'free' | 'starter' | 'pro' | 'vip';
     subscriptionActiveUntil: string | null;
@@ -179,15 +183,13 @@ export const registerUser = async (data: RegisterInput) => {
     user: {
       id: newUser.id,
       username: newUser.username,
-      email: newUser.email
+      email: newUser.email,
     },
-    referralSource: data.referralCode
-  }).catch(err => logger.error({ err }, '[Register] Failed to enqueue Slack notification'));
-
+    referralSource: data.referralCode,
+  }).catch((err) => logger.error({ err }, '[Register] Failed to enqueue Slack notification'));
 
   return newUser;
 };
-
 
 export const loginUser = async (data: LoginInput, req: Request) => {
   const user = await db.query.users.findFirst({
@@ -255,22 +257,10 @@ export const loginUser = async (data: LoginInput, req: Request) => {
   }
 };
 
-export const rotateRefreshToken = async (tokenString: string) => {
-  const hashedToken = hashToken(tokenString);
-
-  const [dbToken] = await db
-    .select()
-    .from(refreshTokens)
-    .where(eq(refreshTokens.token, hashedToken));
-
-  if (!dbToken || new Date() > dbToken.expiresAt) {
-    logger.warn({ token: hashedToken }, 'Invalid or expired refresh token rotation attempt');
-    throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
-  }
-
-  const user = await db.query.users.findFirst({
+const findSessionUser = async (userId: string) =>
+  db.query.users.findFirst({
     where: (users, { eq, and }) =>
-      and(eq(users.id, dbToken.userId), activeOnly(users, eq(users.isActive, true))),
+      and(eq(users.id, userId), activeOnly(users, eq(users.isActive, true))),
     columns: {
       id: true,
       username: true,
@@ -284,18 +274,55 @@ export const rotateRefreshToken = async (tokenString: string) => {
     },
   });
 
+type SessionUser = NonNullable<Awaited<ReturnType<typeof findSessionUser>>>;
+
+type RotatedSession = {
+  accessToken: string;
+  newRefreshToken: string;
+  user: SessionUser;
+};
+
+export const rotateRefreshToken = async (tokenString: string): Promise<RotatedSession> => {
+  const hashedToken = hashToken(tokenString);
+
+  const [claimedToken] = await db
+    .delete(refreshTokens)
+    .where(eq(refreshTokens.token, hashedToken))
+    .returning();
+
+  if (!claimedToken) {
+    const gracedSession = await readRotatedRefreshToken<RotatedSession>(hashedToken);
+
+    if (gracedSession) {
+      logger.info(
+        { userId: gracedSession.user.id },
+        'Refresh token rotation served from grace window',
+      );
+
+      return gracedSession;
+    }
+
+    logger.warn({ token: hashedToken }, 'Invalid or expired refresh token rotation attempt');
+    throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
+  }
+
+  if (new Date() > claimedToken.expiresAt) {
+    logger.warn({ token: hashedToken }, 'Invalid or expired refresh token rotation attempt');
+    throw new AppError(AuthErrors.INVALID_REFRESH_TOKEN, HttpStatusCode.UNAUTHORIZED);
+  }
+
+  const user = await findSessionUser(claimedToken.userId);
+
   if (!user) throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatusCode.NOT_FOUND);
 
   const newRefreshTokenString = generateRefreshToken();
   const hashedNewToken = hashToken(newRefreshTokenString);
 
   await db.transaction(async (tx) => {
-    await tx.delete(refreshTokens).where(eq(refreshTokens.id, dbToken.id));
-
     await tx.insert(refreshTokens).values({
       userId: user.id,
       token: hashedNewToken,
-      userAgent: dbToken.userAgent,
+      userAgent: claimedToken.userAgent,
       expiresAt: new Date(Date.now() + Number(process.env.REFRESH_TOKEN_EXPIRES_IN_MS)),
     });
 
@@ -312,7 +339,15 @@ export const rotateRefreshToken = async (tokenString: string) => {
     verifiedAt: !!user.verifiedAt,
   });
 
-  return { accessToken, newRefreshToken: newRefreshTokenString, user };
+  const session: RotatedSession = {
+    accessToken,
+    newRefreshToken: newRefreshTokenString,
+    user,
+  };
+
+  await rememberRotatedRefreshToken(hashedToken, hashedNewToken, session);
+
+  return session;
 };
 
 export const createSession = async (userId: string, userAgent: string): Promise<string> => {
@@ -355,6 +390,8 @@ export const createSession = async (userId: string, userAgent: string): Promise<
 
 export const logoutUser = async (rawRefreshToken: string) => {
   const hashedToken = hashToken(rawRefreshToken);
+
+  await forgetRotatedRefreshToken(hashedToken);
 
   return await db.transaction(async (tx) => {
     const [deletedToken] = await tx

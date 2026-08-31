@@ -23,6 +23,7 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(32, 'Refresh secret must be at least 32 characters long'),
   JWT_ACCESS_EXPIRES_IN: z.string(),
   COOKIE_ACCESS_MAX_AGE: z.coerce.number(),
+  COOKIE_REFRESH_MAX_AGE: z.coerce.number(),
   REFRESH_TOKEN_EXPIRES_IN_MS: z.coerce.number(),
   COOKIE_DOMAIN: z.string().optional(),
 
@@ -45,7 +46,6 @@ const envSchema = z.object({
   // Internal APIs
   SLAPSHOTAI_TOKEN: z.string().optional(),
 });
-
 
 // Validation process
 const envServer = envSchema.safeParse(process.env);

@@ -355,7 +355,9 @@
         "too_long": "Jméno je příliš dlouhé (max. 20)",
         "invalid_chars": "Jen písmena, čísla, . a _"
       }
-    }
+    },
+    "session_expired_title": "Relace vypršela",
+    "session_expired_description": "Z bezpečnostních důvodů tě musíme odhlásit. Přihlas se znovu."
   },
   "Onboarding": {
     "title": "Vítej v týmu! 🏒",

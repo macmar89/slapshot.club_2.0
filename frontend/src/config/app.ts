@@ -1,5 +1,13 @@
 export const APP_CONFIG = {
-  PUBLIC_PATHS: ['/', '/register', '/verify-email', '/reset-password'],
+  PUBLIC_PATHS: [
+    '/',
+    '/register',
+    '/verify',
+    '/reset-password',
+    '/forgot-password',
+    '/terms',
+    '/privacy-policy',
+  ],
   NOTIFICATIONS: {
     PAGE_SIZE: 20,
   },

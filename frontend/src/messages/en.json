@@ -358,7 +358,9 @@
         "too_long": "Username is too long (max. 20)",
         "invalid_chars": "Only letters, numbers, . and _"
       }
-    }
+    },
+    "session_expired_title": "Session expired",
+    "session_expired_description": "We had to sign you out for security reasons. Please log in again."
   },
   "Onboarding": {
     "title": "Welcome to the Team! 🏒",

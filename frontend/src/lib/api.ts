@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ROUTES } from './api-routes';
+import { handleSessionExpired } from './session';
 
 interface FailedRequest {
   resolve: (token: string | null) => void;
@@ -61,6 +62,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError: any) {
         processQueue(refreshError, null);
+        await handleSessionExpired();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
