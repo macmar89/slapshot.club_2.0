@@ -1,6 +1,7 @@
 import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../config/redis.config.js';
 import { logger } from '../utils/logger.js';
+import { describeError } from '../utils/errorDetails.js';
 import { competitionRepository } from '../repositories/competitions.repository.js';
 import { matchesQueue } from '../queues/matches.queue.js';
 import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
@@ -89,13 +90,13 @@ export const matchesWorker = new Worker(
 );
 
 matchesWorker.on('failed', (job: Job | undefined, err: Error) => {
-  logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Matches queue job failed');
+  logger.error({ jobId: job?.id, name: job?.name, error: describeError(err) }, 'Matches queue job failed');
 
   if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
     enqueueSlackJobFailureNotification({
       queueName: 'matches-queue',
       jobName: job.name,
-      error: err.message,
+      error: describeError(err),
       attempts: job.attemptsMade
     }).catch(slackErr => logger.error({ slackErr }, '[MATCHES WORKER] Failed to enqueue Slack failure notification'));
   }

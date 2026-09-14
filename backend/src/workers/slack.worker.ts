@@ -1,6 +1,7 @@
 import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../config/redis.config.js';
 import { logger } from '../utils/logger.js';
+import { describeError } from '../utils/errorDetails.js';
 import { slackService } from '../services/slack.service.js';
 
 export const slackWorker = new Worker(
@@ -78,14 +79,14 @@ slackWorker.on('completed', (job: Job) => {
 });
 
 slackWorker.on('failed', (job: Job | undefined, err: Error) => {
-  logger.error({ jobId: job?.id, name: job?.name, error: err.message }, 'Slack queue job failed');
+  logger.error({ jobId: job?.id, name: job?.name, error: describeError(err) }, 'Slack queue job failed');
 
   // If slack worker itself fails repeatedly, send DIRECTLY to Slack as a fallback
   if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
     slackService.notifyJobFailure({
       queueName: 'slack-queue',
       jobName: job.name,
-      error: err.message,
+      error: describeError(err),
       attempts: job.attemptsMade
     }).catch(slackErr => logger.error({ slackErr }, '[SLACK WORKER] Fallback direct notification failed'));
   }

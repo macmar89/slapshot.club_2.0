@@ -1,6 +1,7 @@
 import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../../config/redis.config.js';
 import { logger } from '../../utils/logger.js';
+import { describeError } from '../../utils/errorDetails.js';
 import { enqueueSlackJobFailureNotification } from '../../queues/slack.queue.js';
 import {
   CLOSE_MONTHLY_PERIODS_JOB,
@@ -56,7 +57,7 @@ monthlyLeaderboardWorker.on('completed', (job: Job) => {
 
 monthlyLeaderboardWorker.on('failed', (job: Job | undefined, err: Error) => {
   logger.error(
-    { jobId: job?.id, name: job?.name, error: err.message },
+    { jobId: job?.id, name: job?.name, error: describeError(err) },
     'Monthly leaderboard queue job failed',
   );
 
@@ -64,7 +65,7 @@ monthlyLeaderboardWorker.on('failed', (job: Job | undefined, err: Error) => {
     enqueueSlackJobFailureNotification({
       queueName: MONTHLY_LEADERBOARD_QUEUE_NAME,
       jobName: job.name,
-      error: err.message,
+      error: describeError(err),
       attempts: job.attemptsMade,
     }).catch((slackErr) =>
       logger.error(

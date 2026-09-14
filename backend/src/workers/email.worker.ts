@@ -3,6 +3,7 @@ import { redisConfig } from '../config/redis.config.js';
 import { renderVerificationEmail } from '../templates/emails/renderVerifyUserEmail.js';
 import { renderForgotPasswordEmail } from '../templates/emails/renderResetPasswordEmail.js';
 import { logger } from '../utils/logger.js';
+import { describeError } from '../utils/errorDetails.js';
 import { emailService } from '../services/email.service.js';
 import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
 
@@ -67,13 +68,13 @@ emailWorker.on('completed', (job: Job) => {
 });
 
 emailWorker.on('failed', (job: Job | undefined, err: Error) => {
-  logger.error({ jobId: job?.id, error: err.message }, 'Email job failed');
+  logger.error({ jobId: job?.id, error: describeError(err) }, 'Email job failed');
 
   if (job && job.attemptsMade >= (job.opts.attempts || 1)) {
     enqueueSlackJobFailureNotification({
       queueName: 'email-queue',
       jobName: job.name,
-      error: err.message,
+      error: describeError(err),
       attempts: job.attemptsMade
     }).catch(slackErr => logger.error({ slackErr }, '[EMAIL WORKER] Failed to enqueue Slack failure notification'));
   }
