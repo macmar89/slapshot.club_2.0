@@ -74,6 +74,7 @@ export const users = pgTable(
         pointsAwarded: { inApp: true, push: true },
         groupInvites: { inApp: true, push: true },
         marketingNews: { inApp: true, push: false },
+        dailyTipsReminder: { email: true },
       }),
 
     ...withUpdatesFields,

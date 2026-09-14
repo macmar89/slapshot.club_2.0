@@ -14,6 +14,7 @@ import { buildPaginatedResponse } from '../../utils/pagination.js';
 import type { Request, Response, NextFunction } from 'express';
 import { type AuditCtx } from '../../services/audit.service.js';
 import { syncFutureMatches } from '../../services/matches/matchesSync.service.js';
+import { recalculateAllPlayoffSeries } from '../../services/matches/playoff.service.js';
 
 export const getAllMatchesHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -127,9 +128,9 @@ export const recalculateMatchHandler = catchAsync(async (req: Request, res: Resp
 });
 
 export const syncMatchesHandler = catchAsync(async (req: Request, res: Response) => {
-  const { apiSportId, daysAhead } = req.query as any;
+  const { apiSportId, daysAhead, seasonYear } = req.query as any;
 
-  const result = await syncFutureMatches(Number(apiSportId), Number(daysAhead));
+  const result = await syncFutureMatches(Number(apiSportId), Number(daysAhead), seasonYear ? Number(seasonYear) : undefined);
 
   if (!result.success) {
     return res.status(HttpStatusCode.BAD_REQUEST).json({
@@ -141,5 +142,23 @@ export const syncMatchesHandler = catchAsync(async (req: Request, res: Response)
   return res.status(HttpStatusCode.OK).json({
     status: 'success',
     data: result.data,
+  });
+});
+
+export const recalculatePlayoffSeriesHandler = catchAsync(async (req: Request, res: Response) => {
+  const { apiSportId, seasonYear } = req.body;
+
+  const result = await recalculateAllPlayoffSeries(String(apiSportId), Number(seasonYear));
+
+  if (!result.success) {
+    return res.status(HttpStatusCode.BAD_REQUEST).json({
+      status: 'error',
+      message: result.message,
+    });
+  }
+
+  return res.status(HttpStatusCode.OK).json({
+    status: 'success',
+    data: result.message,
   });
 });

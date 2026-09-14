@@ -11,7 +11,7 @@ import { useSWRConfig } from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
 import { useAppParams } from '@/hooks/use-app-params';
 
-export function GroupJoinForm() {
+export function GroupJoinForm({ onSuccess }: { onSuccess?: () => void } = {}) {
   const t = useTranslations('Groups');
   const router = useRouter();
   const { slug } = useAppParams(['slug']);
@@ -58,6 +58,7 @@ export function GroupJoinForm() {
 
         await mutate(API_ROUTES.GROUPS.USER_GROUPS_BY_COMPETITION_SLUG(slug));
         router.refresh();
+        onSuccess?.();
       } else {
         toast.error(res.error ? t(`errors.${res.error}`) : t('errors.unexpected'));
       }

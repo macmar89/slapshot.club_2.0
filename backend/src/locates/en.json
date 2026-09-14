@@ -13,6 +13,13 @@
       "message": "Looks like you lost the puck (or your password) somewhere in the corner of the rink. No worries, we'll get you a quick reset so you can score again in the next shift.",
       "button": "Set new password",
       "footer": "Don't get benched! <br> SLAPSHOT CLUB • 2026"
+    },
+    "daily_missing_tips": {
+      "subject": "🏒 You have unsubmitted picks!",
+      "title": "Daily reminder",
+      "message": "You have {missingTipsCount} unsubmitted picks for matches in the next 24 hours. Don't forget to submit your picks before the matches start!",
+      "button": "Submit your picks",
+      "footer": "See you in the arena! <br> SLAPSHOT CLUB • 2026"
     }
   }
 }

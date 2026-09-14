@@ -1,7 +1,7 @@
 import type { CreatePredictionInput } from '../shared/constants/schema/prediction.schema.js';
 import { db } from '../db/index.js';
 import { eq, sql, and, ilike } from 'drizzle-orm';
-import { matches, predictions, users } from '../db/schema/index.js';
+import { matches, predictions, users, groupMembers } from '../db/schema/index.js';
 import { AppError } from '../utils/appError.js';
 import { MatchMessages } from '../shared/constants/messages/matches.messages.js';
 import { logger } from '../utils/logger.js';
@@ -172,6 +172,119 @@ export const getMatchPredictions = async (
   const result = await db.query.predictions.findMany({
     where: (predictions, { and, eq, exists }) => {
       const conditions = [eq(predictions.matchId, matchId)];
+
+      if (search) {
+        conditions.push(
+          exists(
+            db
+              .select()
+              .from(users)
+              .where(and(eq(users.id, predictions.userId), ilike(users.username, `%${search}%`))),
+          ),
+        );
+      }
+
+      return and(...conditions);
+    },
+    limit: limit,
+    offset: offset,
+    columns: {
+      id: true,
+      homeGoals: true,
+      awayGoals: true,
+      points: true,
+      createdAt: true,
+    },
+    with: {
+      user: {
+        columns: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+    orderBy: (predictions, { asc, desc }) => [desc(predictions.points), asc(predictions.createdAt)],
+  });
+
+  return {
+    data: result.map((prediction: any) => ({
+      id: prediction.id,
+      homeGoals: prediction.homeGoals,
+      awayGoals: prediction.awayGoals,
+      points: prediction.points,
+      userId: prediction.user?.id,
+      username: prediction.user?.username,
+      createdAt: prediction.createdAt,
+    })),
+    pagination,
+    meta: { message: '', isLocked: false, matchStatus: match.status },
+  };
+};
+
+export const getGroupMatchPredictions = async (
+  groupId: string,
+  matchId: string,
+  { page, limit, search }: { page: number; limit: number; search?: string },
+  isFreeUser: boolean,
+) => {
+  const offset = (page - 1) * limit;
+
+  const match = await db.query.matches.findFirst({
+    columns: {
+      id: true,
+      status: true,
+    },
+    where: eq(matches.id, matchId),
+  });
+
+  if (!match) {
+    throw new AppError(MatchMessages.MATCH_NOT_FOUND, 404);
+  }
+
+  const totalCountResult = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(predictions)
+    .innerJoin(groupMembers, eq(groupMembers.userId, predictions.userId))
+    .where(
+      and(
+        eq(predictions.matchId, matchId),
+        eq(groupMembers.groupId, groupId)
+      )
+    );
+
+  const totalCount = totalCountResult[0]?.count ? Number(totalCountResult[0]?.count) : 0;
+
+  const pagination = {
+    total: totalCount,
+    page,
+    limit,
+    totalPages: Math.ceil(totalCount / limit),
+  };
+
+  if (!(match.status === 'live' || match.status === 'finished')) {
+    return {
+      data: [],
+      pagination,
+      meta: { message: MatchMessages.MATCH_NOT_STARTED, isLocked: true, matchStatus: match.status },
+    };
+  }
+
+  const result = await db.query.predictions.findMany({
+    where: (predictions, { and, eq, exists }) => {
+      const conditions = [
+        eq(predictions.matchId, matchId),
+        exists(
+          db
+            .select()
+            .from(groupMembers)
+            .where(
+              and(
+                eq(groupMembers.groupId, groupId),
+                eq(groupMembers.userId, predictions.userId)
+              )
+            )
+        )
+      ];
 
       if (search) {
         conditions.push(

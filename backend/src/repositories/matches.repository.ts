@@ -1,6 +1,6 @@
 import { db } from '../db/index.js';
-import { matches } from '../db/schema/index.js';
-import { and, eq, gte, lte, isNotNull, isNull, asc, desc, sql, or } from 'drizzle-orm';
+import { matches, competitions } from '../db/schema/index.js';
+import { and, eq, gte, lte, isNotNull, isNull, asc, desc, sql, or, ne, exists } from 'drizzle-orm';
 
 export const matchesRepository = {
   async getAdminMatches(limit: number, offset: number, sort: any, filters: any) {
@@ -77,13 +77,25 @@ export const matchesRepository = {
 
     return await db.query.matches.findMany({
       where: (table, { or, and, eq, ne, gte }) =>
-        or(
-          eq(table.status, 'live'),
-          and(
-            ne(table.status, 'finished'),
-            ne(table.status, 'cancelled'),
-            gte(table.date, fourHoursAgo.toISOString()),
-            sql`${table.date} <= now()`,
+        and(
+          or(
+            eq(table.status, 'live'),
+            and(
+              ne(table.status, 'finished'),
+              ne(table.status, 'cancelled'),
+              gte(table.date, fourHoursAgo.toISOString()),
+              sql`${table.date} <= now()`,
+            ),
+          ),
+          exists(
+            db.select()
+              .from(competitions)
+              .where(
+                and(
+                  eq(competitions.id, table.competitionId),
+                  eq(competitions.isSyncEnabled, true),
+                ),
+              ),
           ),
         ),
       with: {

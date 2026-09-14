@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Trophy, Users, PencilLine } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { API_ROUTES } from '@/lib/api-routes';
 import type { Match } from '@/features/competitions/matches/matches.types';
@@ -19,7 +19,9 @@ import { ErrorView } from '@/components/common/error-view';
 
 export const MatchInfoTab = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
+  const groupSlug = searchParams.get('groupSlug');
 
   const t = useTranslations('Dashboard.matches');
   const locale = useLocale();
@@ -29,7 +31,11 @@ export const MatchInfoTab = () => {
   const { data, mutate, isLoading, error } = useSWR<{
     match: Match;
     scores: Record<string, number>;
-  }>(API_ROUTES.MATCHES.DETAIL.INFO(id));
+  }>(
+    groupSlug
+      ? API_ROUTES.GROUPS.MATCHES.DETAIL.INFO(groupSlug, id)
+      : API_ROUTES.MATCHES.DETAIL.INFO(id),
+  );
 
   return (
     <DataLoader
@@ -100,6 +106,11 @@ export const MatchInfoTab = () => {
                       <span className="text-warning mb-1 text-[0.65rem] font-black tracking-[0.2em] uppercase">
                         {match.roundLabel || match.groupName}
                       </span>
+                      {match.stageType === 'playoffs' && match.seriesState && (
+                        <span className="text-warning mb-1 text-[0.65rem] font-black tracking-[0.2em] uppercase">
+                          {t('current_series_state', { state: match.seriesState })}
+                        </span>
+                      )}
                       <span className="text-xs font-bold text-white/80">
                         {matchDate.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} •{' '}
                         {matchDate.toLocaleTimeString(locale, {

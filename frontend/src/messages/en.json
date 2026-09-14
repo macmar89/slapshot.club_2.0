@@ -171,7 +171,8 @@
         "AOT": "FT (OT)",
         "AP": "FT (SO)"
       },
-      "last_chance": "Last chance"
+      "last_chance": "Last chance",
+      "current_series_state": "Current series state: {state}"
     },
     "leaderboard": {
       "title": "Leaderboard",
@@ -483,6 +484,7 @@
     "mobile_management_hint": "Use desktop version for member management",
     "tabs": {
       "ranking": "Ranking",
+      "matches": "Matches",
       "cabin": "Cabin",
       "roster": "Roster",
       "settings": "Settings"
@@ -679,7 +681,12 @@
       "matchEnd": "Match End & Evaluation",
       "leaderboardUpdate": "Leaderboard Update",
       "status_updated": "Settings updated",
-      "coming_soon": "Notification settings will be available soon."
+      "coming_soon": "Notification settings will be available soon.",
+      "dailyTipsEmail": {
+        "title": "Email Reminders",
+        "description": "Get an email when you have un-predicted matches for the next 24 hours.",
+        "toggle_label": "Daily reminder by email"
+      }
     },
     "username_section": "Name",
     "username_description": "Change your public name in the leaderboards.",
@@ -1107,6 +1114,7 @@
       "no_matches_found": "No matches found",
       "sync": {
         "api_sport_id": "API Sport ID",
+        "season_year": "Season Year",
         "days_ahead": "Days Ahead",
         "submit": "Sync Matches"
       },
@@ -1176,6 +1184,7 @@
         "match_not_found": "Match not found",
         "recalculate_points": "Recalculate points",
         "undo_scoring": "Undo scoring",
+        "swap_teams": "Swap teams",
         "api_section": "API & Stage",
         "stages": {
           "regular_season": "Regular Season",

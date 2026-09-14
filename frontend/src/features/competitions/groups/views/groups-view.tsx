@@ -12,7 +12,8 @@ import { CreateGroupForm } from '@/features/competitions/groups/components/creat
 import { GroupList } from '@/features/competitions/groups/components/group-list';
 import { GroupJoinCard } from '@/features/competitions/groups/components/group-join-card';
 import type { UserGroupsResponse } from '@/features/competitions/groups/group.types';
-import { GroupsSkeleton } from '../components/groups-skeleton';
+import { GroupsSkeleton } from '@/features/competitions/groups/components/groups-skeleton';
+import { JoinLeagueModal } from '@/features/competitions/groups/components/join-league-modal';
 
 export const GroupsView = () => {
   const t = useTranslations('Groups');
@@ -43,12 +44,12 @@ export const GroupsView = () => {
             description={t('description')}
             hideDescriptionOnMobile
           >
-            <div className="flex w-full flex-col items-start gap-4 sm:flex-row md:w-auto">
-              <div className="flex w-full items-center gap-4 sm:w-auto">
+            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-4">
+              <div className="flex-1 sm:flex-initial [&>button]:w-full">
                 <CreateGroupForm />
-                {/* <div className="md:hidden">
-              <JoinLeagueModal />
-            </div> */}
+              </div>
+              <div className="flex-1 sm:flex-initial md:hidden [&>button]:w-full">
+                <JoinLeagueModal />
               </div>
             </div>
           </PageHeader>

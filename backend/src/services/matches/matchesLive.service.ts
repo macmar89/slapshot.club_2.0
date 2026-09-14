@@ -3,6 +3,7 @@ import type { ApiHockeyResponse, ApiHockeyMatch } from '../../types/hockeyApiRes
 import { matchesRepository } from '../../repositories/matches.repository.js';
 import { matchesQueue } from '../../queues/matches.queue.js';
 import { logger } from '../../utils/logger.js';
+import { updatePlayoffSeries } from './playoff.service.js';
 
 export const handleLiveUpdates = async () => {
   const apiKey = process.env.SPORT_API_KEY;
@@ -119,6 +120,7 @@ export const processMatchUpdate = async (localMatch: any, apiMatch: ApiHockeyMat
 
     if (internalStatus === 'finished' && statusChanged) {
       await matchesQueue.add('evaluatePredictions', { matchId: localMatch.id });
+      await updatePlayoffSeries(localMatch.id);
     }
   }
 };

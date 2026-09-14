@@ -1,5 +1,5 @@
 import { eq, isNull, and, gte, asc, count, lt, sql } from 'drizzle-orm';
-import { matches, predictions } from '../../db/schema/index.js';
+import { matches, predictions, groupMembers } from '../../db/schema/index.js';
 import type { AppLocale } from '../../types/global.types.js';
 import { db } from '../../db/index.js';
 import { CompetitionErrors } from '../../shared/constants/errors/competition.errors.js';
@@ -229,6 +229,141 @@ export const getCompetitionMatches = async (
   return matchesResult.map((match) => mapMatchToPreview(match, userId));
 };
 
+export const getGroupMatches = async (
+  groupId: string,
+  date: string,
+  userId: string,
+  locale: AppLocale,
+  tz: string,
+) => {
+  const group = await db.query.groups.findFirst({
+    columns: {
+      competitionId: true,
+    },
+    where: (groups) => eq(groups.id, groupId),
+  });
+
+  if (!group) {
+    throw new Error(CompetitionErrors.COMPETITION_NOT_FOUND);
+  }
+
+  const matchesResult = await db.query.matches.findMany({
+    where: (matches) =>
+      and(
+        eq(matches.competitionId, group.competitionId),
+        sql`DATE(${matches.date} AT TIME ZONE 'UTC' AT TIME ZONE ${tz}) = ${date}`,
+      ),
+    columns: {
+      competitionId: false,
+      homeTeamId: false,
+      awayTeamId: false,
+      apiHockeyId: false,
+      createdAt: false,
+      updatedAt: false,
+      deletedAt: false,
+    },
+    with: {
+      homeTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      awayTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      predictions: {
+        columns: {
+          id: true,
+          homeGoals: true,
+          awayGoals: true,
+          status: true,
+          points: true,
+        },
+        where: (p, { eq }) => eq(p.userId, userId),
+      },
+    },
+    orderBy: [asc(matches.date), asc(matches.apiHockeyId)],
+  });
+
+  if (matchesResult.length === 0) {
+    return [];
+  }
+
+  const matchIds = matchesResult.map((m) => m.id);
+
+  // Fetch group-scoped prediction stats
+  const groupPredictionStats = await db
+    .select({
+      matchId: predictions.matchId,
+      homeGoals: predictions.homeGoals,
+      awayGoals: predictions.awayGoals,
+    })
+    .from(predictions)
+    .innerJoin(groupMembers, eq(groupMembers.userId, predictions.userId))
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        sql`${predictions.matchId} IN (${sql.join(matchIds.map(id => sql`${id}`), sql`, `)})`
+      ),
+    );
+
+  const matchCounts = new Map<string, { home: number; away: number }>();
+  for (const p of groupPredictionStats) {
+    if (!matchCounts.has(p.matchId)) matchCounts.set(p.matchId, { home: 0, away: 0 });
+    const stats = matchCounts.get(p.matchId)!;
+    if (p.homeGoals > p.awayGoals) stats.home++;
+    else if (p.awayGoals > p.homeGoals) stats.away++;
+  }
+
+  return matchesResult.map((match) => {
+    const preview = mapMatchToPreview(match, userId);
+    const groupStats = matchCounts.get(match.id);
+    
+    // Override the globally predicted counts with group-scoped ones
+    if (groupStats) {
+      preview.homePredictedCount = groupStats.home;
+      preview.awayPredictedCount = groupStats.away;
+    } else {
+      preview.homePredictedCount = 0;
+      preview.awayPredictedCount = 0;
+    }
+    
+    return preview;
+  });
+};
+
 export const getMatchInfoById = async (matchId: string, locale: AppLocale, userId: string) => {
   const existMatch = await db.query.matches.findFirst({
     columns: {
@@ -321,6 +456,126 @@ export const getMatchInfoById = async (matchId: string, locale: AppLocale, userI
 
   return {
     match: mapMatchToPreview(match!, userId),
+    scores,
+  };
+};
+
+export const getGroupMatchInfoById = async (
+  groupId: string,
+  matchId: string,
+  locale: AppLocale,
+  userId: string,
+) => {
+  const existMatch = await db.query.matches.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (matches) => eq(matches.id, matchId),
+  });
+
+  if (!existMatch) {
+    throw new Error(MatchMessages.MATCH_NOT_FOUND);
+  }
+
+  const match = await db.query.matches.findFirst({
+    where: (matches) => eq(matches.id, matchId),
+    columns: {
+      competitionId: false,
+      homeTeamId: false,
+      awayTeamId: false,
+      apiHockeyId: false,
+      createdAt: false,
+      updatedAt: false,
+      deletedAt: false,
+    },
+    with: {
+      homeTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      awayTeam: {
+        columns: {
+          id: true,
+        },
+        with: {
+          locales: {
+            columns: {
+              name: true,
+              shortName: true,
+            },
+            where: (l, { eq }) => eq(l.locale, locale),
+            limit: 1,
+          },
+          logo: {
+            columns: {
+              url: true,
+            },
+          },
+        },
+      },
+      predictions: {
+        columns: {
+          id: true,
+          homeGoals: true,
+          awayGoals: true,
+          status: true,
+          points: true,
+        },
+        where: (p, { eq }) => eq(p.userId, userId),
+      },
+    },
+  });
+
+  // Calculate group-scoped prediction stats
+  const groupPredictionStats = await db
+    .select({
+      homeGoals: predictions.homeGoals,
+      awayGoals: predictions.awayGoals,
+    })
+    .from(predictions)
+    .innerJoin(groupMembers, eq(groupMembers.userId, predictions.userId))
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(predictions.matchId, matchId)
+      ),
+    );
+
+  const scores: Record<string, number> = {};
+  let homeCount = 0;
+  let awayCount = 0;
+
+  for (const p of groupPredictionStats) {
+    if (p.homeGoals > p.awayGoals) homeCount++;
+    else if (p.awayGoals > p.homeGoals) awayCount++;
+
+    const scoreKey = `${p.homeGoals}:${p.awayGoals}`;
+    if (!scores[scoreKey]) scores[scoreKey] = 0;
+    scores[scoreKey]++;
+  }
+
+  const preview = mapMatchToPreview(match!, userId);
+  preview.homePredictedCount = homeCount;
+  preview.awayPredictedCount = awayCount;
+
+  return {
+    match: preview,
     scores,
   };
 };

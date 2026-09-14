@@ -11,6 +11,7 @@ import { DataLoader } from '@/components/common/data-loader';
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/layout/page-header';
 import { AdminMatchSyncForm } from '../components/admin-match-sync-form';
+import { AdminPlayoffRecalculateForm } from '../components/admin-playoff-recalculate-form';
 
 export const AdminMatchesView = () => {
   const t = useTranslations('Admin.Matches');
@@ -25,6 +26,7 @@ export const AdminMatchesView = () => {
       <PageHeader title={t('title')} />
 
       <AdminMatchSyncForm />
+      <AdminPlayoffRecalculateForm />
 
       <IceGlassCard className="relative overflow-hidden border-white/10 p-6 shadow-2xl md:p-8">
         <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />

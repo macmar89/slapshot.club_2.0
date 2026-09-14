@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "notification_settings" SET DEFAULT '{"matchFinished":{"inApp":true,"push":true},"pointsAwarded":{"inApp":true,"push":true},"groupInvites":{"inApp":true,"push":true},"marketingNews":{"inApp":true,"push":false},"dailyTipsReminder":{"email":true}}'::jsonb;

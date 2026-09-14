@@ -66,6 +66,9 @@ export const updateMatchBodySchema = z.object({
   apiHockeyId: z.string().optional(),
   apiHockeyStatus: z.string().optional(),
   isChecked: z.boolean().optional(),
+  date: z.string().optional(),
+  homeTeamId: z.string().length(24).optional(),
+  awayTeamId: z.string().length(24).optional(),
 });
 
 export const updateMatchSchema = z.object({
@@ -83,3 +86,10 @@ export const syncMatchesSchema = z.object({
 });
 
 export type UpdateMatchBodyInput = z.infer<typeof updateMatchBodySchema>;
+
+export const recalculatePlayoffsSchema = z.object({
+  body: z.object({
+    apiSportId: z.preprocess((val) => Number(val), z.number().int().positive()),
+    seasonYear: z.preprocess((val) => Number(val), z.number().int().positive()),
+  }),
+});

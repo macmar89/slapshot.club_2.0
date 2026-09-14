@@ -21,4 +21,7 @@ export type UserNotificationSettings = {
   pointsAwarded: NotificationPreference;
   groupInvites: NotificationPreference;
   marketingNews: NotificationPreference;
+  dailyTipsReminder: {
+    email: boolean;
+  };
 };

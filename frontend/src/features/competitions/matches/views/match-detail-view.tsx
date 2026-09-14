@@ -19,6 +19,7 @@ export const MatchDetailView = () => {
   const t = useTranslations('Dashboard.matches');
 
   const activeTab = searchParams.get('tab') || 'info';
+  const groupSlug = searchParams.get('groupSlug');
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -37,7 +38,10 @@ export const MatchDetailView = () => {
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
-        <BackLink href={`/${slug}/matches`} label={t('back_to_matches')} />
+        <BackLink
+          href={groupSlug ? `/${slug}/groups/${groupSlug}?tab=matches` : `/${slug}/matches`}
+          label={t('back_to_matches')}
+        />
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="info">{t('info_tab')}</TabsTrigger>
           <TabsTrigger value="predictions">{t('predictions_tab')}</TabsTrigger>

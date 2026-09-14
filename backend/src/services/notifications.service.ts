@@ -1,15 +1,15 @@
 import { notificationsRepository } from '../repositories/notifications.repository.js';
+import { userRepository } from '../repositories/user.repository.js';
+import { emailQueue } from '../queues/email.queue.js';
+import { getNotificationSettings } from '../features/notifications/index.js';
 import { logger } from '../utils/logger.js';
-import {
-  NOTIFICATION_KEYS,
-} from '../constants/notifications.constants.js';
-import {
-  NOTIFICATION_CONFIG,
-} from '../constants/notifications.config.js';
+import { NOTIFICATION_KEYS } from '../constants/notifications.constants.js';
+import { NOTIFICATION_CONFIG } from '../constants/notifications.config.js';
 import type {
   NotifyParams,
   PushNotificationData,
   CreateNotificationData,
+  NotificationType,
 } from '../types/notifications.types.js';
 import type { Response } from 'express';
 
@@ -30,25 +30,46 @@ export const sendSSEEvent = (userId: string, eventType: string, data: any) => {
   }
 };
 
-
 // ─── Push notification stub ───────────────────────────────────────────────────
 // TODO: When push tokens are stored in the schema (e.g. user.pushToken),
 // fetch the token here and send via your push provider (FCM / APNs / Expo).
 
-const sendPushNotification = async (
-  userId: string,
-  data: PushNotificationData,
-): Promise<void> => {
+const sendPushNotification = async (userId: string, data: PushNotificationData): Promise<void> => {
   logger.info({ userId, titleKey: data.titleKey }, '[Push] queued (stub)');
 };
 
-// ─── Email notification stub ──────────────────────────────────────────────────
-// TODO: Connect to email.service.ts when ready.
+// ─── Email notification ────────────────────────────────────────────────────────
+// Only DAILY_TIPS_REMINDER is wired to real sending for now — every other type
+// stays a stub until they get their own template + settings key.
 
 const sendEmailNotification = async (
   userId: string,
+  type: NotificationType,
   data: PushNotificationData,
 ): Promise<void> => {
+  if (type === 'DAILY_TIPS_REMINDER') {
+    const settings = await getNotificationSettings(userId);
+    if (!settings.dailyTipsReminder.email) {
+      return;
+    }
+
+    const user = await userRepository.getEmailAndLocaleById(userId);
+    if (!user) {
+      logger.warn({ userId }, '[Email] Skipping daily tips reminder — user not found');
+      return;
+    }
+
+    await emailQueue.add('daily-missing-tips-email', {
+      type: 'daily-missing-tips-email',
+      data: {
+        to: user.email,
+        locale: user.preferredLanguage ?? 'sk',
+        missingTipsCount: data.payload?.missingTipsCount ?? 0,
+      },
+    });
+    return;
+  }
+
   logger.info({ userId, titleKey: data.titleKey }, '[Email] queued (stub)');
 };
 
@@ -133,7 +154,7 @@ export const notify = async (params: NotifyParams): Promise<void> => {
   // ── Email (fire-and-forget) ────────────────────────────────────────────────
   if (channels.includes('email')) {
     for (const userId of recipients) {
-      sendEmailNotification(userId, pushData).catch((err) =>
+      sendEmailNotification(userId, type, pushData).catch((err) =>
         logger.error({ err, userId, type }, '[Notify] Failed to send email notification'),
       );
     }

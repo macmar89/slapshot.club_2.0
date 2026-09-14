@@ -45,4 +45,11 @@ export const userRepository = {
       where: (u, { eq, and }) => and(eq(u.id, userId), notDeleted(u)),
     });
   },
+
+  async getEmailAndLocaleById(userId: string) {
+    return await dbDefault.query.users.findFirst({
+      columns: { email: true, preferredLanguage: true },
+      where: (u, { eq, and }) => and(eq(u.id, userId), notDeleted(u)),
+    });
+  },
 };

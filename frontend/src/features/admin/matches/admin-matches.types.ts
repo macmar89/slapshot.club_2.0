@@ -3,8 +3,10 @@ export interface AdminMatchDto {
   competitionName: string;
   date: string;
   homeTeam: string;
+  homeTeamId: string;
   homeLogoUrl?: string | null;
   awayTeam: string;
+  awayTeamId: string;
   awayLogoUrl?: string | null;
   status: 'scheduled' | 'live' | 'finished' | 'cancelled';
   resultHomeScore: number | null;

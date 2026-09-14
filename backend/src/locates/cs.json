@@ -13,6 +13,13 @@
       "message": "Vypadá to, že se ti někde v rohu kluziště ztratil puk (nebo tvé heslo). Žádné obavy, zařídíme ti rychlý reset, abys mohl v dalším střídání opět skórovat.",
       "button": "Nastavit nové heslo",
       "footer": "Nenech se posadit na střídačku! <br> SLAPSHOT CLUB • 2026"
+    },
+    "daily_missing_tips": {
+      "subject": "🏒 Máš netipované zápasy!",
+      "title": "Denní připomínka",
+      "message": "Máš {missingTipsCount} netipovaných zápasů na nejbližších 24 hodin. Nezapomeň poslat své tipy, než zápasy začnou!",
+      "button": "Tipovat zápasy",
+      "footer": "Uvidíme se v aréně! <br> SLAPSHOT CLUB • 2026"
     }
   }
 }

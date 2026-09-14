@@ -6,6 +6,8 @@ import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
 import { Trophy, Calendar, Save, RefreshCw, Undo2 } from 'lucide-react';
 import { ScoreInput } from '@/features/competitions/predictions/components/score-input';
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 
 interface ScoreEditorProps {
   homeScore: string;
@@ -20,13 +22,16 @@ interface ScoreEditorProps {
   matchDate: string;
   status: string;
   onSave: () => void;
+  onMatchDateChange?: (date: string) => void;
   onRecalculate?: () => void;
   onUndoScoring?: () => void;
   isHomeDirty?: boolean;
   isAwayDirty?: boolean;
+  isDateDirty?: boolean;
   isDirty?: boolean;
   isRanked?: boolean;
   rankedAt?: string | null;
+  onSwapTeams?: () => void;
 }
 
 export const ScoreEditor = ({
@@ -40,15 +45,18 @@ export const ScoreEditor = ({
   awayLogoUrl,
   competitionName,
   matchDate,
+  onMatchDateChange,
   status,
   onSave,
   onRecalculate,
   onUndoScoring,
   isHomeDirty = false,
   isAwayDirty = false,
+  isDateDirty = false,
   isDirty = false,
   isRanked = false,
   rankedAt,
+  onSwapTeams,
 }: ScoreEditorProps) => {
   const t = useTranslations('Admin.Matches.detail');
 
@@ -72,10 +80,23 @@ export const ScoreEditor = ({
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Calendar className="h-3 w-3 text-white/30" />
-          <span className="font-mono text-[10px] text-white/60">
-            {format(new Date(matchDate), 'dd.MM.yyyy HH:mm')}
-          </span>
+          <Calendar className={cn("h-3 w-3", isDateDirty ? "text-primary" : "text-white/30")} />
+          <input
+            type="datetime-local"
+            value={format(new Date(matchDate), "yyyy-MM-dd'T'HH:mm")}
+            onChange={(e) => {
+              if (onMatchDateChange) {
+                const newDate = new Date(e.target.value);
+                if (!isNaN(newDate.getTime())) {
+                  onMatchDateChange(newDate.toISOString());
+                }
+              }
+            }}
+            className={cn(
+              "bg-transparent border-none text-[10px] font-mono text-white/60 focus:ring-0 p-0 cursor-pointer transition-colors",
+              isDateDirty && "text-primary font-bold"
+            )}
+          />
         </div>
       </div>
 
@@ -87,10 +108,21 @@ export const ScoreEditor = ({
           isDirty={isHomeDirty}
         />
 
-        <div className="flex h-32 items-center justify-center self-center pt-8">
+        <div className="flex flex-col items-center justify-center self-center pt-8 gap-2">
           <span className="text-2xl font-black text-white/10 italic select-none md:text-4xl">
             :
           </span>
+          {onSwapTeams && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onSwapTeams}
+              className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-primary transition-all"
+              title={t('swap_teams')}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <ScoreInput

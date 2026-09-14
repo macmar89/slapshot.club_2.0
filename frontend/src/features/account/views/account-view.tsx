@@ -7,6 +7,7 @@ import { ProfileOverview } from '../components/profile-overview';
 import { UsernameForm } from '../components/username-form';
 import { EmailSection } from '../components/email-section';
 import { SecurityForm } from '../components/security-form';
+import { NotificationSettingsForm } from '../components/notification-settings-form';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useAuthStore } from '@/store/use-auth-store';
 import { UserCog, Send, Loader2 } from 'lucide-react';
@@ -25,7 +26,6 @@ export function AccountView() {
 
   const { user, setUser } = useAuthStore();
   const activeTab = searchParams.get('tab') || 'profile';
-  const isAdmin = user?.role === 'admin';
 
   const [isResending, setIsResending] = useState(false);
 
@@ -77,14 +77,12 @@ export function AccountView() {
           </div>
 
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            {isAdmin && (
-              <div className="mb-8 px-1">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
-                  <TabsTrigger value="notifications">{t('tabs.notifications')}</TabsTrigger>
-                </TabsList>
-              </div>
-            )}
+            <div className="mb-8 px-1">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
+                <TabsTrigger value="notifications">{t('tabs.notifications')}</TabsTrigger>
+              </TabsList>
+            </div>
 
             <div>
               <TabsContent value="profile">
@@ -138,13 +136,11 @@ export function AccountView() {
                 </div>
               </TabsContent>
 
-              {isAdmin && (
-                <TabsContent value="notifications">
-                  <div className="mx-auto w-full max-w-2xl text-white">
-                    <p className="text-center text-white/60">{t('notifications.coming_soon')}</p>
-                  </div>
-                </TabsContent>
-              )}
+              <TabsContent value="notifications">
+                <div className="mx-auto w-full max-w-2xl">
+                  <NotificationSettingsForm />
+                </div>
+              </TabsContent>
             </div>
           </Tabs>
         </div>

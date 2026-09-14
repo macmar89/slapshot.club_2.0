@@ -1,0 +1,1 @@
+ALTER TABLE "competitions" ADD COLUMN "is_sync_enabled" boolean DEFAULT false;

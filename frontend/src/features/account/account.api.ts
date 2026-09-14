@@ -37,6 +37,22 @@ export const updatePasswordAction = async (
   }
 };
 
+export const updateNotificationSettingsAction = async (patch: {
+  dailyTipsReminder?: { email: boolean };
+}) => {
+  try {
+    const { data } = await api.patch(API_ROUTES.USER.NOTIFICATION_SETTINGS, patch);
+    return { ok: true, data: data.data };
+  } catch (error: unknown) {
+    const errorMessage =
+      (error as any).response?.data?.message || (error as any).message || 'UNEXPECTED_ERROR';
+    return {
+      ok: false,
+      error: errorMessage,
+    };
+  }
+};
+
 export const requestEmailChangeAction = async (newEmail: string, message: string) => {
   try {
     const fullMessage = `Request for email change to: ${newEmail}\n\nReason: ${message}`;

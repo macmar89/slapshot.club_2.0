@@ -20,7 +20,7 @@ export const NOTIFICATION_CONFIG: Record<NotificationType, { channels: Notificat
   MATCH_FINISHED: { channels: ['in-app', 'push'] },
   POINTS_AWARDED: { channels: ['in-app', 'push'] },
   MATCH_REMINDER: { channels: ['in-app', 'push'] },
-  DAILY_TIPS_REMINDER: { channels: ['in-app', 'push'] },
+  DAILY_TIPS_REMINDER: { channels: ['in-app', 'push', 'email'] },
 
   // ─ Competition ───────────────────────────────────────────────────────────
   NEW_COMPETITION: { channels: ['in-app', 'push'] },

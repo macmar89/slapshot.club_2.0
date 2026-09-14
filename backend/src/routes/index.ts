@@ -13,6 +13,7 @@ import groupRoutes from './groups.routes.js';
 import notificationRoutes from './notifications.routes.js';
 import announcementRoutes from './announcements.routes.js';
 import internalRoutes from './internal.routes.js';
+import { notificationSettingsRouter } from '../features/notifications/index.js';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use('/matches', isAuth, matchRoutes);
 router.use('/notifications', isAuth, notificationRoutes);
 router.use('/prediction', isAuth, predictionRoutes);
 router.use('/user', isAuth, userRoutes);
+router.use('/user/notification-settings', isAuth, notificationSettingsRouter);
 
 router.use('/internal', internalRoutes);
 

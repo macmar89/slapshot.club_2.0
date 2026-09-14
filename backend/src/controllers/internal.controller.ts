@@ -12,6 +12,12 @@ export const getSlapshotAiStats = async (req: Request, res: Response, next: Next
 
     const responseData = await getStatsForSlapshotAi(startDate, endDate);
 
+    responseData.summary = {
+      ...responseData.summary,
+      startDate,
+      endDate,
+    };
+
     return res.status(HttpStatusCode.OK).json(responseData);
   } catch (error) {
     console.error('[SlapshotAI] Error in getSlapshotAiStats:', error);
@@ -35,6 +41,8 @@ export const getSlapshotAiWeeklyStats = async (req: Request, res: Response, next
       ...responseData.summary,
       week: reportWeek,
       year: reportYear,
+      startDate,
+      endDate,
     };
 
     return res.status(HttpStatusCode.OK).json(responseData);

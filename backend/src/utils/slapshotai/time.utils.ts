@@ -9,6 +9,7 @@ import {
   setISODay,
   getISOWeek,
   getISOWeekYear,
+  addWeeks,
 } from 'date-fns';
 import { slapshotAiConfig } from '../../config/slapshotai.config.js';
 
@@ -52,13 +53,15 @@ export const getWeeklyWindow = (queryWeek?: number, queryYear?: number) => {
   } else {
     // Current time relative calculation
     // Shift to current week's Monday 09:30
-    endDate = setISODay(endDate, 1);
+    let currentMonday = setISODay(endDate, 1);
 
-    // If current time is before this week's Monday 09:30, the report hasn't been generated yet for the previous week.
-    // So the 'most recent' report was generated last week.
-    if (isBefore(refDate, endDate)) {
-      endDate = subWeeks(endDate, 1);
+    // If current time is before this week's Monday 09:30, the "current" week hasn't started yet according to the report schedule.
+    if (isBefore(refDate, currentMonday)) {
+      currentMonday = subWeeks(currentMonday, 1);
     }
+    
+    // We want the current ongoing week, so the report window ends 1 week after the start
+    endDate = addWeeks(currentMonday, 1);
   }
 
   const startDate = subWeeks(endDate, 1);

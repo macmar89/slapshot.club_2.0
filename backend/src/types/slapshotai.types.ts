@@ -25,16 +25,22 @@ export interface SlapshotAiCompetitionData {
   newUsersCount: number;
   newCompetitionUsers: string[];
   matches: SlapshotAiMatchData[];
+  topTippers: { username: string; points: number }[];
+  bottomTippers: { username: string; points: number }[];
 }
 
 export interface SlapshotAiSummary {
   totalTips: number;
   week?: number;
   year?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface SlapshotAiMetadata {
   newAppUsers: string[];
+  newAppUsersCount: number;
+  totalAppUsersCount: number;
 }
 
 export interface SlapshotAiStatsResponse {

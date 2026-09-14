@@ -18,9 +18,10 @@ import { translateRound } from '@/features/competitions/matches/matches.utils';
 interface MatchCardProps {
   match: Match;
   refresh: () => void;
+  groupSlug?: string;
 }
 
-export function MatchCard({ match, refresh }: MatchCardProps) {
+export function MatchCard({ match, refresh, groupSlug }: MatchCardProps) {
   const t = useTranslations('Dashboard.matches');
   const tm = useTranslations('Matches.apiHockeyRound');
   const router = useRouter();
@@ -120,6 +121,11 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
         {match.roundLabel && (
           <p className="text-xs font-bold tracking-[0.2em] text-white/80 uppercase">
             {translateRound(match.roundLabel, tm)}
+          </p>
+        )}
+        {match.stageType === 'playoffs' && match.seriesState && (
+          <p className="mt-1 text-[10px] font-black tracking-[0.2em] text-warning uppercase">
+            {t('current_series_state', { state: match.seriesState })}
           </p>
         )}
       </div>
@@ -246,7 +252,14 @@ export function MatchCard({ match, refresh }: MatchCardProps) {
 
         <div className="flex items-center gap-2">
           {activeSlug && (
-            <Link href={`/${activeSlug}/matches/${match.id}?tab=info`} className="w-full sm:w-auto">
+            <Link
+              href={
+                groupSlug
+                  ? `/${activeSlug}/matches/${match.id}?tab=info&groupSlug=${groupSlug}`
+                  : `/${activeSlug}/matches/${match.id}?tab=info`
+              }
+              className="w-full sm:w-auto"
+            >
               <Button variant="outline" className="w-full sm:w-auto">
                 <Eye className="h-4 w-4 text-white" />
                 {t('view_detail')}

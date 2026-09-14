@@ -91,9 +91,10 @@ export function CreateGroupForm() {
       }}
     >
       <DialogTrigger asChild>
-        <Button color="warning" className="gap-2">
-          <Plus className="h-5 w-5" />
-          {t('create_button')}
+        <Button color="warning" className="gap-1.5 sm:gap-2">
+          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="sm:hidden">{t('create_modal.submit')}</span>
+          <span className="hidden sm:inline">{t('create_button')}</span>
         </Button>
       </DialogTrigger>
 

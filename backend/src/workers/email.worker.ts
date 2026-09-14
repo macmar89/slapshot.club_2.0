@@ -2,11 +2,11 @@ import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../config/redis.config.js';
 import { renderVerificationEmail } from '../templates/emails/renderVerifyUserEmail.js';
 import { renderForgotPasswordEmail } from '../templates/emails/renderResetPasswordEmail.js';
+import { renderDailyMissingTipsEmail } from '../templates/emails/renderDailyMissingTipsEmail.js';
 import { logger } from '../utils/logger.js';
 import { describeError } from '../utils/errorDetails.js';
 import { emailService } from '../services/email.service.js';
 import { enqueueSlackJobFailureNotification } from '../queues/slack.queue.js';
-
 
 import skTranslations from '../locates/sk.json' with { type: 'json' };
 import enTranslations from '../locates/en.json' with { type: 'json' };
@@ -50,6 +50,20 @@ export const emailWorker = new Worker(
         htmlContent,
       });
     }
+
+    if (type === 'daily-missing-tips-email') {
+      const { to, locale, missingTipsCount } = data;
+      const htmlContent = renderDailyMissingTipsEmail({ missingTipsCount, locale });
+
+      const translations = getTranslations(locale);
+      const subject = translations.Email.daily_missing_tips.subject;
+
+      await emailService.sendEmail({
+        to,
+        subject,
+        htmlContent,
+      });
+    }
   },
   {
     connection: redisConfig,
@@ -75,8 +89,9 @@ emailWorker.on('failed', (job: Job | undefined, err: Error) => {
       queueName: 'email-queue',
       jobName: job.name,
       error: describeError(err),
-      attempts: job.attemptsMade
-    }).catch(slackErr => logger.error({ slackErr }, '[EMAIL WORKER] Failed to enqueue Slack failure notification'));
+      attempts: job.attemptsMade,
+    }).catch((slackErr) =>
+      logger.error({ slackErr }, '[EMAIL WORKER] Failed to enqueue Slack failure notification'),
+    );
   }
 });
-

@@ -159,4 +159,14 @@ export const predictionsRepository = {
 
     return result[0]?.count || 0;
   },
+
+  async swapPredictionsScores(matchId: string) {
+    return await db
+      .update(predictions)
+      .set({
+        homeGoals: predictions.awayGoals,
+        awayGoals: predictions.homeGoals,
+      })
+      .where(eq(predictions.matchId, matchId));
+  },
 };

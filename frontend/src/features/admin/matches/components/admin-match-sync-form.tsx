@@ -13,13 +13,14 @@ export const AdminMatchSyncForm = () => {
   const t = useTranslations('Admin.Matches.sync');
   const [apiSportId, setApiSportId] = useState('');
   const [daysAhead, setDaysAhead] = useState('14');
+  const [seasonYear, setSeasonYear] = useState('');
   const { syncMatches, isSyncing } = useAdminMatchSync();
 
   const handleSync = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiSportId) return;
 
-    await syncMatches(Number(apiSportId), Number(daysAhead));
+    await syncMatches(Number(apiSportId), Number(daysAhead), seasonYear ? Number(seasonYear) : undefined);
   };
 
   return (
@@ -39,6 +40,20 @@ export const AdminMatchSyncForm = () => {
             onChange={(e) => setApiSportId(e.target.value)}
             className="border-white/10 bg-white/5 text-white h-11 rounded-xl"
             required
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col gap-2">
+          <Label htmlFor="seasonYear" className="text-[10px] font-black uppercase tracking-widest text-white/50">
+            {t('season_year') || 'ROK SEZÓNY'}
+          </Label>
+          <Input
+            id="seasonYear"
+            type="number"
+            placeholder="Napr. 2025 (voliteľné)"
+            value={seasonYear}
+            onChange={(e) => setSeasonYear(e.target.value)}
+            className="border-white/10 bg-white/5 text-white h-11 rounded-xl"
           />
         </div>
 
