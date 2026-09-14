@@ -44,6 +44,8 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
   const [apiHockeyId, setApiHockeyId] = useState<string>(match.apiHockeyId || '');
   const [apiHockeyStatus, setApiHockeyStatus] = useState<string>(match.apiHockeyStatus || 'NS');
   const [stageType, setStageType] = useState<string>(match.stageType);
+  const [homePredictedCount, setHomePredictedCount] = useState<number>(match.homePredictedCount || 0);
+  const [awayPredictedCount, setAwayPredictedCount] = useState<number>(match.awayPredictedCount || 0);
 
   // Dirty state calculation
   const isHomeDirty = (parseInt(homeScore) || 0) !== (match.resultHomeScore || 0);
@@ -97,6 +99,8 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
     setAwayLogoUrl(homeLogoUrl);
     setHomeScore(awayScore);
     setAwayScore(homeScore);
+    setHomePredictedCount(awayPredictedCount);
+    setAwayPredictedCount(homePredictedCount);
   };
 
   return (
@@ -141,6 +145,8 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           resultEndingType={match.resultEndingType}
           apiHockeyId={match.apiHockeyId}
           apiHockeyStatus={match.apiHockeyStatus}
+          homePredictedCount={homePredictedCount}
+          awayPredictedCount={awayPredictedCount}
         />
       </div>
 

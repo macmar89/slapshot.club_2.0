@@ -125,6 +125,10 @@ export const matchesRepository = {
         rankedAt: true,
         apiHockeyId: true,
         apiHockeyStatus: true,
+        homePredictedCount: true,
+        awayPredictedCount: true,
+        predictionStats: true,
+        seriesState: true,
       },
       with: {
         competition: {
@@ -169,5 +173,33 @@ export const matchesRepository = {
       ...match,
       predictionCount: Number(predictionCount?.count ?? 0),
     };
+  },
+
+  async swapMatchStats(matchId: string) {
+    return await db
+      .update(matches)
+      .set({
+        homePredictedCount: matches.awayPredictedCount,
+        awayPredictedCount: matches.homePredictedCount,
+        seriesState: sql`CASE 
+          WHEN ${matches.seriesState} ~ '^[0-9]+:[0-9]+$' THEN
+            split_part(${matches.seriesState}, ':', 2) || ':' || split_part(${matches.seriesState}, ':', 1)
+          ELSE ${matches.seriesState}
+        END`,
+        predictionStats: sql`jsonb_build_object(
+          'scores',
+          COALESCE(
+            (
+              SELECT jsonb_object_agg(
+                split_part(key, ':', 2) || ':' || split_part(key, ':', 1),
+                value
+              )
+              FROM jsonb_each(COALESCE(${matches.predictionStats}->'scores', '{}'::jsonb))
+            ),
+            '{}'::jsonb
+          )
+        )`,
+      })
+      .where(eq(matches.id, matchId));
   },
 };

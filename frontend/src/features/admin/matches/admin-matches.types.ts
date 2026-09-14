@@ -21,6 +21,8 @@ export interface AdminMatchDto {
   apiHockeyId?: string | null;
   apiHockeyStatus?: string | null;
   totalPredictionsCount: number;
+  homePredictedCount?: number;
+  awayPredictedCount?: number;
 }
 
 export interface AdminMatchesResponse {

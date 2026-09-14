@@ -39,8 +39,11 @@ const hashToken = (token: string): string => {
 };
 
 export const registerUser = async (data: RegisterInput) => {
-  const usernameAvailable = await checkAvailability('username', data.username);
-  const emailAvailable = await checkAvailability('email', data.email);
+  const trimmedUsername = data.username.trim();
+  const trimmedEmail = data.email.trim().toLowerCase();
+
+  const usernameAvailable = await checkAvailability('username', trimmedUsername);
+  const emailAvailable = await checkAvailability('email', trimmedEmail);
 
   if (!usernameAvailable) {
     throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
@@ -50,108 +53,147 @@ export const registerUser = async (data: RegisterInput) => {
     throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
   }
 
-  let txResult: {
-    id: string;
-    username: string;
-    email: string;
-    role: 'user' | 'admin' | 'editor' | 'demo';
-    subscriptionPlan: 'free' | 'starter' | 'pro' | 'vip';
-    subscriptionActiveUntil: string | null;
-    isVerified: false;
-    referralCode: string;
-    hasSeenOnboarding: boolean;
-    verificationToken: string | null;
-  };
+  let txResult: any;
+  let retryCount = 0;
+  const MAX_RETRIES = 3;
+  const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
+    (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
 
-  try {
-    txResult = await db.transaction(async (tx) => {
-      const hashedPassword = await hashPassword(data.password);
+  while (retryCount < MAX_RETRIES) {
+    try {
+      txResult = await db.transaction(async (tx) => {
+        const hashedPassword = await hashPassword(data.password);
 
-      const defaultPlan: 'free' | 'starter' | 'pro' | 'vip' =
-        (process.env.DEFAULT_USER_PLAN as 'free' | 'starter' | 'pro' | 'vip') || 'free';
+        const subscriptionEndDate = getSubscriptionEndDate();
 
-      const subscriptionEndDate = getSubscriptionEndDate();
+        const [user] = await tx
+          .insert(users)
+          .values({
+            username: trimmedUsername,
+            password: hashedPassword,
+            email: trimmedEmail,
+            role: 'user',
+            subscriptionPlan: defaultPlan,
+            subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
+            isActive: true,
+            referralCode: generateReferralCode(),
+            registrationSource: data.referralCode ? data.referralCode.substring(0, 100) : null,
+            hasSeenOnboarding: true,
+            preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
+            verificationToken: generateRandomToken(),
+          })
+          .returning();
 
-      const [user] = await tx
-        .insert(users)
-        .values({
-          username: data.username,
-          password: hashedPassword,
-          email: data.email,
-          role: 'user',
-          subscriptionPlan: defaultPlan,
-          subscriptionActiveUntil: defaultPlan === 'free' ? null : subscriptionEndDate,
-          isActive: true,
-          referralCode: generateReferralCode(),
-          registrationSource: data.referralCode ? data.referralCode.substring(0, 100) : null,
-          hasSeenOnboarding: true,
-          preferredLanguage: (data.preferredLanguage as 'sk' | 'en' | 'cs') ?? 'sk',
-          verificationToken: generateRandomToken(),
-        })
-        .returning();
+        if (!user)
+          throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
 
-      if (!user)
-        throw new AppError(AuthErrors.USER_CREATION_FAILED, HttpStatusCode.INTERNAL_SERVER_ERROR);
-
-      await tx.insert(subscriptions).values({
-        userId: user.id,
-        plan: defaultPlan,
-        planType: 'seasonal',
-        status: 'active',
-        activeFrom: new Date().toISOString(),
-        activeUntil: subscriptionEndDate,
-      });
-
-      await tx.insert(userSettings).values({
-        userId: user.id,
-        gdprConsent: data.gdprConsent,
-        marketingConsent: data.marketingConsent,
-        marketingConsentDate: data.marketingConsent ? new Date().toISOString() : null,
-      });
-
-      if (data.referralCode) {
-        const referrer = await tx.query.users.findFirst({
-          columns: {
-            id: true,
-            totalRegistered: true,
-          },
-          where: (users, { eq }) => eq(users.referralCode, data.referralCode!),
+        await tx.insert(subscriptions).values({
+          userId: user.id,
+          plan: defaultPlan,
+          planType: 'seasonal',
+          status: 'active',
+          activeFrom: new Date().toISOString(),
+          activeUntil: subscriptionEndDate,
         });
 
-        if (referrer) {
-          await tx
-            .update(users)
-            .set({
-              totalRegistered: (referrer.totalRegistered || 0) + 1,
-            })
-            .where(eq(users.id, referrer.id));
+        await tx.insert(userSettings).values({
+          userId: user.id,
+          gdprConsent: data.gdprConsent,
+          marketingConsent: data.marketingConsent,
+          marketingConsentDate: data.marketingConsent ? new Date().toISOString() : null,
+        });
 
-          await tx.insert(userReferrals).values({
-            referrerId: referrer.id,
-            referredUserId: user.id,
+        if (data.referralCode) {
+          const referrer = await tx.query.users.findFirst({
+            columns: {
+              id: true,
+              totalRegistered: true,
+            },
+            where: (users, { eq }) => eq(users.referralCode, data.referralCode!),
           });
+
+          if (referrer) {
+            await tx
+              .update(users)
+              .set({
+                totalRegistered: (referrer.totalRegistered || 0) + 1,
+              })
+              .where(eq(users.id, referrer.id));
+
+            await tx.insert(userReferrals).values({
+              referrerId: referrer.id,
+              referredUserId: user.id,
+            });
+          }
         }
+
+        return {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          subscriptionPlan: user.subscriptionPlan,
+          subscriptionActiveUntil: user.subscriptionActiveUntil,
+          isVerified: false as const,
+          referralCode: user.referralCode,
+          hasSeenOnboarding: user.hasSeenOnboarding ?? false,
+          verificationToken: user.verificationToken,
+        };
+      });
+
+      // If we got here, transaction succeeded
+      break;
+    } catch (error: any) {
+      // Check if it's a referral code collision (unique constraint on referral_code)
+      const isReferralCollision =
+        error.message?.includes('users_referral_code_unique') ||
+        error.detail?.includes('referral_code');
+
+      if (isReferralCollision && retryCount < MAX_RETRIES - 1) {
+        retryCount++;
+        logger.warn(
+          { retryCount, username: trimmedUsername },
+          'Referral code collision, retrying registration...',
+        );
+        continue;
       }
 
-      return {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        subscriptionPlan: user.subscriptionPlan,
-        subscriptionActiveUntil: user.subscriptionActiveUntil,
-        isVerified: false as const,
-        referralCode: user.referralCode,
-        hasSeenOnboarding: user.hasSeenOnboarding ?? false,
-        verificationToken: user.verificationToken,
-      };
-    });
-  } catch (error: any) {
-    logger.error(
-      { error: error.message, data: { username: data.username, email: data.email } },
-      'User registration failed',
-    );
-    throw error;
+      // Check for other unique constraint violations
+      const message = error.message?.toLowerCase() || '';
+      const detail = error.detail?.toLowerCase() || '';
+
+      if (message.includes('users_username_unique') || detail.includes('username')) {
+        throw new AppError(AuthMessages.ERRORS.USERNAME_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
+      }
+
+      if (message.includes('users_email_unique') || detail.includes('email')) {
+        throw new AppError(AuthMessages.ERRORS.EMAIL_ALREADY_EXISTS, HttpStatusCode.CONFLICT);
+      }
+
+      logger.error(
+        {
+          error: {
+            message: error.message,
+            detail: error.detail,
+            hint: error.hint,
+            code: error.code,
+            column: error.column,
+            constraint: error.constraint,
+            table: error.table,
+            schema: error.schema,
+            where: error.where,
+          },
+          data: {
+            username: trimmedUsername,
+            email: trimmedEmail,
+            referralCode: data.referralCode,
+            defaultPlan,
+          },
+        },
+        'User registration failed CRITICAL',
+      );
+      throw error;
+    }
   }
 
   const newUser = txResult;

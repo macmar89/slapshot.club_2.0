@@ -36,6 +36,7 @@ export const updateMatch = async (
 
   if (isTeamSwap) {
     await predictionsRepository.swapPredictionsScores(id);
+    await matchesRepository.swapMatchStats(id);
   }
 
   await matchesRepository.updateMatch(id, dataToUpdate);
@@ -228,5 +229,7 @@ export const getMatchDetail = async (id: string, locale: string, userRole: strin
     apiHockeyId: match.apiHockeyId,
     apiHockeyStatus: match.apiHockeyStatus,
     totalPredictionsCount: (match as any).predictionCount,
+    homePredictedCount: match.homePredictedCount,
+    awayPredictedCount: match.awayPredictedCount,
   };
 };
