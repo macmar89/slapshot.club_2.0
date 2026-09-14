@@ -1,7 +1,7 @@
 import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../config/redis.config.js';
 import { logger } from '../utils/logger.js';
-import { refreshCompetitionRankings } from '../services/leaderboard.service.js';
+import { refreshCompetitionRankings } from '../features/leaderboard/index.js';
 import { competitionRepository } from '../repositories/competitions.repository.js';
 import { syncStandings } from '../services/admin/competitions.service.js';
 import { API_HOCKEY_CONFIG } from '../config/apiHockey.js';

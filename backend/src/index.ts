@@ -16,6 +16,7 @@ import './workers/matches.worker.js';
 import './workers/competitions.worker.js';
 import './workers/notifications.worker.js';
 import './workers/slack.worker.js';
+import './features/leaderboard/monthlyLeaderboard.worker.js';
 
 import {
   scheduleMatchesSyncMasterJob,
@@ -24,6 +25,7 @@ import {
   scheduleDailyMissingTipsReminder,
 } from './queues/matches.queue.js';
 import { scheduleDailyStandingsSync } from './queues/competitions.queue.js';
+import { scheduleMonthlyPeriodsClosing } from './features/leaderboard/index.js';
 import helmet from 'helmet';
 
 const allowedOrigins = [
@@ -106,4 +108,5 @@ app.listen(env.PORT, async () => {
   await scheduleMissingTipsReminder();
   await scheduleDailyMissingTipsReminder();
   await scheduleDailyStandingsSync();
+  await scheduleMonthlyPeriodsClosing();
 });

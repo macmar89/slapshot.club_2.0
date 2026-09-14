@@ -12,6 +12,8 @@ import {
   auditLogs,
   feedback,
   leaderboardEntries,
+  monthlyLeaderboardEntries,
+  monthlyLeaderboardPeriods,
   competitionSnapshots,
   teams,
   assets,
@@ -56,6 +58,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   auditLogs: many(auditLogs),
   feedback: many(feedback),
   leaderboardEntries: many(leaderboardEntries),
+  monthlyLeaderboardEntries: many(monthlyLeaderboardEntries),
+  monthlyPeriodsWon: many(monthlyLeaderboardPeriods),
   competitionSnapshots: many(competitionSnapshots),
   notifications: many(notifications),
   checkedMatches: many(matches, { relationName: 'checkedBy' }),
@@ -120,6 +124,8 @@ export const competitionsRelations = relations(competitions, ({ many }) => ({
   matches: many(matches),
   groups: many(groups),
   leaderboardEntries: many(leaderboardEntries),
+  monthlyLeaderboardEntries: many(monthlyLeaderboardEntries),
+  monthlyLeaderboardPeriods: many(monthlyLeaderboardPeriods),
   snapshots: many(competitionSnapshots),
   playoffSeries: many(playoffSeries),
 }));
@@ -228,6 +234,34 @@ export const leaderboardEntriesRelations = relations(leaderboardEntries, ({ one 
     references: [groups.id],
   }),
 }));
+
+export const monthlyLeaderboardEntriesRelations = relations(
+  monthlyLeaderboardEntries,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [monthlyLeaderboardEntries.userId],
+      references: [users.id],
+    }),
+    competition: one(competitions, {
+      fields: [monthlyLeaderboardEntries.competitionId],
+      references: [competitions.id],
+    }),
+  }),
+);
+
+export const monthlyLeaderboardPeriodsRelations = relations(
+  monthlyLeaderboardPeriods,
+  ({ one }) => ({
+    competition: one(competitions, {
+      fields: [monthlyLeaderboardPeriods.competitionId],
+      references: [competitions.id],
+    }),
+    winner: one(users, {
+      fields: [monthlyLeaderboardPeriods.winnerUserId],
+      references: [users.id],
+    }),
+  }),
+);
 
 export const competitionSnapshotsRelations = relations(competitionSnapshots, ({ one }) => ({
   user: one(users, {

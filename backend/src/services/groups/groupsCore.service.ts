@@ -14,7 +14,7 @@ import { HttpStatusCode } from '../../utils/httpStatusCodes.js';
 import { APP_CONFIG } from '../../config/app.js';
 import { GroupMessages } from '../../shared/constants/messages/group.messages.js';
 import { groupRepository } from '../../repositories/groups.repository.js';
-import { leaderboardEntriesRepository } from '../../repositories/leaderboardEntries.repository.js';
+import * as leaderboardFeature from '../../features/leaderboard/index.js';
 import { eq, and, isNull, ne, desc, sql } from 'drizzle-orm';
 import { notDeleted } from '../../db/helpers.js';
 import { competitionsValidationService } from '../competitions/competitionsValidation.service.js';
@@ -37,7 +37,7 @@ export const createGroup = async (
     throw new AppError(PlayerMessages.ERRORS.USER_NOT_PRO_OR_VIP, HttpStatusCode.FORBIDDEN);
   }
 
-  const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
+  const leadeboardEntry = await leaderboardFeature.getCompetitionGroupStats(userId, competitionId);
 
   const { statsJoinedPrivateGroups, statsOwnedPrivateGroups } = leadeboardEntry;
 
@@ -82,12 +82,12 @@ export const createGroup = async (
         role: 'owner',
       });
 
-      await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
+      await leaderboardFeature.incrementJoinedPrivateGroupsCount(
         competitionId,
         userId,
         tx,
       );
-      await leaderboardEntriesRepository.incrementOwnedPrivateGroupsCount(
+      await leaderboardFeature.incrementOwnedPrivateGroupsCount(
         competitionId,
         userId,
         tx,
@@ -319,12 +319,12 @@ export const deleteGroup = async (groupId: string, userId: string) => {
     await db.transaction(async (tx) => {
       await groupRepository.deleteGroup(groupId, tx);
 
-      await leaderboardEntriesRepository.decrementOwnedPrivateGroupsCount(
+      await leaderboardFeature.decrementOwnedPrivateGroupsCount(
         group.competitionId,
         userId,
         tx,
       );
-      await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
+      await leaderboardFeature.decrementJoinedPrivateGroupsCount(
         group.competitionId,
         userId,
         tx,

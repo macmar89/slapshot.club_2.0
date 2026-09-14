@@ -15,6 +15,10 @@ import {
   updateGroupNameSchema,
 } from '../shared/constants/schema/group.schema.js';
 import { validateGroupRole } from '../middleware/validateGroup.middleware.js';
+import {
+  groupLeaderboardRouter,
+  groupMonthlyLeaderboardRouter,
+} from '../features/leaderboard/index.js';
 
 const router = Router();
 
@@ -31,11 +35,13 @@ router.get(
   validateGroupRole(),
   groupController.getGroupDetailHandler,
 );
-router.get(
+router.use('/:slug/leaderboard/monthly', validateGroupRole(), groupMonthlyLeaderboardRouter);
+
+router.use(
   '/:slug/leaderboard',
   validate(getGroupDetailSchema),
   validateGroupRole(),
-  groupController.getGroupLeaderboardHandler,
+  groupLeaderboardRouter,
 );
 router.delete(
   '/:slug',

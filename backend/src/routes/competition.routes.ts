@@ -8,7 +8,7 @@ import {
 } from '../shared/constants/schema/competitions.schema.js';
 import { isAuth, optionalAuth } from '../middleware/auth.middleware.js';
 import { getCompetitionMatchesSchema } from '../shared/constants/schema/matches.schema.js';
-import leaderboardRoutes from './leaderboard.routes.js';
+import { leaderboardRouter, monthlyLeaderboardRouter } from '../features/leaderboard/index.js';
 
 const router = Router();
 
@@ -21,7 +21,8 @@ router.get('/counts', competitionController.getCompetitionCountsHandler);
 router.get('/', competitionController.getCompetitionsHandler);
 router.post('/join', validate(joinCompetitionSchema), competitionController.joinCompetitionHandler);
 
-router.use('/:slug/leaderboard', leaderboardRoutes);
+router.use('/:slug/leaderboard/monthly', monthlyLeaderboardRouter);
+router.use('/:slug/leaderboard', leaderboardRouter);
 
 router.get(
   '/:slug/matches',

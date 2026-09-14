@@ -86,6 +86,7 @@ export const matches = pgTable(
   },
   (table) => [
     index('matches_competition_idx').on(table.competitionId),
+    index('matches_competition_date_idx').on(table.competitionId, table.date),
     index('matches_date_idx').on(table.date),
     index('matches_home_team_idx').on(table.homeTeamId),
     index('matches_away_team_idx').on(table.awayTeamId),

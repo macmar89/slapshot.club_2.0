@@ -15,7 +15,7 @@ import { APP_CONFIG } from '../../config/app.js';
 import { GroupMessages } from '../../shared/constants/messages/group.messages.js';
 import { groupMembersRepository } from '../../repositories/groupMembers.repository.js';
 import { groupRepository } from '../../repositories/groups.repository.js';
-import { leaderboardEntriesRepository } from '../../repositories/leaderboardEntries.repository.js';
+import * as leaderboardFeature from '../../features/leaderboard/index.js';
 import { eq, and } from 'drizzle-orm';
 import { userRepository } from '../../repositories/user.repository.js';
 import { AuthMessages } from '../../shared/constants/messages/auth.messages.js';
@@ -34,7 +34,7 @@ export const joinGroup = async (
 
   const competitionId = competitionsValidationService.ensureExists(idFromSlug);
 
-  const isCompetitionMember = await leaderboardEntriesRepository.isMember(competitionId, userId);
+  const isCompetitionMember = await leaderboardFeature.isCompetitionMember(competitionId, userId);
 
   if (!isCompetitionMember) {
     throw new AppError(
@@ -134,7 +134,7 @@ export const joinPrivateGroup = async (
   competitionSlug: string,
   competitionName: string,
 ) => {
-  const leadeboardEntry = await leaderboardEntriesRepository.getStatsByUser(userId, competitionId);
+  const leadeboardEntry = await leaderboardFeature.getCompetitionGroupStats(userId, competitionId);
 
   const { statsJoinedPrivateGroups } = leadeboardEntry;
 
@@ -158,7 +158,7 @@ export const joinPrivateGroup = async (
           tx,
         );
         await groupRepository.incrementMemberCount(group.id, tx);
-        await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
+        await leaderboardFeature.incrementJoinedPrivateGroupsCount(
           competitionId,
           userId,
           tx,
@@ -311,7 +311,7 @@ const handleMemberActivation = async (tx: any, targetId: string, groupId: string
   );
   await groupRepository.incrementMemberCount(groupId, tx);
   await groupRepository.decrementPendingMembersCount(groupId, tx);
-  await leaderboardEntriesRepository.incrementJoinedPrivateGroupsCount(
+  await leaderboardFeature.incrementJoinedPrivateGroupsCount(
     competitionId!,
     targetId,
     tx,
@@ -414,7 +414,7 @@ export const removeMember = async (memberId: string, groupId: string) => {
 
     await groupMembersRepository.removeMember(memberId, groupId, tx);
     await groupRepository.decrementMemberCount(groupId, tx);
-    await leaderboardEntriesRepository.decrementJoinedPrivateGroupsCount(
+    await leaderboardFeature.decrementJoinedPrivateGroupsCount(
       competitionId!,
       member.userId,
       tx,

@@ -152,6 +152,21 @@ export const groupMembersRepository = {
     return result.map((item) => item.userId);
   },
 
+  async getMembersByGroupId(groupId: string, status?: GroupMemberStatus[]) {
+    return await defaultDb.query.groupMembers.findMany({
+      columns: { userId: true, role: true, alias: true },
+      where: (gm, { eq, and, inArray }) => {
+        const filters = [eq(gm.groupId, groupId), notDeleted(gm)];
+
+        if (status) {
+          filters.push(inArray(gm.status, status));
+        }
+
+        return and(...filters);
+      },
+    });
+  },
+
   async removeMember(memberId: string, groupId: string, tx?: any) {
     const db = tx ?? defaultDb;
 

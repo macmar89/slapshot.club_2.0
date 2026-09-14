@@ -10,6 +10,10 @@ import { APP_CONFIG } from '../../config/app.js';
 import { type ScoringResult } from '../../types/prediction.types.js';
 import { predictionsRepository } from '../../repositories/predictions.repository.js';
 import { competitionsQueue } from '../../queues/competitions.queue.js';
+import {
+  enqueueMonthlyRanksRecalculation,
+  getPeriodFromDate,
+} from '../../features/leaderboard/index.js';
 
 export function calculatePoints(
   prediction: { homeGoals: number | null; awayGoals: number | null },
@@ -246,6 +250,11 @@ export async function evaluateMatch(matchId: string) {
   await competitionsQueue.add('recalculateCompetitionRanks', {
     competitionId: competition.id,
   });
+
+  await enqueueMonthlyRanksRecalculation({
+    competitionId: competition.id,
+    ...getPeriodFromDate(match.date),
+  });
 }
 
 export async function revertMatchEvaluation(matchId: string) {
@@ -381,4 +390,13 @@ export async function revertMatchEvaluation(matchId: string) {
       rankedAt: null,
     })
     .where(eq(matches.id, matchId));
+
+  await competitionsQueue.add('recalculateCompetitionRanks', {
+    competitionId: competition.id,
+  });
+
+  await enqueueMonthlyRanksRecalculation({
+    competitionId: competition.id,
+    ...getPeriodFromDate(match.date),
+  });
 }

@@ -1,8 +1,53 @@
-import { db as defaultDb } from '../db/index.js';
-import { leaderboardEntries } from '../db/schema/index.js';
-import { sql, and, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { db as defaultDb } from '../../db/index.js';
+import { leaderboardEntries } from '../../db/schema/index.js';
 
-export const leaderboardEntriesRepository = {
+export const leaderboardRepository = {
+  async findEntriesByCompetitionId(competitionId: string) {
+    return await defaultDb.query.leaderboardEntries.findMany({
+      columns: {
+        id: true,
+        userId: true,
+        currentRank: true,
+        totalPoints: true,
+        totalPredictions: true,
+        exactGuesses: true,
+        correctTrends: true,
+        correctDiffs: true,
+        wrongGuesses: true,
+      },
+      where: (table) => eq(table.competitionId, competitionId),
+      with: {
+        user: {
+          columns: {
+            username: true,
+          },
+        },
+      },
+      orderBy: (table) => [
+        asc(sql`CASE WHEN ${table.currentRank} = 0 THEN 1 ELSE 0 END`),
+        asc(table.currentRank),
+      ],
+    });
+  },
+
+  async findEntryByUser(userId: string, competitionId: string) {
+    return await defaultDb.query.leaderboardEntries.findFirst({
+      columns: {
+        totalPoints: true,
+        totalPredictions: true,
+        currentRank: true,
+        exactGuesses: true,
+        correctTrends: true,
+        correctDiffs: true,
+        wrongGuesses: true,
+        createdAt: true,
+      },
+      where: (table, { eq, and }) =>
+        and(eq(table.userId, userId), eq(table.competitionId, competitionId)),
+    });
+  },
+
   async getStatsByUser(
     userId: string,
     competitionId: string,
@@ -12,11 +57,8 @@ export const leaderboardEntriesRepository = {
         statsJoinedPrivateGroups: true,
         statsOwnedPrivateGroups: true,
       },
-      where: (leaderboardEntries, { and, eq }) =>
-        and(
-          eq(leaderboardEntries.competitionId, competitionId),
-          eq(leaderboardEntries.userId, userId),
-        ),
+      where: (table, { and, eq }) =>
+        and(eq(table.competitionId, competitionId), eq(table.userId, userId)),
     });
 
     return {
@@ -48,11 +90,8 @@ export const leaderboardEntriesRepository = {
         wrongGuesses: true,
         currentForm: true,
       },
-      where: (leaderboardEntries, { and, eq }) =>
-        and(
-          eq(leaderboardEntries.competitionId, competitionId),
-          inArray(leaderboardEntries.userId, userIds),
-        ),
+      where: (table, { and, eq }) =>
+        and(eq(table.competitionId, competitionId), inArray(table.userId, userIds)),
       with: {
         user: {
           columns: {
@@ -69,7 +108,7 @@ export const leaderboardEntriesRepository = {
           },
         },
       },
-      orderBy: (leaderboardEntries, { asc }) => [asc(leaderboardEntries.currentRank)],
+      orderBy: (table, { asc }) => [asc(table.currentRank)],
     });
   },
 

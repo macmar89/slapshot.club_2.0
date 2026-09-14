@@ -22,7 +22,6 @@ import {
   updateGroupName,
   deleteGroup,
 } from '../services/groups/groupsCore.service.js';
-import { getGroupLeaderboard } from '../services/groups/groupsLeaderboard.service.js';
 
 export const createGroupHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId, subscriptionPlan } = req.user!;
@@ -80,14 +79,6 @@ export const getUserGroupsByCompetitionSlugHandler = catchAsync(
     return res.status(HttpStatusCode.OK).json({ status: 'success', data });
   },
 );
-
-export const getGroupLeaderboardHandler = catchAsync(async (req: Request, res: Response) => {
-  const { id: userId } = req.user!;
-
-  const response = await getGroupLeaderboard(req.group!.groupId, userId);
-
-  return res.status(HttpStatusCode.OK).json({ status: 'success', data: response });
-});
 
 export const getGroupDetailHandler = catchAsync(async (req: Request, res: Response) => {
   const { id: userId } = req.user!;
