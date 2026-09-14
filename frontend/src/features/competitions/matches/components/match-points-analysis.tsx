@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { AlertCircle, BarChart3, LucideIcon, Target, TrendingUp } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { getPredictionOutcome, type PredictionOutcome } from '../matches.utils';
 
 interface MatchStatCardProps {
   label: string;
@@ -101,24 +102,14 @@ export const MatchPointsAnalysis = ({
   const stats = isStarted
     ? Object.entries(scores).reduce(
         (acc, [scoreKey, count]) => {
-          const [hTip, aTip] = scoreKey.split(':').map(Number);
-          const hReal = currentScore.homeScore;
-          const aReal = currentScore.awayScore;
+          const [homeGoals, awayGoals] = scoreKey.split(':').map(Number);
+          const outcome = getPredictionOutcome({ homeGoals, awayGoals }, currentScore);
 
-          const isExact = hTip === hReal && aTip === aReal;
-          const isDiff = !isExact && hTip - aTip === hReal - aReal;
-          const isTrend =
-            !isExact && !isDiff && Math.sign(hTip - aTip) === Math.sign(hReal - aReal);
-          const isWrong = Math.sign(hTip - aTip) !== Math.sign(hReal - aReal);
-
-          if (isExact) acc.exact += count;
-          else if (isDiff) acc.diff += count;
-          else if (isTrend) acc.trend += count;
-          else if (isWrong) acc.wrong += count;
+          acc[outcome] += count;
 
           return acc;
         },
-        { exact: 0, diff: 0, trend: 0, wrong: 0 },
+        { exact: 0, diff: 0, trend: 0, wrong: 0 } as Record<PredictionOutcome, number>,
       )
     : {
         exact: 0,
@@ -127,18 +118,8 @@ export const MatchPointsAnalysis = ({
         wrong: 0,
       };
 
-  const getUserStatus = () => {
-    if (!userPrediction || !isStarted) return null;
-    const { homeGoals: hTip, awayGoals: aTip } = userPrediction;
-    const { homeScore: hReal, awayScore: aReal } = currentScore;
-
-    if (hTip === hReal && aTip === aReal) return 'exact';
-    if (hTip - aTip === hReal - aReal) return 'diff';
-    if (Math.sign(hTip - aTip) === Math.sign(hReal - aReal)) return 'trend';
-    return 'wrong';
-  };
-
-  const userStatus = getUserStatus();
+  const userStatus =
+    userPrediction && isStarted ? getPredictionOutcome(userPrediction, currentScore) : null;
 
   return (
     <div className="space-y-6">

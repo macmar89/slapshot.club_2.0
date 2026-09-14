@@ -43,13 +43,12 @@ export function calculatePoints(
     };
   }
 
-  const pDiff = pHome - pAway;
-  const mDiff = mHome - mAway;
+  const hasSameWinner = Math.sign(pHome - pAway) === Math.sign(mHome - mAway);
 
-  const isTrend =
-    (pDiff > 0 && mDiff > 0) || (pDiff < 0 && mDiff < 0) || (pDiff === 0 && mDiff === 0);
-  if (isTrend) {
-    if (pDiff === mDiff) {
+  if (hasSameWinner) {
+    const goalDeviation = Math.abs(pHome - mHome) + Math.abs(pAway - mAway);
+
+    if (goalDeviation === 1) {
       return {
         points: APP_CONFIG.POINTS.DIFF,
         isExact: false,

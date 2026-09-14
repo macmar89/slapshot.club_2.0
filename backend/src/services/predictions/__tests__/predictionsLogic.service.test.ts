@@ -62,14 +62,14 @@ describe('Scoring Engine - Integration Test', () => {
       stageType: 'regular_season',
     });
 
-    // 5. Create a prediction for this user (Predicted 2:0, which is a correct goal difference for 3:1)
+    // 5. Create a prediction for this user (Predicted 2:1, which is one goal off 3:1)
     await db.insert(predictions).values({
       id: predictionId,
       userId,
       matchId,
       competitionId: compId,
       homeGoals: 2,
-      awayGoals: 0,
+      awayGoals: 1,
       status: 'pending',
     });
   });
