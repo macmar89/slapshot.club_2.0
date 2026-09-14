@@ -3,6 +3,7 @@ import { redisConfig } from '../config/redis.config.js';
 import { renderVerificationEmail } from '../templates/emails/renderVerifyUserEmail.js';
 import { renderForgotPasswordEmail } from '../templates/emails/renderResetPasswordEmail.js';
 import { renderDailyMissingTipsEmail } from '../templates/emails/renderDailyMissingTipsEmail.js';
+import { renderSeasonStartEmail } from '../templates/emails/renderSeasonStartEmail.js';
 import { logger } from '../utils/logger.js';
 import { describeError } from '../utils/errorDetails.js';
 import { emailService } from '../services/email.service.js';
@@ -57,6 +58,20 @@ export const emailWorker = new Worker(
 
       const translations = getTranslations(locale);
       const subject = translations.Email.daily_missing_tips.subject;
+
+      await emailService.sendEmail({
+        to,
+        subject,
+        htmlContent,
+      });
+    }
+
+    if (type === 'season-start-email') {
+      const { to, username, locale } = data;
+      const htmlContent = renderSeasonStartEmail({ user: { username, preferredLanguage: locale } });
+
+      const translations = getTranslations(locale);
+      const subject = translations.Email.seasonStart.subject;
 
       await emailService.sendEmail({
         to,

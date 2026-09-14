@@ -20,6 +20,13 @@
       "message": "You have {missingTipsCount} unsubmitted picks for matches in the next 24 hours. Don't forget to submit your picks before the matches start!",
       "button": "Submit your picks",
       "footer": "See you in the arena! <br> SLAPSHOT CLUB • 2026"
+    },
+    "seasonStart": {
+      "subject": "🏒 New Extraliga Season Faces Off Sep 15!",
+      "title": "New season incoming, {username}!",
+      "message": "The Czech and Slovak Extraliga both drop the puck on <strong>September 15</strong>. Sharpen your skates and join us for a shot at the top of the leaderboard.<br><br>We've also tweaked the rules a bit: <strong>3 points</strong> now only require picking the correct winner and being off by just one goal from the final score — the goal difference no longer has to match exactly.<br><br>Got an idea or feedback? Drop us a note in the Feedback section, we read everything.",
+      "button": "Submit your picks",
+      "footer": "See you in the arena! <br> SLAPSHOT CLUB • 2026"
     }
   }
 }

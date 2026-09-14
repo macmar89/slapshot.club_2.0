@@ -20,6 +20,13 @@
       "message": "Máš {missingTipsCount} netipovaných zápasů na nejbližších 24 hodin. Nezapomeň poslat své tipy, než zápasy začnou!",
       "button": "Tipovat zápasy",
       "footer": "Uvidíme se v aréně! <br> SLAPSHOT CLUB • 2026"
+    },
+    "seasonStart": {
+      "subject": "🏒 Nová sezóna extraligy startuje 15. 9.!",
+      "title": "Nová sezóna se blíží, {username}!",
+      "message": "Česká i slovenská extraliga vhazují puk už <strong>15. 9.</strong> Nabruš brusle a pojď s námi tipovat o co nejvyšší místo v žebříčku.<br><br>Mírně jsme upravili i pravidla: za <strong>3 body</strong> teď stačí trefit vítěze a být jen o jeden gól vedle skutečného výsledku, gólový rozdíl už nemusí sedět přesně.<br><br>Máš nápad nebo postřeh? Napiš nám do Feedbacku, čteme všechno.",
+      "button": "Tipovat zápasy",
+      "footer": "Uvidíme se v aréně! <br> SLAPSHOT CLUB • 2026"
     }
   }
 }

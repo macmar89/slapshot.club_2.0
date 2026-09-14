@@ -7,6 +7,7 @@ import { API_ROUTES } from '@/lib/api-routes';
 import { DataLoader } from '@/components/common/data-loader';
 import { UsersDashboardCard } from '../components/users-dashboard-card';
 import { MatchesDashboardCard } from '../components/matches-dashboard-card';
+import { SeasonStartEmailCard } from '../components/season-start-email-card';
 import { type DashboardStats } from '../types';
 
 export const AdminDashboardView = () => {
@@ -27,6 +28,8 @@ export const AdminDashboardView = () => {
           </span>
         </div>
       </div>
+
+      <SeasonStartEmailCard />
 
       <DataLoader
         data={data}

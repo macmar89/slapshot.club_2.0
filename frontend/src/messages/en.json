@@ -1107,7 +1107,19 @@
       "role_editor": "Editors",
       "roles_title": "Roles",
       "plans_title": "Plans",
-      "not_found": "Statistics not found"
+      "not_found": "Statistics not found",
+      "season_start_email": {
+        "title": "Season Start Email",
+        "description": "Sends the season start email to all active, verified users.",
+        "trigger": "Send Email",
+        "confirm_title": "Send email to all users?",
+        "confirm_desc": "This action cannot be undone. The season start email will be sent to all active, verified users at once.",
+        "cancel": "Cancel",
+        "confirm_action": "Yes, send it",
+        "sending": "Sending...",
+        "success": "Email queued for {count} users.",
+        "error": "Failed to send the emails."
+      }
     },
     "Matches": {
       "title": "Matches - Administration",

@@ -52,4 +52,12 @@ export const userRepository = {
       where: (u, { eq, and }) => and(eq(u.id, userId), notDeleted(u)),
     });
   },
+
+  async getActiveVerifiedUsersEmailAndLocale() {
+    return await dbDefault.query.users.findMany({
+      columns: { email: true, username: true, preferredLanguage: true },
+      where: (u, { eq, and, isNotNull }) =>
+        and(eq(u.isActive, true), isNotNull(u.verifiedAt), notDeleted(u)),
+    });
+  },
 };

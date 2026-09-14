@@ -1107,7 +1107,19 @@
       "role_editor": "Editori",
       "roles_title": "Role",
       "plans_title": "Plány",
-      "not_found": "Štatistiky neboli nájdené"
+      "not_found": "Štatistiky neboli nájdené",
+      "season_start_email": {
+        "title": "E-mail o štarte sezóny",
+        "description": "Odošle e-mail o štarte novej sezóny všetkým aktívnym a overeným userom.",
+        "trigger": "Odoslať e-mail",
+        "confirm_title": "Odoslať e-mail všetkým userom?",
+        "confirm_desc": "Táto akcia sa nedá vrátiť späť. E-mail o štarte sezóny sa odošle všetkým aktívnym a overeným userom naraz.",
+        "cancel": "Zrušiť",
+        "confirm_action": "Áno, odoslať",
+        "sending": "Odosielam...",
+        "success": "E-mail bol zaradený na odoslanie pre {count} userov.",
+        "error": "Odoslanie e-mailov zlyhalo."
+      }
     },
     "Matches": {
       "title": "Zápasy - Administrácia",

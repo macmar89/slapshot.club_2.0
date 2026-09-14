@@ -24,6 +24,9 @@ export const API_ROUTES = {
       UPDATE: (slug: string) => `/admin/announcements/${slug}`,
       DELETE: (slug: string) => `/admin/announcements/${slug}`,
     },
+    EMAILS: {
+      SEND_SEASON_START: '/admin/emails/season-start',
+    },
   },
   AUTH: {
     LOGIN: '/auth/login',
