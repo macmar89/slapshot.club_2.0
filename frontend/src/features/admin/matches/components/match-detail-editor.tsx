@@ -12,8 +12,8 @@ import {
 } from '../api/use-admin-match-scoring';
 
 export interface MatchSaveData {
-  homeScore?: string;
-  awayScore?: string;
+  resultHomeScore?: number;
+  resultAwayScore?: number;
   status?: string;
   isChecked?: boolean;
   isRanked?: boolean;
@@ -73,8 +73,8 @@ export const MatchDetailEditor = ({ match, onSave, onRefresh }: MatchDetailEdito
   const handleSaveScores = () => {
     if (!isScoreDirty && !isTeamsDirty) return;
     onSave({
-      homeScore,
-      awayScore,
+      resultHomeScore: parseInt(homeScore) || 0,
+      resultAwayScore: parseInt(awayScore) || 0,
       date: matchDate,
       ...(isTeamsDirty && { homeTeamId, awayTeamId }),
     });
