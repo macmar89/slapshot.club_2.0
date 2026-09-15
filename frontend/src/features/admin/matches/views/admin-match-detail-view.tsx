@@ -82,7 +82,9 @@ export const AdminMatchDetailView = () => {
           </div>
         }
       >
-        {(match) => <MatchDetailEditor match={match} onSave={handleSave} />}
+        {(match) => (
+          <MatchDetailEditor match={match} onSave={handleSave} onRefresh={() => mutate()} />
+        )}
       </DataLoader>
     </div>
   );

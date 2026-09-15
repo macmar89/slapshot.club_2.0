@@ -25,6 +25,8 @@ interface ScoreEditorProps {
   onMatchDateChange?: (date: string) => void;
   onRecalculate?: () => void;
   onUndoScoring?: () => void;
+  isRecalculating?: boolean;
+  isUndoing?: boolean;
   isHomeDirty?: boolean;
   isAwayDirty?: boolean;
   isDateDirty?: boolean;
@@ -50,6 +52,8 @@ export const ScoreEditor = ({
   onSave,
   onRecalculate,
   onUndoScoring,
+  isRecalculating = false,
+  isUndoing = false,
   isHomeDirty = false,
   isAwayDirty = false,
   isDateDirty = false,
@@ -60,7 +64,6 @@ export const ScoreEditor = ({
 }: ScoreEditorProps) => {
   const t = useTranslations('Admin.Matches.detail');
 
-  const isLiveOrScheduled = status === 'live' || status === 'scheduled';
   const isFinished = status === 'finished';
 
   const homeScoreNum = parseInt(homeScore) || 0;
@@ -159,15 +162,20 @@ export const ScoreEditor = ({
           {t('save_changes')}
         </Button>
 
-        {isLiveOrScheduled && onRecalculate && (
-          <Button size="sm" variant="outline" onClick={onRecalculate}>
-            <RefreshCw className="h-4 w-4 transition-transform duration-500 group-hover:rotate-180" />
+        {isFinished && onRecalculate && (
+          <Button size="sm" variant="outline" onClick={onRecalculate} disabled={isRecalculating}>
+            <RefreshCw
+              className={cn(
+                'h-4 w-4 transition-transform duration-500 group-hover:rotate-180',
+                isRecalculating && 'animate-spin',
+              )}
+            />
             {t('recalculate_points')}
           </Button>
         )}
 
-        {isFinished && onUndoScoring && (
-          <Button size="sm" variant="outline" onClick={onUndoScoring}>
+        {isFinished && isRanked && onUndoScoring && (
+          <Button size="sm" variant="outline" onClick={onUndoScoring} disabled={isUndoing}>
             <Undo2 className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             {t('undo_scoring')}
           </Button>

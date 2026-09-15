@@ -6,6 +6,10 @@ import { ScoreEditor } from './score-editor';
 import { MatchStats } from './match-stats';
 import { MatchStatusSidebar } from './match-status-sidebar';
 import { MatchVerificationCard } from './match-verification-card';
+import {
+  useAdminMatchRecalculate,
+  useAdminMatchRevertEvaluation,
+} from '../api/use-admin-match-scoring';
 
 export interface MatchSaveData {
   homeScore?: string;
@@ -24,9 +28,13 @@ export interface MatchSaveData {
 interface MatchDetailEditorProps {
   match: AdminMatchDto;
   onSave: (data: MatchSaveData) => void;
+  onRefresh?: () => void;
 }
 
-export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => {
+export const MatchDetailEditor = ({ match, onSave, onRefresh }: MatchDetailEditorProps) => {
+  const { recalculateMatch, isRecalculating } = useAdminMatchRecalculate();
+  const { revertEvaluation, isReverting } = useAdminMatchRevertEvaluation();
+
   const [homeScore, setHomeScore] = useState<string>(match.resultHomeScore?.toString() || '0');
   const [awayScore, setAwayScore] = useState<string>(match.resultAwayScore?.toString() || '0');
   const [status, setStatus] = useState<string>(match.status);
@@ -82,12 +90,14 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
     });
   };
 
-  const handleRecalculate = () => {
-    console.log('Recalculating points for match:', match.id);
+  const handleRecalculate = async () => {
+    const success = await recalculateMatch(match.id);
+    if (success) onRefresh?.();
   };
 
-  const handleUndoScoring = () => {
-    console.log('Undoing scoring for match:', match.id);
+  const handleUndoScoring = async () => {
+    const success = await revertEvaluation(match.id);
+    if (success) onRefresh?.();
   };
 
   const handleSwapTeams = () => {
@@ -123,6 +133,8 @@ export const MatchDetailEditor = ({ match, onSave }: MatchDetailEditorProps) => 
           onSave={handleSaveScores}
           onRecalculate={handleRecalculate}
           onUndoScoring={handleUndoScoring}
+          isRecalculating={isRecalculating}
+          isUndoing={isReverting}
           onSwapTeams={handleSwapTeams}
           isHomeDirty={isHomeDirty}
           isAwayDirty={isAwayDirty}

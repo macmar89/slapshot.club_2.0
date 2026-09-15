@@ -10,6 +10,8 @@ export const API_ROUTES = {
       TEAMS_LOOKUP: '/admin/matches/teams/lookup',
       SYNC: '/admin/matches/sync',
       RECALCULATE_PLAYOFFS: '/admin/matches/playoffs/recalculate',
+      RECALCULATE: (id: string) => `/admin/matches/${id}/recalculate`,
+      REVERT_EVALUATION: (id: string) => `/admin/matches/${id}/revert-evaluation`,
     },
     FEEDBACK: {
       LIST: '/admin/feedback',
